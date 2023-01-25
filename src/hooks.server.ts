@@ -1,7 +1,8 @@
 import { SvelteKitAuth } from '@auth/sveltekit';
-import GitHub from '@auth/core/providers/github';
-import { GITHUB_ID, GITHUB_SECRET } from '$env/static/private';
+import { InvictusBierProvider } from './providers/ibs';
+import { IBS_CLIENT_SECRET } from '$env/static/private';
 
 export const handle = SvelteKitAuth({
-	providers: [GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET })]
+	providers: [InvictusBierProvider],
+	secret: IBS_CLIENT_SECRET,
 });
