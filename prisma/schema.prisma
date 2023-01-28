@@ -9,3 +9,95 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+// USER
+
+model User {
+  id                Int               @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String?
+  nickname          String?           @unique
+  picture           String?
+  birthDate         DateTime?         @db.Date
+  phone             String?
+  firstDrink        DateTime?         @db.Date
+  becameFeut        DateTime?         @db.Date
+  becameMember      DateTime?         @db.Date
+  password          String
+  lastLoggedin      DateTime          @default(now())
+  StrafbakGiven     Strafbak[]        @relation("strafbakGiver")
+  StrafbakReceived  Strafbak[]        @relation("strafbakReceiver")
+  MaluspuntGiven    Maluspunt[]       @relation("maluspuntGiver")
+  MuluspuntReceived Maluspunt[]       @relation("maluspuntReceiver")
+  CommitteeMember   CommitteeMember[]
+}
+
+model Committee {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  CommitteeMember CommitteeMember[]
+  Acivity         Acivity[]
+}
+
+model CommitteeMember {
+  committee   Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
+  committeeId Int
+  member      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  joinDate    DateTime  @default(now()) @db.Date
+  leaveDate   DateTime? @db.Date
+  function    String    @default("Algemeen lid")
+
+  @@id([committeeId, userId, joinDate])
+}
+
+// STRAFBAKKEN
+
+model Strafbak {
+  id          Int       @id @default(autoincrement())
+  giver       User      @relation("strafbakGiver", fields: [giverId], references: [id])
+  giverId     Int
+  receiver    User      @relation("strafbakReceiver", fields: [receiverId], references: [id])
+  receiverId  Int
+  reason      String?
+  dateCreated DateTime  @default(now())
+  dateDeleted DateTime?
+
+  @@index([giverId])
+}
+
+// MALUSPUNTEN
+
+model Maluspunt {
+  id          Int      @id @default(autoincrement())
+  giver       User     @relation("maluspuntGiver", fields: [giverId], references: [id])
+  giverId     Int
+  receiver    User     @relation("maluspuntReceiver", fields: [receiverId], references: [id])
+  receiverId  Int
+  reason      String?
+  dateCreated DateTime @default(now())
+  amount      Int      @default(1)
+
+  @@index([giverId])
+}
+
+// ACTIVITY
+
+model Acivity {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  start       DateTime
+  location    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  isActive    Boolean   @default(true)
+  membersOnly Boolean   @default(false)
+  organisedBy Committee @relation(fields: [committeeId], references: [id])
+  committeeId Int
+}
+
+// FINANCIALS
+
+// TODO: Succes
