@@ -1,12 +1,7 @@
 <script lang="ts">
 	import { signIn } from '@auth/sveltekit/client';
-	import Logo from '$lib/Logo.svelte';
-	import StyledButton from '$lib/StyledButton.svelte';
-
-	function login() {
-		console.log('click!')
-		signIn('authentik')
-	}
+	import Logo from '$lib/components/Logo.svelte';
+	import StyledButton from '$lib/components/StyledButton.svelte';
 </script>
 
 <div id="content" class="dark flex justify-center items-center">
@@ -14,9 +9,9 @@
 		<Logo height="600px" width="600px" />
 	
 		<div class="flex justify-center">
-			<StyledButton onclick={login}>
+			<button on:click={() => signIn('authentik')}>
 				Log in
-			</StyledButton>
+			</button>
 		</div>
 	</div>
 </div>
@@ -24,8 +19,15 @@
 <style>
 	#content {
     background-color: #010a4a;
-
 		width: 100vw;
 		height: 100vh;
+	}
+
+	button {
+		background-color: purple;
+		color: white;
+		border: none;
+		border-radius: 5px;
+		padding: 0.5rem 1rem;
 	}
 </style>
