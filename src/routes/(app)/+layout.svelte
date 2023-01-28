@@ -2,7 +2,7 @@
   import Logo from '$lib/Logo.svelte';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation'
-  import { CalendarDays, Cake, Users, Folder, Cog6Tooth, InformationCircle } from 'svelte-heros-v2'
+  import { CalendarDays, Cake, Users, Folder, Cog6Tooth, InformationCircle, FaceFrown } from 'svelte-heros-v2'
 	import Breadcrumps from '$lib/components/breadcrumps.svelte';
 </script>
 
@@ -13,7 +13,7 @@
   <aside>
     <section id="top">
       <button on:click={() => goto('/')}>
-        <img src="./logo.png" alt="aaa" height="100px" width="100px"/>
+        <Logo />
       </button> 
       <p>Invictus Bier Systeem</p>
     </section>
@@ -31,6 +31,13 @@
       <a href="/strafbakken">
         <i><Cake /></i>
         <span>Strafbakken</span>
+      </a>
+    </section>
+
+    <section>
+      <a href="/maluspunten">
+        <i><FaceFrown /></i>
+        <span>Maluspunten</span>
       </a>
     </section>
 
