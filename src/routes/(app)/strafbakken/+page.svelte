@@ -4,7 +4,7 @@
 
 <div>
   <h1>
-    Huidige scorebord
+    Success Naut
   </h1>
 </div>
 
