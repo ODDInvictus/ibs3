@@ -4,7 +4,6 @@
 
   let crumbs: any[] = []
 
-
   $: {
     let path = $page.url.pathname
     // Remove zero-length tokens.
@@ -14,7 +13,6 @@
     let tokenPath = ''
     crumbs = tokens.map((t) => {
         tokenPath += '/' + t
-        console.log(t)
         return {
             label: t,
             href: tokenPath,
