@@ -1,9 +1,21 @@
 <script lang="ts">
-  import Logo from '$lib/Logo.svelte';
-  import { page } from '$app/stores';
+  import Logo from '$lib/components/Logo.svelte'
+  import { clickOutside } from '$lib/events/clickOutside';
+  import { page } from '$app/stores'
   import { goto } from '$app/navigation'
   import { CalendarDays, Cake, Users, Folder, Cog6Tooth, InformationCircle, FaceFrown } from 'svelte-heros-v2'
-	import Breadcrumps from '$lib/components/breadcrumps.svelte';
+  import PopupMenu from '$lib/components/PopupMenu.svelte'
+	import Breadcrumps from '$lib/components/Breadcrumps.svelte'
+
+  let showMenu: boolean = false
+
+  function toggleMenu() {
+    showMenu = !showMenu
+  }
+
+  function closeMenu() {
+    showMenu = false
+  }
 </script>
 
 <div id="layout">
@@ -75,14 +87,16 @@
     <header>
       <Breadcrumps />
 
-      <div id="user">
+      <button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
         <div id="user-card">
-          <p id="name">Pieter Post</p>
+          <p id="name">{$page.data.session?.user?.name ?? 'Gebruiker'}</p>
           <p id="title">Senaat</p>
         </div>
         <!-- <button>Log uit</button> -->
         <img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
-      </div>
+
+        <PopupMenu {showMenu}/>
+      </button>
     </header>
 
     <main>
@@ -109,17 +123,21 @@
     height: calc(100vh - 6.5rem);
     background-color: #f9fafb;
     border-radius: 5px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 
-    overflow: scroll
+    overflow: scroll;
   }
 
   main > div {
-    padding: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
   }
 
   header {
     height: 4rem;
-    width: 84vw;
+    width: calc(100vw - 19rem);
     max-width: 100%;
     margin-top: 0.5rem;
     margin-left: 1rem;
@@ -127,7 +145,7 @@
     flex-direction: row;
     justify-content: space-between;
 
-    color: white
+    color: white;
   }
   
   header > #user {
@@ -136,7 +154,8 @@
     align-items: center;
     justify-content: center;
     gap: 0.8rem;
-    margin-right: 1rem;
+    margin-top: 0.1rem;
+    margin-right: 2rem;
   }
 
   header > #user #name {
@@ -161,7 +180,7 @@
 
   aside {
     background-color: #010a4a;
-    width: 12rem;
+    width: 16rem;
     margin: 1rem;
     border-radius: 1rem;
 
@@ -173,7 +192,7 @@
     z-index: -1;
     position: absolute;
     width: 100vw;
-    height: 30vh;
+    height: 22rem;
     background-color: #7e22ce;
   }
 
