@@ -13,7 +13,7 @@
     <div id="pointer" />
 
     <a class="menu-item" href="/profiel">Profiel</a>
-    <a class="menu-item" href="/streeplijst/persoonlijk">Mijn streeplijst</a>
+    <a class="menu-item" href="/financieel/persoonlijk">Mijn streeplijst</a>
     <a class="menu-item" href="/instellingen">Instellingen</a>
 
     <hr />

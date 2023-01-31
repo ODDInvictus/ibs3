@@ -31,6 +31,8 @@ model User {
   MaluspuntGiven    Maluspunt[]       @relation("maluspuntGiver")
   MuluspuntReceived Maluspunt[]       @relation("maluspuntReceiver")
   CommitteeMember   CommitteeMember[]
+  TransactionFrom   Transaction[]     @relation("transactionFrom")
+  TransactionTo     Transaction[]     @relation("transactionTo")
 }
 
 model Committee {
@@ -102,3 +104,75 @@ model Activity {
 // FINANCIALS
 
 // TODO: Succes
+
+model Ledger {
+  id          Int           @id
+  name        String
+  description String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  isActive    Boolean       @default(true)
+  Transaction Transaction[]
+  Declaration Declaration[]
+}
+
+model ProductCategory {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  isActive    Boolean   @default(true)
+  Product     Product[]
+}
+
+model Product {
+  id          Int             @id @default(autoincrement())
+  name        String
+  description String
+  price       Int
+  categoryId  Int
+  category    ProductCategory @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  isActive    Boolean         @default(true)
+  data        Json            @db.Json
+  Sale        Sale[]
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  ledger      Ledger   @relation(fields: [ledgerId], references: [id])
+  ledgerId    Int
+  description String
+  price       Float
+  from        User     @relation(fields: [fromId], references: [id], name: "transactionFrom")
+  fromId      Int
+  to          User     @relation(fields: [toId], references: [id], name: "transactionTo")
+  toId        Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isActive    Boolean  @default(true)
+}
+
+model Sale {
+  id        Int      @id @default(autoincrement())
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  amount    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
+}
+
+model Declaration {
+  id              Int      @id @default(autoincrement())
+  ledger          Ledger   @relation(fields: [ledgerId], references: [id])
+  ledgerId        Int
+  amount          Float
+  reason          String
+  methodOfPayment String   @default("Eigen rekening")
+  accepted        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

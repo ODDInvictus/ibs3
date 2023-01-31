@@ -61,9 +61,9 @@
     </section>
 
     <section>
-      <a href="/streeplijst">
+      <a href="/financieel">
         <i><Folder /></i>
-        <span>Streeplijst</span>
+        <span>Financieel</span>
       </a>
     </section>
 
@@ -90,7 +90,7 @@
       <button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
         <div id="user-card">
           <p id="name">{$page.data.session?.user?.name ?? 'Gebruiker'}</p>
-          <p id="title">Senaat</p>
+          <p id="title">Lid</p>
         </div>
         <!-- <button>Log uit</button> -->
         <img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
