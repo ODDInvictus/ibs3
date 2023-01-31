@@ -1,260 +1,274 @@
 <script lang="ts">
-  import Logo from '$lib/components/Logo.svelte'
-  import { clickOutside } from '$lib/events/clickOutside';
-  import { page } from '$app/stores'
-  import { goto } from '$app/navigation'
-  import { CalendarDays, Cake, Users, Folder, Cog6Tooth, InformationCircle, FaceFrown } from 'svelte-heros-v2'
-  import PopupMenu from '$lib/components/PopupMenu.svelte'
-	import Breadcrumps from '$lib/components/Breadcrumps.svelte'
+	import Logo from '$lib/components/Logo.svelte';
+	import { clickOutside } from '$lib/events/clickOutside';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
+	import {
+		CalendarDays,
+		Cake,
+		Users,
+		Folder,
+		Cog6Tooth,
+		InformationCircle,
+		FaceFrown
+	} from 'svelte-heros-v2';
+	import PopupMenu from '$lib/components/PopupMenu.svelte';
+	import Breadcrumps from '$lib/components/Breadcrumps.svelte';
 
-  let showMenu: boolean = false
+	let showMenu: boolean = false;
 
-  function toggleMenu() {
-    showMenu = !showMenu
-  }
+	function toggleMenu() {
+		showMenu = !showMenu;
+	}
 
-  function closeMenu() {
-    showMenu = false
-  }
+	function closeMenu() {
+		showMenu = false;
+	}
 </script>
 
 <div id="layout">
+	<div id="background" />
 
-  <div id="background"/>
+	<aside>
+		<section id="top">
+			<button on:click={() => goto('/')}>
+				<div class="center-logo">
+					<Logo width="75%" />
+				</div>
+			</button>
+			<!-- <p>Invictus Bier Systeem</p> -->
+		</section>
 
-  <aside>
-    <section id="top">
-      <button on:click={() => goto('/')}>
-        <Logo />
-      </button> 
-      <p>Invictus Bier Systeem</p>
-    </section>
+		<hr />
 
-    <hr />
+		<section>
+			<a href="/kalender">
+				<i><CalendarDays /></i>
+				<span>Kalender</span>
+			</a>
+		</section>
 
-    <section>
-      <a href="/kalender">
-        <i><CalendarDays /></i>
-        <span>Kalender</span>
-      </a>
-    </section>
+		<section>
+			<a href="/strafbakken">
+				<i><Cake /></i>
+				<span>Strafbakken</span>
+			</a>
+		</section>
 
-    <section>
-      <a href="/strafbakken">
-        <i><Cake /></i>
-        <span>Strafbakken</span>
-      </a>
-    </section>
+		<section>
+			<a href="/maluspunten">
+				<i><FaceFrown /></i>
+				<span>Maluspunten</span>
+			</a>
+		</section>
 
-    <section>
-      <a href="/maluspunten">
-        <i><FaceFrown /></i>
-        <span>Maluspunten</span>
-      </a>
-    </section>
+		<section>
+			<a href="/leden">
+				<i><Users /></i>
+				<span>Leden</span>
+			</a>
+		</section>
 
-    <section>
-      <a href="/leden">
-        <i><Users /></i>
-        <span>Leden</span>
-      </a>
-    </section>
+		<section>
+			<a href="/financieel">
+				<i><Folder /></i>
+				<span>Financieel</span>
+			</a>
+		</section>
 
-    <section>
-      <a href="/financieel">
-        <i><Folder /></i>
-        <span>Financieel</span>
-      </a>
-    </section>
+		<section>
+			<a href="/instellingen">
+				<i><Cog6Tooth /></i>
+				<span>Instellingen</span>
+			</a>
+		</section>
 
-    <section>
-      <a href="/instellingen">
-        <i><Cog6Tooth /></i>
-        <span>Instellingen</span>
-      </a>
-    </section>
+		<section>
+			<a href="/over">
+				<i><InformationCircle /></i>
+				<span>IBS v3.0.0</span>
+			</a>
+		</section>
+	</aside>
 
-    <section>
-      <a href="/over">
-        <i><InformationCircle /></i>
-        <span>IBS v1.0.0</span>
-      </a>
-    </section>
+	<div id="content">
+		<header>
+			<Breadcrumps />
 
-  </aside>
+			<button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
+				<div id="user-card">
+					<p id="name">{$page.data.session?.user?.name ?? 'Gebruiker'}</p>
+					<p id="title">Lit</p>
+				</div>
+				<!-- <button>Log uit</button> -->
+				<img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
 
-  <div id="content">
-    <header>
-      <Breadcrumps />
+				<PopupMenu {showMenu} />
+			</button>
+		</header>
 
-      <button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
-        <div id="user-card">
-          <p id="name">{$page.data.session?.user?.name ?? 'Gebruiker'}</p>
-          <p id="title">Lid</p>
-        </div>
-        <!-- <button>Log uit</button> -->
-        <img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
-
-        <PopupMenu {showMenu}/>
-      </button>
-    </header>
-
-    <main>
-      <div>
-        <slot />
-      </div>
-    </main>
-  </div>
+		<main>
+			<div>
+				<slot />
+			</div>
+		</main>
+	</div>
 </div>
 
 <style>
-  #layout {
-    display: flex;
-    flex-direction: row;
-    width: 100vw;
-    height: 100vh;
-  }
+	.center-logo {
+		/* Flex and center */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
 
-  main {
-    margin-right: 1.5rem;
-    margin-left: 0.5rem;
-    margin-top: 1rem;
+	#layout {
+		display: flex;
+		flex-direction: row;
+		width: 100vw;
+		height: 100vh;
+	}
 
-    height: calc(100vh - 6.5rem);
-    background-color: #f9fafb;
-    border-radius: 5px;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+	main {
+		margin-right: 1.5rem;
+		margin-left: 0.5rem;
+		margin-top: 1rem;
 
-    overflow: scroll;
-  }
+		height: calc(100vh - 6.5rem);
+		background-color: var(--card-color);
+		border-radius: 5px;
+		box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 
-  main > div {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    padding-right: 1.5rem;
-    padding-left: 1.5rem;
-  }
+		overflow: scroll;
+	}
 
-  header {
-    height: 4rem;
-    width: calc(100vw - 19rem);
-    max-width: 100%;
-    margin-top: 0.5rem;
-    margin-left: 1rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+	main > div {
+		padding-top: 1rem;
+		padding-bottom: 1rem;
+		padding-right: 1.5rem;
+		padding-left: 1.5rem;
+	}
 
-    color: white;
-  }
-  
-  header > #user {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 0.8rem;
-    margin-top: 0.1rem;
-    margin-right: 2rem;
-  }
+	header {
+		height: 4rem;
+		width: calc(100vw - 19rem);
+		max-width: 100%;
+		margin-top: 0.5rem;
+		margin-left: 1rem;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
 
-  header > #user #name {
-    /* User name */
-    font-weight: bold;    
-  }
+		color: white;
+	}
 
-  header > #user #title {
-    /* User title */
-    font-size: 0.8rem;
-    float: right;
-    color: #e5e7eb;
-  }
+	header > #user {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		gap: 0.8rem;
+		margin-top: 0.1rem;
+		margin-right: 2rem;
+	}
 
-  header > #user > img {
-    /* User avatar */
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-  }
+	header > #user #name {
+		/* User name */
+		font-weight: bold;
+	}
 
+	header > #user #title {
+		/* User title */
+		font-size: 0.8rem;
+		float: right;
+		color: var(--light-grey-color);
+	}
 
-  aside {
-    background-color: #010a4a;
-    width: 16rem;
-    margin: 1rem;
-    border-radius: 1rem;
+	header > #user > img {
+		/* User avatar */
+		width: 3rem;
+		height: 3rem;
+		border-radius: 50%;
+	}
 
-    display: flex;
-    flex-direction: column;
-  }
+	aside {
+		background-color: var(--dark-color);
+		width: 16rem;
+		margin: 1rem;
+		border-radius: 1rem;
 
-  #background {
-    z-index: -1;
-    position: absolute;
-    width: 100vw;
-    height: 22rem;
-    background-color: #7e22ce;
-  }
+		display: flex;
+		flex-direction: column;
+	}
 
-  #top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 10rem;
-    color: white;
-  }
+	#background {
+		z-index: -1;
+		position: absolute;
+		width: 100vw;
+		height: 22rem;
+		background-color: var(--primary-color);
+		background: linear-gradient(145deg, var(--primary-color) 0%, var(--primary-light-color) 100%);
+	}
 
-  aside > hr {
-    margin-left: 10%;
-    width: 80%;
-    border-top: 1px solid white;
-    border-radius: 5px;
-  }
+	#top {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 10rem;
+		color: white;
+	}
 
-  section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
+	aside > hr {
+		margin-left: 10%;
+		width: 80%;
+		border-top: 1px solid white;
+		border-radius: 5px;
+	}
 
-  aside > section:nth-child(3) {
-    margin-top: 0.5rem;
-  }
+	section {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
 
-  aside > section:last-child {
-    margin-top: auto;
-    padding-bottom: 0.5rem;
-  }
+	aside > section:nth-child(3) {
+		margin-top: 0.5rem;
+	}
 
-  section > a {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    width: 80%;
-    color: white;    
-    margin-left: 1rem;
-    margin-right: 1rem;
-    padding: 0.8rem;
-  }
+	aside > section:last-child {
+		margin-top: auto;
+		padding-bottom: 0.5rem;
+	}
 
-  section > a:hover {
-    background: rgb(126,34,206);
-    background: linear-gradient(145deg, rgba(126,34,206,1) 0%, rgba(139,92,246,1) 100%); 
-    border-radius: 5px;
-  }
+	section > a {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		width: 80%;
+		color: white;
+		margin-left: 1rem;
+		margin-right: 1rem;
+		padding: 0.8rem;
+	}
 
-  section > a > i {
-    color: #c084fc;
-  }
+	section > a:hover {
+		background: rgb(126, 34, 206);
+		background: linear-gradient(145deg, #7e22ce 0%, #8b5cf6 100%);
+		border-radius: 5px;
+	}
 
-  section > a:hover > i {
-    color: white;
-  }
+	section > a > i {
+		color: #ffffff;
+	}
 
-  section > a span {
-    margin-left: 0.5rem;
-  }
+	section > a:hover > i {
+		color: #fff;
+	}
 
+	section > a span {
+		margin-left: 0.5rem;
+	}
 </style>
