@@ -105,6 +105,9 @@ model Activity {
 
 // TODO: Succes
 
+// Alle vormen van betalingen die mensen in het systeem kunnen zetten zijn alles behalve Transaction
+// Die wordt gegenereerd door IBS
+
 model Ledger {
   id          Int           @id
   name        String
