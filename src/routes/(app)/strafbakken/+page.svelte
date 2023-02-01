@@ -1,15 +1,7 @@
-<script>
+<script lang="ts">
+  import type { PageData } from './$types'
 
+  export let data: PageData
 </script>
 
-<div>
-  <h1>
-    Success Naut
-  </h1>
-</div>
-
-<style>
-  h1 {
-    color: grey;
-  }
-</style>
+<h1>{data.username}</h1>
