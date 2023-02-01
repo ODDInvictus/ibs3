@@ -16,11 +16,6 @@
 	import PopupMenu from '$lib/components/PopupMenu.svelte';
 	import Breadcrumps from '$lib/components/Breadcrumps.svelte';
 
-	function toggleColor() {
-		// TODO: logic for feuten (dont toggle if feut)
-		document.querySelector(':root')?.classList.toggle('dark');
-		document.querySelector(':root')?.classList.toggle('light');
-	}
 	let showMenu: boolean = false;
 
 	function toggleMenu() {
@@ -34,14 +29,15 @@
 
 <div id="layout" class="grid gap-4 grid-cols-12">
 	<div id="background" class="w-screen col-span-0" />
-	<aside class="col-span-5 sm:col-span-4 xl:col-span-3 2xl:col-span-2">
+	<aside
+		class="hidden sm:flex sm:col-span-4 xl:col-span-3 2xl:col-span-2 m-2 md:m-5 sm:rounded-md drop-shadow"
+	>
 		<section id="top">
 			<button on:click={() => goto('/')}>
 				<div class="center-logo">
 					<Logo width="75%" />
 				</div>
 			</button>
-			<!-- <p>Invictus Bier Systeem</p> -->
 		</section>
 
 		<hr />
@@ -96,13 +92,13 @@
 		</section>
 	</aside>
 
-	<div id="content" class="sm:col-span-8 xl:col-span-9 2xl:col-span-10">
-		<header>
-			<Breadcrumps />
-			<!-- button to toggle color -->
-			<button on:click={toggleColor}> Toggle kleurenschema </button>
+	<div id="content" class="col-span-12 sm:col-span-8 xl:col-span-9 2xl:col-span-10 sm:p-0">
+		<header class="p-5 sm:p-0 sm:pr-5">
+			<div class="hidden md:flex">
+				<Breadcrumps />
+			</div>
 
-			<button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
+			<button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={() => closeMenu()}>
 				<div id="user-card">
 					<p id="name">{$page.data.session?.user?.name ?? 'Gebruiker'}</p>
 					<p id="title">Lit</p>
@@ -114,10 +110,8 @@
 			</button>
 		</header>
 
-		<main>
-			<div class="p-5">
-				<slot />
-			</div>
+		<main class="mr-0 sm:mr-5 p-0 sm:pr-5 sm:rounded-md drop-shadow">
+			<slot />
 		</main>
 	</div>
 </div>
@@ -131,10 +125,8 @@
 	}
 
 	main {
-		height: calc(100vh - 6.5rem);
+		height: calc(100vh - 6em);
 		background-color: var(--card-color);
-		border-radius: 5px;
-		box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 
 		overflow: scroll;
 		overflow-x: hidden;
@@ -178,9 +170,8 @@
 
 	aside {
 		background-color: var(--card-color);
-		display: flex;
+		/* display: flex; */
 		flex-direction: column;
-		border-radius: 5px;
 	}
 
 	#background {
@@ -215,23 +206,21 @@
 	}
 
 	aside > section:nth-child(3) {
-		/* margin-top: 0.5rem; */
+		margin-top: 1rem;
 	}
 
 	aside > section:last-child {
-		/* margin-top: auto; */
-		/* padding-bottom: 0.5rem; */
+		margin-top: auto;
+		padding-bottom: 0.5rem;
 	}
 
 	section > a {
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
-		/* width: 80%; */
+		width: 80%;
 		color: var(--text-color);
-		/* margin-left: 1rem;
-		margin-right: 1rem; */
-		padding: 0.8rem;
+		padding: 1rem;
 	}
 
 	section > a:hover {
@@ -247,9 +236,5 @@
 
 	section > a:hover > i {
 		color: var(--button-text-color);
-	}
-
-	section > a span {
-		/* margin-left: 0.5rem; */
 	}
 </style>
