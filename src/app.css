@@ -5,6 +5,11 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+	/* Red outline */
+	/* outline: 1px solid red; */
+}
+
 html {
 	background-color: var(--background-color);
 	color: var(--text-color);

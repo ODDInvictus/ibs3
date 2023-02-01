@@ -44,14 +44,17 @@
 <div id="background" class="w-screen col-span-0" />
 <div id="layout" class="grid gap-4 grid-cols-12 grid-row-12">
 	<aside
-		class="flex p-0 sm:h-[calc(100vh-2.5rem)] md:h-[calc(100vh-3.20rem)]
-		row-span-1 flex-row sm:row-span-12
+		class="
+		
+		flex p-0 h-[10vh] sm:h-[calc(100vh-2.5rem)] md:h-[calc(100vh-3.20rem)]
+		row-span-2 flex-row sm:row-span-12
 		col-span-12 row m-2 drop-shadow  
-		sm:flex-col sm:col-span-4 rounded-md 
-		md:m-5 
-		xl:col-span-3 2xl:col-span-2"
+		sm:flex-col sm:col-span-4 rounded-md
+		md:m-5 h-2/12
+		xl:col-span-3 2xl:col-span-2
+		justify-center items-center"
 	>
-		<section id="top" class="">
+		<section id="top" class="hidden sm:block">
 			<button on:click={() => goto('/')}>
 				<div class="center-logo">
 					<Logo width="75%" />
@@ -61,60 +64,59 @@
 
 		<hr />
 
-		<section class="sm:mt-5">
-			<a href="/kalender">
+		<section class="sm:mt-5 sm:items-start sm:pl-5">
+			<a href="/kalender" class="items-center sm:justify-left sm:items-start sm:w-full ">
 				<i><CalendarDays /></i>
 				<span class="hidden sm:block">Kalender</span>
 			</a>
 		</section>
 
-		<section>
-			<a href="/strafbakken">
+		<section class="sm:items-start sm:pl-5">
+			<a href="/strafbakken" class="items-center sm:justify-left sm:items-start sm:w-full ">
 				<i><Cake /></i>
 				<span class="hidden sm:block">Strafbakken</span>
 			</a>
 		</section>
 
-		<section>
-			<a href="/maluspunten">
+		<section class="sm:items-start sm:pl-5">
+			<a href="/maluspunten" class="items-center sm:justify-left sm:items-start sm:w-full ">
 				<i><FaceFrown /></i>
 				<span class="hidden sm:block">Maluspunten</span>
 			</a>
 		</section>
 
-		<section>
-			<a href="/leden">
+		<section class="sm:items-start sm:pl-5">
+			<a href="/leden" class="items-center sm:justify-left sm:items-start sm:w-full ">
 				<i><Users /></i>
 				<span class="hidden sm:block">Leden</span>
 			</a>
 		</section>
 
-		<section>
-			<a href="/financieel">
+		<section class="sm:items-start sm:pl-5">
+			<a href="/financieel" class="items-center sm:justify-left sm:items-start sm:w-full ">
 				<i><Folder /></i>
 				<span class="hidden sm:block">Financieel</span>
 			</a>
 		</section>
 
-		<section>
-			<a href="/instellingen">
+		<section class="sm:items-start sm:pl-5">
+			<a href="/instellingen" class="items-center sm:justify-left sm:items-start sm:w-full ">
 				<i><Cog6Tooth /></i>
 				<span class="hidden sm:block">Instellingen</span>
 			</a>
 		</section>
 
-		<section class="sm:mt-auto sm:pb-2">
+		<section
+			class="sm:mt-auto sm:pb-2 items-center sm:justify-left sm:items-start sm:pl-5 sm:w-full "
+		>
 			<a href="/over">
 				<i><InformationCircle /></i>
-				<span>IBS v3.0.0</span>
+				<span class="hidden sm:block">IBS v3.0.0</span>
 			</a>
 		</section>
 	</aside>
 
-	<div
-		id="content"
-		class="hidden sm:block col-span-12 sm:col-span-8 xl:col-span-9 2xl:col-span-10 sm:p-0"
-	>
+	<div id="content" class="sm:block col-span-12 sm:col-span-8 xl:col-span-9 2xl:col-span-10 sm:p-0">
 		<header class="p-5 sm:p-0 sm:pr-5">
 			<div class="hidden md:flex">
 				<Breadcrumps />
@@ -139,6 +141,17 @@
 </div>
 
 <style>
+	/* smaller than 640px */
+	@media (max-width: 640px) {
+		aside > section > a {
+			justify-content: center;
+		}
+
+		aside > section {
+			height: 100%;
+		}
+	}
+
 	.center-logo {
 		justify-content: center;
 		align-items: center;
@@ -191,6 +204,7 @@
 
 	aside {
 		background-color: var(--card-color);
+		align-items: flex-start;
 	}
 
 	#background {
@@ -220,15 +234,19 @@
 	section {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
+		/* align-items: center; */
 		justify-content: center;
+	}
+
+	/* every section where there is no element with id 'hey' */
+	section:not(#top) {
+		width: 80%;
 	}
 
 	section > a {
 		display: flex;
 		flex-direction: row;
-		justify-content: flex-start;
-		width: 80%;
+		/* width: 80%; */
 		color: var(--text-color);
 		padding: 1rem;
 	}
