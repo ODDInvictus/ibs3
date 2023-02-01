@@ -5,13 +5,14 @@ import { fail } from "@sveltejs/kit";
 
 export const load = (async () => {
   return {
-    strafbakken: await db.strafbak.findMany({
-      where: {
-        NOT: {
-          dateDeleted: null,
+    strafbakken: await db.user.findMany({
+      select: {
+        firstName: true,
+        nickname: true,
+        _count: {
+          select: { StrafbakReceived: true },
         },
       },
     }),
-    members: getMembers(),
   };
 }) satisfies PageServerLoad;

@@ -17,12 +17,12 @@
   }
 </script>
 
-<div>
+<main>
   <h1>Maluspunten</h1>
 
   <hr />
 
-  <div id="form-container">
+  <form-container>
     <form
       method="POST"
       use:enhance={(event) => {
@@ -74,11 +74,11 @@
         {error}
       </div>
     </form>
-  </div>
+  </form-container>
 
   <hr />
 
-  <div id="table-container">
+  <table-container>
     <table>
       <thead>
         <tr>
@@ -103,10 +103,10 @@
         {/each}
       </tbody>
     </table>
-  </div>
-</div>
+  </table-container>
+</main>
 
-<style>
+<style lang="scss">
   h1 {
     text-align: center;
     font-weight: 600;
@@ -122,33 +122,36 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-gap: 1rem;
+
+    label {
+      color: black;
+      font-weight: 600;
+    }
+
+    input,
+    select {
+      margin-top: 0.2rem;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #d1d5db;
+
+      &:focus {
+        outline: none;
+        border: 1px solid #000;
+      }
+    }
   }
 
-  label {
-    color: black;
-    font-weight: 600;
-  }
-
-  input,
-  select {
-    margin-top: 0.2rem;
-    width: 100%;
-    border-radius: 5px;
-    border: 1px solid #d1d5db;
-  }
-
-  input:focus,
-  select:focus {
-    outline: none;
-    border: 1px solid #000;
-  }
-
-  #table-container {
+  table-container {
     overflow-y: auto;
-  }
 
-  table {
-    width: 100%;
+    table {
+      width: 100%;
+
+      tbody tr:nth-child(odd) {
+        background-color: #d3c0ff;
+      }
+    }
   }
 
   td,
