@@ -31,3 +31,10 @@
 	--background-focus-color: var(--light-color);
 	--seperator-color: var(--dark-color);
 }
+
+:root.feut {
+	--card-color: rgba(255, 255, 255, 0.7);
+	--text-color: var(--dark-color);
+	--background-focus-color: var(--light-color);
+	--seperator-color: var(--dark-color);
+}

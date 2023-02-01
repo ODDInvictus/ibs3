@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Logo from '$lib/components/Logo.svelte';
 	import { clickOutside } from '$lib/events/clickOutside';
 	import { page } from '$app/stores';
@@ -26,9 +27,9 @@
 	}
 </script>
 
-<div id="layout" class="flex w-screen h-screen s:w-screen">
+<div id="layout" class="flex h-screen">
 	<div id="background" class="w-screen" />
-	<aside class="md:w-3/12">
+	<aside class="w-3/12 pr-4">
 		<section id="top">
 			<button on:click={() => goto('/')}>
 				<div class="center-logo">
@@ -90,10 +91,9 @@
 		</section>
 	</aside>
 
-	<div id="content" class="md:w-10/12 ">
+	<div id="content" class="w-9/12 ">
 		<header>
 			<Breadcrumps />
-
 			<button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
 				<div id="user-card">
 					<p id="name">{$page.data.session?.user?.name ?? 'Gebruiker'}</p>
@@ -115,6 +115,8 @@
 </div>
 
 <style>
+	#user-card {
+	}
 	.center-logo {
 		/* Flex and center */
 		display: flex;
@@ -127,6 +129,7 @@
 		flex-direction: row; */
 		/* width: 100%;
 		height: 100%; */
+		box-sizing: border-box;
 	}
 
 	main {
@@ -144,18 +147,18 @@
 	}
 
 	main > div {
-		padding-top: 1rem;
+		/* padding-top: 1rem;
 		padding-bottom: 1rem;
 		padding-right: 1.5rem;
-		padding-left: 1.5rem;
+		padding-left: 1.5rem; */
 	}
 
 	header {
 		height: 4rem;
 		/* width: calc(100vw - 19rem); */
-		max-width: 100%;
-		margin-top: 0.5rem;
-		margin-left: 1rem;
+		/* max-width: 100%; */
+		/* margin-top: 0.5rem;
+		margin-left: 1rem; */
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
@@ -195,8 +198,8 @@
 	aside {
 		background-color: var(--card-color);
 		/* width: 16rem; */
-		margin: 1rem;
-		border-radius: 1rem;
+		/* margin: 1rem; */
+		/* border-radius: 1rem; */
 		/* margin-bottom: 0; */
 
 		display: flex;
@@ -208,6 +211,7 @@
 		position: absolute;
 		/* width: 100vw; */
 		height: 22rem;
+		width: 100vw;
 		background-color: var(--primary-color);
 		background: linear-gradient(145deg, var(--primary-color) 0%, var(--primary-light-color) 100%);
 	}
