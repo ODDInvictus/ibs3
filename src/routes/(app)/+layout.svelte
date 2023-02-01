@@ -26,10 +26,9 @@
 	}
 </script>
 
-<div id="layout">
-	<div id="background" />
-
-	<aside>
+<div id="layout" class="flex w-screen h-screen s:w-screen">
+	<div id="background" class="w-screen" />
+	<aside class="md:w-3/12">
 		<section id="top">
 			<button on:click={() => goto('/')}>
 				<div class="center-logo">
@@ -91,7 +90,7 @@
 		</section>
 	</aside>
 
-	<div id="content">
+	<div id="content" class="md:w-10/12 ">
 		<header>
 			<Breadcrumps />
 
@@ -124,16 +123,16 @@
 	}
 
 	#layout {
-		display: flex;
-		flex-direction: row;
-		width: 100vw;
-		height: 100vh;
+		/* display: flex;
+		flex-direction: row; */
+		/* width: 100%;
+		height: 100%; */
 	}
 
 	main {
-		margin-right: 1.5rem;
-		margin-left: 0.5rem;
-		margin-top: 1rem;
+		/* margin-right: 1rem;
+		margin-left: 1rem;
+		margin-top: 1rem; */
 
 		height: calc(100vh - 6.5rem);
 		background-color: var(--card-color);
@@ -141,6 +140,7 @@
 		box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 
 		overflow: scroll;
+		overflow-x: hidden;
 	}
 
 	main > div {
@@ -152,7 +152,7 @@
 
 	header {
 		height: 4rem;
-		width: calc(100vw - 19rem);
+		/* width: calc(100vw - 19rem); */
 		max-width: 100%;
 		margin-top: 0.5rem;
 		margin-left: 1rem;
@@ -169,8 +169,8 @@
 		align-items: center;
 		justify-content: center;
 		gap: 0.8rem;
-		margin-top: 0.1rem;
-		margin-right: 2rem;
+		/* margin-top: 0.1rem;
+		margin-right: 2rem; */
 	}
 
 	header > #user #name {
@@ -193,10 +193,11 @@
 	}
 
 	aside {
-		background-color: var(--dark-color);
-		width: 16rem;
+		background-color: var(--card-color);
+		/* width: 16rem; */
 		margin: 1rem;
 		border-radius: 1rem;
+		/* margin-bottom: 0; */
 
 		display: flex;
 		flex-direction: column;
@@ -205,7 +206,7 @@
 	#background {
 		z-index: -1;
 		position: absolute;
-		width: 100vw;
+		/* width: 100vw; */
 		height: 22rem;
 		background-color: var(--primary-color);
 		background: linear-gradient(145deg, var(--primary-color) 0%, var(--primary-light-color) 100%);
@@ -217,13 +218,13 @@
 		align-items: center;
 		justify-content: center;
 		height: 10rem;
-		color: white;
+		color: var(--text-color);
 	}
 
 	aside > hr {
 		margin-left: 10%;
-		width: 80%;
-		border-top: 1px solid white;
+		/* width: 80%; */
+		border-top: 1px solid var(--seperator-color);
 		border-radius: 5px;
 	}
 
@@ -235,22 +236,22 @@
 	}
 
 	aside > section:nth-child(3) {
-		margin-top: 0.5rem;
+		/* margin-top: 0.5rem; */
 	}
 
 	aside > section:last-child {
-		margin-top: auto;
-		padding-bottom: 0.5rem;
+		/* margin-top: auto; */
+		/* padding-bottom: 0.5rem; */
 	}
 
 	section > a {
 		display: flex;
 		flex-direction: row;
 		justify-content: flex-start;
-		width: 80%;
-		color: white;
-		margin-left: 1rem;
-		margin-right: 1rem;
+		/* width: 80%; */
+		color: var(--text-color);
+		/* margin-left: 1rem;
+		margin-right: 1rem; */
 		padding: 0.8rem;
 	}
 
@@ -258,17 +259,18 @@
 		background: rgb(126, 34, 206);
 		background: linear-gradient(145deg, #7e22ce 0%, #8b5cf6 100%);
 		border-radius: 5px;
+		color: var(--button-text-color);
 	}
 
 	section > a > i {
-		color: #ffffff;
+		color: var(--text-color);
 	}
 
 	section > a:hover > i {
-		color: #fff;
+		color: var(--button-text-color);
 	}
 
 	section > a span {
-		margin-left: 0.5rem;
+		/* margin-left: 0.5rem; */
 	}
 </style>
