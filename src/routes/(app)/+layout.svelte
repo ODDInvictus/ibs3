@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Logo from '$lib/components/Logo.svelte';
+	import LogoMobile from '$lib/components/LogoSmallMobile.svelte';
 	import { clickOutside } from '$lib/events/clickOutside';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -44,12 +45,14 @@
 <div id="background" class="w-screen col-span-0" />
 <div id="layout" class="grid gap-4 grid-cols-12 grid-row-12">
 	<aside
-		class="
-		
-		flex p-0 h-[10vh] sm:h-[calc(100vh-2.5rem)] md:h-[calc(100vh-3.20rem)]
-		row-span-2 flex-row sm:row-span-12
-		col-span-12 row m-2 drop-shadow  
-		sm:flex-col sm:col-span-4 rounded-md
+		class="fixed z-10 h-[10vh]
+		sm:relative 
+		flex p-0 sm:h-[calc(100vh-2.5rem)] md:h-[calc(100vh-3.20rem)]
+		flex-row sm:row-span-12
+		row m-2 drop-shadow 
+		sm:flex-col
+		sm:col-span-4
+		rounded-md
 		md:m-5 h-2/12
 		xl:col-span-3 2xl:col-span-2
 		justify-center items-center"
@@ -122,6 +125,12 @@
 				<Breadcrumps />
 			</div>
 
+			<div class="block mobile-logo">
+				<button on:click={() => goto('/')}>
+					<LogoMobile />
+				</button>
+			</div>
+
 			<button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={() => closeMenu()}>
 				<div id="user-card">
 					<p id="name">{$page.data.session?.user?.name ?? 'Gebruiker'}</p>
@@ -134,7 +143,7 @@
 			</button>
 		</header>
 
-		<main class="mr-0 sm:mr-5 p-5 sm:pr-5 sm:rounded-md drop-shadow">
+		<main class="pb-[10vh] sm:pb-0 mr-0 sm:mr-5 p-5 sm:pr-5 sm:rounded-md drop-shadow">
 			<slot />
 		</main>
 	</div>
@@ -149,6 +158,14 @@
 
 		aside > section {
 			height: 100%;
+		}
+
+		aside {
+			width: calc(100vw - 1em);
+			top: 90vh;
+
+			/* shadow */
+			box-shadow: 0 0 0.5em 0.5em var(--shadow-color);
 		}
 	}
 
