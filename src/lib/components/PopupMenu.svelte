@@ -34,10 +34,10 @@
 		position: absolute;
 		margin-top: 14rem;
 		z-index: 1;
-		background-color: white;
-		color: black;
+		background-color: var(--card-color);
+		color: var(--text-color);
 		border-radius: 5px;
-		box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.2);
+		box-shadow: 0 0 50px 0 var(--shadow-color);
 		width: 10rem;
 		padding: 0.5rem;
 
@@ -52,7 +52,7 @@
 		margin-top: 0.4rem;
 		margin-bottom: 0.4rem;
 		width: 90%;
-		border-top: 1px solid #d1d5db;
+		border-top: 1px solid var(--primary-color);
 		border-radius: 5px;
 	}
 
@@ -64,7 +64,7 @@
 	}
 
 	.menu-item:hover {
-		background-color: #f3f4f6;
+		background-color: var(--card-focus-color);
 	}
 
 	#pointer {

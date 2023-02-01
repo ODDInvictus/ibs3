@@ -16,6 +16,18 @@
 	import PopupMenu from '$lib/components/PopupMenu.svelte';
 	import Breadcrumps from '$lib/components/Breadcrumps.svelte';
 
+	// vierkante schermen zijn voor homo's
+	$: innerWidth = 0;
+	$: innerHeight = 0;
+
+	$: if (innerHeight / innerWidth >= 0.99 && innerHeight / innerWidth <= 1.01) {
+		alert('Vierkante schermen zijn voor homos');
+
+		// Toggle root element filter to turn everything black
+		const root = document.documentElement;
+		root.style.filter = 'grayscale(100%) contrast(0.5)';
+	}
+
 	let showMenu: boolean = false;
 
 	function toggleMenu() {
@@ -27,12 +39,19 @@
 	}
 </script>
 
-<div id="layout" class="grid gap-4 grid-cols-12">
-	<div id="background" class="w-screen col-span-0" />
+<svelte:window bind:innerWidth bind:innerHeight />
+
+<div id="background" class="w-screen col-span-0" />
+<div id="layout" class="grid gap-4 grid-cols-12 grid-row-12">
 	<aside
-		class="hidden sm:flex sm:col-span-4 xl:col-span-3 2xl:col-span-2 m-2 md:m-5 sm:rounded-md drop-shadow"
+		class="flex p-0 sm:h-[calc(100vh-2.5rem)] md:h-[calc(100vh-3.20rem)]
+		row-span-1 flex-row sm:row-span-12
+		col-span-12 row m-2 drop-shadow  
+		sm:flex-col sm:col-span-4 rounded-md 
+		md:m-5 
+		xl:col-span-3 2xl:col-span-2"
 	>
-		<section id="top">
+		<section id="top" class="">
 			<button on:click={() => goto('/')}>
 				<div class="center-logo">
 					<Logo width="75%" />
@@ -42,49 +61,49 @@
 
 		<hr />
 
-		<section>
+		<section class="sm:mt-5">
 			<a href="/kalender">
 				<i><CalendarDays /></i>
-				<span>Kalender</span>
+				<span class="hidden sm:block">Kalender</span>
 			</a>
 		</section>
 
 		<section>
 			<a href="/strafbakken">
 				<i><Cake /></i>
-				<span>Strafbakken</span>
+				<span class="hidden sm:block">Strafbakken</span>
 			</a>
 		</section>
 
 		<section>
 			<a href="/maluspunten">
 				<i><FaceFrown /></i>
-				<span>Maluspunten</span>
+				<span class="hidden sm:block">Maluspunten</span>
 			</a>
 		</section>
 
 		<section>
 			<a href="/leden">
 				<i><Users /></i>
-				<span>Leden</span>
+				<span class="hidden sm:block">Leden</span>
 			</a>
 		</section>
 
 		<section>
 			<a href="/financieel">
 				<i><Folder /></i>
-				<span>Financieel</span>
+				<span class="hidden sm:block">Financieel</span>
 			</a>
 		</section>
 
 		<section>
 			<a href="/instellingen">
 				<i><Cog6Tooth /></i>
-				<span>Instellingen</span>
+				<span class="hidden sm:block">Instellingen</span>
 			</a>
 		</section>
 
-		<section>
+		<section class="sm:mt-auto sm:pb-2">
 			<a href="/over">
 				<i><InformationCircle /></i>
 				<span>IBS v3.0.0</span>
@@ -92,7 +111,10 @@
 		</section>
 	</aside>
 
-	<div id="content" class="col-span-12 sm:col-span-8 xl:col-span-9 2xl:col-span-10 sm:p-0">
+	<div
+		id="content"
+		class="hidden sm:block col-span-12 sm:col-span-8 xl:col-span-9 2xl:col-span-10 sm:p-0"
+	>
 		<header class="p-5 sm:p-0 sm:pr-5">
 			<div class="hidden md:flex">
 				<Breadcrumps />
@@ -110,7 +132,7 @@
 			</button>
 		</header>
 
-		<main class="mr-0 sm:mr-5 p-0 sm:pr-5 sm:rounded-md drop-shadow">
+		<main class="mr-0 sm:mr-5 p-5 sm:pr-5 sm:rounded-md drop-shadow">
 			<slot />
 		</main>
 	</div>
@@ -118,10 +140,9 @@
 
 <style>
 	.center-logo {
-		/* Flex and center */
-		display: flex;
 		justify-content: center;
 		align-items: center;
+		display: flex;
 	}
 
 	main {
@@ -170,8 +191,6 @@
 
 	aside {
 		background-color: var(--card-color);
-		/* display: flex; */
-		flex-direction: column;
 	}
 
 	#background {
@@ -203,15 +222,6 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-	}
-
-	aside > section:nth-child(3) {
-		margin-top: 1rem;
-	}
-
-	aside > section:last-child {
-		margin-top: auto;
-		padding-bottom: 0.5rem;
 	}
 
 	section > a {

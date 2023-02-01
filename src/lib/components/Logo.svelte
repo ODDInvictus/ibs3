@@ -4,7 +4,7 @@
 	export let height: string = '100px';
 </script>
 
-<img src={logo} alt="logo" class="logo" {height} {width} />
+<img src={logo} alt="logo" class="logo hidden sm:block" {height} {width} />
 
 <style>
 	:global(html.light img.logo) {
