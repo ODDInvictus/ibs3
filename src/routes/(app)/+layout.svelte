@@ -136,7 +136,7 @@
 					<p id="name">{$page.data.session?.user?.name ?? 'Gebruiker'}</p>
 					<p id="title">Lit</p>
 				</div>
-				<!-- <button>Log uit</button> -->
+
 				<img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
 
 				<PopupMenu {showMenu} />
@@ -165,7 +165,7 @@
 			top: 90vh;
 
 			/* shadow */
-			box-shadow: 0 0 0.5em 0.5em var(--shadow-color);
+			box-shadow: 0 0 5px var(--shadow-color);
 		}
 	}
 
