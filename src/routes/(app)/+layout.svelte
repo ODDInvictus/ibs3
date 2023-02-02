@@ -82,6 +82,13 @@
 		</section>
 
 		<section class="sm:items-start sm:pl-5">
+			<a href="/financieel" class="items-center sm:justify-left sm:items-start sm:w-full ">
+				<i><Folder /></i>
+				<span class="hidden sm:block">Financieel</span>
+			</a>
+		</section>
+
+		<section class="sm:items-start sm:pl-5">
 			<a href="/maluspunten" class="items-center sm:justify-left sm:items-start sm:w-full ">
 				<i><FaceFrown /></i>
 				<span class="hidden sm:block">Maluspunten</span>
@@ -92,13 +99,6 @@
 			<a href="/leden" class="items-center sm:justify-left sm:items-start sm:w-full ">
 				<i><Users /></i>
 				<span class="hidden sm:block">Leden</span>
-			</a>
-		</section>
-
-		<section class="sm:items-start sm:pl-5">
-			<a href="/financieel" class="items-center sm:justify-left sm:items-start sm:w-full ">
-				<i><Folder /></i>
-				<span class="hidden sm:block">Financieel</span>
 			</a>
 		</section>
 
@@ -157,7 +157,12 @@
 		}
 
 		aside > section {
-			height: 100%;
+			height: 90%;
+		}
+
+		section > a:hover {
+			margin-right: 8px;
+			margin-left: 8px;
 		}
 
 		aside {
@@ -166,6 +171,10 @@
 
 			/* shadow */
 			box-shadow: 0 0 5px var(--shadow-color);
+		}
+
+		aside > section:nth-child(n+7) {
+			display: none;
 		}
 	}
 
