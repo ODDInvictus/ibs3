@@ -7,6 +7,10 @@
 		signOut();
 	}
 
+	function isDarkMode(): boolean {
+		return !!document.querySelector(':root')?.classList.contains('dark');
+	}
+
 	function toggleColor() {
 		// TODO: logic for feuten (dont toggle if feut)
 		document.querySelector(':root')?.classList.toggle('dark');
@@ -18,9 +22,11 @@
 	<div class="menu">
 		<div id="pointer" />
 
-		<button class="menu-item" on:click={() => toggleColor()}>Toggle kleurenschema</button>
+		<button class="menu-item" on:click={() => toggleColor()}>{
+			isDarkMode() ? 'Dark mode' : 'Light mode'
+		}</button>
 		<a class="menu-item" href="/profiel">Profiel</a>
-		<a class="menu-item" href="/financieel/persoonlijk">Mijn streeplijst</a>
+		<a class="menu-item" href="/financieel/persoonlijk">Streeplijst</a>
 		<a class="menu-item" href="/instellingen">Instellingen</a>
 
 		<hr />
@@ -37,7 +43,7 @@
 		background-color: var(--card-color);
 		color: var(--text-color);
 		border-radius: 5px;
-		box-shadow: 0 0 50px 0 var(--shadow-color);
+		box-shadow: 0 0 5px 0 var(--shadow-color);
 		width: 10rem;
 		padding: 0.5rem;
 
@@ -71,10 +77,10 @@
 		position: absolute;
 		width: 0;
 		height: 0;
-		box-shadow: 0 0 50px 0 rgba(0, 0, 0, 0.2);
+		box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
 		border-left: 10px solid transparent;
 		border-right: 10px solid transparent;
-		border-bottom: 10px solid white;
+		border-bottom: 10px solid var(--card-color);
 		margin-top: -1rem;
 		margin-left: 6rem;
 	}
