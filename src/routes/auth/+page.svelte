@@ -7,18 +7,16 @@
 <div id="content" class="dark flex justify-center items-center">
 	<div class="-mt-20">
 		<Logo height="600px" width="600px" />
-	
+
 		<div class="flex justify-center">
-			<button on:click={() => signIn('authentik')}>
-				Log in
-			</button>
+			<button on:click={() => signIn('authentik')}> Log in </button>
 		</div>
 	</div>
 </div>
 
 <style>
 	#content {
-    background-color: #010a4a;
+		background-color: #010a4a;
 		width: 100vw;
 		height: 100vh;
 	}
