@@ -8,6 +8,8 @@
   export let isOpen: boolean;
   export let username: string;
   export let uid: number;
+  export let changeCount: (index: number, n: number) => void;
+  export let index: number;
 </script>
 
 {#if isOpen}
@@ -19,20 +21,22 @@
           method="POST"
           use:enhance={(event) => {
             return async ({ result, update }) => {
-              console.log(result);
               if (result.type === "failure") {
                 error = result.data?.message;
+                update();
               } else {
                 error = "";
-                console.log(result);
                 update();
               }
             };
           }}
           on:submit={(e) => {
-            if (submitted) e.preventDefault();
+            if (submitted) return e.preventDefault();
             submitted = true;
-            setTimeout(closeModal, 1000);
+            changeCount(index, 1);
+            setTimeout(() => {
+              closeModal();
+            }, 1000);
           }}
         >
           <p>Reden:</p>
