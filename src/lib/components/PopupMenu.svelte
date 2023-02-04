@@ -23,7 +23,7 @@
 		<div id="pointer" />
 
 		<button class="menu-item" on:click={() => toggleColor()}>{
-			isDarkMode() ? 'Dark mode' : 'Light mode'
+			isDarkMode() ? 'Light mode' : 'Dark mode'
 		}</button>
 		<a class="menu-item" href="/profiel">Profiel</a>
 		<a class="menu-item" href="/financieel/persoonlijk">Streeplijst</a>
@@ -38,7 +38,7 @@
 <style>
 	.menu {
 		position: absolute;
-		margin-top: 14rem;
+		margin-top: 15rem;
 		z-index: 1;
 		background-color: var(--card-color);
 		color: var(--text-color);
@@ -77,7 +77,7 @@
 		position: absolute;
 		width: 0;
 		height: 0;
-		box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+		/* box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2); */
 		border-left: 10px solid transparent;
 		border-right: 10px solid transparent;
 		border-bottom: 10px solid var(--card-color);

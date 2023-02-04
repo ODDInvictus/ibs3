@@ -36,7 +36,7 @@
 	--text-color: var(--dark-color);
 	--background-color: var(--light-background);
 	--background-focus-color: var(--light-color);
-	--seperator-color: var(--dark-color);
+	--seperator-color: var(--grey-color);
 
 	--shadow-color: rgba(0, 0, 0, 0.2);
 }

@@ -149,34 +149,7 @@
 	</div>
 </div>
 
-<style>
-	/* smaller than 640px */
-	@media (max-width: 640px) {
-		aside > section > a {
-			justify-content: center;
-		}
-
-		aside > section {
-			height: 90%;
-		}
-
-		section > a:hover {
-			margin-right: 8px;
-			margin-left: 8px;
-		}
-
-		aside {
-			width: calc(100vw - 1em);
-			top: 90vh;
-
-			/* shadow */
-			box-shadow: 0 0 5px var(--shadow-color);
-		}
-
-		aside > section:nth-child(n+7) {
-			display: none;
-		}
-	}
+<style lang="scss">
 
 	.center-logo {
 		justify-content: center;
@@ -199,38 +172,31 @@
 		justify-content: space-between;
 
 		color: white;
-	}
 
-	header > #user {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-		gap: 0.8rem;
-	}
+		#user {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			gap: 0.8rem;
 
-	header > #user #name {
-		/* User name */
-		font-weight: bold;
-	}
+			img {
+				width: 3rem;
+				height: 3rem;
+				border-radius: 50%;
+			}
+		}
 
-	header > #user #title {
-		/* User title */
-		font-size: 0.8rem;
-		float: right;
-		color: var(--light-grey-color);
-	}
+		#user #name {
+			font-weight: 550;
+		}
 
-	header > #user > img {
-		/* User avatar */
-		width: 3rem;
-		height: 3rem;
-		border-radius: 50%;
-	}
+		#user #title {
+			font-size: 0.8rem;
+			float: right;
+			color: var(--light-grey-color);
+		}
 
-	aside {
-		background-color: var(--card-color);
-		align-items: flex-start;
 	}
 
 	#background {
@@ -251,44 +217,80 @@
 		color: var(--text-color);
 	}
 
-	aside > hr {
-		border-top: 1px solid var(--seperator-color);
-		border-radius: 5px;
-		box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+	aside {
+		background-color: var(--card-color);
+
+		@media (max-width: 640px) {
+			width: calc(100vw - 1em);
+			top: calc(100vh - 80px);
+			height: 80px;
+
+			/* shadow */
+			box-shadow: 0 0 5px var(--shadow-color);
+
+			& > section:nth-child(n+7) {
+				display: none;
+			}
+
+			hr {
+				display: none;
+			}
+
+			section {
+				height: 90%;
+
+				a {
+					justify-content: center;
+				}
+
+				a:hover {
+					margin-right: 8px;
+					margin-left: 8px;
+				}
+			}
+		}
+
+		hr {
+			border-top: 1px solid var(--seperator-color);
+			width: 80%;
+			border-radius: 5px;
+		}
 	}
+
 
 	section {
 		display: flex;
 		flex-direction: column;
-		/* align-items: center; */
 		justify-content: center;
+
+		/* every section where there is no element with id 'hey' */
+		&:not(#top) {
+			width: 80%;
+		}
+	
+		a {
+			display: flex;
+			flex-direction: row;
+			/* width: 80%; */
+			color: var(--text-color);
+			padding: 1rem;
+
+			i {
+				color: var(--text-color);
+			}
+		}
+
+		a:hover {
+			background: rgb(126, 34, 206);
+			background: linear-gradient(145deg, #7e22ce 0%, #8b5cf6 100%);
+			border-radius: 5px;
+			color: var(--button-text-color);
+
+			i {
+				color: var(--button-text-color);
+			}
+		}
 	}
 
-	/* every section where there is no element with id 'hey' */
-	section:not(#top) {
-		width: 80%;
-	}
 
-	section > a {
-		display: flex;
-		flex-direction: row;
-		/* width: 80%; */
-		color: var(--text-color);
-		padding: 1rem;
-	}
-
-	section > a:hover {
-		background: rgb(126, 34, 206);
-		background: linear-gradient(145deg, #7e22ce 0%, #8b5cf6 100%);
-		border-radius: 5px;
-		color: var(--button-text-color);
-	}
-
-	section > a > i {
-		color: var(--text-color);
-	}
-
-	section > a:hover > i {
-		color: var(--button-text-color);
-	}
 </style>
