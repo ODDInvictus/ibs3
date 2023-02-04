@@ -10,7 +10,14 @@ export const load = (async () => {
         nickname: true,
         id: true,
         _count: {
-          select: { StrafbakReceived: true },
+          select: {
+            // @ts-expect-error
+            StrafbakReceived: {
+              where: {
+                dateDeleted: null,
+              },
+            },
+          },
         },
       },
     }),

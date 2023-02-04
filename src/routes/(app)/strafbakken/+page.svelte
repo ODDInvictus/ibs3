@@ -4,13 +4,13 @@
   import Modal from "./Modal.svelte";
   import { openModal } from "svelte-modals";
 
-  const trekBak = (id: number) => {
-    fetch("/", {
+  const trekBak = (id: number, index: number) => {
+    fetch("/strafbakken", {
       method: "DELETE",
       body: JSON.stringify({
         user: id,
       }),
-    });
+    }).catch(console.error);
   };
 </script>
 
@@ -25,7 +25,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each $page.data.strafbakken as user}
+        {#each $page.data.strafbakken as user, i}
           <tr class="p-20">
             <td>{user.nickname || user.firstName}</td>
             <td>{user._count.StrafbakReceived}</td>
@@ -39,8 +39,12 @@
                   })}
               />
               <Minus
-                class="cursor-pointer hover:invert-[.35] transition z-0"
-                on:click={() => trekBak(user.id)}
+                class={user._count.StrafbakReceived
+                  ? "cursor-pointer hover:invert-[.35] transition z-0"
+                  : "invert-[.6] transition z-0"}
+                on:click={user._count.StrafbakReceived
+                  ? () => trekBak(user.id, i)
+                  : null}
               />
             </td>
           </tr>
