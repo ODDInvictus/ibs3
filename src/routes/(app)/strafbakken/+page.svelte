@@ -1,8 +1,17 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { Plus, Minus } from "svelte-heros-v2";
+  import Modal from "./Modal.svelte";
+  import { openModal } from "svelte-modals";
 
-  console.log($page.data.strafbakken);
+  const trekBak = (id: number) => {
+    fetch("/", {
+      method: "DELETE",
+      body: JSON.stringify({
+        user: id,
+      }),
+    });
+  };
 </script>
 
 <main>
@@ -21,8 +30,18 @@
             <td>{user.nickname || user.firstName}</td>
             <td>{user._count.StrafbakReceived}</td>
             <td class="actions">
-              <Plus class="cursor-pointer hover:invert-[.35] transition" />
-              <Minus class="cursor-pointer hover:invert-[.35] transition" />
+              <Plus
+                class="cursor-pointer hover:invert-[.35] transition z-0"
+                on:click={() =>
+                  openModal(Modal, {
+                    username: user.nickname || user.firstName,
+                    uid: user.id,
+                  })}
+              />
+              <Minus
+                class="cursor-pointer hover:invert-[.35] transition z-0"
+                on:click={() => trekBak(user.id)}
+              />
             </td>
           </tr>
         {/each}

@@ -1,4 +1,3 @@
-// @ts-expect-error
 import type { Actions, PageServerLoad } from "./$types";
 import db, { getFeuten, getMembers } from "$lib/server/db";
 import { fail } from "@sveltejs/kit";

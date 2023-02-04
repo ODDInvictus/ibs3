@@ -43,6 +43,7 @@
 	"dependencies": {
 		"@auth/sveltekit": "^0.2.0",
 		"@prisma/client": "^4.9.0",
-		"next-auth": "^4.18.10"
+		"next-auth": "^4.18.10",
+		"svelte-modals": "^1.2.1"
 	}
 }
