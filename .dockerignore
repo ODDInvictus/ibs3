@@ -7,3 +7,6 @@
 !tsconfig.json
 !vite.config.js
 !.svelte-kit
+!tailwind.config.js
+!.npmrc
+!/prisma

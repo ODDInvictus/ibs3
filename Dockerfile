@@ -1,29 +1,35 @@
-# === Builder stage ===
-FROM node:18.7.0-alpine3.16 as builder
+FROM node:16-alpine
+
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+# copy everything to the container
+COPY . .
 
-# Install dependencies using ci for production
+# clean install all dependencies
 RUN npm ci
 
-# Fix potential security issues
-RUN npm audit --fix
-
-COPY ./ ./
-
-# Build app using npm run build
+# remove potential security issues
+RUN npm audit fix
+    
+# build SvelteKit app
 RUN npm run build
-RUN npm ci --omit=dev
 
-
-# === Deployment stage ===
-FROM node:18.7.0-alpine3.16 as deployment
-
-USER node:node
+# stage run
+FROM node:16-alpine
 
 WORKDIR /app
-COPY --from=builder --chown=node:node /app/build ./build
-COPY --from=builder --chown=node:node /app/node_modules ./node_modules
-COPY --chown=node:node package.json .
-CMD ["node","build"]
+
+# copy dependency list
+COPY --from=0 /app/package*.json ./
+
+# clean install dependencies, no devDependencies, no prepare script
+RUN npm ci --production --ignore-scripts
+
+# remove potential security issues
+RUN npm audit fix
+
+# copy built SvelteKit app to /app
+COPY --from=0 /app/build ./
+
+EXPOSE 3000
+CMD ["node", "./index.js"]
