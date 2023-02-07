@@ -1,6 +1,7 @@
 /*
 !/src
 !/static
+!/prisma
 !package-lock.json
 !package.json
 !svelte.config.js
@@ -9,4 +10,3 @@
 !.svelte-kit
 !tailwind.config.js
 !.npmrc
-!/prisma
