@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:19-alpine3.16
 
 WORKDIR /app
 
@@ -21,5 +21,3 @@ EXPOSE 3000
 
 # start the app
 RUN node -r dotenv/config build
-
-
