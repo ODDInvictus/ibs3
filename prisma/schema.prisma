@@ -33,6 +33,34 @@ model User {
   CommitteeMember   CommitteeMember[]
   TransactionFrom   Transaction[]     @relation("transactionFrom")
   TransactionTo     Transaction[]     @relation("transactionTo")
+  Account           Account[]
+  Session           Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String? @db.LongText
+  expires_in        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.LongText
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Committee {
