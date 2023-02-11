@@ -1,8 +1,13 @@
-import type { LayoutServerLoad } from './$types';
+import type { LayoutServerLoad } from './$types'
 
 export const load: LayoutServerLoad = async (event) => {
+	const session = await event.locals.getSession();
+	const currentRoute = event.route
+	const user = event.locals.user
+
 	return {
-		session: await event.locals.getSession(),
-		currentRoute: event.route,
+		session,
+		user,
+		currentRoute,
 	};
 };
