@@ -7,11 +7,16 @@ import AuthentikProvider from '@auth/core/providers/authentik'
 import IBSAdapter from '$lib/server/authAdapter'
 import prisma from '$lib/server/db'
 import { discordLogger } from '$lib/server/jobs/discord'
+import { getUser } from '$lib/server/userCache';
 
 
 
 const authorization = async ({ event, resolve }) => {
 	const url = event.url.pathname
+	const session = await event.locals.getSession()
+	const user = await getUser(session)
+
+	event.locals.user = user
 
 	// If the url starts with /jobs, we don't need to check if the user is logged in
 	// This route is used by the jobs server to execute jobs
