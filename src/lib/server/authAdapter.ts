@@ -6,8 +6,6 @@ export default function IBSAdapter(client: PrismaClient) {
     async createUser(data: Omit<AdapterUser, "id">): Promise<User> {
       const { email, name, image } = data
 
-      console.log('CreateUser', data)
-
       const user = await client.user.findFirst({ where: { email } })
       if (user) {
         return user
@@ -40,7 +38,6 @@ export default function IBSAdapter(client: PrismaClient) {
       })
     },
     async linkAccount(data: any) {
-      console.log('linkAccount', data)
       const account = await client.account.create({ data }) 
       return account
     },
