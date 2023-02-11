@@ -30,10 +30,41 @@ model User {
   StrafbakGiven     Strafbak[]        @relation("strafbakGiver")
   StrafbakReceived  Strafbak[]        @relation("strafbakReceiver")
   MaluspuntGiven    Maluspunt[]       @relation("maluspuntGiver")
-  MuluspuntReceived Maluspunt[]       @relation("maluspuntReceiver")
+  MaluspuntReceived Maluspunt[]       @relation("maluspuntReceiver")
   CommitteeMember   CommitteeMember[]
   TransactionFrom   Transaction[]     @relation("transactionFrom")
   TransactionTo     Transaction[]     @relation("transactionTo")
+  Account           Account[]
+  Session           Session[]
+  Sale              Sale[]
+  Acquisition       Acquisition[]
+  Declaration       Declaration[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String? @db.LongText
+  expires_in        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.LongText
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Committee {
@@ -109,17 +140,22 @@ model Activity {
 // Alle vormen van betalingen die mensen in het systeem kunnen zetten zijn alles behalve Transaction
 // Die wordt gegenereerd door IBS
 
+// Grootboek rekening
 model Ledger {
-  id          Int           @id
+  // Administratieve gegevens
+  id          Int      @id
   name        String
   description String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  isActive    Boolean       @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Foreign keys
   Transaction Transaction[]
-  Declaration Declaration[]
+
+  isActive Boolean @default(true)
 }
 
+// Categorie waar een product onder kan vallen
 model ProductCategory {
   id          Int       @id @default(autoincrement())
   name        String
@@ -130,53 +166,109 @@ model ProductCategory {
   Product     Product[]
 }
 
+// Een product is alles wat verkocht en ingekocht kan worden
 model Product {
-  id          Int             @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   name        String
   description String
   price       Int
-  categoryId  Int
+
+  // Dit bepaald wat er in data kan staan
+  productType String @default("product")
+  // Deze is speciaal, want dit bevat niet echt nuttige data, maar kan wel leuk zijn
+  data        Json   @db.Json
+
+  // Foreign keys
   category    ProductCategory @relation(fields: [categoryId], references: [id])
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  isActive    Boolean         @default(true)
-  data        Json            @db.Json
+  categoryId  Int
   Sale        Sale[]
+  Acquisition Acquisition[]
+
+  // Een product kan niet worden verwijderd, wel uitgeschakeld
+  isActive Boolean @default(true)
 }
 
 model Transaction {
+  // Administratieve gegevens
   id          Int      @id @default(autoincrement())
   ledger      Ledger   @relation(fields: [ledgerId], references: [id])
   ledgerId    Int
   description String
-  price       Float
-  from        User     @relation(fields: [fromId], references: [id], name: "transactionFrom")
-  fromId      Int
-  to          User     @relation(fields: [toId], references: [id], name: "transactionTo")
-  toId        Int
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  isActive    Boolean  @default(true)
+
+  // Transactie gegevens
+  price   Float
+  settled Boolean @default(false)
+
+  // Gebruikers
+  from   User @relation(fields: [fromId], references: [id], name: "transactionFrom")
+  fromId Int
+  to     User @relation(fields: [toId], references: [id], name: "transactionTo")
+  toId   Int
 }
 
+// In een verkoop kan iemand x aantal producten kopen
+// Prijs voor verkoop wordt pas bepaald zodra de transactie aangemaakt wordt
 model Sale {
+  // Administratieve gegevens
   id        Int      @id @default(autoincrement())
-  product   Product  @relation(fields: [productId], references: [id])
-  productId Int
-  amount    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  isActive  Boolean  @default(true)
+
+  // Hoeveel van welk product zijn er gekocht
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  amount    Int
+
+  // Wie heeft er gekocht
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  // Een verkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
+  isActive Boolean @default(true)
 }
 
+// Een inkoop
+// Oke sorry voor deze naam maar Purchase vond ik te verwarrend met Sale
+model Acquisition {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Hoe veel van welk product zijn er gekocht
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  amount    Int
+
+  // Wie heeft er gekocht
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  // Een inkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
+  isActive Boolean @default(true)
+}
+
+// Een declaratie is een generiekere vorm van inkoop
 model Declaration {
-  id              Int      @id @default(autoincrement())
-  ledger          Ledger   @relation(fields: [ledgerId], references: [id])
-  ledgerId        Int
-  amount          Float
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Wie heeft er gekocht
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  // Hoeveel wil iemand terug
+  price           Float
+  // Wat is de reden voor deze declaratie
   reason          String
-  methodOfPayment String   @default("Eigen rekening")
-  accepted        Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  // Hoe is dit betaald? (Eigen rekening, bank, contant, of Invictus bankrekening)
+  methodOfPayment String @default("Eigen rekening")
+
+  // Heeft de penningmeester dit goedgekeurd?
+  // Als dit niet is goedgekeurd wordt het ook niet omgezet naar een transactie
+  accepted Boolean @default(false)
 }
