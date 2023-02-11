@@ -8,10 +8,19 @@ import IBSAdapter from '$lib/server/authAdapter'
 import prisma from '$lib/server/db'
 
 
+
 const authorization = async ({ event, resolve }) => {
 	const url = event.url.pathname
-	// If the path is something other than /auth, check if the user is logged in
-	if (!url.startsWith('/auth')) {
+
+	// If the url starts with /jobs, we don't need to check if the user is logged in
+	// This route is used by the jobs server to execute jobs
+	// This route has to be whitelisted to only allow the jobs server to execute jobs
+	// Fix this in NGINX
+	if (url.startsWith('/jobs')) {
+		// Resolve normally
+		return await resolve(event); 
+	} else if (!url.startsWith('/auth')) {
+		// If the path is something other than /auth, check if the user is logged in
 		const session = await event.locals.getSession();
 
 		if (!session) {
