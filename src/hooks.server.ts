@@ -17,15 +17,6 @@ const authorization = async ({ event, resolve }) => {
 		if (!session) {
 			throw redirect(303, '/auth');
 		}
-
-		const user = event.locals.user
-
-		if (!user) {
-			const u = await prisma.user.findUnique({ where: { email: session.user.email } })
-			if (!u) {
-				event.locals.user = user
-			}
-		}
 	}
 	
 	// If the request is still here, just proceed as normally
