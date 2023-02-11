@@ -1,5 +1,6 @@
 import type { Actions, PageServerLoad } from "./$types";
 import db from "$lib/server/db";
+import { getUser } from "$lib/server/userCache";
 
 export const load = (async () => {
   return {
@@ -28,7 +29,10 @@ export const actions = {
 
     const reason = data.get("reason")?.toString() || undefined;
     const receiverId = Number(data.get("receiver"));
-    const giverId = 1;
+
+    // TODO: User wil een argument, maar ik wil gewoon weten wie die griep request heeft gestuurd and wat zijn ID is.
+    const giver = await getUser();
+    const giverId = giver.id || 1;
 
     await db.strafbak.create({
       data: {
