@@ -28,18 +28,7 @@ export const actions = {
 
     const reason = data.get("reason")?.toString() || undefined;
     const receiverId = Number(data.get("receiver"));
-    const giverEmail = data.get("giver")?.toString();
-
-    const giver = await db.user.findUnique({
-      where: {
-        email: giverEmail,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    const giverId = giver ? giver.id : 1;
+    const giverId = 1;
 
     await db.strafbak.create({
       data: {
