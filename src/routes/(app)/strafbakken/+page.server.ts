@@ -1,6 +1,5 @@
 import type { Actions, PageServerLoad } from "./$types";
 import db from "$lib/server/db";
-import { fail } from "@sveltejs/kit";
 
 export const load = (async () => {
   return {
@@ -11,7 +10,6 @@ export const load = (async () => {
         id: true,
         _count: {
           select: {
-            // @ts-expect-error
             StrafbakReceived: {
               where: {
                 dateDeleted: null,
@@ -30,9 +28,18 @@ export const actions = {
 
     const reason = data.get("reason")?.toString() || undefined;
     const receiverId = Number(data.get("receiver"));
-    const giverId = 1; // TODO: Koppelen aan de ID van de ingelogde user
+    const giverEmail = data.get("giver")?.toString();
 
-    console.log(reason, receiverId, giverId);
+    const giver = await db.user.findUnique({
+      where: {
+        email: giverEmail,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const giverId = giver ? giver.id : 1;
 
     await db.strafbak.create({
       data: {

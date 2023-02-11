@@ -1,8 +1,9 @@
 <script lang="ts">
   import { closeModal } from "svelte-modals";
   import { enhance } from "$app/forms";
+  import { page } from "$app/stores";
 
-  let error = "";
+  //let error = "";
   export let submitted = false;
 
   export let isOpen: boolean;
@@ -10,6 +11,7 @@
   export let uid: number;
   export let changeCount: (index: number, n: number) => void;
   export let index: number;
+  console.log($page.data.session?.user?.email);
 </script>
 
 {#if isOpen}
@@ -22,10 +24,10 @@
           use:enhance={(event) => {
             return async ({ result, update }) => {
               if (result.type === "failure") {
-                error = result.data?.message;
+                //error = result.data?.message;
                 update();
               } else {
-                error = "";
+                //error = "";
                 update();
               }
             };
@@ -41,6 +43,12 @@
         >
           <p>Reden:</p>
           <input type="number" name="receiver" hidden value={uid} />
+          <input
+            type="text"
+            name="giver"
+            hidden
+            value={$page.data.session?.user?.email}
+          />
           <textarea name="reason" />
           <button type="submit" class={submitted ? "clicked" : ""}>
             Verzenden
