@@ -4,7 +4,6 @@
   import Modal from "./Modal.svelte";
   import { openModal } from "svelte-modals";
   import type { User } from "@prisma/client";
-
   import { Modals, closeModal } from "svelte-modals";
 
   interface sb extends User {
@@ -26,7 +25,9 @@
       body: JSON.stringify({
         user: id,
       }),
-    }).catch(console.error);
+    }).catch(() => {
+      changeCount(index, 1);
+    });
   };
 
   const changeCount = (index: number, n: number) => {

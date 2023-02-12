@@ -39,13 +39,17 @@ export const actions = {
     const giverId = user?.id;
     if (!giverId) return fail(400);
 
-    await db.strafbak.create({
-      data: {
-        giverId,
-        receiverId,
-        reason,
-      },
-    });
+    try {
+      await db.strafbak.create({
+        data: {
+          giverId,
+          receiverId,
+          reason,
+        },
+      });
+    } catch {
+      return fail(400);
+    }
     return { succes: true };
   },
 } satisfies Actions;

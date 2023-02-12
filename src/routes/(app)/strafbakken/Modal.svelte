@@ -2,7 +2,6 @@
   import { closeModal } from "svelte-modals";
   import { enhance } from "$app/forms";
 
-  //let error = "";
   export let submitted = false;
 
   export let isOpen: boolean;
@@ -28,7 +27,6 @@
             return async ({ result }) => {
               // Zet de strafbakken weer 1 terug als het mislukt is de bak uit de delen.
               if (result.type === "failure" || result.type === "error") {
-                //error = result.data?.message;
                 changeCount(index, -1);
                 status.btn = "error";
                 status.bar += " error";
