@@ -58,7 +58,7 @@
 		margin-top: 0.4rem;
 		margin-bottom: 0.4rem;
 		width: 90%;
-		border-top: 1px solid var(--primary-color);
+		border-top: 1px solid var(--seperator-color);
 		border-radius: 5px;
 	}
 
