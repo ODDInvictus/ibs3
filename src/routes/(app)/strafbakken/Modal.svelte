@@ -10,6 +10,11 @@
   export let uid: number;
   export let changeCount: (index: number, n: number) => void;
   export let index: number;
+
+  let status = {
+    bar: "",
+    btn: "",
+  };
 </script>
 
 {#if isOpen}
@@ -20,19 +25,21 @@
         <form
           method="POST"
           use:enhance={(event) => {
-            return async ({ result, update }) => {
-              if (result.type === "failure") {
+            return async ({ result }) => {
+              // Zet de strafbakken weer 1 terug als het mislukt is de bak uit de delen.
+              if (result.type === "failure" || result.type === "error") {
                 //error = result.data?.message;
-                update();
-              } else {
-                //error = "";
-                update();
+                changeCount(index, -1);
+                status.btn = "error";
+                status.bar += " error";
               }
             };
           }}
           on:submit={(e) => {
             if (submitted) return e.preventDefault();
             submitted = true;
+            status.btn = "active";
+            status.bar = "active";
             changeCount(index, 1);
             setTimeout(() => {
               closeModal();
@@ -42,12 +49,10 @@
           <p>Reden:</p>
           <input type="number" name="receiver" hidden value={uid} />
           <textarea name="reason" />
-          <button type="submit" class={submitted ? "clicked" : ""}>
-            Verzenden
-          </button>
+          <button type="submit" class={status.btn}> Verzenden </button>
         </form>
       </div>
-      <div class={submitted ? "progress active" : "progress"} />
+      <div class={"progress " + status.bar} />
     </div>
   </div>
 {/if}
@@ -124,12 +129,21 @@
       border-radius: 0.5rem;
       transition: all 1s ease;
 
-      &.clicked {
+      &.active {
         background: linear-gradient(
           180deg,
           rgb(0, 255, 0) 0%,
-          rgba(20, 230, 20, 1) 50%,
-          rgba(40, 200, 40, 1) 100%
+          rgb(20, 230, 20) 50%,
+          rgb(40, 200, 40) 100%
+        ) !important;
+      }
+
+      &.error {
+        background: linear-gradient(
+          180deg,
+          rgb(255, 0, 0) 0%,
+          rgb(230, 20, 20) 50%,
+          rgb(200, 40, 40) 100%
         ) !important;
       }
 
@@ -154,6 +168,10 @@
     margin-right: auto;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
+
+    &.error {
+      background-color: rgb(255, 0, 0);
+    }
 
     &.active {
       width: 95%;
