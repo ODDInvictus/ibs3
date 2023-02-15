@@ -5,7 +5,11 @@ const config = {
 	],
 
 	theme: {
-		extend: {}
+		extend: {
+			invert: {
+				50: '.5'
+			}
+		}
 	},
 
 	plugins: [require('flowbite/plugin')],

@@ -89,7 +89,7 @@
 
       <button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
         <div id="user-card">
-          <p id="name">{$page.data.session?.user?.name ?? 'Gebruiker'}</p>
+          <p id="name">{$page.data.user.firstName + ' ' + $page.data.user.lastName ?? 'Gebruiker'}</p>
           <p id="title">Lid</p>
         </div>
         <!-- <button>Log uit</button> -->
