@@ -9,10 +9,8 @@ export const load = (async () => {
         giver: true,
         receiver: true,
       },
-      },
     }),
     feuten: getFeuten(),
-    members: getMembers(),
     members: getMembers(),
   };
 }) satisfies PageServerLoad;
@@ -20,29 +18,17 @@ export const load = (async () => {
 export const actions = {
   default: async ({ request }: { request: Request }) => {
     const data = await request.formData();
-  default: async ({ request }: { request: Request }) => {
-    const data = await request.formData();
 
     const giverId = Number(data.get("giverId"));
     const receiverId = Number(data.get("receiverId"));
     const amount = Number(data.get("amount"));
     let reason = data.get("reason")?.toString();
-    const giverId = Number(data.get("giverId"));
-    const receiverId = Number(data.get("receiverId"));
-    const amount = Number(data.get("amount"));
-    let reason = data.get("reason")?.toString();
-
-    console.log({ giverId, receiverId, reason, amount });
-
     console.log({ giverId, receiverId, reason, amount });
 
     if (!giverId || !receiverId || !reason || !amount || amount === 0) {
       return fail(400, { message: "Niet alle velden zijn ingevuld" });
-      return fail(400, { message: "Niet alle velden zijn ingevuld" });
     }
 
-    if (reason === undefined || reason === null || reason === "") {
-      reason = "Geen reden opgegeven";
     if (reason === undefined || reason === null || reason === "") {
       reason = "Geen reden opgegeven";
     }
@@ -50,11 +36,6 @@ export const actions = {
     // do not need a number check since the Number() function will return NaN if it can't parse the string
 
     await db.maluspunt.create({
-      data: { giverId, receiverId, reason, amount },
-    });
-  },
-} satisfies Actions;
-
       data: { giverId, receiverId, reason, amount },
     });
   },

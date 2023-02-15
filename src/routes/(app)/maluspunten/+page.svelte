@@ -2,25 +2,15 @@
   import { page } from "$app/stores";
   import { enhance, applyAction } from "$app/forms";
   import StyledButton from "$lib/components/StyledButton.svelte";
-  import { page } from "$app/stores";
-  import { enhance, applyAction } from "$app/forms";
-  import StyledButton from "$lib/components/StyledButton.svelte";
 
-  let error = "";
   let error = "";
 
   function formatDate(dateString: string) {
     const date = new Date(dateString);
-    const date = new Date(dateString);
 
     const hour = ("0" + date.getHours()).slice(-2);
     const minute = ("0" + date.getMinutes()).slice(-2);
-    const hour = ("0" + date.getHours()).slice(-2);
-    const minute = ("0" + date.getMinutes()).slice(-2);
 
-    return `${date.getDate()}/${
-      date.getMonth() + 1
-    }/${date.getFullYear()} ${hour}:${minute}`;
     return `${date.getDate()}/${
       date.getMonth() + 1
     }/${date.getFullYear()} ${hour}:${minute}`;
@@ -32,7 +22,7 @@
 
   <hr />
 
-  <div id="form-container">
+  <form-container>
     <form
       method="POST"
       use:enhance={(event) => {
@@ -53,45 +43,42 @@
         <select name="receiverId">
           {#each $page.data.feuten as user}
             <option value={user.id}>{user.firstName}</option>
-            <option value={user.id}>{user.firstName}</option>
           {/each}
         </select>
       </div>
 
       <div>
+        <div>
+          <label for="reason">Waarom</label>
+          <input type="text" name="reason" placeholder="Waarom" />
+        </div>
 
-      <div>
-        <label for="reason">Waarom</label>
-        <input type="text" name="reason" placeholder="Waarom" />
-      </div>
+        <div>
+          <div>
+            <label for="amount">Hoeveel maluspunten</label>
+            <input type="number" name="amount" placeholder="Hoeveel" />
+          </div>
 
-      <div>
+          <div>
+            <label for="giverId">Gegeven door</label>
+            <select name="giverId">
+              {#each $page.data.members as user}
+                <option value={user.id}>{user.firstName}</option>
+              {/each}
+            </select>
+          </div>
 
-      <div>
-        <label for="amount">Hoeveel maluspunten</label>
-        <input type="number" name="amount" placeholder="Hoeveel" />
-      </div>
-
-
-      <div>
-        <label for="giverId">Gegeven door</label>
-        <select name="giverId">
-          {#each $page.data.members as user}
-            <option value={user.id}>{user.firstName}</option>
-            <option value={user.id}>{user.firstName}</option>
-          {/each}
-        </select>
-      </div>
-
-      <div>
-
-      <div>
-        <StyledButton type="submit">Toevoegen</StyledButton>
-      </div>
-
-
-      <div>
-        {error}
+          <div>
+            <div>
+              <StyledButton type="submit" restProps={{}}>
+                Toevoegen
+              </StyledButton>
+            </div>
+            <div>
+              {error}
+            </div>
+          </div>
+        </div>
       </div>
     </form>
   </form-container>
@@ -120,21 +107,13 @@
             <td>{punt.giver.nickname ?? punt.giver.firstName}</td>
             <td>{formatDate(punt.dateCreated)}</td>
           </tr>
-          <tr>
-            <td>{punt.id}</td>
-            <td>{punt.receiver.firstName}</td>
-            <td>{punt.reason}</td>
-            <td>{punt.amount}</td>
-            <td>{punt.giver.nickname ?? punt.giver.firstName}</td>
-            <td>{formatDate(punt.dateCreated)}</td>
-          </tr>
         {/each}
       </tbody>
     </table>
   </table-container>
 </main>
 
-<style>
+<style lang="scss">
   h1 {
     text-align: center;
     font-weight: 600;
@@ -155,6 +134,7 @@
       color: black;
       font-weight: 600;
     }
+  }
 
   input,
   select {
@@ -184,10 +164,7 @@
 
   td,
   th {
-  td,
-  th {
     padding: 0.5rem;
     text-align: left;
   }
 </style>
-
