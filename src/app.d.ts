@@ -6,3 +6,5 @@ declare namespace App {
     user: User
   }
 }
+
+export {};
