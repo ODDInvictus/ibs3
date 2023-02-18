@@ -14,31 +14,33 @@ datasource db {
 // USER
 
 model User {
-  id                Int               @id @default(autoincrement())
-  firstName         String
-  lastName          String
-  ldapId            String            @unique
-  email             String            @unique
-  nickname          String?           @unique
-  picture           String?
-  birthDate         DateTime?         @db.Date
-  phone             String?
-  firstDrink        DateTime?         @db.Date
-  becameFeut        DateTime?         @db.Date
-  becameMember      DateTime?         @db.Date
-  lastLoggedin      DateTime          @default(now())
-  StrafbakGiven     Strafbak[]        @relation("strafbakGiver")
-  StrafbakReceived  Strafbak[]        @relation("strafbakReceiver")
-  MaluspuntGiven    Maluspunt[]       @relation("maluspuntGiver")
-  MaluspuntReceived Maluspunt[]       @relation("maluspuntReceiver")
-  CommitteeMember   CommitteeMember[]
-  TransactionFrom   Transaction[]     @relation("transactionFrom")
-  TransactionTo     Transaction[]     @relation("transactionTo")
-  Account           Account[]
-  Session           Session[]
-  Sale              Sale[]
-  Acquisition       Acquisition[]
-  Declaration       Declaration[]
+  id                      Int                       @id @default(autoincrement())
+  firstName               String
+  lastName                String
+  ldapId                  String                    @unique
+  email                   String                    @unique
+  nickname                String?                   @unique
+  picture                 String?
+  birthDate               DateTime?                 @db.Date
+  phone                   String?
+  firstDrink              DateTime?                 @db.Date
+  becameFeut              DateTime?                 @db.Date
+  becameMember            DateTime?                 @db.Date
+  lastLoggedin            DateTime                  @default(now())
+  StrafbakGiven           Strafbak[]                @relation("strafbakGiver")
+  StrafbakReceived        Strafbak[]                @relation("strafbakReceiver")
+  MaluspuntGiven          Maluspunt[]               @relation("maluspuntGiver")
+  MaluspuntReceived       Maluspunt[]               @relation("maluspuntReceiver")
+  CommitteeMember         CommitteeMember[]
+  TransactionFrom         Transaction[]             @relation("transactionFrom")
+  TransactionTo           Transaction[]             @relation("transactionTo")
+  Account                 Account[]
+  Session                 Session[]
+  Sale                    Sale[]
+  Acquisition             Acquisition[]
+  Declaration             Declaration[]
+  FinancialGroups         FinancialGroup[]
+  FinancialPersonDataUser FinancialPersonDataUser[]
 }
 
 model Account {
@@ -68,11 +70,12 @@ model Session {
 }
 
 model Committee {
-  id              Int               @id @default(autoincrement())
-  name            String            @unique
-  ldapId          String            @unique
-  CommitteeMember CommitteeMember[]
-  Acivity         Activity[]
+  id                           Int                            @id @default(autoincrement())
+  name                         String                         @unique
+  ldapId                       String                         @unique
+  CommitteeMember              CommitteeMember[]
+  Acivity                      Activity[]
+  FinancialPersonDataCommittee FinancialPersonDataCommittee[]
 }
 
 model CommitteeMember {
@@ -120,17 +123,18 @@ model Maluspunt {
 // ACTIVITY
 
 model Activity {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String
-  start       DateTime
-  location    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  isActive    Boolean   @default(true)
-  membersOnly Boolean   @default(false)
-  organisedBy Committee @relation(fields: [committeeId], references: [id])
-  committeeId Int
+  id                          Int                           @id @default(autoincrement())
+  name                        String
+  description                 String
+  start                       DateTime
+  location                    String
+  createdAt                   DateTime                      @default(now())
+  updatedAt                   DateTime                      @updatedAt
+  isActive                    Boolean                       @default(true)
+  membersOnly                 Boolean                       @default(false)
+  organisedBy                 Committee                     @relation(fields: [committeeId], references: [id])
+  committeeId                 Int
+  FinancialPersonDataActivity FinancialPersonDataActivity[]
 }
 
 // FINANCIALS
@@ -189,6 +193,85 @@ model Product {
 
   // Een product kan niet worden verwijderd, wel uitgeschakeld
   isActive Boolean @default(true)
+}
+
+enum FinancialPersonType {
+  USER
+  GROUP
+  ACTIVITY
+  INVICTUS
+  COMMITTEE
+  OTHER
+}
+
+// Onder een financieel persoon valt een gebruiker, een groep van gebruikers, het dispuut, etc.
+// Bijvoorbeeld 
+model FinancialPerson {
+  id   Int                 @id @default(autoincrement())
+  type FinancialPersonType
+
+  // Naam van het financiele persoon, denk aan "O.D.D. Invictus", "Meeborrel" of gewoon de naam van een lid
+  name    String
+  // Huidige saldo
+  balance Int    @default(0)
+
+  // Foreign keys
+  FinancialGroup               FinancialGroup[]
+  FinancialPersonDataUser      FinancialPersonDataUser[]
+  FinancialPersonDataCommittee FinancialPersonDataCommittee[]
+  FinancialPersonDataActivity  FinancialPersonDataActivity[]
+  FinancialPersonDataOther     FinancialPersonDataOther[]
+}
+
+// Extra data voor FinancialPerson, afhankelijk van FinancialPersonType
+
+// FinancialPersonType.USER
+// Dit is een 1-op-1 relatie met User
+model FinancialPersonDataUser {
+  person   FinancialPerson @relation(fields: [personId], references: [id])
+  personId Int             @id
+  user     User            @relation(fields: [userId], references: [id])
+  userId   Int
+}
+
+// FinancialPersonType.GROUP
+// Verwijst naar een groepje gebruikers (bijvoorbeeld: meeborrel, 44, etc.)
+model FinancialGroup {
+  person   FinancialPerson @relation(fields: [personId], references: [id])
+  personId Int             @id
+  users    User[]
+}
+
+// FinancialPersonType.ACTIVITY
+// Verwijst naar een activiteit, wordt redelijk hetzelfde gebruikt als GROUP maar voorkomt dat een groep wordt gemaakt voor elke borrel
+model FinancialPersonDataActivity {
+  person     FinancialPerson @relation(fields: [personId], references: [id])
+  personId   Int             @id
+  activity   Activity        @relation(fields: [activityId], references: [id])
+  activityId Int
+}
+
+// FinancialPersonType.INVICTUS
+// Verwijst naar het dispuut als financieel persoon
+// Geen model nodig
+
+// FinancialPersonType.COMMITTEE
+// Verwijst naar een commissie, wordt redelijk hetzelfde gebruikt als GROUP maar maakt het makkelijk om een commissie te verwijderen
+model FinancialPersonDataCommittee {
+  person      FinancialPerson @relation(fields: [personId], references: [id])
+  personId    Int             @id
+  committee   Committee       @relation(fields: [committeeId], references: [id])
+  committeeId Int
+}
+
+// FinancialPersonType.OTHER
+// Verwijst naar iets of iemand, die iig niet IBS gebruiker is.
+// Alleen gebruiken als het echt niet anders kan, en met duidelijke notities
+model FinancialPersonDataOther {
+  person      FinancialPerson @relation(fields: [personId], references: [id])
+  personId    Int             @id
+  name        String
+  description String
 }
 
 model Transaction {
