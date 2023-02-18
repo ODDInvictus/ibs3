@@ -16,9 +16,6 @@ export const notifyDiscordText = async (webhookUrl: string, text: string): Promi
 export const notifyDiscordError = async (webhookUrl: string, obj: Record<string, unknown>): Promise<void> => {
   const err = obj.error as Error
   const event = obj.event as RequestEvent<Partial<Record<string, string>>, string | null>
-  const session = obj.session as Record<string, unknown>
-
-  console.log(obj.session)
 
   const embed = {
     title: err.name ?? 'Error',
@@ -31,7 +28,7 @@ export const notifyDiscordError = async (webhookUrl: string, obj: Record<string,
       },
       {
         name: 'User',
-        value: session.user?.email ?? 'Niet ingelogd'
+        value: event.locals.user?.email ?? 'Niet ingelogd'
       }
     ],
     author: {

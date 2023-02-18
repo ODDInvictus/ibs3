@@ -64,14 +64,6 @@ export const handleError = (async ({ error, event }) => {
 	// When an error occurs, we want to log it to our logger
 	// This is done by sending a request to the jobs server
 
-	let session = {}
-
-	try {
-		session = await event.locals.getSession();
-	} catch (err) {
-		console.log(err)
-	}
-
-	await discordLogger.enqueue({ error, event, session })
+	await discordLogger.enqueue({ error, event })
 
 }) satisfies HandleServerError
