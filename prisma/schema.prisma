@@ -242,6 +242,7 @@ model Acquisition {
   product   Product @relation(fields: [productId], references: [id])
   productId Int
   amount    Int
+  price     Float
 
   // Wie heeft er gekocht
   user   User @relation(fields: [userId], references: [id])
