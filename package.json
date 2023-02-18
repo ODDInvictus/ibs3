@@ -30,6 +30,7 @@
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
 		"prisma": "^4.9.0",
+		"sass": "^1.58.0",
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",
 		"svelte-heros-v2": "^0.3.11",
@@ -44,6 +45,7 @@
 		"@auth/sveltekit": "^0.2.0",
 		"@prisma/client": "^4.9.0",
 		"next-auth": "^4.18.10",
+		"svelte-modals": "^1.2.1",
 		"node-cache": "^5.1.2",
 		"quirrel": "^1.13.1"
 	}
