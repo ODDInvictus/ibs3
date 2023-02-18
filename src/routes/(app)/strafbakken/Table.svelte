@@ -3,6 +3,7 @@
   import Modal from "./Modal.svelte";
   import { openModal } from "svelte-modals";
   import type { sbUser } from "./types";
+  import { space } from "svelte/internal";
 
   export let data: sbUser[];
 
@@ -23,78 +24,144 @@
   };
 </script>
 
-<table>
-  <thead>
-    <tr>
-      <th>Naam</th>
-      <th>Bakken</th>
-      <th>Acties</th>
-    </tr>
-  </thead>
-  <tbody>
-    {#each data as user, i}
-      <tr class="p-20">
-        <td>
-          <a href={`/strafbakken/${user.firstName.toLowerCase()}`}>
-            {user.nickname || user.firstName}
-          </a>
-        </td>
-        <td>{user._count.StrafbakReceived}</td>
-        <td class="actions">
-          <Plus
-            class="cursor-pointer hover:invert-[.35] transition z-0 focus:outline-0"
-            on:click={() =>
-              openModal(Modal, {
-                username: user.nickname || user.firstName,
-                uid: user.id,
-                changeCount,
-                index: i,
-              })}
-          />
-          <Minus
-            class={user._count.StrafbakReceived
-              ? "cursor-pointer hover:invert-[.35] transition z-0 focus:outline-0"
-              : "invert-[.6] transition z-0 focus:outline-0"}
-            on:click={user._count.StrafbakReceived
-              ? () => trekBak(user.id, i)
-              : null}
-          />
-        </td>
-      </tr>
-    {/each}
-  </tbody>
-</table>
+<div class="table">
+  <th>Naam</th>
+  <th>Bakken</th>
+  <th>Acties</th>
+  {#each data as user, i}
+    <a
+      href={`/strafbakken/${user.firstName.toLowerCase()}`}
+      class={`cell c${i}`}
+    >
+      {user.nickname || user.firstName}
+    </a>
+    <a
+      href={`/strafbakken/${user.firstName.toLowerCase()}`}
+      class={`cell c${i}`}
+    >
+      {user._count.StrafbakReceived}
+    </a>
+    <div class={`actions cell c${i}`}>
+      <Plus
+        class="cursor-pointer hover:invert-[.35] transition z-0 focus:outline-0 -translate-x-1"
+        on:click={() =>
+          openModal(Modal, {
+            username: user.nickname || user.firstName,
+            uid: user.id,
+            changeCount,
+            index: i,
+          })}
+      />
+      <Minus
+        class={user._count.StrafbakReceived
+          ? "cursor-pointer hover:invert-[.35] transition z-0 focus:outline-0 -translate-x-1"
+          : "invert-[.6] transition z-0 focus:outline-0 -translate-x-1"}
+        on:click={user._count.StrafbakReceived
+          ? () => trekBak(user.id, i)
+          : null}
+      />
+    </div>
+  {/each}
+</div>
 
 <style lang="scss">
   $tr-padding: 0.75rem;
 
-  td,
   th {
     padding: $tr-padding;
     text-align: left;
   }
 
-  tbody {
-    tr {
-      transition: all 0.4s ease;
+  .table {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 
-      &:nth-child(odd) {
+    .cell {
+      transition: all 0.4s ease;
+      padding: $tr-padding;
+
+      &:nth-child(6n-2),
+      &:nth-child(6n-1),
+      &:nth-child(6n) {
         background-color: #d3c0ff;
       }
+    }
 
-      &:has(td:not(.actions):hover) {
-        background-color: #ae9ed3;
-      }
+    &:has(.c0:not(.actions):hover) .c0 {
+      background-color: #ae9ed3;
+    }
 
-      td:not(.actions) {
-        cursor: pointer;
-      }
+    &:has(.c1:not(.actions):hover) .c1 {
+      background-color: #ae9ed3;
+    }
 
-      .actions {
-        display: flex;
-        gap: $tr-padding;
-        transform: translateX(-2px);
-      }
+    &:has(.c2:not(.actions):hover) .c2 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c3:not(.actions):hover) .c3 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c4:not(.actions):hover) .c4 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c5:not(.actions):hover) .c5 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c6:not(.actions):hover) .c6 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c7:not(.actions):hover) .c7 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c8:not(.actions):hover) .c8 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c9:not(.actions):hover) .c9 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c10:not(.actions):hover) .c10 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c11:not(.actions):hover) .c11 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c12:not(.actions):hover) .c12 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c13:not(.actions):hover) .c13 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c14:not(.actions):hover) .c14 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c15:not(.actions):hover) .c15 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c16:not(.actions):hover) .c16 {
+      background-color: #ae9ed3;
+    }
+
+    &:has(.c17:not(.actions):hover) .c17 {
+      background-color: #ae9ed3;
+    }
+
+    .actions {
+      display: flex;
+      gap: $tr-padding;
     }
   }
 </style>
