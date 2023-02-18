@@ -1,38 +1,64 @@
-# create-svelte
+# Invictus Bier Systeem 3
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Huts
 
-## Creating a project
+## Ontwikkelen
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+Om te beginnen met ontwikkelen moet je eerst de repository clonen met
+```console
+git clone git@github.com:ODDInvictus/ibs3.git
 ```
 
-## Developing
+Daarna moet je een .env maken, dit kan door de .env.example te kopieren en te hernoemen. Deze moet je nog wel even invullen. Zie hiervoor het kopje Environment Variables
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Daarna kan je de development server starten met `npm run dev`
 
-```bash
-npm run dev
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+## Tasks
+
+IBS3 is in staat om dingen op de achtergrond te draaien, buiten een request om. Dit is nice voor dingen die (redelijk) wat tijd kosten, zoals emails versturen. Hiervoor gebruiken we een Quirrel server. Deze start in development automatisch op als je `npm run dev` doet. Je kan dan de QuirrelUI openen op `http://localhost:9181`. 
+
+### Hoe maak ik een task aan?
+Een task maken is erg simpel. Maak eerst in $lib/server/jobs een bestand aan in de juiste directory.
+
+job.ts
+```ts
+import { Queue } from 'quirrel/sveltekit'
+
+export const queue = Queue(
+  // URL waar je deze methode kan vinden
+  "jobs/notifications/discord",
+  async (job, meta) => {
+    // Job om uit te voeren
+  },
+)
 ```
 
-## Building
+Daarna maak je in src/jobs een +server.ts aan op hetzelfde adres die je net hebt gedefineerd
 
-To create a production version of your app:
+```ts
+import { queue } from '$lib/server/jobs/discord';
 
-```bash
-npm run build
+export const POST = queue
 ```
 
-You can preview the production build with `npm run preview`.
+Daarna kan je deze job uitvoeren door
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+```ts
+import { queue } from '$lib/server/jobs/xx'
+
+await queue.enqueue(jobData)
+```
+
+te doen.
+
+Voor cronjobs kan je jobs/ldap/sync bekijken
+
+## Production
+
+  voer `quirrel ci` uit om de cronjobs te laten werken
+
+
+## Environment Variables
+
+TODO lol
