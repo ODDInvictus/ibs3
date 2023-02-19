@@ -30,7 +30,7 @@
   table-container {
     width: 100%;
     display: flex;
-    gap: 20px;
+    gap: 1.5rem;
     justify-content: center;
   }
 

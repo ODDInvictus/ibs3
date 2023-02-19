@@ -32,12 +32,14 @@
     <a
       href={`/strafbakken/${user.firstName.toLowerCase()}`}
       class={`cell c${i}`}
+      data-sveltekit-preload-data="hover"
     >
       {user.nickname || user.firstName}
     </a>
     <a
       href={`/strafbakken/${user.firstName.toLowerCase()}`}
       class={`cell c${i}`}
+      data-sveltekit-preload-data="hover"
     >
       {user._count.StrafbakReceived}
     </a>
