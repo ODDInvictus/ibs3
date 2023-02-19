@@ -37,7 +37,9 @@
       <tbody>
         {#each data.strafbakken.StrafbakReceived as strafbak}
           <tr>
-            <td>{formatName(strafbak.giver)}</td>
+            <a href={`/strafbakken/${strafbak.giver.firstName}`}>
+              {formatName(strafbak.giver)}
+            </a>
             <td>{strafbak.reason ?? "Geen reden gegeven"}</td>
             <td>{formatDate(strafbak.dateCreated)}</td>
           </tr>
@@ -65,17 +67,23 @@
     place-items: center;
 
     td,
-    th {
+    th,
+    tr a {
       padding: $tr-padding;
-      text-align: left;
     }
 
     tbody {
       tr {
-        transition: all 0.4s ease;
-
         &:nth-child(odd) {
           background-color: #d3c0ff;
+        }
+
+        a {
+          display: table-cell;
+
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
     }

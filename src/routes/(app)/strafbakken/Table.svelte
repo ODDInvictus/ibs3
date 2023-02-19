@@ -3,9 +3,9 @@
   import Modal from "./Modal.svelte";
   import { openModal } from "svelte-modals";
   import type { sbUser } from "./types";
-  import { space } from "svelte/internal";
 
   export let data: sbUser[];
+  export let longestName: string | null;
 
   const trekBak = (id: number, index: number) => {
     changeCount(index, -1);
@@ -32,20 +32,14 @@
   </thead>
   <tbody>
     {#each data as user, i}
-      <table-row>
-        <a
-          href={`/strafbakken/${user.firstName.toLowerCase()}`}
-          class={`cell c${i}`}
-        >
+      <row>
+        <a href={`/strafbakken/${user.firstName.toLowerCase()}`} class="cell">
           {user.nickname || user.firstName}
         </a>
-        <a
-          href={`/strafbakken/${user.firstName.toLowerCase()}`}
-          class={`cell c${i}`}
-        >
-          {user._count.StrafbakReceived}
+        <a href={`/strafbakken/${user.firstName.toLowerCase()}`} class="cell">
+          <p>{user._count.StrafbakReceived}</p>
         </a>
-        <div class={`actions cell c${i}`}>
+        <div class="actions cell">
           <Plus
             class="cursor-pointer hover:invert-[.35] transition z-0 focus:outline-0"
             on:click={() =>
@@ -65,8 +59,16 @@
               : null}
           />
         </div>
-      </table-row>
+      </row>
     {/each}
+    <!-- Add an invisible row with the longest name to make sure the 2 tables have the same width -->
+    {#if longestName !== null}
+      <row id="invisible">
+        <p class="cell">{longestName}</p>
+        <div class="cell" />
+        <div class="cell" />
+      </row>
+    {/if}
   </tbody>
 </main>
 
@@ -87,9 +89,9 @@
     display: grid;
     grid-template-columns: 1fr;
 
-    table-row {
+    row {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       transition: all 0.4s ease;
 
       &:nth-child(odd) {
@@ -102,11 +104,33 @@
 
       .cell {
         padding: $cell-padding;
+        word-wrap: break-word;
+        position: relative;
+
+        p {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      }
+
+      &#invisible {
+        opacity: 0;
+        cursor: default;
+        height: 0px;
+
+        .cell {
+          padding: 0 $cell-padding;
+          word-wrap: normal;
+          text-overflow: clip;
+          line-height: 0%;
+        }
       }
     }
 
     .actions {
       display: flex;
+      align-items: center;
       gap: $cell-padding;
     }
   }

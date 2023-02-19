@@ -4,9 +4,16 @@
   import type { sbPageData } from "./types";
 
   export let data: sbPageData;
-  const middleIndex = Math.ceil(data.strafbakken.length / 2);
 
+  const middleIndex = Math.ceil(data.strafbakken.length / 2);
   let width: number;
+
+  // Get the longest name
+  let longestName = "";
+  data.strafbakken.forEach((user) => {
+    let name = user.nickname ?? user.firstName;
+    if (name.length > longestName.length) longestName = name;
+  });
 </script>
 
 <svelte:window bind:innerWidth={width} />
@@ -18,10 +25,16 @@
   </Modals>
   <table-container>
     {#if width < 900}
-      <Table data={data.strafbakken} />
+      <Table data={data.strafbakken} longestName={null} />
     {:else}
-      <Table data={data.strafbakken.slice().splice(0, middleIndex)} />
-      <Table data={data.strafbakken.slice().splice(-middleIndex)} />
+      <Table
+        data={data.strafbakken.slice().splice(0, middleIndex)}
+        {longestName}
+      />
+      <Table
+        data={data.strafbakken.slice().splice(-middleIndex)}
+        {longestName}
+      />
     {/if}
   </table-container>
 </main>
