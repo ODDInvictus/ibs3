@@ -27,12 +27,10 @@
       method="POST"
       use:enhance={(event) => {
         return async ({ result, update }) => {
-          console.log(result);
           if (result.type === "failure") {
             error = result.data?.message;
           } else {
             error = "";
-            console.log(result);
             update();
           }
         };

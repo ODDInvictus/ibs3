@@ -32,13 +32,8 @@ model User {
   MaluspuntGiven          Maluspunt[]               @relation("maluspuntGiver")
   MaluspuntReceived       Maluspunt[]               @relation("maluspuntReceiver")
   CommitteeMember         CommitteeMember[]
-  TransactionFrom         Transaction[]             @relation("transactionFrom")
-  TransactionTo           Transaction[]             @relation("transactionTo")
   Account                 Account[]
   Session                 Session[]
-  Sale                    Sale[]
-  Acquisition             Acquisition[]
-  Declaration             Declaration[]
   FinancialGroups         FinancialGroup[]
   FinancialPersonDataUser FinancialPersonDataUser[]
 }
@@ -170,6 +165,12 @@ model ProductCategory {
   Product     Product[]
 }
 
+enum ProductType {
+  ALCOHOL
+  FOOD
+  OTHER
+}
+
 // Een product is alles wat verkocht en ingekocht kan worden
 model Product {
   id        Int      @id @default(autoincrement())
@@ -178,12 +179,12 @@ model Product {
 
   name        String
   description String
-  price       Int
+  price       Float
 
   // Dit bepaald wat er in data kan staan
-  productType String @default("product")
+  productType ProductType @default(OTHER)
   // Deze is speciaal, want dit bevat niet echt nuttige data, maar kan wel leuk zijn
-  data        Json   @db.Json
+  data        Json        @db.Json
 
   // Foreign keys
   category    ProductCategory @relation(fields: [categoryId], references: [id])
@@ -221,6 +222,12 @@ model FinancialPerson {
   FinancialPersonDataCommittee FinancialPersonDataCommittee[]
   FinancialPersonDataActivity  FinancialPersonDataActivity[]
   FinancialPersonDataOther     FinancialPersonDataOther[]
+
+  TransactionFrom Transaction[] @relation("TransactionFrom")
+  TransactionTo   Transaction[] @relation("TransactionTo")
+  Sale            Sale[]
+  Acquisition     Acquisition[]
+  Declaration     Declaration[]
 }
 
 // Extra data voor FinancialPerson, afhankelijk van FinancialPersonType
@@ -287,9 +294,10 @@ model Transaction {
   settled Boolean @default(false)
 
   // Gebruikers
-  from   User @relation(fields: [fromId], references: [id], name: "transactionFrom")
+
+  from   FinancialPerson @relation(fields: [fromId], references: [id], name: "TransactionFrom")
   fromId Int
-  to     User @relation(fields: [toId], references: [id], name: "transactionTo")
+  to     FinancialPerson @relation(fields: [toId], references: [id], name: "TransactionTo")
   toId   Int
 }
 
@@ -307,8 +315,8 @@ model Sale {
   amount    Int
 
   // Wie heeft er gekocht
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  person   FinancialPerson @relation(fields: [personId], references: [id])
+  personId Int
 
   // Een verkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
   isActive Boolean @default(true)
@@ -328,8 +336,8 @@ model Acquisition {
   price     Float
 
   // Wie heeft er gekocht
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  person   FinancialPerson @relation(fields: [personId], references: [id])
+  personId Int
 
   // Een inkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
   isActive Boolean @default(true)
@@ -342,8 +350,8 @@ model Declaration {
   updatedAt DateTime @updatedAt
 
   // Wie heeft er gekocht
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  person   FinancialPerson @relation(fields: [personId], references: [id])
+  personId Int
 
   // Hoeveel wil iemand terug
   price           Float

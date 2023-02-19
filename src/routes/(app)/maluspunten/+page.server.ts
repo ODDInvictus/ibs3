@@ -23,7 +23,6 @@ export const actions = {
     const receiverId = Number(data.get("receiverId"));
     const amount = Number(data.get("amount"));
     let reason = data.get("reason")?.toString();
-    console.log({ giverId, receiverId, reason, amount });
 
     if (!giverId || !receiverId || !reason || !amount || amount === 0) {
       return fail(400, { message: "Niet alle velden zijn ingevuld" });
