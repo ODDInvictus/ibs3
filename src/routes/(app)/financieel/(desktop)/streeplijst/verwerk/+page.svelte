@@ -12,14 +12,17 @@
 <div id="root">
   <h1>Verwerk een streeplijst</h1>
   
-  <code>
-    {JSON.stringify($page, null, 2)}
-  </code>
 </div>
 
 <style lang="scss">
   #root {
     display: block;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
   }
 
 </style>

@@ -1,4 +1,8 @@
-import type { Actions } from './$types'
+import type { PageServerLoad, Actions } from './$types'
+import db from "$lib/server/db";
+import { ProductType } from '@prisma/client';
+import { fail } from '@sveltejs/kit';
+
 import { z } from 'zod'
 
 const productSchema = z.object({
@@ -8,7 +12,7 @@ const productSchema = z.object({
   productType: z.string().trim().min(1).max(100),
   data: z.string().default('{}'),
   categoryId: z.number(),
-  isActive: z.boolean().default(true),
+  isActive: z.string().default(true),
 })
 
 export const actions = {
@@ -16,6 +20,19 @@ export const actions = {
     // huts
     const formData = Object.fromEntries(await event.request.formData())
     const productData = productSchema.safeParse(formData)
-    console.log(productData)
+
+    if (!productData.success) {
+      return fail(400, productData.error.format())
+    }
   }
 } satisfies Actions
+
+
+export const load = (async () => {
+  const categories = await db.productCategory.findMany()
+
+  return {
+    categories,
+    productTypes: Object.values(ProductType)
+  }
+}) satisfies PageServerLoad
