@@ -2,7 +2,6 @@
   import type { sbUserPageData } from "../types";
 
   export let data: sbUserPageData;
-  console.log(data.strafbakken);
 
   const formatName = (names: {
     nickname: string | null;
@@ -14,11 +13,7 @@
     );
   };
 
-  const formatDate = (date: Date) => {
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-  };
-
-  let name = formatName({
+  $: name = formatName({
     nickname: data.strafbakken.nickname,
     firstName: data.strafbakken.firstName,
   });
@@ -32,7 +27,9 @@
       <thead>
         <th>Gever</th>
         <th>Reden</th>
+        <th>Locatie</th>
         <th>Datum</th>
+        <th>Tijd</th>
       </thead>
       <tbody>
         {#each data.strafbakken.StrafbakReceived as strafbak}
@@ -41,7 +38,9 @@
               {formatName(strafbak.giver)}
             </a>
             <td>{strafbak.reason ?? "Geen reden gegeven"}</td>
-            <td>{formatDate(strafbak.dateCreated)}</td>
+            <td>{strafbak.location ?? "Onbekend"}</td>
+            <td>{strafbak.dateCreated.toLocaleDateString()}</td>
+            <td>{strafbak.dateCreated.toLocaleTimeString().slice(0, -3)}</td>
           </tr>
         {/each}
       </tbody>

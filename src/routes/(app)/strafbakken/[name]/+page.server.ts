@@ -11,15 +11,22 @@ export const load = (async ({ params }) => {
       firstName: true,
       nickname: true,
       StrafbakReceived: {
+        where: {
+          dateDeleted: null,
+        },
         select: {
           reason: true,
           dateCreated: true,
+          location: true,
           giver: {
             select: {
               firstName: true,
               nickname: true,
             },
           },
+        },
+        orderBy: {
+          dateCreated: "desc",
         },
       },
     },

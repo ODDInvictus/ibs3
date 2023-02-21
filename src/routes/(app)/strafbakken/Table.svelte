@@ -61,7 +61,7 @@
         </div>
       </row>
     {/each}
-    <!-- Add an invisible row with the longest name to make sure the 2 tables have the same width -->
+    <!-- Add an invisible row with the longest name to make sure the 2 tables have the same width (kinda) -->
     {#if longestName !== null}
       <row id="invisible">
         <p class="cell">{longestName}</p>

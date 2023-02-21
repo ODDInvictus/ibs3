@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { Modals, closeModal } from "svelte-modals";
+  import type { bakkenPageData } from "../types";
   import Table from "./Table.svelte";
-  import type { sbPageData } from "./types";
 
-  export let data: sbPageData;
+  export let data: bakkenPageData;
 
   const middleIndex = Math.ceil(data.strafbakken.length / 2);
   let width: number;
@@ -14,17 +13,25 @@
     let name = user.nickname ?? user.firstName;
     if (name.length > longestName.length) longestName = name;
   });
+
+  function getTitle(week: String | null) {
+    if (week === null) return "Alle getrokken strafbakken";
+    if (week === "0") return "Getrokken strafbakken deze week";
+    return `Getrokken strafbakken week ${week}`;
+  }
+
+  $: msg = getTitle(data.week);
 </script>
 
 <svelte:window bind:innerWidth={width} />
 
 <main>
-  <Modals>
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <div slot="backdrop" class="backdrop" on:click={closeModal} />
-  </Modals>
+  <header>
+    <h1>{msg}</h1>
+    <hr />
+  </header>
   <table-container>
-    {#if width < 900}
+    {#if width < 900 || data.strafbakken.length < 5}
       <Table data={data.strafbakken} longestName={null} />
     {:else}
       <Table
@@ -37,23 +44,47 @@
       />
     {/if}
   </table-container>
+  {#if data.week !== "0"}
+    <a
+      href="/strafbakken/bakken?week=0"
+      class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center transition"
+      data-sveltekit-preload-data="hover"
+    >
+      Wie is er deze week meesterbakker?
+    </a>
+  {/if}
   <a
-    href="/strafbakken/bakken"
+    href={data.week === null ? "/strafbakken" : "/strafbakken/bakken"}
     class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center transition"
     data-sveltekit-preload-data="hover"
   >
-    Hoeveel heeft iedereen al getrokken?
+    Terug
   </a>
 </main>
 
 <style lang="scss">
   $margin: 1rem;
+  $cell-padding: 0.75rem;
 
   main {
     display: flex;
     align-items: center;
     flex-direction: column;
     gap: $margin;
+
+    header {
+      width: 100%;
+
+      h1 {
+        text-align: center;
+        font-weight: 600;
+        font-size: larger;
+      }
+
+      hr {
+        margin-top: $margin;
+      }
+    }
 
     table-container {
       width: 100%;
@@ -65,15 +96,5 @@
     a {
       width: fit-content;
     }
-  }
-
-  .backdrop {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
   }
 </style>
