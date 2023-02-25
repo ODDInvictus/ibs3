@@ -2,12 +2,13 @@ import type { PageServerLoad } from "./$types";
 import db from "$lib/server/db";
 
 export const load = (async () => {
-  const financialPeople = await db.financialPerson.findMany()
-  const products = await db.product.findMany()
-
   return {
     test: 'huts',
-    financialPeople,
-    products
+    financialPeople: await db.financialPerson.findMany({
+      where: {
+        isActive: true
+      }
+    }),
+    products: await db.product.findMany()
   };
 }) satisfies PageServerLoad;
