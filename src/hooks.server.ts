@@ -6,7 +6,7 @@ import { sequence } from '@sveltejs/kit/hooks';
 import AuthentikProvider from '@auth/core/providers/authentik'
 import IBSAdapter from '$lib/server/authAdapter'
 import prisma from '$lib/server/db'
-import { discordLogger } from '$lib/server/jobs/discord'
+import { discordLogger } from './routes/discord'
 import { getUser } from '$lib/server/userCache';
 
 
