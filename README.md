@@ -62,7 +62,20 @@ Voor cronjobs kan je jobs/ldap/sync bekijken
 
 ## Production
 
-  voer `quirrel ci` uit om de cronjobs te laten werken
+Paar willekeurige notities voor draaien in production
+
+### Jobs
+
+* Voer `quirrel ci` uit om de cronjobs te laten werken
+
+* In je webserver configuratie moet je de /jobs route beveiligen. Dit is omdat authenticatie daar uitstaat voor Quirrel. Dit is erg simpel om te doen in nginx:
+```
+location /jobs {
+  allow 192.168.0.0/16;
+  deny any;
+  proxy_pass route_naar_ibs3;
+}
+```
 
 
 ## Environment Variables
