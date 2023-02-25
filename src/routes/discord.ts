@@ -1,6 +1,6 @@
 import { Queue } from 'quirrel/sveltekit'
 import { DISCORD_NOTIFICATION_WEBHOOK } from '$env/static/private'
-import { notifyDiscordError } from '../notifications/discord'
+import { notifyDiscordError } from '../lib/server/notifications/discord'
 
 export const discordLogger = Queue(
   "jobs/notifications/discord",
