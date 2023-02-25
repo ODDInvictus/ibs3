@@ -34,7 +34,6 @@ model User {
   CommitteeMember         CommitteeMember[]
   Account                 Account[]
   Session                 Session[]
-  FinancialGroups         FinancialGroup[]
   FinancialPersonDataUser FinancialPersonDataUser[]
 }
 
@@ -216,18 +215,21 @@ model FinancialPerson {
   // Huidige saldo
   balance Int    @default(0)
 
+  isActive Boolean @default(true)
+
   // Foreign keys
   FinancialGroup               FinancialGroup[]
   FinancialPersonDataUser      FinancialPersonDataUser[]
   FinancialPersonDataCommittee FinancialPersonDataCommittee[]
   FinancialPersonDataActivity  FinancialPersonDataActivity[]
   FinancialPersonDataOther     FinancialPersonDataOther[]
+  FinancialGroupPersonElement  FinancialGroupPersonElement[]
 
-  TransactionFrom Transaction[] @relation("TransactionFrom")
-  TransactionTo   Transaction[] @relation("TransactionTo")
-  Sale            Sale[]
-  Acquisition     Acquisition[]
-  Declaration     Declaration[]
+  TransactionFrom             Transaction[]                 @relation("TransactionFrom")
+  TransactionTo               Transaction[]                 @relation("TransactionTo")
+  Sale                        Sale[]
+  Acquisition                 Acquisition[]
+  Declaration                 Declaration[]
 }
 
 // Extra data voor FinancialPerson, afhankelijk van FinancialPersonType
@@ -246,7 +248,17 @@ model FinancialPersonDataUser {
 model FinancialGroup {
   person   FinancialPerson @relation(fields: [personId], references: [id])
   personId Int             @id
-  users    User[]
+
+  elements FinancialGroupPersonElement[]
+}
+
+model FinancialGroupPersonElement {
+  group    FinancialGroup  @relation(fields: [groupId], references: [personId])
+  groupId  Int
+  person   FinancialPerson @relation(fields: [personId], references: [id])
+  personId Int
+
+  @@id([groupId, personId])
 }
 
 // FinancialPersonType.ACTIVITY
