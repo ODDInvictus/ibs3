@@ -1,6 +1,6 @@
 # Invictus Bier Systeem 3
 
-Huts
+Invictus Bier Systeem is _het_ websysteem voor O.D.D. Invictus.
 
 ## Ontwikkelen
 
@@ -8,8 +8,14 @@ Om te beginnen met ontwikkelen moet je eerst de repository clonen met
 ```console
 git clone git@github.com:ODDInvictus/ibs3.git
 ```
+_als dit niet lukt moet je even je SSH keys instellen op GitHub_
 
 Daarna moet je een .env maken, dit kan door de .env.example te kopieren en te hernoemen. Deze moet je nog wel even invullen. Zie hiervoor het kopje Environment Variables
+
+Als laatst moet je de database client genereren.
+```console
+npx prisma generate
+```
 
 Daarna kan je de development server starten met `npm run dev`
 
@@ -61,4 +67,13 @@ Voor cronjobs kan je jobs/ldap/sync bekijken
 
 ## Environment Variables
 
-TODO lol
+|Sleutel|Waarde|Voorbeeld|
+|-|-|-|
+|DATABASE_URL|MySQL connection string|mysql://ibs3:password@mariadb:3306/ibs3?schema=public|
+|IBS_CLIENT_ID|Client ID in Authentik|ibs|
+|IBS_CLIENT_SECRET|Client Secret in Authentik|bjdsbjadshbjsbjsdbjabdhwvdksd|
+|IBS_ISSUER|Issuer url vanuit Authentik|https://auth.example.com/application/o/ibs/|
+|ORIGIN|URL waar deze app gevonden kan worden|https://ibs.example.com|
+|QUIRREL_BASE_URL|Base url voor Quirrel (dit is hetzelfde als ORIGIN behalve als je iets hebt als jobs.example.com)|https://ibs.example.com|
+|DISABLE_TELEMETRY|Zet Quirrel Telemetry uit (doe maar true)|true|
+|DISCORD_NOTIFICATION_WEBHOOK|Webhook URL voor discord kanaal waar errors in gepost worden|https://discord.com/api/webhooks/server/key|
