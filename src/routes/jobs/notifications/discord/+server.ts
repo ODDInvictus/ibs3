@@ -1,3 +1,3 @@
-import { discordLogger } from '$lib/server/jobs/discord';
+import { discordLogger } from '../../../discord';
 
 export const POST = discordLogger
