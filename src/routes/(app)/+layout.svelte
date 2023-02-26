@@ -1,32 +1,40 @@
 <script lang="ts">
-  import Logo from '$lib/components/Logo.svelte'
-  import { clickOutside } from '$lib/events/clickOutside';
-  import { page } from '$app/stores'
-  import { goto } from '$app/navigation'
-  import { CalendarDays, Cake, Users, Folder, Cog6Tooth, InformationCircle, FaceFrown } from 'svelte-heros-v2'
-  import PopupMenu from '$lib/components/PopupMenu.svelte'
-	import Breadcrumps from '$lib/components/Breadcrumps.svelte'
+  import Logo from "$lib/components/Logo.svelte";
+  import { clickOutside } from "$lib/events/clickOutside";
+  import { page } from "$app/stores";
+  import { goto } from "$app/navigation";
+  import {
+    CalendarDays,
+    User,
+    Banknotes,
+    Cog6Tooth,
+    InformationCircle,
+    FaceFrown,
+    UserGroup,
+  } from "svelte-heros-v2";
+  import Beer from "$lib//components/Beer.svelte";
+  import PopupMenu from "$lib/components/PopupMenu.svelte";
+  import Breadcrumps from "$lib/components/Breadcrumps.svelte";
 
-  let showMenu: boolean = false
+  let showMenu: boolean = false;
 
   function toggleMenu() {
-    showMenu = !showMenu
+    showMenu = !showMenu;
   }
 
   function closeMenu() {
-    showMenu = false
+    showMenu = false;
   }
 </script>
 
 <div id="layout">
-
-  <div id="background"/>
+  <div id="background" />
 
   <aside>
     <section id="top">
-      <button on:click={() => goto('/')}>
+      <button on:click={() => goto("/")}>
         <Logo />
-      </button> 
+      </button>
       <p>Invictus Bier Systeem</p>
     </section>
 
@@ -41,7 +49,7 @@
 
     <section>
       <a href="/strafbakken">
-        <i><Cake /></i>
+        <i><Beer /></i>
         <span>Strafbakken</span>
       </a>
     </section>
@@ -55,15 +63,22 @@
 
     <section>
       <a href="/leden">
-        <i><Users /></i>
+        <i><User /></i>
         <span>Leden</span>
       </a>
     </section>
 
     <section>
       <a href="/financieel">
-        <i><Folder /></i>
+        <i><Banknotes /></i>
         <span>Financieel</span>
+      </a>
+    </section>
+
+    <section>
+      <a href="/commissies">
+        <i><UserGroup /></i>
+        <span>Commissies</span>
       </a>
     </section>
 
@@ -80,22 +95,32 @@
         <span>IBS v1.0.0</span>
       </a>
     </section>
-
   </aside>
 
   <div id="content">
     <header>
       <Breadcrumps />
 
-      <button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
+      <button
+        id="user"
+        on:click={toggleMenu}
+        use:clickOutside
+        on:click_outside={closeMenu}
+      >
         <div id="user-card">
-          <p id="name">{$page.data.user.firstName + ' ' + $page.data.user.lastName ?? 'Gebruiker'}</p>
+          <p id="name">
+            {$page.data.user.firstName + " " + $page.data.user.lastName ??
+              "Gebruiker"}
+          </p>
           <p id="title">Lid</p>
         </div>
         <!-- <button>Log uit</button> -->
-        <img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
+        <img
+          src="https://avatars.githubusercontent.com/u/11670885?v=4"
+          alt="user"
+        />
 
-        <PopupMenu {showMenu}/>
+        <PopupMenu {showMenu} />
       </button>
     </header>
 
@@ -147,7 +172,7 @@
 
     color: white;
   }
-  
+
   header > #user {
     display: flex;
     flex-direction: row;
@@ -160,7 +185,7 @@
 
   header > #user #name {
     /* User name */
-    font-weight: bold;    
+    font-weight: bold;
   }
 
   header > #user #title {
@@ -176,7 +201,6 @@
     height: 3rem;
     border-radius: 50%;
   }
-
 
   aside {
     background-color: #010a4a;
@@ -233,15 +257,19 @@
     flex-direction: row;
     justify-content: flex-start;
     width: 80%;
-    color: white;    
+    color: white;
     margin-left: 1rem;
     margin-right: 1rem;
     padding: 0.8rem;
   }
 
   section > a:hover {
-    background: rgb(126,34,206);
-    background: linear-gradient(145deg, rgba(126,34,206,1) 0%, rgba(139,92,246,1) 100%); 
+    background: rgb(126, 34, 206);
+    background: linear-gradient(
+      145deg,
+      rgba(126, 34, 206, 1) 0%,
+      rgba(139, 92, 246, 1) 100%
+    );
     border-radius: 5px;
   }
 
@@ -256,5 +284,4 @@
   section > a span {
     margin-left: 0.5rem;
   }
-
 </style>
