@@ -86,6 +86,9 @@ location /jobs {
 |IBS_CLIENT_ID|Client ID in Authentik|ibs|
 |IBS_CLIENT_SECRET|Client Secret in Authentik|bjdsbjadshbjsbjsdbjabdhwvdksd|
 |IBS_ISSUER|Issuer url vanuit Authentik|https://auth.example.com/application/o/ibs/|
+|AUTHENTIK_BASE_URL|Base URL van Authentik|https://auth.example.com|
+|AUTHENTIK_GROUP_NAME|Naam van de groep met alle IBS gebruikers|ibs3_users|
+|AUTHENTIK_TOKEN|Access token van service account|aaasDJKASJDHSAJKHDLOIJASHDIABDSKJASJKDJKAS|
 |ORIGIN|URL waar deze app gevonden kan worden|https://ibs.example.com|
 |QUIRREL_BASE_URL|Base url voor Quirrel (dit is hetzelfde als ORIGIN behalve als je iets hebt als jobs.example.com)|https://ibs.example.com|
 |DISABLE_TELEMETRY|Zet Quirrel Telemetry uit (doe maar true)|true|
