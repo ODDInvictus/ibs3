@@ -3,6 +3,12 @@ import { PrismaClient, type User } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// Prisma middleware
+prisma.$use(async (params, next) => {
+  // TODO
+  // Change saldo when a transaction is created
+})
+
 async function getCommitteeMembers(ldapId: string): Promise<User[]> {
   const cm = await prisma.committeeMember.findMany({
     where: {
