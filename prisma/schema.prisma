@@ -67,12 +67,15 @@ model Committee {
   id                           Int                            @id @default(autoincrement())
   name                         String                         @unique
   ldapId                       String                         @unique
+  isActive                     Boolean                        @default(true)
+
   CommitteeMember              CommitteeMember[]
   Acivity                      Activity[]
   FinancialPersonDataCommittee FinancialPersonDataCommittee[]
 }
 
 model CommitteeMember {
+  id          Int      @id @default(autoincrement())
   committee   Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
   committeeId Int
   member      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -80,8 +83,6 @@ model CommitteeMember {
   joinDate    DateTime  @default(now()) @db.Date
   leaveDate   DateTime? @db.Date
   function    String    @default("Algemeen lid")
-
-  @@id([committeeId, userId, joinDate])
 }
 
 // STRAFBAKKEN
