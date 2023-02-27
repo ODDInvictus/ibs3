@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import StyledButton from "$lib/components/StyledButton.svelte";
+  import { enhance } from "$app/forms";
 
   export let data: PageData;
 </script>
@@ -19,10 +20,17 @@
     </left>
     <right>
       <h2>Commissie maken</h2>
-      <form method="post">
+      <form
+        method="post"
+        use:enhance={(event) => {
+          return async ({ result, update }) => {
+            console.log(result);
+          };
+        }}
+      >
         <label for="name">Naam</label>
         <input type="text" name="name" placeholder="Naam" />
-        <StyledButton restProps={{}}>Aanmaken</StyledButton>
+        <StyledButton type="submit" restProps={{}}>Aanmaken</StyledButton>
       </form>
     </right>
   </rows>
@@ -46,6 +54,10 @@
         ul {
           list-style-type: circle;
           list-style-position: inside;
+
+          a {
+            color: #010a4a;
+          }
 
           li:hover {
             text-decoration: underline;
