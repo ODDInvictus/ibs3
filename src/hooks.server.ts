@@ -1,13 +1,12 @@
-// @ts-nocheck
 import { SvelteKitAuth } from '@auth/sveltekit';
-import { IBS_CLIENT_SECRET, IBS_CLIENT_ID, IBS_ISSUER } from '$env/static/private';
+import { IBS_CLIENT_SECRET, IBS_CLIENT_ID, IBS_ISSUER, DISCORD_NOTIFICATION_WEBHOOK } from '$env/static/private';
 import { redirect, type Handle, type HandleServerError } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import AuthentikProvider from '@auth/core/providers/authentik'
 import IBSAdapter from '$lib/server/authAdapter'
 import prisma from '$lib/server/db'
-import { discordLogger } from './routes/discord'
 import { getUser } from '$lib/server/userCache';
+import { notifyDiscordError } from '$lib/server/notifications/discord';
 
 
 
@@ -64,6 +63,8 @@ export const handleError = (async ({ error, event }) => {
 	// When an error occurs, we want to log it to our logger
 	// This is done by sending a request to the jobs server
 
-	await discordLogger.enqueue({ error, event })
+	console.error(error)
+
+	await notifyDiscordError(DISCORD_NOTIFICATION_WEBHOOK, {event, error})
 
 }) satisfies HandleServerError
