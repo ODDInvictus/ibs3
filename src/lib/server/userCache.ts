@@ -18,7 +18,7 @@ export const getUser = async (session: Session | null): Promise<User | null> => 
 
 	const user = await prisma.user.findFirst({
 		where: {
-			email: session?.user?.email ?? ''
+			email: session.user.email
 		}
 	})
 
