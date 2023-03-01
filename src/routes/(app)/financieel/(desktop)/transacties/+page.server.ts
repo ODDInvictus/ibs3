@@ -4,6 +4,13 @@ import db from "$lib/server/db";
 export const load = (async () => {
   const transactions = await db.transaction.findMany({
     take: 20,
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      from: true,
+      to: true,
+    }
   })
 
   const sales = await db.sale.findMany({
