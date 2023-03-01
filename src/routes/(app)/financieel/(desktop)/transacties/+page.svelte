@@ -9,7 +9,12 @@
 
   <div id="page">
     <div id="sales">
-      <h1>Oude transacties</h1>
+      <h1>Laatste 20 transacties</h1>
+
+      <div class="buttons">
+        <a href="/financieel/transacties/verwerk">Verwerk transacties</a>
+        <a href="/financieel/transacties/statistieken">Statistieken</a>
+      </div>
 
       {#if $page.data.transactions.length == 0}
         <div class="not-found">
@@ -18,6 +23,35 @@
           <p>Maak eerst een aantal verkopen, declaraties etc. aan</p>
         </div>
       {/if}
+
+      <table id="transaction-table">
+        <thead>
+          <tr>
+            <th>Beschrijving</th>
+            <th>Prijs</th>
+            <th>Van</th>
+            <th>Naar</th>
+            <th>Datum</th>
+            <th>Verwerkt</th>
+            <th>Verander</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each $page.data.transactions as transaction}
+            <tr>
+              <td>{transaction.description}</td>
+              <td>€ {Number(transaction.price).toFixed(2)}</td>
+              <td>{transaction.from.name}</td>
+              <td>{transaction.to.name}</td>
+              <td>{new Date(transaction.createdAt).toLocaleDateString('nl-NL')}</td>
+              <td>{transaction.settled ? 'Ja' : 'Nee'}</td>
+              <td>
+                <a href="/financieel/transacties/{transaction.id}/">Verander</a>
+              </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
     </div>
     <div id="transactions">
       <h1>Vekopen</h1>
@@ -94,9 +128,8 @@
     }
   }
 
-  #sale-table {
+  table {
     width: 100%;
-    
 
     thead {
       background-color: #eee;
