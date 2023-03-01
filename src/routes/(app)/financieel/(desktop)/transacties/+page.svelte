@@ -50,6 +50,15 @@
               </td>
             </tr>
           {/each}
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -84,15 +93,29 @@
               </td>
             </tr>
           {/each}
+          <tr>
+            <td />
+            <td />
+            {#if $page.data.sales.length == 0}
+              <div class="not-found">
+                <h2>Geen verkopen gevonden</h2>
+                <a href="/financieel/streeplijst/verwerk">Verwerk een streeplijst!</a>
+              </div>
+            {/if}
+          </tr>
+
+
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
         </tbody>
       </table>
 
-      {#if $page.data.sales.length == 0}
-        <div class="not-found">
-          <h2>Geen verkopen gevonden</h2>
-          <a href="/financieel/streeplijst/verwerk">Verwerk een streeplijst!</a>
-        </div>
-      {/if}
+
     </div>
   </div>
 </div>
@@ -129,20 +152,29 @@
   }
 
   table {
+    margin-top: 1rem;
     width: 100%;
-
-    thead {
-      background-color: #eee;
-    }
+    border-collapse: collapse;
 
     th {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
       text-align: left;
     }
 
     td {
-      text-align: left;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      text-align: center;
     }
 
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:last-child {
+      background-color: #ddd;
+    }
 
     #amount {
       text-align: left;
