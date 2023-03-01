@@ -22,43 +22,19 @@ Daarna kan je de development server starten met `npm run dev`
 
 ## Tasks
 
-IBS3 is in staat om dingen op de achtergrond te draaien, buiten een request om. Dit is nice voor dingen die (redelijk) wat tijd kosten, zoals emails versturen. Hiervoor gebruiken we een Quirrel server. Deze start in development automatisch op als je `npm run dev` doet. Je kan dan de QuirrelUI openen op `http://localhost:9181`. 
+IBS3 is in staat om dingen op de achtergrond te draaien, buiten een request om. Dit is nice voor dingen die (redelijk) wat tijd kosten, zoals emails versturen. Hiervoor gebruiken we een express/node-cron backend. Deze start in development automatisch op als je `npm run dev` doet.
 
-### Hoe maak ik een task aan?
-Een task maken is erg simpel. Maak eerst in $lib/server/jobs een bestand aan in de juiste directory.
+### Cronjobs
 
-job.ts
-```ts
-import { Queue } from 'quirrel/sveltekit'
-
-export const queue = Queue(
-  // URL waar je deze methode kan vinden
-  "jobs/notifications/discord",
-  async (job, meta) => {
-    // Job om uit te voeren
-  },
-)
-```
-
-Daarna maak je in src/jobs een +server.ts aan op hetzelfde adres die je net hebt gedefineerd
+Een cronjob is een functie die elke x tijd draait. Zo'n functie kan je maken in `/backend/index.ts`.
 
 ```ts
-import { queue } from '$lib/server/jobs/discord';
-
-export const POST = queue
+//            crontab    , functie
+cron.schedule('1 * * * *', syncLDAPUsers)
+// Deze functie wordt elk hele uur uitgevoerd (10:00, 11:00, 12:00) etc
 ```
 
-Daarna kan je deze job uitvoeren door
-
-```ts
-import { queue } from '$lib/server/jobs/xx'
-
-await queue.enqueue(jobData)
-```
-
-te doen.
-
-Voor cronjobs kan je jobs/ldap/sync bekijken
+Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab.guru/) gebruiken
 
 ## Production
 
@@ -66,14 +42,12 @@ Paar willekeurige notities voor draaien in production
 
 ### Jobs
 
-* Voer `quirrel ci` uit om de cronjobs te laten werken
-
-* In je webserver configuratie moet je de /jobs route beveiligen. Dit is omdat authenticatie daar uitstaat voor Quirrel. Dit is erg simpel om te doen in nginx:
+* In je webserver configuratie moet je de backend beveiligen. Dit is omdat deze geen authenticatie laag heeft. Dit is erg simpel om te doen in nginx:
 ```
 location /jobs {
   allow 192.168.0.0/16;
   deny any;
-  proxy_pass route_naar_ibs3;
+  proxy_pass route_naar_ibs3_backend;
 }
 ```
 
@@ -90,6 +64,4 @@ location /jobs {
 |AUTHENTIK_GROUP_NAME|Naam van de groep met alle IBS gebruikers|ibs3_users|
 |AUTHENTIK_TOKEN|Access token van service account|aaasDJKASJDHSAJKHDLOIJASHDIABDSKJASJKDJKAS|
 |ORIGIN|URL waar deze app gevonden kan worden|https://ibs.example.com|
-|QUIRREL_BASE_URL|Base url voor Quirrel (dit is hetzelfde als ORIGIN behalve als je iets hebt als jobs.example.com)|https://ibs.example.com|
-|DISABLE_TELEMETRY|Zet Quirrel Telemetry uit (doe maar true)|true|
 |DISCORD_NOTIFICATION_WEBHOOK|Webhook URL voor discord kanaal waar errors in gepost worden|https://discord.com/api/webhooks/server/key|
