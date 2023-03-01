@@ -1,4 +1,5 @@
 export const LDAP_IDS = {
-  FEUTEN: 'feuten',
-  MEMBERS: 'leden',
-}
+  FEUTEN: "feuten",
+  MEMBERS: "leden",
+  SENAAT: "senaat",
+};

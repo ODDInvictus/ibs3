@@ -29,7 +29,7 @@
         }}
       >
         <label for="name">Naam</label>
-        <input type="text" name="name" placeholder="Naam" />
+        <input type="text" name="name" placeholder="Naam" required />
         <StyledButton type="submit" restProps={{}}>Aanmaken</StyledButton>
       </form>
     </right>
