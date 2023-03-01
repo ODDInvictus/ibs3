@@ -9,6 +9,6 @@ export const LDAP_IDS = {
 
 export const LEDGER_IDS = {
   SALE_BEER: 4501,
-  SALE_DEEPFRYER: 4502,
+  SALE_FOOD: 4502,
   SALE_OTHER: 4503,
 }
