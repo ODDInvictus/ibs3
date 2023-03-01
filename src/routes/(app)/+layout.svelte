@@ -6,6 +6,9 @@
   import { CalendarDays, Cake, Users, Folder, Cog6Tooth, InformationCircle, FaceFrown } from 'svelte-heros-v2'
   import PopupMenu from '$lib/components/PopupMenu.svelte'
 	import Breadcrumps from '$lib/components/Breadcrumps.svelte'
+	import { onMount } from 'svelte';
+  import { LDAP_IDS } from '$lib/constants';
+	import type { Committee } from '@prisma/client';
 
   let showMenu: boolean = false
 
@@ -15,6 +18,46 @@
 
   function closeMenu() {
     showMenu = false
+  }
+
+  let bestCommittee = 'Lid'
+
+  onMount(() => {
+    const data = $page.data
+    console.log(data)
+    if (data.committees && data.committees.length > 0) {
+      bestCommittee = getBestId(data.committees)
+    }
+  })
+
+  const getBestId = (committees: Committee[]): string => {
+    let order = [
+      LDAP_IDS.FEUTEN,
+      LDAP_IDS.SENAAT,
+      LDAP_IDS.ADMINS,
+      LDAP_IDS.FINANCIE,
+      LDAP_IDS.COLOSSEUM,
+      LDAP_IDS.MEMBERS
+    ]
+
+  const bestCommittee = committees.find(c => order.indexOf(c.ldapId) > -1)
+
+  switch (bestCommittee?.ldapId) {
+    case LDAP_IDS.FEUTEN:
+      return 'Feut'
+    case LDAP_IDS.SENAAT:
+      return 'Senaat'
+    case LDAP_IDS.ADMINS:
+      return 'Admin'
+    case LDAP_IDS.FINANCIE:
+      return 'Financie'
+    case LDAP_IDS.COLOSSEUM:
+      return 'Colosseum-bewoner'
+    case LDAP_IDS.MEMBERS:
+      return 'Lid'
+    default:
+      return 'Lid'
+    }
   }
 </script>
 
@@ -90,7 +133,7 @@
       <button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
         <div id="user-card">
           <p id="name">{$page.data.user.firstName + ' ' + $page.data.user.lastName ?? 'Gebruiker'}</p>
-          <p id="title">Lid</p>
+          <p id="title">{bestCommittee}</p>
         </div>
         <!-- <button>Log uit</button> -->
         <img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />

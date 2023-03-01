@@ -3,6 +3,7 @@ export const LDAP_IDS = {
   MEMBERS: 'leden',
   USERS: 'ibs-users',
   SENAAT: 'senaat',
+  COLOSSEUM: 'colosseum',
   ADMINS: 'ibs-admins',
   FINANCIE: 'financie'
 }
