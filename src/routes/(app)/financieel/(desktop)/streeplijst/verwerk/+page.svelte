@@ -49,7 +49,7 @@ import Row from './row.svelte'
         if (!confirm('Verwerken gelukt! Wil je nog een streeplijst verwerken?')) {
           goto('/financieel/streeplijst/verwerk')
         }
-        goto('/financieel')
+        goto('/financieel/transacties')
 
       } else {
         res.json().then(err => {
