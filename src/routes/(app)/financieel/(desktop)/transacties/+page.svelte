@@ -62,13 +62,6 @@
       </div>
 
 
-      {#if $page.data.sales.length == 0}
-        <div class="not-found">
-          <h2>Geen verkopen gevonden</h2>
-          <a href="/financieel/streeplijst/verwerk">Verwerk een streeplijst!</a>
-        </div>
-      {/if}
-
       <table id="sale-table">
         <thead>
           <tr>
@@ -93,6 +86,13 @@
           {/each}
         </tbody>
       </table>
+
+      {#if $page.data.sales.length == 0}
+        <div class="not-found">
+          <h2>Geen verkopen gevonden</h2>
+          <a href="/financieel/streeplijst/verwerk">Verwerk een streeplijst!</a>
+        </div>
+      {/if}
     </div>
   </div>
 </div>
