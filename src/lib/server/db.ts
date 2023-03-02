@@ -3,7 +3,7 @@ import { PrismaClient, type User } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function getCommitteeMembers(ldapId: string): Promise<User[]> {
+export async function getCommitteeMembers(ldapId: string): Promise<User[]> {
   const cm = await prisma.committeeMember.findMany({
     where: {
       committee: {
