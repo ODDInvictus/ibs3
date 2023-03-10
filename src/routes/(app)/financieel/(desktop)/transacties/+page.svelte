@@ -6,6 +6,7 @@
   <h1>Transacties</h1>
 
   <p>Welkom op de transacties pagina. Hier kan je alle transacties bekijken, en andere objecten promoveren tot transactie!</p>
+  <p>Alle knopjes zijn alleen bedoeld voor leden van de FinanCie, aangezien je een boel kan slopen wanneer je iets fout doet :) Vragen kunnen naar financie@oddinvictus.nl</p>
 
   <div id="page">
     <div id="sales">
