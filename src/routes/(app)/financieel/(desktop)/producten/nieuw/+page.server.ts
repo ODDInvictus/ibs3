@@ -1,9 +1,10 @@
 import type { PageServerLoad, Actions } from './$types'
 import db from "$lib/server/db";
 import { ProductType } from '@prisma/client';
-import { fail } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 
 import { z } from 'zod'
+import { authFinance } from '$lib/server/authorizationMiddleware';
 
 const productSchema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -17,6 +18,9 @@ const productSchema = z.object({
 
 export const actions = {
   default: async (event) => {
+    // First check authorization
+    const [authorized, committees] = authFinance(event.locals)
+    if (!authorized) throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
     // huts
     const formData = Object.fromEntries(await event.request.formData())
     const productData = productSchema.safeParse(formData)
