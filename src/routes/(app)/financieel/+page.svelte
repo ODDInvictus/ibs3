@@ -5,6 +5,7 @@
 <a href="/financieel/transacties/">Transacties</a>
 <a href="/financieel/streeplijst/verwerk">Verwerk streeplijst</a>
 <a href="/financieel/transacties/verkopen">Verkopen</a>
+<a href="/financieel/declaratie">Doe een declaratie</a>
 
 <style>
 
