@@ -54,6 +54,7 @@
 		"node-cache": "^5.1.2",
 		"node-cron": "^3.0.2",
 		"svelte-modals": "^1.2.1",
+		"ts-node": "^10.9.1",
 		"zod": "^3.20.6"
 	}
 }
