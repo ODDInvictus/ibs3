@@ -12,8 +12,9 @@ _als dit niet lukt moet je even je SSH keys instellen op GitHub_
 
 Daarna moet je een .env maken, dit kan door de .env.example te kopieren en te hernoemen. Deze moet je nog wel even invullen. Zie hiervoor het kopje [Environment Variables](#environment-variables)
 
-Als laatst moet je de database client genereren.
+Als laatst moet je de database client genereren en dependencies installeren.
 ```console
+npm install
 npx prisma generate
 ```
 
