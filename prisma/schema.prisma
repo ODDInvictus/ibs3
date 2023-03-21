@@ -64,10 +64,10 @@ model Session {
 }
 
 model Committee {
-  id                           Int                            @id @default(autoincrement())
-  name                         String                         @unique
-  ldapId                       String                         @unique
-  isActive                     Boolean                        @default(true)
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  ldapId   String  @unique
+  isActive Boolean @default(true)
 
   CommitteeMember              CommitteeMember[]
   Acivity                      Activity[]
@@ -75,7 +75,7 @@ model Committee {
 }
 
 model CommitteeMember {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   committee   Committee @relation(fields: [committeeId], references: [id], onDelete: Cascade)
   committeeId Int
   member      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -213,7 +213,7 @@ model FinancialPerson {
   // Naam van het financiele persoon, denk aan "O.D.D. Invictus", "Meeborrel" of gewoon de naam van een lid
   name    String
   // Huidige saldo
-  balance Float    @default(0)
+  balance Float  @default(0)
 
   isActive Boolean @default(true)
 
@@ -225,11 +225,11 @@ model FinancialPerson {
   FinancialPersonDataOther     FinancialPersonDataOther[]
   FinancialGroupPersonElement  FinancialGroupPersonElement[]
 
-  TransactionFrom             Transaction[]                 @relation("TransactionFrom")
-  TransactionTo               Transaction[]                 @relation("TransactionTo")
-  Sale                        Sale[]
-  Acquisition                 Acquisition[]
-  Declaration                 Declaration[]
+  TransactionFrom Transaction[] @relation("TransactionFrom")
+  TransactionTo   Transaction[] @relation("TransactionTo")
+  Sale            Sale[]
+  Acquisition     Acquisition[]
+  Declaration     Declaration[]
 }
 
 // Extra data voor FinancialPerson, afhankelijk van FinancialPersonType
@@ -325,6 +325,18 @@ model Sale {
   isActive Boolean @default(true)
 }
 
+// Een bonnetje, als bewijst dat er iets is gekocht
+model SalesReceipt {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  path String
+
+  Aquisition  Acquisition[]
+  Declaration Declaration[]
+}
+
 // Een inkoop
 // Oke sorry voor deze naam maar Purchase vond ik te verwarrend met Sale
 model Acquisition {
@@ -337,6 +349,12 @@ model Acquisition {
   productId Int
   amount    Int
   price     Float
+
+  // Bonnetje
+  receipt   SalesReceipt @relation(fields: [receiptId], references: [id])
+  receiptId Int
+
+  purchaseLocation String
 
   // Wie heeft er gekocht
   person   FinancialPerson @relation(fields: [personId], references: [id])
@@ -361,7 +379,10 @@ model Declaration {
   // Wat is de reden voor deze declaratie
   reason          String
   // Hoe is dit betaald? (Eigen rekening, bank, contant, of Invictus bankrekening)
-  methodOfPayment String @default("Eigen rekening")
+  methodOfPayment String       @default("Eigen rekening")
+  // Bonnetje
+  receipt         SalesReceipt @relation(fields: [receiptId], references: [id])
+  receiptId       Int
 
   // Heeft de penningmeester dit goedgekeurd?
   // Als dit niet is goedgekeurd wordt het ook niet omgezet naar een transactie
