@@ -305,7 +305,6 @@ model Transaction {
 
   // Transactie gegevens
   price   Float
-  settled Boolean @default(false)
 
   // Gebruikers
 
