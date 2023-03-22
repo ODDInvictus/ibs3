@@ -1,9 +1,10 @@
 import type { PageServerLoad, Actions } from './$types'
 import db from "$lib/server/db";
 import { ProductType } from '@prisma/client';
-import { fail } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 
 import { z } from 'zod'
+import { isFinancie } from '$lib/server/authorization';
 
 const productSchema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -17,6 +18,11 @@ const productSchema = z.object({
 
 export const actions = {
   default: async (event) => {
+    // @ts-expect-error als je niet je eigen .d.ts kan lezen, moet je ook niet piepen
+    const user: User = event.locals.user
+
+    if (!isFinancie(user)) return error(403, 'Geen toegang tot deze actie!')
+  
     // huts
     const formData = Object.fromEntries(await event.request.formData())
     const productData = productSchema.safeParse(formData)

@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
   import StyledButton from '$lib/components/StyledButton.svelte';
-import Row from './row.svelte'
+  import Row from './row.svelte'
 
   let data: RowData[] = [{ 
     id: 0, 

@@ -1,9 +1,10 @@
 import type { PageServerLoad } from "./$types";
 import db from "$lib/server/db";
-import { redirect, type Actions } from '@sveltejs/kit';
+import { error, redirect, type Actions } from '@sveltejs/kit';
 import { FinancialPersonType, ProductType } from '@prisma/client';
 import { LEDGER_IDS } from '$lib/constants';
 import { fail } from '@sveltejs/kit';
+import { isFinancie } from '$lib/server/authorization';
 
 export const load = (async () => {
   const sales = await db.sale.findMany({
@@ -20,6 +21,12 @@ export const load = (async () => {
 
 export const actions = {
   default: async (event) => {
+    // @ts-expect-error als je niet je eigen .d.ts kan lezen, moet je ook niet piepen
+    const user: User = event.locals.user
+
+    if (!isFinancie(user)) return error(403, 'Geen toegang tot deze actie!')
+  
+
     console.log('[Sales] Converting all sales to Transactions!')
     const sales = await db.sale.findMany({
       include: {

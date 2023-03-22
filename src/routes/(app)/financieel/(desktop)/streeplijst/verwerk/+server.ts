@@ -1,13 +1,22 @@
 import { getFinancialPeople, getProducts } from '$lib/server/financial';
 import db from '$lib/server/db'
 import { error } from '@sveltejs/kit';
+import type { User } from '@prisma/client'
 import type { RequestHandler } from './$types';
+import { isFinancie } from '$lib/server/authorization';
 
 
-export const POST = (async ({ request }) => {
+export const POST = (async ({ request, locals }) => {
+  // @ts-expect-error als je niet je eigen .d.ts kan lezen, moet je ook niet piepen
+  const user: User = locals.user
+
+  if (!isFinancie(user)) return error(403, 'Geen toegang tot deze actie!')
+  
   const data = await request.json()
   const people = await getFinancialPeople()
   const products = await getProducts()
+
+
 
   console.log({ data, people, products })
 
