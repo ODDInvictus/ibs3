@@ -200,6 +200,7 @@ enum FinancialPersonType {
   USER
   GROUP
   ACTIVITY
+  COMMITTEE
   INVICTUS
   OTHER
 }
@@ -274,6 +275,15 @@ model FinancialPersonDataActivity {
 // Verwijst naar het dispuut als financieel persoon
 // Geen model nodig
 
+// FinancialPersonType.COMMITTEE
+// Verwijst naar een commissie, wordt redelijk hetzelfde gebruikt als GROUP maar maakt het makkelijk om een commissie te verwijderen
+model FinancialPersonDataCommittee {
+  person      FinancialPerson @relation(fields: [personId], references: [id])
+  personId    Int             @id
+  committee   Committee       @relation(fields: [committeeId], references: [id])
+  committeeId Int
+}
+
 // FinancialPersonType.OTHER
 // Verwijst naar iets of iemand, die iig niet IBS gebruiker is.
 // Alleen gebruiken als het echt niet anders kan, en met duidelijke notities
@@ -294,7 +304,7 @@ model Transaction {
   createdAt   DateTime @default(now())
 
   // Transactie gegevens
-  price   Float
+  price Float
 
   // Gebruikers
 
