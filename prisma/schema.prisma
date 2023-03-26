@@ -335,18 +335,6 @@ model Sale {
   isActive Boolean @default(true)
 }
 
-// Een bonnetje, als bewijst dat er iets is gekocht
-model SalesReceipt {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  path String
-
-  Aquisition  Acquisition[]
-  Declaration Declaration[]
-}
-
 // Een inkoop
 // Oke sorry voor deze naam maar Purchase vond ik te verwarrend met Sale
 model Acquisition {
@@ -361,8 +349,7 @@ model Acquisition {
   price     Float
 
   // Bonnetje
-  receipt   SalesReceipt @relation(fields: [receiptId], references: [id])
-  receiptId Int
+  receipt String
 
   purchaseLocation String
 
@@ -389,12 +376,14 @@ model Declaration {
   // Wat is de reden voor deze declaratie
   reason          String
   // Hoe is dit betaald? (Eigen rekening, bank, contant, of Invictus bankrekening)
-  methodOfPayment String       @default("Eigen rekening")
-  // Bonnetje
-  receipt         SalesReceipt @relation(fields: [receiptId], references: [id])
-  receiptId       Int
+  methodOfPayment String  @default("Eigen rekening")
+  // Bonnetje (link naar cdn)
+  receipt         String?
 
   // Heeft de penningmeester dit goedgekeurd?
   // Als dit niet is goedgekeurd wordt het ook niet omgezet naar een transactie
   accepted Boolean @default(false)
+  // Heeft de penningmeester dit afgekeurd?
+  // Als dit is afgekeurd wordt het ook niet omgezet naar een transactie
+  denied   Boolean @default(false)
 }
