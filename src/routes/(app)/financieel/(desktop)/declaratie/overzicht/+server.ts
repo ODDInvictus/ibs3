@@ -1,7 +1,15 @@
 import db from '$lib/server/db'
+import { authFinance } from '$lib/server/authorizationMiddleware'
 
-export const POST = async ({ request }) => {
+export const POST = async ({ request, locals }) => {
   const body = await request.json()
+
+  if (!authFinance(locals)) {
+    return new Response(JSON.stringify({
+      status: 401,
+      message: 'Helaas heb jij geen rechten om dit te doen.'
+    }))
+  }
 
   try {
     console.log(body)
