@@ -2,13 +2,21 @@
   import { page } from '$app/stores'
 
   function formatPrice(price: number) { 
-    return price.toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })
+    let color = ''
+    if (price > 20) {
+      color = 'text-green-500'
+    } else if (price < 0) {
+      color = 'text-red-500'
+    }
+
+    return `<span class=${color}>${price.toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' })}</span>` 
+    
   }
 </script>
 
 <h1>Financieel</h1>
 
-<p>Huidig saldo: {formatPrice($page.data.person.balance)}</p>
+<p>Huidig saldo: {@html formatPrice($page.data.person.balance)}</p>
 
 <p>Je hebt de volgende opties: </p>
 
@@ -19,7 +27,6 @@
 <a href="/financieel/declaratie/overzicht">Declaratie overzicht</a>
 
 <style>
-
   h1 {
     font-size: 1.5rem;
   }
