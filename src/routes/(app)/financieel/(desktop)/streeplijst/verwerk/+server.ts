@@ -3,22 +3,17 @@ import db from '$lib/server/db'
 import { error } from '@sveltejs/kit';
 import type { User } from '@prisma/client'
 import type { RequestHandler } from './$types';
-import { isFinancie } from '$lib/server/authorization';
+import { authFinance } from '$lib/server/authorizationMiddleware';
 
 
 export const POST = (async ({ request, locals }) => {
-  // @ts-expect-error als je niet je eigen .d.ts kan lezen, moet je ook niet piepen
-  const user: User = locals.user
+  // First check authorization
+  const [authorized, committees] = authFinance(locals)
+  if (!authorized) throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
 
-  if (!isFinancie(user)) return error(403, 'Geen toegang tot deze actie!')
-  
   const data = await request.json()
   const people = await getFinancialPeople()
   const products = await getProducts()
-
-
-
-  console.log({ data, people, products })
 
   // Now we check if all people,products and amounts are valid
   // If not, we return a 400 error

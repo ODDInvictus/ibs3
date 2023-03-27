@@ -4,7 +4,7 @@ import { error, redirect, type Actions } from '@sveltejs/kit';
 import { FinancialPersonType, ProductType } from '@prisma/client';
 import { LEDGER_IDS } from '$lib/constants';
 import { fail } from '@sveltejs/kit';
-import { isFinancie } from '$lib/server/authorization';
+import { authFinance } from '$lib/server/authorizationMiddleware';
 
 export const load = (async () => {
   const sales = await db.sale.findMany({
@@ -21,11 +21,9 @@ export const load = (async () => {
 
 export const actions = {
   default: async (event) => {
-    // @ts-expect-error als je niet je eigen .d.ts kan lezen, moet je ook niet piepen
-    const user: User = event.locals.user
-
-    if (!isFinancie(user)) return error(403, 'Geen toegang tot deze actie!')
-  
+    // First check authorization
+    const [authorized, committees] = authFinance(event.locals)
+    if (!authorized) throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
 
     console.log('[Sales] Converting all sales to Transactions!')
     const sales = await db.sale.findMany({
@@ -54,7 +52,6 @@ export const actions = {
         ledgerId,
         description: "Verkoop: " + sale.product.name,
         price: sale.product.price * sale.amount,
-        settled: false,
         fromId: sale.person.id,
         toId: invictus.id
       }

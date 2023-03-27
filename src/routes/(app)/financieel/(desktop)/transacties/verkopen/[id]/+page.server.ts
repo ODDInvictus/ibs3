@@ -2,7 +2,7 @@ import type { PageServerLoad } from '../../$types';
 import db from '$lib/server/db'
 import { error, redirect, type Actions } from '@sveltejs/kit';
 import { getFinancialPeoplePerCategory } from '$lib/server/financial/utils';
-import { isFinancie } from '$lib/server/authorization';
+import { authFinance } from '$lib/server/authorizationMiddleware';
 
 export const load = (async ({ params }) => {
   const { id } = params;
@@ -30,11 +30,9 @@ export const load = (async ({ params }) => {
 
 export const actions = {
   default: async ({ request, params, locals }) => {
-    // @ts-expect-error als je niet je eigen .d.ts kan lezen, moet je ook niet piepen
-    const user: User = locals.user
-
-    if (!isFinancie(user)) return error(403, 'Geen toegang tot deze actie!')
-  
+    // First check authorization
+    const [authorized, committees] = authFinance(locals)
+    if (!authorized) throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
 
     const data = await request.formData();
     const saleID = Number(params.id);
