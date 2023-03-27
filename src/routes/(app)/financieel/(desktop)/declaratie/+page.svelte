@@ -44,11 +44,11 @@
 <p>Heb je bier gekocht, of wil je gewoon geld van ons? Doe dan een declaratie!</p>
 
 {#if form?.success}
-  <p class="success">{form.message}</p>
+  <p class="success">{form.message ?? ''}</p>
 {/if}
 
 {#if !form?.success}
-  <p class="error">{form?.message}</p>
+  <p class="error">{form?.message ?? ''}</p>
 {/if}
 
 <form method="POST" enctype="multipart/form-data">
