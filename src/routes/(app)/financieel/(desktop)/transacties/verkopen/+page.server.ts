@@ -52,7 +52,6 @@ export const actions = {
         ledgerId,
         description: "Verkoop: " + sale.product.name,
         price: sale.product.price * sale.amount,
-        settled: false,
         fromId: sale.person.id,
         toId: invictus.id
       }
