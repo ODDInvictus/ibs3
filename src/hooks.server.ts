@@ -10,7 +10,7 @@ import { notifyDiscordError } from '$lib/server/notifications/discord';
 
 
 
-const authorization = async ({ event, resolve }) => {
+const authorization = (async ({ event, resolve }) => {
 	const url = event.url.pathname
 	const session = await event.locals.getSession()
 	const user = await getUser(session)
@@ -40,7 +40,7 @@ const authorization = async ({ event, resolve }) => {
 		transformPageChunk: ({ html }) => html
 	}); 
 	return result
-}
+}) satisfies Handle
 
 const options = {
 	clientSecret: IBS_CLIENT_SECRET,
