@@ -15,8 +15,16 @@
     await fetch('', {
       method: 'POST',
       body: JSON.stringify({ id, type }),
-    }).then(res => res.json())
-    .then(() => removeRow(id))
+    })
+    .then(res => res.json())
+    .then(res => {
+      console.log(res)
+      if (res.status !== 200) {
+        error = res.message
+      } else {
+        removeRow(id)
+      }
+    })
     .catch(err => error = err.message)
   }
 
@@ -49,6 +57,14 @@
       </tr>
     </thead>
     <tbody>
+      {#if !$page.data.declarations.length}
+        <tr>
+          <td colspan="7">
+            <p id="no-decla">Geen declaraties gevonden</p>
+            <a href="/financieel/declaratie" class="link">Wil je een declaratie doen?</a>
+          </td>
+        </tr>
+      {/if}
       {#each $page.data.declarations as declaration}
         <tr data-id={declaration.id}>
           <td>{declaration.id}</td>
@@ -77,6 +93,19 @@
 <style>
   h1 {
     font-size: 1.5rem;
+  }
+
+  .error {
+    color: red;
+  }
+
+  #no-decla {
+    font-size: 1.1rem;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+    cursor: pointer;
   }
 
   table {
