@@ -1,19 +1,77 @@
-<script>
+<script lang="ts">
   import { page } from '$app/stores';
-	import { PUBLIC_RECEIPT_URL } from '$env/static/public';
+	import { PUBLIC_UPLOAD_URL } from '$env/static/public';
+  import { UserCircle, CurrencyEuro, QuestionMarkCircle, CalendarDays, Banknotes, Check } from 'svelte-heros-v2'
 
-  console.log($page.data.declaration);
+  function formatPrice(price: number): string {
+    const p = price.toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' }).split('€')[1]
+    return p.substring(1);
+  }
+
+  function accepted(accepted: boolean, denied: boolean): string {
+    if (accepted) return 'Geaccepteerd'
+    if (denied) return 'Afgewezen'
+    return 'Nog niet beoordeeld'
+  }
+
+  const d = $page.data.declaration;
 </script>
 
 <div id="root">
-  <h1>Declaratie {$page.data.declaration.id}</h1>
-  <p>Het bewerken is helaas nog niet mogelijk, boeie ruurd</p>
+  <div id="left">
+    <h1>Declaratie #{d.id}</h1>
+    <p title="Declarant"><UserCircle /> {d.person.name}</p>
+    <p title="Geld"><CurrencyEuro /> {formatPrice(d.price)}</p>
+    <p title="Reden"><QuestionMarkCircle /> {d.reason}</p>
+    <p title="Wanneer"><CalendarDays /> {new Date(d.createdAt).toLocaleString('nl-NL')}</p>
+    <p title="Betaalmethode"><Banknotes /> {d.methodOfPayment}</p>
+    <p title="Status acceptatie"><Check /> {accepted(d.accepted, d.denied)}</p>
 
-  <img src={PUBLIC_RECEIPT_URL + $page.data.declaration.receipt} alt="Helaas is hier geen bonnetje voor geupload :(" />
+    Accepteren? Ga dan naar het <a href="/financieel/declaratie/overzicht">overzicht</a>
+  </div>
+
+  <div id="receipt">
+    <img src={PUBLIC_UPLOAD_URL + 'receipts/' + $page.data.declaration.receipt} alt="Helaas is hier geen bonnetje voor geupload :(" />
+  </div>
+
 </div>
 
-<style>
+<style lang="scss">
   h1 {
-    font-size: 1.5rem;
+    font-size: 4rem;
+  }
+
+  a {
+    color: purple;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  img {
+    max-width: 25vw;
+  }
+
+  #root {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  #receipt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #left {
+
+    p {
+      display: flex;
+      align-items: center;
+      cursor: help;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+    }
   }
 </style>

@@ -7,6 +7,9 @@ export const load = (async ({ params }) => {
   const declaration = await db.declaration.findFirst({
     where: {
       id: parseInt(params.id)
+    },
+    include: {
+      person: true,
     }
   })
 
