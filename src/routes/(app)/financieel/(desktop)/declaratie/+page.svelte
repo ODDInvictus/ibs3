@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
   import type { PageData, ActionData } from './$types';
 
   export let form: ActionData;
@@ -39,6 +39,11 @@
     }
   }
 
+  function removeImage() {
+    const image = document.getElementById('receipt-image')! as HTMLImageElement
+    image.src = ''
+  }
+
   
 
 </script>
@@ -54,7 +59,12 @@
   <p class="error">{form?.message ?? ''}</p>
 {/if}
 
-<form method="POST" enctype="multipart/form-data" use:enhance>
+<form method="POST" enctype="multipart/form-data" use:enhance={() => {
+  return async ({ result }) => {
+    removeImage()
+    await applyAction(result)    
+  }
+}}>
 
   <label for="product">Wat heb je gekocht</label>
   <input type="text" name="product" id="product" bind:value={productData.product}>
