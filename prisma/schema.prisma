@@ -298,13 +298,13 @@ model FinancialPersonDataOther {
 model Transaction {
   // Administratieve gegevens
   id          Int      @id @default(autoincrement())
-  ledger      Ledger   @relation(fields: [ledgerId], references: [id])
-  ledgerId    Int
+  ledger      Ledger?  @relation(fields: [ledgerId], references: [id])
+  ledgerId    Int?
   description String
   createdAt   DateTime @default(now())
 
   // Transactie gegevens
-  price   Float
+  price Float
 
   // Gebruikers
 
