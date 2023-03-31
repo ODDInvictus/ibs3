@@ -66,3 +66,6 @@ location /jobs {
 |AUTHENTIK_TOKEN|Access token van service account|aaasDJKASJDHSAJKHDLOIJASHDIABDSKJASJKDJKAS|
 |ORIGIN|URL waar deze app gevonden kan worden|https://ibs.example.com|
 |DISCORD_NOTIFICATION_WEBHOOK|Webhook URL voor discord kanaal waar errors in gepost worden|https://discord.com/api/webhooks/server/key|
+|BACKEND_PORT|Poort waarop de backend draait|3001|
+|UPLOAD_FOLDER|Map op de schijf waar uploads opgeslagen worden|./static/upload|
+|PUBLIC_UPLOAD_URL|URL waar de uploads gevonden kunnen worden|/upload/|
