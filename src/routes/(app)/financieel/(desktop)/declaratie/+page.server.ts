@@ -1,8 +1,7 @@
 import db from '$lib/server/db'
-import cdn from '$lib/server/cdn'
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types'
-import { RECEIPT_BUCKET } from '$env/static/private';
+import fs from 'fs';
 
 // export const load = (async () => {
 //   const products = await db.product.findMany({
@@ -22,15 +21,13 @@ type FormData = {
   methode: string
   prijs: string
   statiegeld: string
-  receipt: Blob
+  receipt: File
 }
 
 export const actions = {
   default: async (event) => {
     try {
       const data = Object.fromEntries(await event.request.formData()) as unknown as FormData
-
-      const receipt = Buffer.from(await (data.receipt as Blob).arrayBuffer())
 
       // save declaration
       if (!data.product || data.product === '') throw new Error('Product is verplicht')
@@ -85,10 +82,9 @@ export const actions = {
           }
         })
 
-        // save the receipt      
-        await cdn.putObject(RECEIPT_BUCKET, filename, receipt, {
-          'Content-Type': data.receipt.type
-        })
+        // Save the receipt
+        fs.writeFileSync('./static/upload/receipts/' + filename, Buffer.from(await data.receipt.arrayBuffer()), { encoding: 'binary' })
+
       })
 
       return {

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
   import type { PageData, ActionData } from './$types';
 
   export let form: ActionData;
@@ -38,6 +39,8 @@
     }
   }
 
+  
+
 </script>
 
 <h1>Doe een declaratie</h1>
@@ -51,7 +54,7 @@
   <p class="error">{form?.message ?? ''}</p>
 {/if}
 
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data" use:enhance>
 
   <label for="product">Wat heb je gekocht</label>
   <input type="text" name="product" id="product" bind:value={productData.product}>
@@ -70,7 +73,7 @@
   </span>
 
   <label for="receipt">Bon</label>
-  <input type="file" name="receipt" id="receipt" bind:files>
+  <input type="file" name="receipt" id="receipt" accept="image/*" bind:files>
   
   <button
     type="submit"
