@@ -90,7 +90,7 @@ export const actions = {
 
       return {
         success: true,
-        message: 'Declaratie is opgeslagen'
+        message: 'Declaratie is opgeslagen. Je kan gelijk nog een declaratie doen!'
       }
 
     } catch (err: Error) {
