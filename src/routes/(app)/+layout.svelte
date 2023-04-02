@@ -32,17 +32,27 @@
 
   const getBestId = (committees: Committee[]): string => {
     let order = [
-      LDAP_IDS.FEUTEN,
-      LDAP_IDS.SENAAT,
-      LDAP_IDS.ADMINS,
-      LDAP_IDS.FINANCIE,
       LDAP_IDS.COLOSSEUM,
-      LDAP_IDS.MEMBERS
+      LDAP_IDS.MEMBERS,
+      LDAP_IDS.FINANCIE,
+      LDAP_IDS.ADMINS,
+      LDAP_IDS.SENAAT,
+      LDAP_IDS.FEUTEN,
     ]
+    
+    let best = committees[0]
 
-  const bestCommittee = committees.find(c => order.indexOf(c.ldapId) > -1)
+    // Now find the committee where their ldapId is the highest in the order array
+    // Not every committee is in the order, ignore those
+    for (let i = 1; i < committees.length; i++) {
+      const committee = committees[i]
+      if (order.indexOf(committee.ldapId) > order.indexOf(best.ldapId)) {
+        best = committee
+      }
+    }
 
-  switch (bestCommittee?.ldapId) {
+
+    switch (best.ldapId) {
     case LDAP_IDS.FEUTEN:
       return 'Feut'
     case LDAP_IDS.SENAAT:
