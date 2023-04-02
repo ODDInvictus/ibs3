@@ -42,9 +42,9 @@ export const actions = {
 
       const user = event.locals.user
 
-      const personData = await db.financialPersonDataUser.findUnique({
+      const personData = await db.financialPersonDataUser.findFirst({
         where: {
-          personId: user.id
+          userId: user.id
         }
       })
 
