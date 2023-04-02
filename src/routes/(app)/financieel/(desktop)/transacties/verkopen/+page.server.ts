@@ -42,7 +42,15 @@ export const actions = {
       throw new Error('FinancialPerson with type INVICTUS not found!')
     }
 
-    const transactions = []
+    type TransactionCreate = {
+      ledgerId: number
+      description: string
+      price: number
+      fromId: number
+      toId: number
+    }
+
+    const transactions: TransactionCreate[] = []
 
     for (const sale of sales) {
 
@@ -59,29 +67,24 @@ export const actions = {
       transactions.push(transaction)
     }
 
-    try {
-      await db.transaction.createMany({
+
+    db.$transaction(async (tx) => {
+      await tx.transaction.createMany({
         data: transactions
       })
-    } catch (err) {
-      console.error(err)
+
+      // Now we set the `isActive` flag to false
+      await tx.sale.updateMany({
+        data: {
+          isActive: false
+        }
+      })
+    }).catch(err => {
       throw fail(500, {
         message: 'Failed to create transactions',
         error: err
       })
-    }
-
-    // Now we delete all sales
-    try {
-      await db.sale.deleteMany()
-    } catch (err) {
-    
-      console.error(err)
-      throw fail(500, {
-        message: 'Failed to delete sales',
-        error: err
-      })
-    }
+    })
 
     // And redirect back to /financieel/transacties
     throw redirect(300, '/financieel/transacties')
