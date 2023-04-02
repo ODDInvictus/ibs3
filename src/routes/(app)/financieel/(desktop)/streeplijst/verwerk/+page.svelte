@@ -46,7 +46,7 @@
       if (res.status === 200) {
         console.log('success')
         
-        if (!confirm('Verwerken gelukt! Wil je nog een streeplijst verwerken?')) {
+        if (confirm('Verwerken gelukt! Wil je nog een streeplijst verwerken?')) {
           goto('/financieel/streeplijst/verwerk')
         }
         goto('/financieel/transacties')
