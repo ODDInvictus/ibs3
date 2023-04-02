@@ -231,6 +231,7 @@ model FinancialPerson {
   Sale            Sale[]
   Acquisition     Acquisition[]
   Declaration     Declaration[]
+  Streeplijst     Streeplijst[]
 }
 
 // Extra data voor FinancialPerson, afhankelijk van FinancialPersonType
@@ -331,8 +332,32 @@ model Sale {
   person   FinancialPerson @relation(fields: [personId], references: [id])
   personId Int
 
+  // Link naar streeplijst (indien van toepassing)
+  streeplijst   Streeplijst? @relation(fields: [streeplijstId], references: [id])
+  streeplijstId Int?
+
   // Een verkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
   isActive Boolean @default(true)
+}
+
+model Streeplijst {
+  // Administratieve gegevens
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Wanneer is de streeplijst aangemaakt
+  date DateTime
+
+  // Wie heeft dit verwerkt
+  person   FinancialPerson @relation(fields: [personId], references: [id])
+  personId Int
+
+  // Een streeplijst kan niet worden verwijdered, maar kan wel worden gedeactiveerd
+  isActive Boolean @default(true)
+
+  // Foreign keys
+  Sale Sale[]
 }
 
 // Een inkoop
