@@ -28,9 +28,9 @@ const authorization = (async ({ event, resolve }) => {
 		return await resolve(event); 
 	} else if (!url.startsWith('/auth')) {
 		// If the path is something other than /auth, check if the user is logged in
-		const session = await event.locals.getSession();
 
-		if (!session) {
+
+		if (!user) {
 			throw redirect(303, '/auth');
 		}
 	}
