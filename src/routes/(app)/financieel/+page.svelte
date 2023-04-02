@@ -16,15 +16,22 @@
 
 <h1>Financieel</h1>
 
-<p>Huidig saldo: {@html formatPrice($page.data.person.balance)}</p>
+{#if !$page.data.person}
+  <p class="text-red-500">Oei! Er is nog geen financiele data voor jou aangemaakt. Kijk over een uurtje hier weer terug. Werkt het dan nog niet? Stuur dan even een mailtje naar bakkentrekkers@oddinvictus.nl</p>
+{:else}
+  <p>Huidig saldo: {@html formatPrice($page.data.person.balance)}</p>
+{/if}
 
 <p>Je hebt de volgende opties: </p>
 
 <a href="/financieel/transacties/">Transacties</a>
-<a href="/financieel/streeplijst/verwerk">Verwerk streeplijst</a>
-<a href="/financieel/transacties/verkopen">Verkopen</a>
-<a href="/financieel/declaratie">Doe een declaratie</a>
 <a href="/financieel/declaratie/overzicht">Declaratie overzicht</a>
+<a href="/financieel/transacties/verkopen">Verkoop overzicht</a>
+{#if $page.data.person}
+  <a href="/financieel/saldo">Saldo overzicht</a>
+  <a href="/financieel/streeplijst/verwerk">Verwerk streeplijst</a>
+  <a href="/financieel/declaratie">Doe een declaratie</a>
+{/if}
 
 <style>
   h1 {

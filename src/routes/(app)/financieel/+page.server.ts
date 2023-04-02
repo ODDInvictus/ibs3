@@ -11,6 +11,6 @@ export const load = (async ({ locals }) => {
   })
 
   return {
-    person: personData.person
+    person: personData?.person
   }
 })
