@@ -1,7 +1,6 @@
 import { getFinancialPeople, getProducts } from '$lib/server/financial';
 import db from '$lib/server/db'
 import { error } from '@sveltejs/kit';
-import type { User } from '@prisma/client'
 import type { RequestHandler } from './$types';
 import { authFinance } from '$lib/server/authorizationMiddleware';
 
@@ -36,20 +35,50 @@ export const POST = (async ({ request, locals }) => {
 
   // We know all data is valid, so we can save it
 
-  const sales = []
-
-  for (const item of data) {
-    sales.push({
-      personId: item.person,
-      productId: item.product,
-      amount: item.amount
-    })
+  type SaleCreate = {
+    personId: number,
+    productId: number,
+    amount: number,
+    streeplijstId: number,
   }
 
-  await db.sale.createMany({ data: sales })
-    .catch(err => {
-      throw error(500, 'Fout bij opslaan van gegevens: ' + err.message)
+  db.$transaction(async (tx) => {
+    const person = await tx.financialPersonDataUser.findFirst({
+      where: {
+        userId: locals.user.id
+      }
     })
+
+    if (!person) {
+      throw error(500, 'Geen persoon gevonden')
+    }
+
+    const streeplijst = await tx.streeplijst.create({
+      data: {
+        date: new Date(),
+        personId: person.personId,
+
+      }
+    })
+
+    const sales: SaleCreate[] = []
+
+    for (const item of data) {
+      sales.push({
+        personId: item.person,
+        productId: item.product,
+        amount: item.amount,
+        streeplijstId: streeplijst.id
+      })
+    }
+
+    await tx.sale.createMany({ data: sales })
+      .catch(err => {
+        throw error(500, 'Fout bij opslaan van gegevens: ' + err.message)
+      })
+  })
+
+
 
   return new Response('ok')
 }) satisfies RequestHandler;
