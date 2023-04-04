@@ -5,11 +5,11 @@
   import { goto } from '$app/navigation'
   import { CalendarDays, Cake, Users, Folder, Cog6Tooth, InformationCircle, FaceFrown } from 'svelte-heros-v2'
   import PopupMenu from '$lib/components/PopupMenu.svelte'
-	import Breadcrumps from '$lib/components/Breadcrumps.svelte'
 	import { onMount } from 'svelte';
   import { LDAP_IDS } from '$lib/constants';
 	import type { Committee } from '@prisma/client';
   import { PUBLIC_VERSION } from '$env/static/public';
+	import Breadcrumps from '$lib/components/breadcrumps.svelte';
 
   let showMenu: boolean = false
 
