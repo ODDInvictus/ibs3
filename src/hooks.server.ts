@@ -50,6 +50,7 @@ const options = {
 
 export const handle: Handle = sequence(
 	SvelteKitAuth({
+		trustHost: true,
 		providers: [AuthentikProvider(options)],
 		adapter: IBSAdapter(prisma),
 		secret: IBS_CLIENT_SECRET,

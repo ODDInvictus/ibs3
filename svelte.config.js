@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 import sveltePreprocess from 'svelte-preprocess';
 
@@ -10,9 +10,13 @@ const config = {
 		vitePreprocess(),
 		sveltePreprocess()
 	],
-
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({
+			envPrefix: '',
+			out: 'build',
+			precompress: false,
+			polyfill: true,
+		}),
 		csrf: {
 			checkOrigin: false
 		}
