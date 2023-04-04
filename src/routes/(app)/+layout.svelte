@@ -9,6 +9,7 @@
 	import { onMount } from 'svelte';
   import { LDAP_IDS } from '$lib/constants';
 	import type { Committee } from '@prisma/client';
+  import { PUBLIC_VERSION } from '$env/static/public';
 
   let showMenu: boolean = false
 
@@ -130,7 +131,7 @@
     <section>
       <a href="/over">
         <i><InformationCircle /></i>
-        <span>IBS v1.0.0</span>
+        <span>IBS v{PUBLIC_VERSION}</span>
       </a>
     </section>
 
