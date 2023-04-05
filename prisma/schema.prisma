@@ -14,26 +14,26 @@ datasource db {
 // USER
 
 model User {
-  id                      Int                       @id @default(autoincrement())
-  firstName               String
-  lastName                String
-  ldapId                  String                    @unique
-  email                   String                    @unique
-  nickname                String?                   @unique
-  picture                 String?
-  birthDate               DateTime?                 @db.Date
-  phone                   String?
-  firstDrink              DateTime?                 @db.Date
-  becameFeut              DateTime?                 @db.Date
-  becameMember            DateTime?                 @db.Date
-  lastLoggedin            DateTime                  @default(now())
-  StrafbakGiven           Strafbak[]                @relation("strafbakGiver")
-  StrafbakReceived        Strafbak[]                @relation("strafbakReceiver")
-  MaluspuntGiven          Maluspunt[]               @relation("maluspuntGiver")
-  MaluspuntReceived       Maluspunt[]               @relation("maluspuntReceiver")
-  CommitteeMember         CommitteeMember[]
-  Account                 Account[]
-  Session                 Session[]
+  id                Int               @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  ldapId            String            @unique
+  email             String            @unique
+  nickname          String?           @unique
+  picture           String?
+  birthDate         DateTime?         @db.Date
+  phone             String?
+  firstDrink        DateTime?         @db.Date
+  becameFeut        DateTime?         @db.Date
+  becameMember      DateTime?         @db.Date
+  lastLoggedin      DateTime          @default(now())
+  StrafbakGiven     Strafbak[]        @relation("strafbakGiver")
+  StrafbakReceived  Strafbak[]        @relation("strafbakReceiver")
+  MaluspuntGiven    Maluspunt[]       @relation("maluspuntGiver")
+  MaluspuntReceived Maluspunt[]       @relation("maluspuntReceiver")
+  CommitteeMember   CommitteeMember[]
+  Account           Account[]
+  Session           Session[]
 
   FinancialPersonDataUser FinancialPersonDataUser[]
 }
@@ -173,9 +173,9 @@ enum ProductType {
 
 // Een product is alles wat verkocht en ingekocht kan worden
 model Product {
-  id          Int             @id @default(autoincrement())
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   name        String
   description String
   price       Float
@@ -300,9 +300,9 @@ model Transaction {
   ledger      Ledger?  @relation(fields: [ledgerId], references: [id])
   ledgerId    Int?
   description String
-  createdAt   DateTime        @default(now())
+  createdAt   DateTime @default(now())
   // Transactie gegevens
-  price Float
+  price       Float
 
   // Gebruikers
 
@@ -324,15 +324,15 @@ model Sale {
   productId Int
   amount    Int
   // Wie heeft er gekocht
-  person   FinancialPerson @relation(fields: [personId], references: [id])
-  personId Int
+  person    FinancialPerson @relation(fields: [personId], references: [id])
+  personId  Int
 
   // Link naar streeplijst (indien van toepassing)
   streeplijst   Streeplijst? @relation(fields: [streeplijstId], references: [id])
   streeplijstId Int?
 
   // Een verkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
-  isActive  Boolean         @default(true)
+  isActive Boolean @default(true)
 }
 
 model Streeplijst {
@@ -358,11 +358,11 @@ model Streeplijst {
 // Een inkoop
 // Oke sorry voor deze naam maar Purchase vond ik te verwarrend met Sale
 model Acquisition {
-  id        Int             @id @default(autoincrement())
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   // Hoe veel van welk product zijn er gekocht
-  product   Product         @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
   productId Int
   amount    Int
   price     Float
@@ -377,17 +377,17 @@ model Acquisition {
   personId Int
 
   // Een inkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
-  isActive  Boolean         @default(true)
+  isActive Boolean @default(true)
 }
 
 // Een declaratie is een generiekere vorm van inkoop
 model Declaration {
-  id              Int             @id @default(autoincrement())
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  id        Int             @id @default(autoincrement())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
   // Wie heeft er gekocht
-  person   FinancialPerson @relation(fields: [personId], references: [id])
-  personId Int
+  person    FinancialPerson @relation(fields: [personId], references: [id])
+  personId  Int
 
   // Hoeveel wil iemand terug
   price           Float
