@@ -1,6 +1,6 @@
 # Invictus Bier Systeem 3
 
-Huts
+Invictus Bier Systeem is _het_ websysteem voor O.D.D. Invictus.
 
 ## Ontwikkelen
 
@@ -8,57 +8,64 @@ Om te beginnen met ontwikkelen moet je eerst de repository clonen met
 ```console
 git clone git@github.com:ODDInvictus/ibs3.git
 ```
+_als dit niet lukt moet je even je SSH keys instellen op GitHub_
 
-Daarna moet je een .env maken, dit kan door de .env.example te kopieren en te hernoemen. Deze moet je nog wel even invullen. Zie hiervoor het kopje Environment Variables
+Daarna moet je een .env maken, dit kan door de .env.example te kopieren en te hernoemen. Deze moet je nog wel even invullen. Zie hiervoor het kopje [Environment Variables](#environment-variables)
+
+Als laatst moet je de database client genereren en dependencies installeren.
+```console
+npm install
+npx prisma generate
+```
 
 Daarna kan je de development server starten met `npm run dev`
 
 
 ## Tasks
 
-IBS3 is in staat om dingen op de achtergrond te draaien, buiten een request om. Dit is nice voor dingen die (redelijk) wat tijd kosten, zoals emails versturen. Hiervoor gebruiken we een Quirrel server. Deze start in development automatisch op als je `npm run dev` doet. Je kan dan de QuirrelUI openen op `http://localhost:9181`. 
+IBS3 is in staat om dingen op de achtergrond te draaien, buiten een request om. Dit is nice voor dingen die (redelijk) wat tijd kosten, zoals emails versturen. Hiervoor gebruiken we een express/node-cron backend. Deze start in development automatisch op als je `npm run dev` doet.
 
-### Hoe maak ik een task aan?
-Een task maken is erg simpel. Maak eerst in $lib/server/jobs een bestand aan in de juiste directory.
+### Cronjobs
 
-job.ts
-```ts
-import { Queue } from 'quirrel/sveltekit'
-
-export const queue = Queue(
-  // URL waar je deze methode kan vinden
-  "jobs/notifications/discord",
-  async (job, meta) => {
-    // Job om uit te voeren
-  },
-)
-```
-
-Daarna maak je in src/jobs een +server.ts aan op hetzelfde adres die je net hebt gedefineerd
+Een cronjob is een functie die elke x tijd draait. Zo'n functie kan je maken in `/backend/index.ts`.
 
 ```ts
-import { queue } from '$lib/server/jobs/discord';
-
-export const POST = queue
+//            crontab    , functie
+cron.schedule('1 * * * *', syncLDAPUsers)
+// Deze functie wordt elk hele uur uitgevoerd (10:00, 11:00, 12:00) etc
 ```
 
-Daarna kan je deze job uitvoeren door
-
-```ts
-import { queue } from '$lib/server/jobs/xx'
-
-await queue.enqueue(jobData)
-```
-
-te doen.
-
-Voor cronjobs kan je jobs/ldap/sync bekijken
+Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab.guru/) gebruiken
 
 ## Production
 
-  voer `quirrel ci` uit om de cronjobs te laten werken
+Paar willekeurige notities voor draaien in production
+
+### Jobs
+
+* In je webserver configuratie moet je de backend beveiligen. Dit is omdat deze geen authenticatie laag heeft. Dit is erg simpel om te doen in nginx:
+```
+location /jobs {
+  allow 192.168.0.0/16;
+  deny any;
+  proxy_pass route_naar_ibs3_backend;
+}
+```
 
 
 ## Environment Variables
 
-TODO lol
+|Sleutel|Waarde|Voorbeeld|
+|-|-|-|
+|DATABASE_URL|MySQL connection string|mysql://ibs3:password@mariadb:3306/ibs3?schema=public|
+|IBS_CLIENT_ID|Client ID in Authentik|ibs|
+|IBS_CLIENT_SECRET|Client Secret in Authentik|bjdsbjadshbjsbjsdbjabdhwvdksd|
+|IBS_ISSUER|Issuer url vanuit Authentik|https://auth.example.com/application/o/ibs/|
+|AUTHENTIK_BASE_URL|Base URL van Authentik|https://auth.example.com|
+|AUTHENTIK_GROUP_NAME|Naam van de groep met alle IBS gebruikers|ibs3_users|
+|AUTHENTIK_TOKEN|Access token van service account|aaasDJKASJDHSAJKHDLOIJASHDIABDSKJASJKDJKAS|
+|ORIGIN|URL waar deze app gevonden kan worden|https://ibs.example.com|
+|DISCORD_NOTIFICATION_WEBHOOK|Webhook URL voor discord kanaal waar errors in gepost worden|https://discord.com/api/webhooks/server/key|
+|BACKEND_PORT|Poort waarop de backend draait|3001|
+|UPLOAD_FOLDER|Map op de schijf waar uploads opgeslagen worden|./static/upload|
+|PUBLIC_UPLOAD_URL|URL waar de uploads gevonden kunnen worden|/upload/|

@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let restProps: Record<string, unknown>;
+  export let restProps: Record<string, unknown> = {};
 
   restProps = $$restProps;
 </script>
