@@ -53,7 +53,7 @@
 		"@types/express": "^4.17.17",
 		"dotenv": "^16.0.3",
 		"express": "^4.18.2",
-		"next-auth": "^4.18.10",
+		"next-auth": "^4.20.1",
 		"node-cache": "^5.1.2",
 		"node-cron": "^3.0.2",
 		"nodemon": "^2.0.21",
