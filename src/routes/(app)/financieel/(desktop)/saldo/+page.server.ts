@@ -9,8 +9,6 @@ export const load = (async ({ locals }) => {
 
   const own = personData.find((p) => p.userId === locals.user.id)
 
-  console.log(own)
-
   return {
     persons: personData,
     own
