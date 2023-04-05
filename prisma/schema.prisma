@@ -34,6 +34,7 @@ model User {
   CommitteeMember         CommitteeMember[]
   Account                 Account[]
   Session                 Session[]
+
   FinancialPersonDataUser FinancialPersonDataUser[]
 }
 
@@ -96,6 +97,7 @@ model Strafbak {
   reason      String?
   dateCreated DateTime  @default(now())
   dateDeleted DateTime?
+  location    String?
 
   @@index([giverId])
 }
@@ -142,16 +144,14 @@ model Activity {
 // Grootboek rekening
 model Ledger {
   // Administratieve gegevens
-  id          Int      @id
+  id          Int           @id
   name        String
   description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   // Foreign keys
   Transaction Transaction[]
-
-  isActive Boolean @default(true)
+  isActive    Boolean       @default(true)
 }
 
 // Categorie waar een product onder kan vallen
@@ -173,10 +173,9 @@ enum ProductType {
 
 // Een product is alles wat verkocht en ingekocht kan worden
 model Product {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id          Int             @id @default(autoincrement())
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
   name        String
   description String
   price       Float
@@ -191,9 +190,90 @@ model Product {
   categoryId  Int
   Sale        Sale[]
   Acquisition Acquisition[]
-
   // Een product kan niet worden verwijderd, wel uitgeschakeld
-  isActive Boolean @default(true)
+  isActive    Boolean         @default(true)
+}
+
+enum FinancialPersonType {
+  USER
+  GROUP
+  ACTIVITY
+  INVICTUS
+  COMMITTEE
+  OTHER
+}
+
+// Onder een financieel persoon valt een gebruiker, een groep van gebruikers, het dispuut, etc.
+// Bijvoorbeeld 
+model FinancialPerson {
+  id                           Int                            @id @default(autoincrement())
+  type                         FinancialPersonType
+  // Naam van het financiele persoon, denk aan "O.D.D. Invictus", "Meeborrel" of gewoon de naam van een lid
+  name                         String
+  // Huidige saldo
+  balance                      Int                            @default(0)
+  // Foreign keys
+  FinancialGroup               FinancialGroup[]
+  FinancialPersonDataUser      FinancialPersonDataUser[]
+  FinancialPersonDataCommittee FinancialPersonDataCommittee[]
+  FinancialPersonDataActivity  FinancialPersonDataActivity[]
+  FinancialPersonDataOther     FinancialPersonDataOther[]
+  TransactionFrom              Transaction[]                  @relation("TransactionFrom")
+  TransactionTo                Transaction[]                  @relation("TransactionTo")
+  Sale                         Sale[]
+  Acquisition                  Acquisition[]
+  Declaration                  Declaration[]
+}
+
+// Extra data voor FinancialPerson, afhankelijk van FinancialPersonType
+
+// FinancialPersonType.USER
+// Dit is een 1-op-1 relatie met User
+model FinancialPersonDataUser {
+  person   FinancialPerson @relation(fields: [personId], references: [id])
+  personId Int             @id
+  user     User            @relation(fields: [userId], references: [id])
+  userId   Int
+}
+
+// FinancialPersonType.GROUP
+// Verwijst naar een groepje gebruikers (bijvoorbeeld: meeborrel, 44, etc.)
+model FinancialGroup {
+  person   FinancialPerson @relation(fields: [personId], references: [id])
+  personId Int             @id
+  users    User[]
+}
+
+// FinancialPersonType.ACTIVITY
+// Verwijst naar een activiteit, wordt redelijk hetzelfde gebruikt als GROUP maar voorkomt dat een groep wordt gemaakt voor elke borrel
+model FinancialPersonDataActivity {
+  person     FinancialPerson @relation(fields: [personId], references: [id])
+  personId   Int             @id
+  activity   Activity        @relation(fields: [activityId], references: [id])
+  activityId Int
+}
+
+// FinancialPersonType.INVICTUS
+// Verwijst naar het dispuut als financieel persoon
+// Geen model nodig
+
+// FinancialPersonType.COMMITTEE
+// Verwijst naar een commissie, wordt redelijk hetzelfde gebruikt als GROUP maar maakt het makkelijk om een commissie te verwijderen
+model FinancialPersonDataCommittee {
+  person      FinancialPerson @relation(fields: [personId], references: [id])
+  personId    Int             @id
+  committee   Committee       @relation(fields: [committeeId], references: [id])
+  committeeId Int
+}
+
+// FinancialPersonType.OTHER
+// Verwijst naar iets of iemand, die iig niet IBS gebruiker is.
+// Alleen gebruiken als het echt niet anders kan, en met duidelijke notities
+model FinancialPersonDataOther {
+  person      FinancialPerson @relation(fields: [personId], references: [id])
+  personId    Int             @id
+  name        String
+  description String
 }
 
 enum FinancialPersonType {
@@ -302,8 +382,7 @@ model Transaction {
   ledger      Ledger?  @relation(fields: [ledgerId], references: [id])
   ledgerId    Int?
   description String
-  createdAt   DateTime @default(now())
-
+  createdAt   DateTime        @default(now())
   // Transactie gegevens
   price Float
 
@@ -319,15 +398,13 @@ model Transaction {
 // Prijs voor verkoop wordt pas bepaald zodra de transactie aangemaakt wordt
 model Sale {
   // Administratieve gegevens
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id        Int             @id @default(autoincrement())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
   // Hoeveel van welk product zijn er gekocht
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product         @relation(fields: [productId], references: [id])
   productId Int
   amount    Int
-
   // Wie heeft er gekocht
   person   FinancialPerson @relation(fields: [personId], references: [id])
   personId Int
@@ -337,7 +414,7 @@ model Sale {
   streeplijstId Int?
 
   // Een verkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
-  isActive Boolean @default(true)
+  isActive  Boolean         @default(true)
 }
 
 model Streeplijst {
@@ -363,12 +440,11 @@ model Streeplijst {
 // Een inkoop
 // Oke sorry voor deze naam maar Purchase vond ik te verwarrend met Sale
 model Acquisition {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id        Int             @id @default(autoincrement())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
   // Hoe veel van welk product zijn er gekocht
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product         @relation(fields: [productId], references: [id])
   productId Int
   amount    Int
   price     Float
@@ -383,15 +459,14 @@ model Acquisition {
   personId Int
 
   // Een inkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
-  isActive Boolean @default(true)
+  isActive  Boolean         @default(true)
 }
 
 // Een declaratie is een generiekere vorm van inkoop
 model Declaration {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id              Int             @id @default(autoincrement())
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
   // Wie heeft er gekocht
   person   FinancialPerson @relation(fields: [personId], references: [id])
   personId Int

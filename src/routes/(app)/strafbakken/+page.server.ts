@@ -2,6 +2,7 @@ import type { Actions, PageServerLoad } from "./$types";
 import db from "$lib/server/db";
 import { getUser } from "$lib/server/userCache";
 import { fail } from "@sveltejs/kit";
+import { env } from "$env/dynamic/private";
 
 // Load een overview van alle strafbakken
 export const load = (async () => {
@@ -27,17 +28,31 @@ export const load = (async () => {
 
 export const actions = {
   // Geef een strafbak
-  default: async ({ request, locals }: { request: Request; locals: any }) => {
-    const data = await request.formData();
-
-    const reason = data.get("reason")?.toString() || undefined;
-    const receiverId = Number(data.get("receiver"));
+  default: async (event) => {
+    const { request, locals } = event;
 
     // Probeer de user te vinden als dat niet lukt om de een of andere reden, dan is het onsuccesvol
-    const session = await locals.getSession();
-    const user = await getUser(session);
-    const giverId = user?.id;
+    // @ts-expect-error
+    let giverId = locals.user?.id;
+    if (!giverId) {
+      const session = await locals.getSession();
+      const user = await getUser(session);
+      giverId = user?.id;
+    }
     if (!giverId) return fail(400);
+
+    const data = await request.formData();
+    const reason = data.get("reason")?.toString() || undefined;
+    const receiverId = Number(data.get("receiver"));
+    const ip = event.getClientAddress();
+    let location = undefined;
+    if (ip === env.COLOSSEUM_IP) location = "Colosseum";
+    else if (ip.startsWith(env.CAMPUS_IP)) location = "Campus";
+    else {
+      const res = await fetch(`http://www.geoplugin.net/json.gp?ip=${ip}`);
+      const { geoplugin_city } = await res.json();
+      if (geoplugin_city) location = geoplugin_city;
+    }
 
     try {
       await db.strafbak.create({
@@ -45,9 +60,11 @@ export const actions = {
           giverId,
           receiverId,
           reason,
+          location,
         },
       });
     } catch {
+      // Oftewel, de receiverId bestaat niet
       return fail(400);
     }
     return { succes: true };

@@ -125,7 +125,7 @@
         rgba(108, 43, 217, 1) 100%
       );
       border-radius: 0.5rem;
-      transition: all 1s ease;
+      transition: all 1s linear;
 
       &.active {
         background: linear-gradient(
