@@ -4,10 +4,4 @@
 	export let height: string = '100px';
 </script>
 
-<img src={logo} alt="logo" class="logo hidden sm:block" {height} {width} />
-
-<style>
-	:global(html.light img.logo) {
-		filter: invert(1);
-	}
-</style>
+<img src={logo} alt="logo" class="block sm:hidden" {height} {width} />

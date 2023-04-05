@@ -1,8 +1,71 @@
+@import url('./style/colors.css');
+@import url('./style/typography.css');
+@import url('./style/layout.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
-  background-color: #e5e7eb;
-  /* background-color: black; */
+	background-color: var(--background-color);
+	color: var(--text-color);
+	overflow: hidden;
+}
+
+html,
+body {
+	width: 100%;
+	height: 100%;
+}
+
+* {
+	box-sizing: border-box;
+	transition: background-color 0.3s ease;
+}
+
+/* Select */
+select,
+input[type='text'],
+input[type='number'] {
+	background-color: var(--background-focus-color);
+	color: var(--text-color);
+	border: 1px solid var(--border-color);
+	border-radius: 0.25rem;
+	padding: 0.5rem;
+}
+
+/* feut theme */
+*.feut {
+	/* filter: saturate(3) brightness(1.5) contrast(1.5); */
+	background-image: url('/src/lib/assets/feutenachtergrond.webp');
+}
+
+.feut * {
+	/* comic sans everything */
+	font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
+}
+
+.feut img.logo {
+	content: url('/src/lib/assets/ibsbasis.png');
+}
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+	scrollbar-width: auto;
+	scrollbar-color: var(--primary-color) var(--background-focus-color);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+	width: 15px;
+}
+
+*::-webkit-scrollbar-track {
+	background: var(--card-color);
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: var(--primary-focus-color);
+	border-radius: 15px;
+	border: 3px solid var(--card-color);
 }

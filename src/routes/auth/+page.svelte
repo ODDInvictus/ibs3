@@ -12,9 +12,7 @@
 		</h1>
 	
 		<div class="flex justify-center">
-			<button on:click={() => signIn('authentik')}>
-				Log in
-			</button>
+			<button on:click={() => signIn('authentik')}> Log in </button>
 		</div>
 	</div>
 </div>
