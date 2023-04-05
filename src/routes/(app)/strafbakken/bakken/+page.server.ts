@@ -42,7 +42,7 @@ export const load = (async ({ url }) => {
   return {
     strafbakken: await db.$queryRaw`
       SELECT u.nickname, u.firstname AS firstName, COUNT(s.id) AS count
-      from user AS u, strafbak AS s
+      from User AS u, Strafbak AS s
       WHERE s.receiverId = u.id
       AND s.dateDeleted IS NOT NULL
       AND s.dateDeleted >= ${dateStart}
