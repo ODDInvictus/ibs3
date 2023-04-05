@@ -97,7 +97,7 @@
 		drop-shadow 
 		sm:flex-col
 		sm:col-span-4
-		rounded-md
+		rounded-lg
 		xl:col-span-3 2xl:col-span-2
 		md:m-5"
 		>
@@ -185,7 +185,7 @@
 			</button>
 		</header>
 
-		<main class="pb-[10vh] sm:pb-0 mr-0 sm:mr-5 p-5 sm:pr-5 sm:rounded-md drop-shadow">
+		<main class="pb-[10vh] sm:pb-0 mr-0 sm:mr-5 sm:mt-3 p-5 sm:pr-5 sm:rounded-lg drop-shadow">
 			<slot />
 		</main>
 	</div>
@@ -200,7 +200,7 @@
 	}
 
 	main {
-		height: calc(100vh - 5.25rem);
+		height: calc(100vh - 6rem);
 		background-color: var(--card-color);
 
 		overflow: auto;
