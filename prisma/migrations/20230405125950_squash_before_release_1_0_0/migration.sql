@@ -82,6 +82,7 @@ CREATE TABLE `Strafbak` (
     `reason` VARCHAR(191) NULL,
     `dateCreated` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `dateDeleted` DATETIME(3) NULL,
+    `location` VARCHAR(191) NULL,
 
     INDEX `Strafbak_giverId_idx`(`giverId`),
     PRIMARY KEY (`id`)
@@ -161,7 +162,7 @@ CREATE TABLE `FinancialPerson` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `type` ENUM('USER', 'GROUP', 'ACTIVITY', 'INVICTUS', 'COMMITTEE', 'OTHER') NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `balance` INTEGER NOT NULL DEFAULT 0,
+    `balance` DOUBLE NOT NULL DEFAULT 0,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
 
     PRIMARY KEY (`id`)
@@ -218,11 +219,10 @@ CREATE TABLE `FinancialPersonDataOther` (
 -- CreateTable
 CREATE TABLE `Transaction` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `ledgerId` INTEGER NOT NULL,
+    `ledgerId` INTEGER NULL,
     `description` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `price` DOUBLE NOT NULL,
-    `settled` BOOLEAN NOT NULL DEFAULT false,
     `fromId` INTEGER NOT NULL,
     `toId` INTEGER NOT NULL,
 
@@ -237,6 +237,19 @@ CREATE TABLE `Sale` (
     `productId` INTEGER NOT NULL,
     `amount` INTEGER NOT NULL,
     `personId` INTEGER NOT NULL,
+    `streeplijstId` INTEGER NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Streeplijst` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `date` DATETIME(3) NOT NULL,
+    `personId` INTEGER NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
 
     PRIMARY KEY (`id`)
@@ -250,6 +263,8 @@ CREATE TABLE `Acquisition` (
     `productId` INTEGER NOT NULL,
     `amount` INTEGER NOT NULL,
     `price` DOUBLE NOT NULL,
+    `receipt` VARCHAR(191) NOT NULL,
+    `purchaseLocation` VARCHAR(191) NOT NULL,
     `personId` INTEGER NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
 
@@ -265,7 +280,9 @@ CREATE TABLE `Declaration` (
     `price` DOUBLE NOT NULL,
     `reason` VARCHAR(191) NOT NULL,
     `methodOfPayment` VARCHAR(191) NOT NULL DEFAULT 'Eigen rekening',
+    `receipt` VARCHAR(191) NULL,
     `accepted` BOOLEAN NOT NULL DEFAULT false,
+    `denied` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -331,7 +348,7 @@ ALTER TABLE `FinancialPersonDataCommittee` ADD CONSTRAINT `FinancialPersonDataCo
 ALTER TABLE `FinancialPersonDataOther` ADD CONSTRAINT `FinancialPersonDataOther_personId_fkey` FOREIGN KEY (`personId`) REFERENCES `FinancialPerson`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Transaction` ADD CONSTRAINT `Transaction_ledgerId_fkey` FOREIGN KEY (`ledgerId`) REFERENCES `Ledger`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Transaction` ADD CONSTRAINT `Transaction_ledgerId_fkey` FOREIGN KEY (`ledgerId`) REFERENCES `Ledger`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Transaction` ADD CONSTRAINT `Transaction_fromId_fkey` FOREIGN KEY (`fromId`) REFERENCES `FinancialPerson`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -344,6 +361,12 @@ ALTER TABLE `Sale` ADD CONSTRAINT `Sale_productId_fkey` FOREIGN KEY (`productId`
 
 -- AddForeignKey
 ALTER TABLE `Sale` ADD CONSTRAINT `Sale_personId_fkey` FOREIGN KEY (`personId`) REFERENCES `FinancialPerson`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Sale` ADD CONSTRAINT `Sale_streeplijstId_fkey` FOREIGN KEY (`streeplijstId`) REFERENCES `Streeplijst`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Streeplijst` ADD CONSTRAINT `Streeplijst_personId_fkey` FOREIGN KEY (`personId`) REFERENCES `FinancialPerson`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Acquisition` ADD CONSTRAINT `Acquisition_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `Product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
