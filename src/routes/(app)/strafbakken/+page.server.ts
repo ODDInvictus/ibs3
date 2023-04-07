@@ -46,7 +46,7 @@ export const actions = {
     const receiverId = Number(data.get("receiver"));
     const ip = event.getClientAddress();
     let location = undefined;
-    if (ip === env.COLOSSEUM_IP) location = "Colosseum";
+    if (ip.startsWith(env.COLOSSEUM_IP)) location = "Colosseum";
     else if (ip.startsWith(env.CAMPUS_IP)) location = "Campus";
     else {
       const res = await fetch(`http://www.geoplugin.net/json.gp?ip=${ip}`);
