@@ -57,6 +57,15 @@ export const handle: Handle = sequence(
 		session: {
 			strategy: 'jwt',
 		},
+		callbacks: {
+			async redirect({ url, baseUrl }) {
+				if (url.startsWith('/auth')) {
+					throw redirect(303, '/')
+				}
+
+				return baseUrl
+			}
+		}
 	}),
 	authorization
 )
