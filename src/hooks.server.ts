@@ -1,5 +1,5 @@
 import { SvelteKitAuth } from '@auth/sveltekit';
-import { IBS_CLIENT_SECRET, IBS_CLIENT_ID, IBS_ISSUER, DISCORD_NOTIFICATION_WEBHOOK } from '$env/static/private';
+import { env } from '$env/dynamic/private'
 import { redirect, type Handle, type HandleServerError } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import AuthentikProvider from '@auth/core/providers/authentik'
@@ -43,9 +43,9 @@ const authorization = (async ({ event, resolve }) => {
 }) satisfies Handle
 
 const options = {
-	clientSecret: IBS_CLIENT_SECRET,
-	clientId: IBS_CLIENT_ID,
-	issuer: IBS_ISSUER,
+	clientSecret: env.IBS_CLIENT_SECRET,
+	clientId: env.IBS_CLIENT_ID,
+	issuer: env.IBS_ISSUER,
 }
 
 export const handle: Handle = sequence(
@@ -53,7 +53,7 @@ export const handle: Handle = sequence(
 		trustHost: true,
 		providers: [AuthentikProvider(options)],
 		adapter: IBSAdapter(prisma),
-		secret: IBS_CLIENT_SECRET,
+		secret: env.IBS_CLIENT_SECRET,
 		session: {
 			strategy: 'jwt',
 		},
@@ -77,6 +77,6 @@ export const handleError = (async ({ error, event }) => {
 
 	console.error(error)
 
-	await notifyDiscordError(DISCORD_NOTIFICATION_WEBHOOK, {event, error})
+	await notifyDiscordError(env.DISCORD_NOTIFICATION_WEBHOOK, {event, error})
 
 }) satisfies HandleServerError

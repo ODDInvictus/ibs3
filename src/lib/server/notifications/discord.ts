@@ -1,4 +1,4 @@
-import { ORIGIN } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import type { RequestEvent } from '@sveltejs/kit'
 
 export const notifyDiscordText = async (webhookUrl: string, text: string): Promise<void> => {
@@ -33,7 +33,7 @@ export const notifyDiscordError = async (webhookUrl: string, obj: Record<string,
     ],
     author: {
       name: 'Invictus Bier Systeem',
-      url: ORIGIN
+      url: env.ORIGIN
     },
     footer: {
       text: new Date().toLocaleString('nl-NL')
