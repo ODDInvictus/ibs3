@@ -44,12 +44,7 @@
       body: JSON.stringify(data)
     }).then(res => {
       if (res.status === 200) {
-        console.log('success')
-        
-        if (confirm('Verwerken gelukt! Wil je nog een streeplijst verwerken?')) {
-          goto('/financieel/streeplijst/verwerk')
-        }
-        goto('/financieel/transacties')
+        goto('/financieel/transacties/verkopen')
 
       } else {
         res.json().then(err => {
