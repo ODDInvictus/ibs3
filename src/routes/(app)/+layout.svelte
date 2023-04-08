@@ -185,7 +185,7 @@
 			</button>
 		</header>
 
-		<main class="pb-[10vh] sm:pb-0 mr-0 sm:mr-5 sm:mt-3 p-5 sm:pr-5 sm:rounded-lg drop-shadow">
+		<main class="pb-[15vh] sm:pb-[10vh] sm:pb-0 mr-0 sm:mr-5 sm:mt-3 p-5 sm:pr-5 sm:rounded-lg drop-shadow">
 			<slot />
 		</main>
 	</div>
