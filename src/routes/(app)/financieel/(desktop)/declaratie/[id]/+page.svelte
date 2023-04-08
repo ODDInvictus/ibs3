@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
-	import { PUBLIC_UPLOAD_URL } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
   import { UserCircle, CurrencyEuro, QuestionMarkCircle, CalendarDays, Banknotes, Check } from 'svelte-heros-v2'
 
   function formatPrice(price: number): string {
@@ -31,7 +31,7 @@
   </div>
 
   <div id="receipt">
-    <img src={PUBLIC_UPLOAD_URL + 'receipts/' + $page.data.declaration.receipt} alt="Helaas is hier geen bonnetje voor geupload :(" />
+    <img src={env.PUBLIC_UPLOAD_URL + 'receipts/' + $page.data.declaration.receipt} alt="Helaas is hier geen bonnetje voor geupload :(" />
   </div>
 
 </div>

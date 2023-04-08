@@ -10,7 +10,7 @@
 	import Breadcrumps from '$lib/components/breadcrumps.svelte'
 	import { LDAP_IDS } from '$lib/constants'
 	import type { Committee } from '@prisma/client'
-  import { PUBLIC_VERSION } from '$env/static/public'
+  import { env } from '$env/dynamic/public'
 
 	// vierkante schermen zijn voor homo's
 	$: innerWidth = 0;
@@ -156,7 +156,7 @@
 		<section>
 			<a href="/over">
 				<i><InformationCircle /></i>
-				<span class="hidden sm:block">IBS v{PUBLIC_VERSION}</span>
+				<span class="hidden sm:block">IBS v{env.PUBLIC_VERSION}</span>
 			</a>
 		</section>
 	</aside>

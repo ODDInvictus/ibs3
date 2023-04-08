@@ -1,6 +1,5 @@
 <script>
   import { env } from '$env/dynamic/public';
-  import { PUBLIC_GITHUB_LINK, PUBLIC_VERSION } from '$env/static/public';
 </script>
 
 <h1>Over IBS</h1>
@@ -9,8 +8,8 @@
 
 <p>Deze app is gemaakt door <a href="https://github.com/Nierot">Niels Rotmensen</a>, <a href="https://github.com/SimplyPancake">Daniel Jonker</a>, <a href="https://github.com/Astronautilus14">Naut de Vroome</a> en <a href="https://github.com/ODDInvictus/ibs3/graphs/contributors">andere contributors</a>
 
-<p>© {new Date().getFullYear()} - versie {PUBLIC_VERSION} <a
-  href={PUBLIC_GITHUB_LINK + '/tree/' + env.PUBLIC_GIT_REV}
+<p>© {new Date().getFullYear()} - versie {env.PUBLIC_VERSION} <a
+  href={env.PUBLIC_GITHUB_LINK + '/tree/' + env.PUBLIC_GIT_REV}
   >({env.PUBLIC_GIT_REV_SHORT})</a> </p>
 
 <style lang="scss">
