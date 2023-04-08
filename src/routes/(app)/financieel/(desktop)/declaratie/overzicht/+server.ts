@@ -36,7 +36,7 @@ export const POST = async ({ request, locals }) => {
       await db.transaction.create({
         data: {
           price: decla.price,
-          description: `Declaratie ${decla.id} - ${decla.reason}`,
+          description: `Declaratie: #${decla.id} - ${decla.reason}`,
           createdAt: decla.date,
           fromId: invictus.id,
           toId: decla.personId,
