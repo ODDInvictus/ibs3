@@ -44,17 +44,14 @@
     padding: 0 $cell-padding $cell-padding $cell-padding;
   }
 
-  tr:nth-child(odd) {
-    background-color: #d3c0ff;
-  }
-
   tr {
     td {
       padding: $cell-padding;
     }
 
     &:nth-child(odd) {
-      background-color: #d3c0ff;
+      background-color: var(--primary-color);
+      color: white;
     }
 
     &#invisible {

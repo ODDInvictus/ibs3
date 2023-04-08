@@ -95,11 +95,13 @@
       transition: all 0.4s ease;
 
       &:nth-child(odd) {
-        background-color: #d3c0ff;
+        background-color: var(--primary-color);
+        color: white;
       }
 
       &:has(.cell:not(.actions):hover) {
-        background-color: #ae9ed3;
+        background-color: var(--primary-color);
+        color: white;
       }
 
       .cell {

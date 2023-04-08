@@ -74,7 +74,8 @@
     tbody {
       tr {
         &:nth-child(odd) {
-          background-color: #d3c0ff;
+          background-color: var(--primary-color);
+          color: white;
         }
 
         a {

@@ -71,6 +71,8 @@
     flex-direction: column;
     z-index: 2;
 
+    color: black;
+
     pointer-events: none;
   }
 
