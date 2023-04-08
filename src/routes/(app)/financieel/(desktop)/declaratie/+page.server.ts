@@ -2,7 +2,7 @@ import db from '$lib/server/db'
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types'
 import fs from 'fs';
-import { UPLOAD_FOLDER } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 
 // export const load = (async () => {
 //   const products = await db.product.findMany({
@@ -86,7 +86,7 @@ export const actions = {
         })
 
         // Save the receipt
-        fs.writeFileSync(`${UPLOAD_FOLDER}/receipts/${filename}`, Buffer.from(await data.receipt.arrayBuffer()), { encoding: 'binary' })
+        fs.writeFileSync(`${env.UPLOAD_FOLDER}/receipts/${filename}`, Buffer.from(await data.receipt.arrayBuffer()), { encoding: 'binary' })
 
       })
 
