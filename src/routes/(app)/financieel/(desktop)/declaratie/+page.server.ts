@@ -61,18 +61,20 @@ export const actions = {
             }
           })
 
+        const filename = `receipt-${declaration.id}-${data.receipt.name}`
+
         if (statiegeld > 0) {
           await tx.declaration.create({
             data: {
               price: statiegeld,
-              reason: 'Statiegeld voor declaratie: ' + declaration.id,
+              reason: 'Statiegeld voor declaratie #' + declaration.id,
               methodOfPayment: data.methode,
-              personId: personData.personId
+              personId: personData.personId,
+              receipt: filename
             }
           })
         }
 
-        const filename = `receipt-${declaration.id}-${data.receipt.name}`
 
         await tx.declaration.update({
           where: {
