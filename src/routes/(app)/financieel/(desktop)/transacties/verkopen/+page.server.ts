@@ -11,6 +11,9 @@ export const load = (async () => {
     include: {
       product: true,
       person: true,
+    },
+    where: {
+      isActive: true,
     }
   })
 
@@ -30,6 +33,9 @@ export const actions = {
       include: {
         product: true,
         person: true
+      },
+      where: {
+        isActive: true
       }
     })
     const invictus = await db.financialPerson.findFirst({
