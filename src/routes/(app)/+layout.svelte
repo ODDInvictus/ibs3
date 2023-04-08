@@ -257,7 +257,14 @@
 		@media (max-width: 640px) {
 			position: fixed;
 			width: calc(100vw - 2em);
-			top: calc(100vh - 75px);
+			top: calc(100vh - 135px);
+
+			// Mozilla
+			@supports (-moz-appearance:meterbar) {
+				top: calc(100vh - 125px);
+			}
+
+
 			height: 80px;
 			margin-left: 1rem;
 
