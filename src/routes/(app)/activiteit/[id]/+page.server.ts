@@ -6,13 +6,17 @@ export const load = (async ({ params }) => {
       id: parseInt(params.id)
     },
     include: {
-      attending: true,
+      attending: {
+        include: {
+          user: true
+        }
+      },
       organisedBy: true,
       location: true,
     }
   })
 
   return {
-    activity
+    activity,
   }
 })

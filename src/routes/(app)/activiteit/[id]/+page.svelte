@@ -9,14 +9,25 @@
 	import { getSlug } from '$lib/textUtils';
 
   const activity = $page.data.activity
+  const bij      = $page.data.activity.attending.filter(a => a.isAttending).map(a => a.user)
+  const notBij   = $page.data.activity.attending.filter(a => !a.isAttending).map(a => a.user)
 
   function formatTime(time: string) {
     const date = new Date(time)
     return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
   }
 
-  function formatDate(time: string) {
+  function formatDate(time: string, endTime: string) {
     const date = new Date(time)
+    const end = new Date(endTime)
+
+    // If the activity is longer than 12 hours, show the end date
+    if (end.getTime() - date.getTime() > 12 * 60 * 60 * 1000) {
+      return date.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+            + ' - ' + 
+            end.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+    }
+
     return date.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
   }
 </script>
@@ -59,7 +70,7 @@
 
       <div class="row">
         <Calendar />
-        <p>{formatDate(activity.startTime)}</p>
+        <p>{formatDate(activity.startTime, activity.endTime)}</p>
       </div>
 
       <hr />
@@ -89,6 +100,39 @@
 
     <div id="right" class="col">
       <h2>Wie komen er allemaal?</h2>
+
+      <hr />
+
+      <div id="users">
+        <div id="bij">
+          {#if bij && bij.length == 0}
+            <p>Nog niemand 😥</p>
+          {/if}
+          {#each bij as user}
+            <div class="row">
+              <a href="/lid/{user.ldapId}">{user.firstName + ' ' + user.lastName}</a>
+            </div>
+          {/each}
+        </div>
+
+        <div id="not-bij">
+          {#if notBij && notBij.length == 0}
+            <p>🥳 Iedereen is bij!</p>
+          {/if}
+          {#each notBij as user}
+            <div class="row">
+              <a href="/lid/{user.ldapId}">{user.firstName + ' ' + user.lastName}</a>
+            </div>
+          {/each}
+        </div>
+      </div>
+
+      <hr />
+
+      <div id="buttons">
+        <button id="bij-button">Ik ben 🐝!</button>
+        <button id="nietbij-button">Ik ben niet 🐝</button>
+      </div>
     </div>
   </div>
 </div>
@@ -107,7 +151,6 @@
   .col {
     display: flex;
     flex-direction: column;
-    justify-content: center;
 
     margin: $gap;
 
@@ -117,6 +160,7 @@
 
   #left {
     align-items: flex-start;
+    justify-content: center;
 
     h2, p, .row {
       padding-left: 1rem;
@@ -158,6 +202,34 @@
 
   #right {
     align-items: center;
+
+    hr {
+      width: 100%;
+      margin: 0.5rem;
+    }
+
+    #users {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    #bij, #bij-button {
+      border-right: 1px solid var(--seperator-color);
+    }
+
+    #buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+    }
   }
 
   h1 {
