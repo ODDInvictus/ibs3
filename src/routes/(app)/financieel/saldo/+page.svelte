@@ -7,6 +7,8 @@
 
 <h1>Saldo overzicht</h1>
 
+<hr />
+
 <table>
   <thead>
     <tr>
@@ -23,22 +25,16 @@
 </table>
 
 <style lang="scss">
-  h1 {
-    font-size: 1.5rem;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-
-    td {
-      padding: 0.5rem;
-      text-align: center;
-    }
-  }
-
   .person-self {
     background-color: purple;
     color: white;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  hr {
+    margin: var(--hr-margin);
   }
 </style>

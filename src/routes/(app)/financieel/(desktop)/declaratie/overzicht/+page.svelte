@@ -38,6 +38,17 @@
 <div id="root">
   <h1>Declaratie overzicht</h1>
 
+  <hr />
+
+  <p>
+    Hieronder staan alle declaraties die zijn gedaan door gebruikers van IBS.
+    Wanneer je een declaratie goedkeurd zal het saldo worden aangepast.
+  </p>
+
+  <p>
+    <a href="/financieel/declaratie">Wil je een declaratie doen?</a>
+  </p>
+
   <p class="error">
     {#if error}
       {error}
@@ -92,11 +103,19 @@
 
 <style>
   h1 {
-    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  hr {
+    margin: var(--hr-margin);
+  }
+
+  a {
+    color: var(--primary-color);
   }
 
   .error {
-    color: red;
+    color: var(--error-color);
   }
 
   #no-decla {
@@ -108,26 +127,10 @@
     cursor: pointer;
   }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  th, td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-  }
-
-  .price {
-    text-align: left;
-  }
-
-
   .actions {
     display: flex;
     flex-direction: row;
     justify-content: center;
   }
+
 </style>

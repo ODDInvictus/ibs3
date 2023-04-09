@@ -46,6 +46,11 @@
 		align-items: center;
 		gap: 0.3rem;
 	}
+
+	a {
+		color: white;
+	}
+
 	span,
 	i {
 		display: inline-block;

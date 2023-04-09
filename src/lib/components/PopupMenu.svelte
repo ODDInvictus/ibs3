@@ -25,9 +25,9 @@
 		<button class="menu-item" on:click={() => toggleColor()}>{
 			isDarkMode() ? 'Light mode' : 'Dark mode'
 		}</button>
-		<a class="menu-item" href="/profiel">Profiel</a>
-		<a class="menu-item" href="/financieel/persoonlijk">Streeplijst</a>
-		<a class="menu-item" href="/instellingen">Instellingen</a>
+		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/profiel">Profiel</a>
+		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/financieel/persoonlijk">Streeplijst</a>
+		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/instellingen">Instellingen</a>
 
 		<hr />
 
@@ -52,6 +52,10 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
+
+	button:hover {
+		text-decoration: underline;
 	}
 
 	hr {
