@@ -8,8 +8,6 @@ import type { Settings } from '@prisma/client'
 const cache = new NodeCache({ stdTTL: 60 * 60 * 24 })
 
 export async function getSettings(): Promise<Settings[]> {
-  console.log('huts')
-
   if (cache.has('settings')) {
     // TypeScript kijk nou eens wat in die if statement staat
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
