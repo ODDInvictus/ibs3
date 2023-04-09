@@ -46,6 +46,7 @@ model User {
   Session           Session[]
 
   FinancialPersonDataUser FinancialPersonDataUser[]
+  Attending               Attending[]
 }
 
 model Account {
@@ -127,26 +128,68 @@ model Maluspunt {
   @@index([giverId])
 }
 
-// ACTIVITY
+// Activiteiten
 
 model Activity {
-  id                          Int                           @id @default(autoincrement())
-  name                        String
-  description                 String
-  start                       DateTime
-  location                    String
-  createdAt                   DateTime                      @default(now())
-  updatedAt                   DateTime                      @updatedAt
-  isActive                    Boolean                       @default(true)
-  membersOnly                 Boolean                       @default(false)
-  organisedBy                 Committee                     @relation(fields: [committeeId], references: [id])
-  committeeId                 Int
+  // Administratieve gegevens
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  description String @db.LongText
+  startTime   DateTime
+  endTime     DateTime
+  location    ActivityLocation? @relation(fields: [locationId], references: [id])
+  locationId  Int?
+
+  // Is deze activiteit alleen zichtbaar voor leden?
+  membersOnly Boolean   @default(false)
+  // Wie organiseerd dit?
+  organisedBy Committee @relation(fields: [committeeId], references: [id])
+  committeeId Int
+  // Wie zijn er aanwezig?
+  attending   Attending[]
+
+  // Plaatje
+  image String?
+
+  // URL naar meer informatie
+  url String? @db.Text
+
+  // Is dit verwijderd?
+  isActive Boolean @default(true)
+
+  // Foreign Keys
   FinancialPersonDataActivity FinancialPersonDataActivity[]
 }
 
-// FINANCIALS
+model ActivityLocation {
+  id          Int        @id @default(autoincrement())
+  name        String
+  adress      String
+  country     String
+  postalCode  String
+  city        String
+  description String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  isActive    Boolean    @default(true)
+  Activity    Activity[]
+}
 
-// TODO: Succes
+model Attending {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  activityId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isActive   Boolean  @default(true)
+}
+
+// FINANCIALS
 
 // Alle vormen van betalingen die mensen in het systeem kunnen zetten zijn alles behalve Transaction
 // Die wordt gegenereerd door IBS

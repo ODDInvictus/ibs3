@@ -8,7 +8,8 @@ node_modules
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-/static/upload/
+static/upload/
+!static/upload/activities/bier.jpg
 
 # Logs
 logs
