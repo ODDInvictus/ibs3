@@ -7,6 +7,7 @@ import IBSAdapter from '$lib/server/authAdapter'
 import prisma from '$lib/server/db'
 import { getCommittees, getUser } from '$lib/server/userCache';
 import { notifyDiscordError } from '$lib/server/notifications/discord';
+import { getSettings } from '$lib/server/settings';
 
 
 
@@ -15,9 +16,13 @@ const authorization = (async ({ event, resolve }) => {
 	const session = await event.locals.getSession()
 	const user = await getUser(session)
 	const committees = await getCommittees(user)
+	const settings = await getSettings()
 
+	// @ts-expect-error Dit wordt geset wanneer de gebruiker inlogd, dus dit is geen probleem
 	event.locals.user = user
+	// @ts-expect-error Dit wordt geset wanneer de gebruiker inlogd, dus dit is geen probleem
 	event.locals.committees = committees
+	event.locals.settings = settings
 
 	// If the url starts with /jobs, we don't need to check if the user is logged in
 	// This route is used by the jobs server to execute jobs
