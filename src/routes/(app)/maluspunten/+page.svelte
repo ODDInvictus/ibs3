@@ -112,7 +112,7 @@
 	}
 
 	hr {
-		margin: 1rem 0;
+		margin: var(--hr-margin);
 	}
 
 	form {
@@ -142,15 +142,5 @@
 
 	#table-container {
 		overflow-y: auto;
-	}
-
-	table {
-		width: 100%;
-	}
-
-	td,
-	th {
-		padding: 0.5rem;
-		text-align: left;
 	}
 </style>
