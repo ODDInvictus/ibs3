@@ -11,6 +11,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Application settings
+model Settings {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  value       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 // USER
 
 model User {
