@@ -184,6 +184,9 @@ model Attending {
   userId     Int
   activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
   activityId Int
+
+  isAttending Boolean @default(false)
+
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   isActive   Boolean  @default(true)
