@@ -7,10 +7,13 @@
   import UsersGroup from '~icons/tabler/users-group'
   import ExternalLink from '~icons/tabler/external-link'
 	import { getSlug } from '$lib/textUtils';
+	import UserCard from './UserCard.svelte';
 
-  const activity = $page.data.activity
-  const bij      = $page.data.activity.attending.filter(a => a.isAttending).map(a => a.user)
-  const notBij   = $page.data.activity.attending.filter(a => !a.isAttending).map(a => a.user)
+  const activity  = $page.data.activity
+  let attending = $page.data.attending
+  
+  $: bij    = attending.filter(a => a.isAttending).map(a => a.user)
+  $: notBij = attending.filter(a => !a.isAttending).map(a => a.user)
 
   function formatTime(time: string) {
     const date = new Date(time)
@@ -30,17 +33,48 @@
 
     return date.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
   }
+
+  async function setAttending(status: boolean) {
+    // First check if the user is attending
+    const a = attending.find(a => a.user.ldapId == $page.data.user.ldapId)
+
+    if (a.isAttending === status) {
+      // The user is already attending/not attending, so do nothing
+      return
+    }
+
+    // Send a request to the server to update the attending status
+    await fetch('', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        status,
+        activityId: activity.id
+      })
+    }).catch(err => {
+      console.error(err)
+      alert(err.message)
+    })
+
+    // Update the attending status
+    a.isAttending = status
+    attending = attending
+  }
 </script>
 
 <div>
-  <h1>{activity.name}</h1>
+  <div id="title">
+    <h1>{activity.name}</h1>
+    <hr />
+  </div>
 
-  <hr />
 
   <div class="cols">
     <div id="left" class="col">
       {#if activity.image == null}
-        <p>Geen plaatje geupload :(</p>
+        <img src={env.PUBLIC_UPLOAD_URL + 'activities/logo.png'} alt="Placeholder mist?"/>
       {:else}
         <img src={env.PUBLIC_UPLOAD_URL + 'activities/' + activity.image} alt="Geen plaatje geupload :(" />
       {/if}
@@ -62,7 +96,11 @@
       <div class="row">
         <MapPin /> 
         <p>
-          <a href="/locatie/{getSlug(activity.location.name)}">{activity.location.name}</a>
+          {#if activity.location !== null}
+            <a href="/locatie/{getSlug(activity.location.name)}">{activity.location.name}</a>
+          {:else}
+            Nog geen locatie bekend
+          {/if}
         </p>
       </div>
 
@@ -94,7 +132,7 @@
       <hr />
 
       <div id="description">
-        <p>{activity.description}</p>
+        <span>{activity.description}</span>
       </div>
     </div>
 
@@ -103,36 +141,25 @@
 
       <hr />
 
-      <div id="users">
-        <div id="bij">
-          {#if bij && bij.length == 0}
-            <p>Nog niemand 😥</p>
-          {/if}
-          {#each bij as user}
-            <div class="row">
-              <a href="/lid/{user.ldapId}">{user.firstName + ' ' + user.lastName}</a>
-            </div>
-          {/each}
-        </div>
+      <div id="buttons">
+        <button on:click={async () => await setAttending(true)} id="bij-button">Ik ben 🐝!</button>
 
-        <div id="not-bij">
-          {#if notBij && notBij.length == 0}
-            <p>🥳 Iedereen is bij!</p>
-          {/if}
-          {#each notBij as user}
-            <div class="row">
-              <a href="/lid/{user.ldapId}">{user.firstName + ' ' + user.lastName}</a>
-            </div>
-          {/each}
-        </div>
+        <hr />
+
+        <button on:click={async () => await setAttending(false)} id="nietbij-button">Ik ben niet 🐝</button>
       </div>
 
       <hr />
 
-      <div id="buttons">
-        <button id="bij-button">Ik ben 🐝!</button>
-        <button id="nietbij-button">Ik ben niet 🐝</button>
+      <div id="users">
+        {#each bij as user}
+          <UserCard status="positive" user={user}/>
+        {/each}
+        {#each notBij as user}
+          <UserCard status="negative" user={user}/>
+        {/each}
       </div>
+
     </div>
   </div>
 </div>
@@ -142,10 +169,24 @@
   $gap: 0.5rem;
   $gap-side: 2rem;
 
+  @media (max-width: 640px) {
+    #title {
+      display: none;
+    }
+  }
+
   .cols {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-auto-rows: auto;
     margin: 0 $gap-side;
+
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+      margin: 0;
+      gap: $gap;
+    }
   }
 
   .col {
@@ -156,11 +197,16 @@
 
     border: 1px solid var(--seperator-color);
     border-radius: $border-radius;
+
+    @media (max-width: 640px) {
+      margin: 0;
+      margin-bottom: $gap;
+      width: 90vw;
+    }
   }
 
   #left {
-    align-items: flex-start;
-    justify-content: center;
+    justify-content: flex-start;
 
     h2, p, .row {
       padding-left: 1rem;
@@ -183,7 +229,7 @@
     }
 
     #description {
-      padding: 0.25rem;
+      margin: 0.5rem 1rem;
     }
 
     img {
@@ -203,32 +249,41 @@
   #right {
     align-items: center;
 
+    h2 {
+      padding-bottom: 0.5rem;
+    }
+
     hr {
       width: 100%;
-      margin: 0.5rem;
+      padding: 0;
+      margin: 0;
     }
 
     #users {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      width: 100%;
+      width: 90%;
+      margin: $gap auto;
 
-      div {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+      @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+        width: 90%;
       }
-    }
-
-    #bij, #bij-button {
-      border-right: 1px solid var(--seperator-color);
     }
 
     #buttons {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1px 1fr;
       width: 100%;
+
+      hr {
+        z-index: 1;
+        width: 1px;
+        padding: 20px 0;
+        margin: 0;
+        height: 100%;
+        background-color: var(--seperator-color);
+      }
     }
   }
 
