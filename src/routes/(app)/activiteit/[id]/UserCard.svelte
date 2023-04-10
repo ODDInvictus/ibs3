@@ -21,7 +21,7 @@
   </div>
 
   <div class="user-card-name">
-    <a href="/lid/{user.ldapId}">{user.firstName + ' ' + user.lastName}</a>
+    <a href="/leden/{user.ldapId}">{user.firstName + ' ' + user.lastName}</a>
   </div>
 </div>
 
