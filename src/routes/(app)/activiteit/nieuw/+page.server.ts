@@ -103,7 +103,7 @@ export const actions = {
 
         id = activity.id
 
-        if (image) {
+        if (image.size > 0) {
           const filename = `activiteit-${activity.id}-${image.name}`
 
           // save the image
