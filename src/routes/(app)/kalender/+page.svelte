@@ -16,7 +16,11 @@
 <div id="activities">
 {#each $page.data.activities as activity}
   <div class="row">
-    <img src={env.PUBLIC_UPLOAD_URL + 'activities/' + activity.image} alt="Geen plaatje geupload :(" />
+    {#if activity.image == null}
+      <img src={env.PUBLIC_UPLOAD_URL + 'activities/logo.png'} alt="Placeholder mist?"/>
+    {:else}
+      <img src={env.PUBLIC_UPLOAD_URL + 'activities/' + activity.image} alt="Geen plaatje geupload :(" />
+    {/if}
     <div class="info">
       <h2>{activity.name}</h2>
       <p>{activity.description}</p>
