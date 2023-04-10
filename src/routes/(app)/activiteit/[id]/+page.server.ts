@@ -1,4 +1,5 @@
 import db from '$lib/server/db'
+import { randomSortDay } from '$lib/utils.js'
 
 export const load = (async ({ params }) => {
   const activity = await db.activity.findFirstOrThrow({
@@ -16,7 +17,10 @@ export const load = (async ({ params }) => {
     }
   })
 
+  const attending = randomSortDay(activity.attending)
+
   return {
     activity,
+    attending
   }
 })
