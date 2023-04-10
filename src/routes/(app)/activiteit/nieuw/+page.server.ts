@@ -46,7 +46,7 @@ const formSchema = z.object({
   }),
   url: z.string().url({ message: 'URL is niet valide' }).or(z.literal('')),
   image: z.any(),
-  membersOnly: z.boolean().optional(),
+  membersOnly: z.string().optional(),
 })
 
 export const actions = {
@@ -95,7 +95,7 @@ export const actions = {
             startTime: start,
             endTime: end,
             locationId: loc,
-            membersOnly: false,
+            membersOnly: membersOnly === 'on',
             committeeId: parseInt(organisedBy),
             url: url ?? null,
           }
