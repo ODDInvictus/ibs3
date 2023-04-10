@@ -4,11 +4,13 @@
   import MapPin from '~icons/tabler/map-pin'
   import Clock from '~icons/tabler/clock'
   import Calendar from '~icons/tabler/calendar'
+  import CalendarPlus from '~icons/tabler/calendar-plus'
   import UsersGroup from '~icons/tabler/users-group'
   import ExternalLink from '~icons/tabler/external-link'
   import AccessibleOff from '~icons/tabler/accessible-off'
 	import { getSlug } from '$lib/textUtils';
 	import UserCard from './UserCard.svelte';
+	import { generateICal } from '$lib/utils';
 
   const activity  = $page.data.activity
   let attending   = $page.data.attending
@@ -63,6 +65,29 @@
     a.isAttending = status
     attending = attending
   }
+
+  function generateIcal() {
+    const startTime = new Date(activity.startTime)
+    const endTime = new Date(activity.endTime)
+    const ical = generateICal({
+      title: activity.name,
+      eventId: activity.id,
+      description: activity.description,
+      location: activity.location?.name,
+      startTime,
+      endTime,
+      url: activity.url
+    })
+
+    // now let's save the file
+    const downloadLink = document.createElement('a')
+    downloadLink.href = ical
+    downloadLink.download = `ibs-activiteit-${activity.id}.ical`
+    document.body.appendChild(downloadLink)
+    downloadLink.click()
+    document.body.removeChild(downloadLink)
+  }
+
 </script>
 
 <div>
@@ -138,6 +163,13 @@
         <p>Alleen voor leden</p>
       </div>
       {/if}
+
+      <hr />
+
+      <div class="row">
+        <CalendarPlus />
+        <button on:click={generateIcal}>Opslaan in agenda</button>
+      </div>
 
       <hr />
 
@@ -218,11 +250,11 @@
   #left {
     justify-content: flex-start;
 
-    h2, p, .row {
+    h2, p, .row, button {
       padding-left: 1rem;
     }
 
-    a {
+    a, button {
       color: var(--primary-color);
     }
 

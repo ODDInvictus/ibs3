@@ -39,3 +39,64 @@ function seed(s: number) {
     return result;
   }
 }
+
+type ICalEventType = {
+  title: string
+  eventId: string
+  description?: string
+  location?: string
+  startTime: Date
+  endTime?: Date
+  url?: string
+}
+
+/*
+ ICal functions inspired by
+ https://github.com/josephj/react-icalendar-link
+*/
+
+export function generateICal(event: ICalEventType) {
+  const body: string[] = []
+
+  const endTime: Date = event.endTime ?? new Date(event.startTime.getTime())
+
+  if (!event.endTime) {
+    endTime.setHours(endTime.getHours() + 1)
+  }
+
+  body.push('BEGIN:VCALENDAR')
+  body.push('VERSION:2.0')
+  body.push('PRODID:-//O.D.D. Invictus//Invictus Bier Systeem//NL')
+  body.push('BEGIN:VEVENT')
+  body.push(`DTSTAMP:${formatDate(new Date())}`)
+  body.push(`DTSTART:${formatDate(event.startTime)}`)
+  body.push(`UID:uid_${event.eventId}.ical@oddinvictus.nl`)
+  body.push(`SUMMARY:${event.title}`)
+  body.push(`DTEND:${formatDate(endTime)}`)
+  event.url ?? body.push(`URL:${event.url}`)
+  // event.description ?? body.push(`DESCRIPTION:${event.description}`)
+  event.location ?? body.push(`LOCATION:${event.location}`)
+  body.push('END:VEVENT')
+  body.push('END:VCALENDAR')
+
+  return `data:text/calendar;charset=utf8,${encodeURIComponent(body.join('\n'))}`
+}
+
+function formatDate(dateTime: Date): string {
+  return [
+    dateTime.getUTCFullYear(),
+    pad(dateTime.getUTCMonth() + 1),
+    pad(dateTime.getUTCDate()),
+    "T",
+    pad(dateTime.getUTCHours()),
+    pad(dateTime.getUTCMinutes()) + "00Z"
+  ].join("");
+}
+
+
+function pad(num: number): string {
+  if (num < 10) {
+    return `0${num}`;
+  }
+  return `${num}`;
+}
