@@ -1,6 +1,7 @@
 @import url('./style/colors.css');
 @import url('./style/typography.css');
 @import url('./style/layout.css');
+@import url('./style/table.scss');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

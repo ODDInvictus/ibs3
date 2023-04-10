@@ -11,6 +11,7 @@
 	import { LDAP_IDS } from '$lib/constants'
 	import type { Committee } from '@prisma/client'
   import { env } from '$env/dynamic/public'
+	import { PUBLIC_UPLOAD_URL } from '$env/static/public';
 
 	// vierkante schermen zijn voor homo's
 	$: innerWidth = 0;
@@ -38,7 +39,6 @@
 
   onMount(() => {
     const data = $page.data
-    console.log(data)
     if (data.committees && data.committees.length > 0) {
       bestCommittee = getBestId(data.committees)
     }
@@ -87,8 +87,8 @@
 
 <svelte:window bind:innerWidth bind:innerHeight />
 
-<div id="background" class="w-screen col-span-0" />
-<div id="layout" class="grid gap-4 grid-cols-12 grid-row-12">
+<div id="layout-background" class="w-screen col-span-0" />
+<div id="layout-div" class="grid gap-4 grid-cols-12 grid-row-12">
 	<aside
 		class="z-10 h-[10vh]
 		sm:relative 
@@ -101,7 +101,7 @@
 		xl:col-span-3 2xl:col-span-2
 		md:m-5"
 		>
-		<section id="top">
+		<section id="layout-top">
 			<button on:click={() => goto('/')}>
 				<div class="center-logo">
 					<Logo width="75%" />
@@ -161,7 +161,7 @@
 		</section>
 	</aside>
 
-	<div id="content" class="sm:block col-span-12 sm:col-span-8 xl:col-span-9 2xl:col-span-10 sm:p-0">
+	<div id="layout-content" class="sm:block col-span-12 sm:col-span-8 xl:col-span-9 2xl:col-span-10 sm:p-0">
 		<header class="p-5 sm:p-0 sm:pr-5">
 			<div class="hidden md:flex">
 				<Breadcrumps />
@@ -173,14 +173,17 @@
 				</button>
 			</div>
 
-      <button id="user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
-        <div id="user-card">
-          <p id="name">{$page.data.user.firstName + ' ' + $page.data.user.lastName ?? 'Gebruiker'}</p>
-          <p id="title">{bestCommittee}</p>
+      <button id="layout-user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
+        <div id="layout-user-card">
+          <p id="layout-name">{$page.data.user.firstName + ' ' + $page.data.user.lastName ?? 'Gebruiker'}</p>
+          <p id="layout-title">{bestCommittee}</p>
         </div>
         <!-- <button>Log uit</button> -->
-        <img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
-
+				{#if $page.data.user.picture == null}
+					<img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
+				{:else}
+					<img src="{env.PUBLIC_UPLOAD_URL + 'users/' + $page.data.user.picture}" alt="user" />
+				{/if}
 				<PopupMenu {showMenu} />
 			</button>
 		</header>
@@ -215,7 +218,7 @@
 
 		color: white;
 
-		#user {
+		#layout-user {
 			display: flex;
 			flex-direction: row;
 			align-items: center;
@@ -225,15 +228,16 @@
 			img {
 				width: 3rem;
 				height: 3rem;
+				object-fit: cover;
 				border-radius: 50%;
 			}
 		}
 
-		#user #name {
+		#layout-user #layout-name {
 			font-weight: 550;
 		}
 
-		#user #title {
+		#layout-user #layout-title {
 			font-size: 0.8rem;
 			float: right;
 			color: var(--light-grey-color);
@@ -241,7 +245,7 @@
 
 	}
 
-	#background {
+	#layout-background {
 		z-index: -1;
 		position: absolute;
 		height: 22rem;
@@ -293,7 +297,7 @@
 			justify-content: center;
 			align-items: center;
 
-			#top {
+			#layout-top {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
@@ -303,7 +307,7 @@
 				color: var(--text-color);
 			}
 
-			section:not(#top) {
+			section:not(#layout-top) {
 				width: 100%;
 				padding-left: 2.5rem;
 				padding-right: 2.5rem;

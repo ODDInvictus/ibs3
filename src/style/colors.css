@@ -2,6 +2,8 @@
 	--primary-color: #551b8a;
 	--secondary-color: #ff007f;
 	--tertiary-color: #470ff4;
+	--error-color: red;
+	--link-color: #551b8a;
 	--primary-focus-color: #7e22ce;
 	--primary-light-color: #8b5cf6;
 	--light-color: #ffffff;
@@ -25,6 +27,7 @@
 	--background-color: var(--dark-background);
 	--background-focus-color: var(--dark-color);
 	--seperator-color: var(--light-color);
+	--link-color: var(--secondary-color);
 
 	/* --shadow-color: rgba(var(--light-color), 0.5); */
 	--shadow-color: rgba(255, 255, 255, 0.1);

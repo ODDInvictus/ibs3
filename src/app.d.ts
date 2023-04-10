@@ -1,4 +1,5 @@
 /// <reference types="@auth/sveltekit" />
+/// <reference types="unplugin-icons/types/svelte" />
 import type { Committee, User, Settings } from 'prisma/prisma-client'
 
 declare global {

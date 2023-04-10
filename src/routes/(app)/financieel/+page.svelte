@@ -16,6 +16,8 @@
 
 <h1>Financieel</h1>
 
+<hr />
+
 {#if !$page.data.person}
   <p class="text-red-500">Oei! Er is nog geen financiele data voor jou aangemaakt. Kijk over een uurtje hier weer terug. Werkt het dan nog niet? Stuur dan even een mailtje naar bakkentrekkers@oddinvictus.nl</p>
 {:else}
@@ -34,16 +36,17 @@
 {/if}
 
 <style>
-  h1 {
-    font-size: 1.5rem;
-  }
   a {
     margin: 1rem 0;
     display: block;
     width: fit-content;
   }
   
-  a:hover {
-    text-decoration: underline;
+  h1 {
+    text-align: center;
+  }
+
+  hr {
+    margin: var(--hr-margin);
   }
 </style>

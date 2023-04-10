@@ -1,17 +1,14 @@
 <script>
 	import { enhance } from '$app/forms';
   import { page } from '$app/stores'
-	import StyledButton from '$lib/components/StyledButton.svelte';
-
   const data = $page.data
 
-  const convert = () => {
-
-  }
 </script>
 
 <div id="root">
   <h1>Verkopen</h1>
+
+  <hr />
 
   <form method="POST" id="buttons" use:enhance={({ cancel }) => {
     if (!confirm('Weet je zeker dat je alle verkopen wilt converteren naar transacties? Deze actie kan niet ongedaan gemaakt worden')) {
@@ -59,25 +56,18 @@
 </div>
 
 <style>
-  h1 {
-    font-size: 1.5rem;
-  }
-
   .not-found {
     text-align: center;
   }
 
   #buttons {
+    display: flex;
+    justify-content: center;
     margin: 1rem;
   }
 
-  a:hover {
-    text-decoration: underline;
-  }
-
-  table {
-    width: 80%;
-    margin: 0 auto;
+  h1 {
     text-align: center;
+    padding-bottom: 0.5rem;
   }
 </style>

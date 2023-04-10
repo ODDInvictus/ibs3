@@ -4,6 +4,8 @@
 
 <h1>Over IBS</h1>
 
+<hr />
+
 <p>Invictus Bier Systeem is <i>de</i> webapp voor alles O.D.D. Invictus</p>
 
 <p>Deze app is gemaakt door <a href="https://github.com/Nierot">Niels Rotmensen</a>, <a href="https://github.com/SimplyPancake">Daniel Jonker</a>, <a href="https://github.com/Astronautilus14">Naut de Vroome</a> en <a href="https://github.com/ODDInvictus/ibs3/graphs/contributors">andere contributors</a>
@@ -13,10 +15,6 @@
   >({env.PUBLIC_GIT_REV_SHORT})</a> </p>
 
 <style lang="scss">
-  h1 {
-    font-size: 1.5rem;
-  }
-
   p {
     margin: 0.5rem 0;
   }
@@ -25,7 +23,11 @@
     color: purple;
   }
 
-  a:hover {
-    text-decoration: underline;
+  h1 {
+    text-align: center;
+  }
+
+  hr {
+    margin: var(--hr-margin);
   }
 </style>

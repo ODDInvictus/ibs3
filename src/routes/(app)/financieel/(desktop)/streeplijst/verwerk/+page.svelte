@@ -60,6 +60,8 @@
 <div id="root">
   <h1>Verwerk een streeplijst</h1>
 
+  <hr />
+
   <button on:click={() => newRow()}              >Rij toevoegen</button>
   <button on:click={() => deleteRow()}           >Rij verwijderen</button>
   <button on:click={() => submit()} type="submit">Submit</button>
@@ -71,10 +73,10 @@
   </div>
 
   <div id="header">
-    <h2>ID</h2>
-    <h2>Persoon</h2>
-    <h2>Product</h2>
-    <h2>Aantal</h2>
+    <p>ID</p>
+    <p>Persoon</p>
+    <p>Product</p>
+    <p>Aantal</p>
   </div>
 
   {#each data as row}
@@ -105,9 +107,11 @@
 
 
   h1 {
-    font-size: 1.5rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  hr {
+    margin: var(--hr-margin);
   }
 
 </style>

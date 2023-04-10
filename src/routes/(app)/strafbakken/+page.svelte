@@ -18,11 +18,18 @@
 
 <svelte:window bind:innerWidth={width} />
 
+<h1>
+  Strafbakken
+</h1>
+
+<hr />
+
 <main>
   <Modals>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div slot="backdrop" class="backdrop" on:click={closeModal} />
   </Modals>
+
   <table-container>
     {#if width < 900}
       <Table data={data.strafbakken} longestName={null} />
@@ -48,6 +55,14 @@
 
 <style lang="scss">
   $margin: 1rem;
+
+  h1 {
+    text-align: center;
+  }
+
+  hr {
+    margin: var(--hr-margin);
+  }
 
   main {
     display: flex;

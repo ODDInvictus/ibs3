@@ -1,1 +1,9 @@
 /*  */
+hr {
+  margin: 0.5rem 0;
+  background-color: var(--seperator-color);
+}
+
+:root {
+  --hr-margin: 0.5rem 0;
+}
