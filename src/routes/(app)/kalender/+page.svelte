@@ -16,7 +16,7 @@
   <div class="row">
     <div class="image">
       {#if activity.image == null}
-        <img src={env.PUBLIC_UPLOAD_URL + 'activities/logo.png'} alt="Placeholder mist?"/>
+        <img src={env.PUBLIC_UPLOAD_URL + 'activities/activiteit-0-logo.png'} alt="Placeholder mist?"/>
       {:else}
         <img src={env.PUBLIC_UPLOAD_URL + 'activities/' + activity.image} alt="Geen plaatje geupload :(" />
       {/if}
