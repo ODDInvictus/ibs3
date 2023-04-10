@@ -1,5 +1,6 @@
 import { LDAP_IDS } from '$lib/constants.js'
 import db from '$lib/server/db'
+import type { Prisma } from '@prisma/client'
 
 export const load = (async ({ locals }) => {
   const today = new Date()
@@ -8,26 +9,31 @@ export const load = (async ({ locals }) => {
 
   let activities = []
 
-  if (!isMember) {
-    activities = await db.activity.findMany({
-      where: {
-        endTime: {
-          gte: today
-        },
-        membersOnly: false
+  const query: Prisma.ActivityFindManyArgs = {
+    orderBy: [{
+      startTime: 'asc'
+    }],
+    where: {
+      startTime: {
+        gte: today
+      },
+    },
+    include: {
+      location: {
+        select: {
+          name: true
+        }
       }
-    })
-  } else {
-    activities = await db.activity.findMany({
-      where: {
-        endTime: {
-          gte: today
-        },
-      }
-    })
+    }
   }
 
-
+  if (!isMember) {
+    // @ts-expect-error Add membersOnly to query
+    query.where['membersOnly'] = false
+    activities = await db.activity.findMany(query)
+  } else {
+    activities = await db.activity.findMany(query)
+  }
 
   return {
     activities
