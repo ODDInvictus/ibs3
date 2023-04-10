@@ -95,9 +95,10 @@
       }
 
       .date-tag {
-        background-color: white;
         border-bottom-left-radius: $border-radius;
         border-bottom-right-radius: $border-radius;
+
+        background-color: var(--card-color);
 
         position: absolute;
         z-index: 1;
@@ -115,7 +116,6 @@
         }
       }
     }
-
 
     .info {
       display: grid;
@@ -138,7 +138,7 @@
       a {
         align-self: self-end;
         padding-bottom: 10px;
-        color: var(--primary-color);
+        color: var(--link-color);
       }
 
       .activity-date {
