@@ -255,7 +255,7 @@
     }
 
     a, button {
-      color: var(--primary-color);
+      color: var(--link-color);
     }
 
     h2 {

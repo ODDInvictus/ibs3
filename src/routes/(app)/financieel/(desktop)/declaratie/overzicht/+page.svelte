@@ -111,7 +111,7 @@
   }
 
   a {
-    color: var(--primary-color);
+    color: var(--link-color);
   }
 
   .error {
