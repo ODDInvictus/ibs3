@@ -6,11 +6,12 @@
   import Calendar from '~icons/tabler/calendar'
   import UsersGroup from '~icons/tabler/users-group'
   import ExternalLink from '~icons/tabler/external-link'
+  import AccessibleOff from '~icons/tabler/accessible-off'
 	import { getSlug } from '$lib/textUtils';
 	import UserCard from './UserCard.svelte';
 
   const activity  = $page.data.activity
-  let attending = $page.data.attending
+  let attending   = $page.data.attending
   
   $: bij    = attending.filter(a => a.isAttending).map(a => a.user)
   $: notBij = attending.filter(a => !a.isAttending).map(a => a.user)
@@ -126,6 +127,15 @@
         <p>
           <a href="{activity.url}">Meer informatie</a>
         </p>
+      </div>
+      {/if}
+
+      {#if activity.membersOnly}
+      <hr />
+
+      <div class="row">
+        <AccessibleOff />
+        <p>Alleen voor leden</p>
       </div>
       {/if}
 
