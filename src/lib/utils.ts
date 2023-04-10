@@ -1,3 +1,9 @@
+
+// Currently in dark mode?
+export function isDarkMode(): boolean {
+  return !!document.querySelector(':root')?.classList.contains('dark');
+}
+
 // Randomly sort an array where the result is the same every day, but different every day
 export function randomSortDay<T>(array: T[]): T[] {
   const date = new Date()
