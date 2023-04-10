@@ -1,8 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores'
   import { env } from '$env/dynamic/public';
-
-  console.log($page.data.activities)
 </script>
 
 
@@ -16,14 +14,25 @@
 <div id="activities">
 {#each $page.data.activities as activity}
   <div class="row">
-    {#if activity.image == null}
-      <img src={env.PUBLIC_UPLOAD_URL + 'activities/logo.png'} alt="Placeholder mist?"/>
-    {:else}
-      <img src={env.PUBLIC_UPLOAD_URL + 'activities/' + activity.image} alt="Geen plaatje geupload :(" />
-    {/if}
+    <div class="image">
+      {#if activity.image == null}
+        <img src={env.PUBLIC_UPLOAD_URL + 'activities/logo.png'} alt="Placeholder mist?"/>
+      {:else}
+        <img src={env.PUBLIC_UPLOAD_URL + 'activities/' + activity.image} alt="Geen plaatje geupload :(" />
+      {/if}
+
+      <div class="date-tag">
+        <div class="day">{new Date(activity.startTime).toLocaleDateString('nl-NL', { day: '2-digit' })}</div>
+        <div class="month">{new Date(activity.startTime).toLocaleDateString('nl-NL', { month: 'short' })}</div>
+      </div>
+
+    </div>
+
     <div class="info">
-      <h2>{activity.name}</h2>
-      <p>{activity.description}</p>
+      <h2 class="activity-title">{activity.name}</h2>
+      <p class="activity-description">{activity.description}</p>
+      <p class="activity-date">{new Date(activity.startTime).toLocaleDateString('nl-NL')}</p>
+      <p class="activity-time">{new Date(activity.startTime).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit'})} @ {activity.location.name}</p>
       <a href="/activiteit/{activity.id}">Meer informatie</a>
     </div>
   </div>
@@ -35,6 +44,8 @@
 <style lang="scss">
   $border-radius: 10px;
   $card-height: 250px;
+  $card-height-sm: 100px;
+
 
   #activities {
     display: flex;
@@ -42,31 +53,113 @@
     justify-content: space-between;
     align-items: center;
     margin: 0 40px;
+
+    @media screen and (max-width: 640px) {
+      margin: 0 10px !important;
+    }
   }
+
   .row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
     height: $card-height;
+    width: 100%;
+
+    @media screen and (max-width: 640px) {
+      height: $card-height-sm;
+    }
 
     border-radius: $border-radius;
-    border: 1px solid var(--seperator-color);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 
-    img {
-      height: $card-height;
-      object-fit: cover;
-      margin-right: 20px;
-      border-top-left-radius: $border-radius;
-      border-bottom-left-radius: $border-radius;
+    .image {
+      position: relative;
+
+      @media screen and (max-width: 640px) {
+        .date-tag {
+          display: none !important;
+        }
+      }
+
+      img {
+        height: $card-height;
+
+        @media screen and (max-width: 640px) {
+          height: $card-height-sm;
+        }
+
+        width: 100%;
+        object-fit: cover;
+        border-top-left-radius: $border-radius;
+        border-bottom-left-radius: $border-radius;
+      }
+
+      .date-tag {
+        background-color: white;
+        border-bottom-left-radius: $border-radius;
+        border-bottom-right-radius: $border-radius;
+
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 30px;
+
+        .month {
+          padding: 5px 10px;
+          text-align: center;
+        }
+
+        .day {
+          font-size: 1.5rem;
+          text-align: center;
+        }
+      }
     }
+
 
     .info {
       display: grid;
-      grid-template-rows: 1fr 2fr;
-      padding: 1rem;
+      padding: 0 10px;
+      grid-template-rows: 1fr 4fr 1fr 1fr;
+      height: $card-height;
+
+      h2 {
+        overflow: scroll;
+      }
+      p {
+        overflow: scroll;
+      }
+
+      .activity-time {
+        align-self: self-end;
+        padding-bottom: 5px;
+      }
 
       a {
+        align-self: self-end;
+        padding-bottom: 10px;
         color: var(--primary-color);
+      }
+
+      .activity-date {
+        display: none;
+      }
+
+      @media screen and (max-width: 640px) {
+        grid-template-rows: 1fr 1fr 1fr;
+        height: $card-height-sm;
+
+        .activity-description, .activity-time {
+          display: none;
+        }
+
+        .activity-date {
+          display: block;
+        }
+
+        h2 {
+          overflow: hidden;
+        }
       }
     }
   }
