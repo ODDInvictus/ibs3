@@ -11,6 +11,7 @@
 	import { LDAP_IDS } from '$lib/constants'
 	import type { Committee } from '@prisma/client'
   import { env } from '$env/dynamic/public'
+	import { PUBLIC_UPLOAD_URL } from '$env/static/public';
 
 	// vierkante schermen zijn voor homo's
 	$: innerWidth = 0;
@@ -38,7 +39,6 @@
 
   onMount(() => {
     const data = $page.data
-    console.log(data)
     if (data.committees && data.committees.length > 0) {
       bestCommittee = getBestId(data.committees)
     }
@@ -179,8 +179,11 @@
           <p id="layout-title">{bestCommittee}</p>
         </div>
         <!-- <button>Log uit</button> -->
-        <img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
-
+				{#if $page.data.user.picture == null}
+					<img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
+				{:else}
+					<img src="{env.PUBLIC_UPLOAD_URL + 'users/' + $page.data.user.picture}" alt="user" />
+				{/if}
 				<PopupMenu {showMenu} />
 			</button>
 		</header>
@@ -225,6 +228,7 @@
 			img {
 				width: 3rem;
 				height: 3rem;
+				object-fit: cover;
 				border-radius: 50%;
 			}
 		}
