@@ -79,9 +79,9 @@ export function generateICal(event: ICalEventType) {
   body.push(`UID:uid_${event.eventId}.ical@oddinvictus.nl`)
   body.push(`SUMMARY:${event.title}`)
   body.push(`DTEND:${formatDate(endTime)}`)
-  event.url ?? body.push(`URL:${event.url}`)
-  // event.description ?? body.push(`DESCRIPTION:${event.description}`)
-  event.location ?? body.push(`LOCATION:${event.location}`)
+  if (event.url) body.push(`URL:${event.url}`)
+  if (event.description) body.push(`DESCRIPTION:${event.description} \n ${event.url}`)
+  if (event.location) body.push(`LOCATION:${event.location}`)
   body.push('END:VEVENT')
   body.push('END:VCALENDAR')
 

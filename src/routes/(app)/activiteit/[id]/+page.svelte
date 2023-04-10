@@ -76,7 +76,7 @@
       location: activity.location?.name,
       startTime,
       endTime,
-      url: activity.url
+      url: window.location.href
     })
 
     // now let's save the file
