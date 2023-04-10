@@ -123,7 +123,7 @@
         <MapPin /> 
         <p>
           {#if activity.location !== null}
-            <a href="/locatie/{getSlug(activity.location.id, activity.location.name)}">{activity.location.name}</a>
+            <a href="/locatie/{activity.location.id}">{activity.location.name}</a>
           {:else}
             Nog geen locatie bekend
           {/if}

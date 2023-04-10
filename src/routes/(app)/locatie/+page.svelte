@@ -9,7 +9,7 @@
 <hr />
 
 {#each locations as location}
-  <div><a href="/locatie/{getSlug(location.id, location.name)}">{location.name}</a></div>
+  <div><a href="/locatie/{location.id}">{location.name}</a></div>
 {/each}
 
 <style>
