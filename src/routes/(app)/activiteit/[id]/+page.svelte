@@ -113,7 +113,7 @@
         <UsersGroup />
         <p>
           Georganiseerd door: 
-          <a href="/commissie/{activity.organisedBy.ldapId}">{activity.organisedBy.name}</a>
+          <a href="/leden/commissie/{activity.organisedBy.ldapId}">{activity.organisedBy.name}</a>
         </p>
       </div>
 
@@ -123,7 +123,7 @@
         <MapPin /> 
         <p>
           {#if activity.location !== null}
-            <a href="/locatie/{getSlug(activity.location.name)}">{activity.location.name}</a>
+            <a href="/locatie/{getSlug(activity.location.id, activity.location.name)}">{activity.location.name}</a>
           {:else}
             Nog geen locatie bekend
           {/if}
