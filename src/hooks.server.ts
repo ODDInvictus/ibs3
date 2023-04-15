@@ -82,6 +82,9 @@ export const handleError = (async ({ error, event }) => {
 
 	console.error(error)
 
-	await notifyDiscordError(env.DISCORD_NOTIFICATION_WEBHOOK, {event, error})
+	if (env.DISCORD_NOTIFICATION_WEBHOOK) {
+		await notifyDiscordError(env.DISCORD_NOTIFICATION_WEBHOOK, {event, error})
+	}
+
 
 }) satisfies HandleServerError
