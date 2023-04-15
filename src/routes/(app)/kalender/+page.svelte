@@ -123,10 +123,7 @@
       grid-template-rows: 1fr 4fr 1fr 1fr;
       height: $card-height;
 
-      h2 {
-        overflow: scroll;
-      }
-      p {
+      .activity-description {
         overflow: scroll;
       }
 
