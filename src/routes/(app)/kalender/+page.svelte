@@ -32,7 +32,7 @@
       <h2 class="activity-title">{activity.name}</h2>
       <p class="activity-description">{activity.description}</p>
       <p class="activity-date">{new Date(activity.startTime).toLocaleDateString('nl-NL')}</p>
-      <p class="activity-time">{new Date(activity.startTime).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit'})} @ {activity.location.name}</p>
+      <p class="activity-time">{new Date(activity.startTime).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit'})} @ {activity.location?.name ?? 'Nog niet bepaald'}</p>
       <a href="/activiteit/{activity.id}">Meer informatie</a>
     </div>
   </div>
