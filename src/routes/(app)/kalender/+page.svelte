@@ -124,7 +124,8 @@
       height: $card-height;
 
       .activity-description {
-        overflow: scroll;
+        overflow-x: hidden;
+        overflow-y: scroll;
       }
 
       .activity-time {
