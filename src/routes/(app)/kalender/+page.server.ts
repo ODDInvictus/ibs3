@@ -11,10 +11,10 @@ export const load = (async ({ locals }) => {
 
   const query: Prisma.ActivityFindManyArgs = {
     orderBy: [{
-      startTime: 'asc'
+      endTime: 'asc'
     }],
     where: {
-      startTime: {
+      endTime: {
         gte: today
       },
     },

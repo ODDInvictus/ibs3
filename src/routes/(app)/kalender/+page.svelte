@@ -32,7 +32,7 @@
       <h2 class="activity-title">{activity.name}</h2>
       <p class="activity-description">{activity.description}</p>
       <p class="activity-date">{new Date(activity.startTime).toLocaleDateString('nl-NL')}</p>
-      <p class="activity-time">{new Date(activity.startTime).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit'})} @ {activity.location.name}</p>
+      <p class="activity-time">{new Date(activity.startTime).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit'})} @ {activity.location?.name ?? 'Nog niet bepaald'}</p>
       <a href="/activiteit/{activity.id}">Meer informatie</a>
     </div>
   </div>
@@ -123,11 +123,9 @@
       grid-template-rows: 1fr 4fr 1fr 1fr;
       height: $card-height;
 
-      h2 {
-        overflow: scroll;
-      }
-      p {
-        overflow: scroll;
+      .activity-description {
+        overflow-x: hidden;
+        overflow-y: scroll;
       }
 
       .activity-time {
