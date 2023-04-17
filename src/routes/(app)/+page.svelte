@@ -70,11 +70,15 @@
   <h2>{$page.data.member?.firstName}</h2>
 </div>
 
+<style lang="scss">
 
 
-<style>
   hr {
     margin: 2rem 0.5rem;
+
+    @media screen and (max-width: 768px) {
+      margin: 1rem 0;
+    }
   }
 
   #quote {
@@ -82,6 +86,10 @@
     justify-content: center;
     align-items: center;
     margin-top: 2rem;
+
+    @media screen and (max-width: 768px) {
+      margin-top: 1rem;
+    }
   }
 
   #lid {
@@ -91,6 +99,11 @@
     justify-content: center;
     align-items: center;
     margin-top: 2rem;
+
+    @media screen and (max-width: 768px) {
+      margin-top: 0.5rem;
+      gap: 0.5rem;
+    }
   }
 
   #lid > img {
@@ -98,5 +111,10 @@
     border-radius: 100%;
     width: 100%;
     max-width: 500px;
+
+    @media screen and (max-width: 768px) {
+      margin-top: 1rem;
+      max-width: 65vw;
+    }
   }
 </style>
