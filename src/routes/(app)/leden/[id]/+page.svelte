@@ -1,6 +1,28 @@
 <script lang="ts">
   import { page } from '$app/stores'
+  import { env } from '$env/dynamic/public'
+
   let member = $page.data.member
+
+  const usedFields = [
+    'firstName',
+    'lastName',
+    'birthDate',
+    'email',
+    'phone',
+    'ldapId',
+    'nickname',
+    'firstDrink',
+    'becameFeut',
+    'becameMember',
+    'lastLoggedin',
+    'picture',
+    'id'
+  ]
+
+  const fields = Object.keys(member).filter((key) => !usedFields.includes(key))
+
+  console.log(fields)
 
   function getAge(birthDate: Date) {
     const today = new Date()
@@ -16,6 +38,8 @@
     if (!date) return undefined
     return new Date(date).toLocaleDateString('nl-NL')
   }
+
+  export let form;
 </script>
 
 
@@ -23,68 +47,165 @@
 
 <hr />
 
-<table>
-  <tr>
-    <td>Voornaam</td>
-    <td>{member.firstName}</td>
-  </tr>
-  <tr>
-    <td>Achternaam</td>
-    <td>{member.lastName}</td>
-  </tr>
-  <tr>
-    <td>Geboortedatum</td>
-    <td>{toDate(member.birthDate)}</td>
-  </tr>
-  <tr>
-    <td>Leeftijd</td>
-    <td>{getAge(new Date(member.birthDate))}</td>
-  </tr>
-  <tr>
-    <td>Telefoonnummer</td>
-    <td>{member.phoneNumber}</td>
-  </tr>
-  <tr>
-    <td>Email</td>
-    <td>{member.email}</td>
-  </tr>
-  <tr>
-    <td>Bijnaam</td>
-    <td>{member.nickname}</td>
-  </tr>
-  <tr>
-    <td>LDAP id</td>
-    <td>{member.ldapId}</td>
-  </tr>
-  <tr>
-    <td>Profiel foto</td>
-    <td>{member.picture}</td>
-  </tr>
-  <tr>
-    <td>Eerste meeborrel</td>
-    <td>{toDate(member.firstDrink)}</td>
-  </tr>
-  <tr>
-    <td>Feut geworden</td>
-    <td>{toDate(member.becameFeut)}</td>
-  </tr>
-  <tr>
-    <td>Lid geworden</td>
-    <td>{toDate(member.becameMember)}</td>
-  </tr>
-  <tr>
-    <td>Laatst ingelogd</td>
-    <td>{toDate(member.lastLoggedIn)}</td>
-  </tr>
-</table>
+<div id="img">
+  <img src={env.PUBLIC_UPLOAD_URL + '/users/' + member?.picture ?? 'miel.jpg'} alt={member.firstName}>
 
-<style>
+  {#if $page.data.isCurrentUser}
+  <div>
+    <form method="POST" enctype="multipart/form-data">
+      <input type="file" name="image" accept="image/*" />
+      {#if form?.success !== undefined}
+        <p class="error">{form?.message}</p>
+      {:else}
+        <button type="submit">Upload</button>
+      {/if}
+    </form>
+
+
+  </div>
+  {/if}
+</div>
+
+<div id="personal" class="info">
+  <h2>Persoonlijke gegevens</h2>
+
+  <hr />
+
+  <div>
+    <p>Voornaam</p>
+    <p>{member.firstName}</p>
+    <p>Achternaam</p>
+    <p>{member.lastName}</p>
+    <p>Geboortedatum</p>
+    <p>{toDate(member.birthDate)}</p>
+    <p>Leeftijd</p>
+    <p>{getAge(new Date(member.birthDate))}</p>
+  </div>
+</div>
+
+<div id="contact" class="info">
+  <h2>Contact details</h2>
+
+  <hr />
+
+  <div>
+    <p>Email</p>
+    <p>{member.email}</p>
+    <p>Telefoonnummer</p>
+    <p>{member.phone}</p>
+    <p>Ldap ID</p>
+    <p>{member.ldapId}</p>
+  </div>
+</div>
+
+<div id="random" class="info">
+  <h2>Willekeurige tjak</h2>
+
+  <hr />
+
+  <div>
+    <p>ID</p>
+    <p>{member.id}</p>
+    <p>Bijnaam</p>
+    <p>{member.nickname}</p>
+    <p>Eerste meeborrel</p>
+    <p>{toDate(member.firstDrink)}</p>
+    <p>Feut geworden</p>
+    <p>{toDate(member.becameFeut)}</p>
+    <p>Lid geworden</p>
+    <p>{toDate(member.becameMember)}</p>
+    <p>Laatst ingelogd</p>
+    <p>{toDate(member.lastLoggedin)}</p>
+    <p>Profiel foto</p>
+    <p>{member.picture}</p>
+  </div>
+</div>
+
+{#if fields.length > 0}
+<div id="missed" class="info">
+  <h2>Rest (later toegevoegd)</h2>
+
+  <hr />
+
+  <div>
+    {#each fields as field}
+      <p>{field}</p>
+      <p>{member[field]}</p>
+    {/each}
+  </div>
+</div>
+{/if}
+
+<style lang="scss">
+  $size: 250px;
+  $margin: 2rem;
+  $gap: 1rem;
+
   h1 {
     text-align: center;
   }
 
-  a {
-    color: var(--link-color);
+  .info {
+    margin: $margin;
+
+    @media (max-width: 600px) {
+      margin: 0;
+      margin-top: $margin;
+    }
+  }
+
+  .error {
+    color: red;
+  }
+
+  .info > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $gap;
+  }
+
+  #img {
+    display: grid;
+    grid-template-columns: calc($size + $margin) 1fr;
+    gap: $gap;
+
+    // media query
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  #img div {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  #img form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    @media (max-width: 600px) {
+      align-items: center;
+    }
+  }
+
+  #img form p {
+    margin-top: 0.5rem;
+  }
+
+  #img form button {
+    margin-top: 0.5rem;
+    margin-left: $gap;
+  }
+
+  #img img {
+    border-radius: 100%;
+    width: $size;
+    height: $size;
+    object-fit: cover;
+    margin-left: $margin;
   }
 
   hr {
