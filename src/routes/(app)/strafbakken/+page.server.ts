@@ -46,8 +46,7 @@ export const actions = {
     const { request, locals } = event;
 
     // Probeer de user te vinden als dat niet lukt om de een of andere reden, dan is het onsuccesvol
-    // @ts-expect-error
-    let giverId = locals.user?.id;
+    let giverId: number | undefined = locals.user?.id;
     if (!giverId) {
       const session = await locals.getSession();
       const user = await getUser(session);
