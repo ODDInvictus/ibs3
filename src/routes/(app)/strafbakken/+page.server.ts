@@ -22,6 +22,20 @@ export const load = (async () => {
           },
         },
       },
+      orderBy: [
+        { becameMember: {
+          sort: 'asc',
+          nulls: 'last' 
+        } },
+        { becameFeut: {
+          sort: 'asc',
+          nulls: 'last' 
+        } },
+        { firstDrink: {
+          sort: 'asc',
+          nulls: 'last' 
+        } },
+      ]
     }),
   };
 }) satisfies PageServerLoad;

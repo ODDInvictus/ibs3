@@ -32,7 +32,7 @@
   </thead>
   <tbody>
     {#each data as user, i}
-      <row>
+      <row class="row">
         <a href={`/strafbakken/${user.firstName.toLowerCase()}`} class="cell">
           {user.nickname || user.firstName}
         </a>
@@ -41,7 +41,7 @@
         </a>
         <div class="actions cell">
           <Plus
-            class="cursor-pointer hover:invert-[.35] transition z-0 focus:outline-0"
+            class="cursor-pointer hover:invert-[.35] z-0 focus:outline-0 duration-[400ms]"
             on:click={() =>
               openModal(Modal, {
                 username: user.nickname || user.firstName,
@@ -52,8 +52,8 @@
           />
           <Minus
             class={user._count.StrafbakReceived
-              ? "cursor-pointer hover:invert-[.35] transition z-0 focus:outline-0"
-              : "invert-[.6] transition z-0 focus:outline-0 -translate-x-1"}
+              ? "cursor-pointer hover:invert-[.35] z-0 focus:outline-0 -translate-x-1 duration-[400ms]"
+              : "hidden"}
             on:click={user._count.StrafbakReceived
               ? () => trekBak(user.id, i)
               : null}
@@ -95,13 +95,14 @@
       transition: all 0.4s ease;
 
       &:nth-child(odd) {
-        background-color: var(--primary-color);
+        background-color: var(--primary-focus-color);
         color: white;
       }
 
       &:has(.cell:not(.actions):hover) {
         background-color: var(--primary-color);
         color: white;
+        text-decoration: underline;
       }
 
       .cell {
