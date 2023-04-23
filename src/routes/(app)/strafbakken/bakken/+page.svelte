@@ -4,6 +4,8 @@
 
   export let data: bakkenPageData;
 
+  console.log(data)
+
   const middleIndex = Math.ceil(data.strafbakken.length / 2);
   let width: number;
 
@@ -39,7 +41,7 @@
         {longestName}
       />
       <Table
-        data={data.strafbakken.slice().splice(-middleIndex)}
+        data={data.strafbakken.slice().splice(middleIndex, data.strafbakken.length - 1)}
         {longestName}
       />
     {/if}

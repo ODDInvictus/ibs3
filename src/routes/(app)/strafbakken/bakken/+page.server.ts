@@ -22,27 +22,27 @@ export const load = (async ({ url }) => {
   const week = url.searchParams.get("week");
   let weekNumber = Number(week);
 
-  let dateStart = "2003-04-14";
-  let dateEnd = new Date().toISOString().substring(0, 10);
+  let dateStart = new Date("2003-04-14");
+  let dateEnd = new Date();
 
-  if (week !== null && weekNumber <= 52 && weekNumber >= 0) {
+  if (week !== null && week !== undefined && weekNumber <= 52 && weekNumber >= 0) {
     const current = getCurrentWeekNumber();
     if (weekNumber === 0) weekNumber = current;
 
     const currentYear = new Date().getFullYear();
     const year = current > weekNumber ? currentYear - 1 : currentYear;
-    const date = getDateOfISOWeek(weekNumber, year);
-    dateStart = date.toISOString().substring(0, 10);
+    dateStart = getDateOfISOWeek(weekNumber, year);
 
-    date.setDate(date.getDate() + 7);
-    dateEnd = date.toISOString().substring(0, 10);
+    dateEnd.setDate(dateStart.getDate() + 7);
   }
+
+  console.log(dateStart, dateEnd)
 
   // Hoeren prisma kan deze query gewoon NIET.
   return {
     strafbakken: await db.$queryRaw`
-      SELECT u.nickname, u.firstname AS firstName, COUNT(s.id) AS count
-      from User AS u, Strafbak AS s
+      SELECT u.nickname, u.firstname AS firstName, COUNT(s.id) AS count, u.id
+      FROM User AS u, Strafbak AS s
       WHERE s.receiverId = u.id
       AND s.dateDeleted IS NOT NULL
       AND s.dateDeleted >= ${dateStart}
