@@ -38,11 +38,13 @@ export const actions = {
         isActive: true
       }
     })
+
     const invictus = await db.financialPerson.findFirst({
       where: {
         type: FinancialPersonType.INVICTUS
       }
     })
+
 
     if (!invictus) {
       throw new Error('FinancialPerson with type INVICTUS not found!')
@@ -85,7 +87,10 @@ export const actions = {
           isActive: false
         }
       })
+
     }).catch(err => {
+      console.error(err)
+
       throw fail(500, {
         message: 'Failed to create transactions',
         error: err
