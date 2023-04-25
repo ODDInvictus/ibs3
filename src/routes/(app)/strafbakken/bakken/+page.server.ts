@@ -36,8 +36,6 @@ export const load = (async ({ url }) => {
     dateEnd.setDate(dateStart.getDate() + 7);
   }
 
-  console.log(dateStart, dateEnd)
-
   // Hoeren prisma kan deze query gewoon NIET.
   return {
     strafbakken: await db.$queryRaw`

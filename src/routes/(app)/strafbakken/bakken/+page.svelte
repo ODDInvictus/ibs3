@@ -4,8 +4,6 @@
 
   export let data: bakkenPageData;
 
-  console.log(data)
-
   const middleIndex = Math.ceil(data.strafbakken.length / 2);
   let width: number;
 
