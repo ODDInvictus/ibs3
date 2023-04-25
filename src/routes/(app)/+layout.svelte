@@ -98,7 +98,7 @@
 		sm:flex-col
 		sm:col-span-4
 		rounded-lg
-		xl:col-span-3 2xl:col-span-2
+		xl:col-span-3 2xl:col-span-3
 		md:m-5"
 		>
 		<section id="layout-top">
@@ -161,7 +161,7 @@
 		</section>
 	</aside>
 
-	<div id="layout-content" class="sm:block col-span-12 sm:col-span-8 xl:col-span-9 2xl:col-span-10 sm:p-0">
+	<div id="layout-content" class="sm:block col-span-12 sm:col-span-8 xl:col-span-9 2xl:col-span-9 sm:p-0">
 		<header class="p-5 sm:p-0 sm:pr-5">
 			<div class="hidden md:flex">
 				<Breadcrumps />

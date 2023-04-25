@@ -22,8 +22,6 @@
 
   const fields = Object.keys(member).filter((key) => !usedFields.includes(key))
 
-  console.log(fields)
-
   function getAge(birthDate: Date) {
     const today = new Date()
     const age = today.getFullYear() - birthDate.getFullYear()

@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["filteredRelationCount"]
+  previewFeatures = ["filteredRelationCount", "orderByNulls"]
 }
 
 datasource db {
@@ -137,16 +137,16 @@ model Activity {
   updatedAt DateTime @updatedAt
 
   name        String
-  description String @db.LongText
+  description String            @db.LongText
   startTime   DateTime
   endTime     DateTime
   location    ActivityLocation? @relation(fields: [locationId], references: [id])
   locationId  Int?
 
   // Is deze activiteit alleen zichtbaar voor leden?
-  membersOnly Boolean   @default(false)
+  membersOnly Boolean     @default(false)
   // Wie organiseerd dit?
-  organisedBy Committee @relation(fields: [committeeId], references: [id])
+  organisedBy Committee   @relation(fields: [committeeId], references: [id])
   committeeId Int
   // Wie zijn er aanwezig?
   attending   Attending[]
@@ -187,9 +187,9 @@ model Attending {
 
   isAttending Boolean @default(false)
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  isActive   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
 }
 
 // FINANCIALS

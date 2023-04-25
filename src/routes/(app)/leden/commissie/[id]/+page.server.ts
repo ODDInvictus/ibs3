@@ -14,8 +14,6 @@ export const load = (async ({ params }) => {
     }
   })
 
-  console.log({ committee })
-
   return {
     committee
   }
