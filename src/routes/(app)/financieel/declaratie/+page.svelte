@@ -116,6 +116,15 @@
     grid-template-columns: 100px 1fr;
     gap: 1rem;
 
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+
+      input[type="file"] {
+        margin-bottom: 1rem;
+      }
+    }
+
     label {
       font-weight: 600;
       padding-top: 0.4rem;
