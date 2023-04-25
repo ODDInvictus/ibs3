@@ -101,7 +101,42 @@
   </table>
 </div>
 
-<style>
+<style lang="scss">
+  .actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  @media (max-width: 640px) {
+    #root {
+      overflow: scroll;
+    }
+
+    table {
+      width: 100%;
+      overflow: scroll;
+    }
+
+    tr {
+      height: 0;
+    }
+
+    td {
+      height: 0;
+    }
+
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      height: 100%;
+    }
+  }
+
   h1 {
     text-align: center;
   }
@@ -125,12 +160,6 @@
   .link:hover {
     text-decoration: underline;
     cursor: pointer;
-  }
-
-  .actions {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
   }
 
 </style>
