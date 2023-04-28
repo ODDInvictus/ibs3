@@ -3,7 +3,7 @@
 	import type { User } from '@prisma/client';
 
   export let user: User
-  export let status: 'positive' | 'negative'
+  export let status: 'positive' | 'negative' | 'unsure'
 </script>
 
 <div class="user-card">
@@ -82,6 +82,10 @@
 
     .negative {
       background-color: rgba(255, 0, 0, 0.733);
+    }
+
+    .unsure {
+      background-color: rgba(128, 128, 128, 0.842);
     }
 
     img {

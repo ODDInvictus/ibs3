@@ -14,9 +14,20 @@
 
   const activity  = $page.data.activity
   let attending   = $page.data.attending
-  
   $: bij    = attending.filter(a => a.isAttending).map(a => a.user)
-  $: notBij = attending.filter(a => !a.isAttending).map(a => a.user)
+  $: unsure = attending.filter(a => {
+      let cr = new Date(a.createdAt)
+      let ua = new Date(a.updatedAt)
+
+      cr.setMilliseconds(0)
+      ua.setMilliseconds(0)
+      cr.setSeconds(0)
+      ua.setSeconds(0)
+
+      return cr.getTime() === ua.getTime()
+    }).map(a => a.user)
+
+  $: notBij = attending.map(a => a.user).filter(u => !bij.includes(u) && !unsure.includes(u))
 
   function formatTime(time: string) {
     const date = new Date(time)
@@ -196,6 +207,9 @@
       <div id="users">
         {#each bij as user}
           <UserCard status="positive" user={user}/>
+        {/each}
+        {#each unsure as user}
+          <UserCard status="unsure" user={user}/>
         {/each}
         {#each notBij as user}
           <UserCard status="negative" user={user}/>
