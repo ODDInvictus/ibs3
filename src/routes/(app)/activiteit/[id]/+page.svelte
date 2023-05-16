@@ -16,6 +16,8 @@
   let attending   = $page.data.attending
   $: bij    = attending.filter(a => a.isAttending).map(a => a.user)
   $: unsure = attending.filter(a => {
+      if (bij.includes(a.user)) return false
+
       let cr = new Date(a.createdAt)
       let ua = new Date(a.updatedAt)
 
