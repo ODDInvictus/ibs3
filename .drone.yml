@@ -1,0 +1,18 @@
+kind: pipeline
+type: docker
+name: Build
+
+workspace:
+  path: /app
+
+steps:
+- name: deploy
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: DOCKER_HUB_USERNAME
+    password:
+      from_secret: DOCKER_HUB_PASSWORD
+    repo: nierot/ibs3
+    tags:
+    - latest
