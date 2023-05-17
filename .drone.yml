@@ -11,8 +11,10 @@ steps:
   when:
     branch:
     - drone
+    ref:
+    - refs/tags/*
   tags:
-  - latest
+  - ${}
   settings:
     username:
       from_secret: DOCKER_HUB_USERNAME
@@ -31,3 +33,13 @@ steps:
     status:
     - success
     - failure
+
+--
+kind: pipeline
+type: docker
+name: Promote
+
+workspace:
+  path: /app
+
+steps:
