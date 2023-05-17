@@ -47,6 +47,8 @@ model User {
 
   FinancialPersonDataUser FinancialPersonDataUser[]
   Attending               Attending[]
+  Link                    Link[]
+  LinkClick               LinkClick[]
 }
 
 model Account {
@@ -460,4 +462,40 @@ model Declaration {
   // Heeft de penningmeester dit afgekeurd?
   // Als dit is afgekeurd wordt het ook niet omgezet naar een transactie
   denied   Boolean @default(false)
+}
+
+//
+// LINK SHORTNER
+//
+
+model Link {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // De link zelf
+  link String @unique
+
+  // De link die de gebruiker ziet
+  shortLink String @unique
+
+  // De persoon die de link heeft aangemaakt
+  user      User        @relation(fields: [userId], references: [id])
+  userId    Int
+  
+  LinkClick LinkClick[]
+}
+
+model LinkClick {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // De link die is aangeklikt
+  link   Link @relation(fields: [linkId], references: [id])
+  linkId Int
+
+  // De persoon die de link heeft aangeklikt
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?
 }
