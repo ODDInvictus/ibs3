@@ -14,7 +14,7 @@ steps:
   tags:
   - latest
   commands:
-  - ls -lah
+  - chmod +x /app/drone.sh
   - /bin/sh -c /app/drone.sh
   settings:
     username:
