@@ -8,14 +8,8 @@ workspace:
 steps:
 - name: deploy
   image: plugins/docker
-  when:
-    branch:
-    - drone
-    ref:
-    - refs/tags/*
-  tags:
-  - ${}
   settings:
+    auto_tag: true
     username:
       from_secret: DOCKER_HUB_USERNAME
     password:
@@ -29,3 +23,9 @@ steps:
       from_secret: DISCORD_WEBHOOK_ID
     webhook_token:
       from_secret: DISCORD_WEBHOOK_TOKEN
+
+trigger:
+  branch:
+  - drone
+  ref:
+  - refs/tags/*
