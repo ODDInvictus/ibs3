@@ -27,5 +27,5 @@ steps:
 trigger:
   branch:
   - drone
-  ref:
-  - refs/tags/*
+  # ref:
+  # - refs/tags/*
