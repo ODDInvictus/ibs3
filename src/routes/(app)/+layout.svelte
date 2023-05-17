@@ -11,7 +11,7 @@
 	import { LDAP_IDS } from '$lib/constants'
 	import type { Committee } from '@prisma/client'
   import { env } from '$env/dynamic/public'
-	import { PUBLIC_UPLOAD_URL } from '$env/static/public';
+	import { PUBLIC_VERSION } from '$env/static/public';
 
 	// vierkante schermen zijn voor homo's
 	$: innerWidth = 0;
@@ -156,7 +156,7 @@
 		<section>
 			<a href="/over">
 				<i><InformationCircle /></i>
-				<span class="hidden sm:block">IBS v{env.PUBLIC_VERSION}</span>
+				<span class="hidden sm:block">IBS v{PUBLIC_VERSION ?? env.PUBLIC_VERSION}</span>
 			</a>
 		</section>
 	</aside>
