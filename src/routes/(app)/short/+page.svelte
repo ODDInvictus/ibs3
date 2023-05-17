@@ -1,10 +1,18 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+  import { page } from '$app/stores';
+	import type { ActionData } from './$types';
 
+  export let form: ActionData;
 </script>
 
 <h1>Maak een kortere link aan!</h1>
 
 <hr />
+
+{#if form?.error}
+  <p class="error">{form.error}</p>
+{/if}
 
 <form action="short" method="POST">
   <div>
@@ -23,6 +31,10 @@
 <style lang="scss">
   h1 {
     text-align: center;
+  }
+
+  .error {
+    color: red;
   }
 
   hr {

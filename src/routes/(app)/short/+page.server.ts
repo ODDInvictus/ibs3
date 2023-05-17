@@ -25,7 +25,7 @@ export const actions = {
       })
 
       if (existing) {
-        throw fail(400, {
+        return fail(400, {
           error: 'Verkorting is al in gebruik'
         })
       }
