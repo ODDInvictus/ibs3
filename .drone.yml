@@ -35,7 +35,7 @@ steps:
     status: [ success, failure, changed ]
 
 trigger:
-  branch:
-  - drone
-  # ref:
-  # - refs/tags/*
+  # branch:
+  # - drone
+  ref:
+  - refs/tags/*
