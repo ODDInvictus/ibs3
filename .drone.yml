@@ -13,16 +13,13 @@ steps:
     - drone
   tags:
   - latest
-  commands:
-  - chmod +x /app/drone.sh
-  - /bin/sh -c /app/drone.sh
   settings:
     username:
       from_secret: DOCKER_HUB_USERNAME
     password:
       from_secret: DOCKER_HUB_PASSWORD
     repo: nierot/ibs3
-
+    dockerfile: Dockerfile.drone
 - name: notify
   image: appleboy/drone-discord
   settings:
