@@ -18,6 +18,7 @@ COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
 COPY prisma /app/prisma
 
+RUN chmod +x /app/drone.sh
 RUN /app/drone.sh
 RUN npm install --production
 RUN npx prisma generate
