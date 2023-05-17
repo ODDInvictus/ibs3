@@ -26,6 +26,7 @@ body {
 /* Select */
 select,
 input[type='text'],
+input[type='url'],
 input[type='number'] {
 	background-color: var(--background-focus-color);
 	color: var(--text-color);
