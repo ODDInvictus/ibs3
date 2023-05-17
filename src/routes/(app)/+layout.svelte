@@ -11,7 +11,6 @@
 	import { LDAP_IDS } from '$lib/constants'
 	import type { Committee } from '@prisma/client'
   import { env } from '$env/dynamic/public'
-	import { PUBLIC_UPLOAD_URL } from '$env/static/public';
 
 	// vierkante schermen zijn voor homo's
 	$: innerWidth = 0;

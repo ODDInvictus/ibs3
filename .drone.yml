@@ -1,0 +1,41 @@
+kind: pipeline
+type: docker
+name: Build
+
+workspace:
+  path: /app
+
+steps:
+- name: deploy
+  image: plugins/docker
+  settings:
+    auto_tag: true
+    username:
+      from_secret: DOCKER_HUB_USERNAME
+    password:
+      from_secret: DOCKER_HUB_PASSWORD
+    repo: nierot/ibs3
+    dockerfile: Dockerfile.drone
+- name: notify
+  image: appleboy/drone-discord
+  settings:
+    webhook_id:
+      from_secret: DISCORD_WEBHOOK_ID
+    webhook_token:
+      from_secret: DISCORD_WEBHOOK_TOKEN
+    message: |
+      Nieuwe build voor IBS3! 
+      - Commit: [[{{commit.sha}}]({{commit.link}})]
+      - Door: [[{{commit.author}}](https://github.com/{{commit.author}})]
+      - Bericht: {{commit.message}} 
+      - Build: [#{{build.number}}]({{build.link}}) 
+      - Status: {{build.status}}
+    username: Miel Monteur
+  when:
+    status: [ success, failure, changed ]
+
+trigger:
+  # branch:
+  # - drone
+  ref:
+  - refs/tags/*
