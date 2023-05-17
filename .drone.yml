@@ -23,7 +23,12 @@ steps:
       from_secret: DISCORD_WEBHOOK_ID
     webhook_token:
       from_secret: DISCORD_WEBHOOK_TOKEN
-    message: "{{#success build.status}}🎉 IBS build is geslaagd! {{else}}👎 IBS build is stukkie wukkie 😢{{/success}}\nRepo `[{{repo.name}}/{{commit.branch}}]` getriggerd door `[{{uppercase build.event}}]`.\n- Commit `[[{{commit.sha}}]({{commit.link}})]`\n- Door `[{{commit.author}} / {{commit.email}}]`\n- Onzin berichtje: {{commit.message}}\n- Drone build [[#{{build.number}}]({{build.link}})] heeft als status `[{{uppercase build.status}}]` om `[{{datetime build.finished \"2006.01.02 15:04\" \"\"}}]`\n"​
+    message: |
+      {{#success build.status}}Huts! IBS build is geslaagd!{{else}}Sip, de build is gefaald {{/success}}
+      Commit: [[{{commit.sha}}]({{commit.link}})]
+      Door: [{{commit.author}} / {{commit.email}}]
+      Bericht: {{commit.message}}
+      Build: [[#{{build.number}}]({{build.link}})]
     username: Miel Monteur
   when:
     status: [ success, failure, changed ]
