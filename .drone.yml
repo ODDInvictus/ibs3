@@ -14,7 +14,7 @@ steps:
   tags:
   - latest
   commands:
-  - ./drone.sh
+  - /bin/sh -c /app/drone.sh
   settings:
     username:
       from_secret: DOCKER_HUB_USERNAME
