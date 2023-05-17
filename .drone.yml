@@ -25,10 +25,10 @@ steps:
       from_secret: DISCORD_WEBHOOK_TOKEN
     message: |
       Nieuwe build voor IBS3! 
-      - Commit: [[{{commit.sha}}]({{commit.link}})] 
-      - Door: [{{commit.author}} / {{commit.email}}] 
+      - Commit: [{{commit.sha}}]({{commit.link}}) 
+      - Door: [{{commit.author}}(https://github.com/{{commit.author}})]
       - Bericht: {{commit.message}} 
-      - Build: [[#{{build.number}}]({{build.link}})] 
+      - Build: [#{{build.number}}]({{build.link}}) 
       - Status: {{build.status}}
     username: Miel Monteur
   when:
