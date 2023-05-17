@@ -29,17 +29,3 @@ steps:
       from_secret: DISCORD_WEBHOOK_ID
     webhook_token:
       from_secret: DISCORD_WEBHOOK_TOKEN
-  when:
-    status:
-    - success
-    - failure
-
---
-kind: pipeline
-type: docker
-name: Promote
-
-workspace:
-  path: /app
-
-steps:
