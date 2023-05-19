@@ -28,7 +28,9 @@ const authorization = (async ({ event, resolve }) => {
 	// This route is used by the jobs server to execute jobs
 	// This route has to be whitelisted to only allow the jobs server to execute jobs
 	// Fix this in NGINX
-	if (url.startsWith('/jobs')) {
+
+	// If shortner, then ignore auth.
+	if (url.startsWith('/s')) {
 		// Resolve normally
 		return await resolve(event); 
 	} else if (!url.startsWith('/auth')) {

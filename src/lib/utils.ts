@@ -88,7 +88,7 @@ export function generateICal(event: ICalEventType) {
   return `data:text/calendar;charset=utf8,${encodeURIComponent(body.join('\n'))}`
 }
 
-function formatDate(dateTime: Date): string {
+export function formatDate(dateTime: Date): string {
   return [
     dateTime.getUTCFullYear(),
     pad(dateTime.getUTCMonth() + 1),
@@ -100,7 +100,7 @@ function formatDate(dateTime: Date): string {
 }
 
 
-function pad(num: number): string {
+export function pad(num: number): string {
   if (num < 10) {
     return `0${num}`;
   }
