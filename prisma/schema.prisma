@@ -24,11 +24,14 @@ model Settings {
 // USER
 
 model User {
-  id                Int               @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
+  isActive Boolean @default(true)
+
   firstName         String
   lastName          String
   ldapId            String            @unique
   email             String            @unique
+  personalEmail     String?
   nickname          String?           @unique
   picture           String?
   birthDate         DateTime?         @db.Date
@@ -49,6 +52,7 @@ model User {
   Attending               Attending[]
   Link                    Link[]
   LinkClick               LinkClick[]
+  EmailAliasUser          EmailAliasUser[]
 }
 
 model Account {
@@ -86,6 +90,7 @@ model Committee {
   CommitteeMember              CommitteeMember[]
   Acivity                      Activity[]
   FinancialPersonDataCommittee FinancialPersonDataCommittee[]
+  EmailAliasCommittee          EmailAliasCommittee[]
 }
 
 model CommitteeMember {
@@ -474,15 +479,15 @@ model Link {
   updatedAt DateTime @updatedAt
 
   // De link zelf
-  link String @unique
+  link String @db.Text
 
   // De link die de gebruiker ziet
   shortLink String @unique
 
   // De persoon die de link heeft aangemaakt
-  user      User        @relation(fields: [userId], references: [id])
-  userId    Int
-  
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
   LinkClick LinkClick[]
 }
 
@@ -498,4 +503,61 @@ model LinkClick {
   // De persoon die de link heeft aangeklikt
   user   User? @relation(fields: [userId], references: [id])
   userId Int?
+}
+
+//
+// Email
+//
+
+// Een email adres
+// Bestaande uit de alias (bijv. senaat@) en het domein (bijv. example.com)
+// Samen vormen ze senaat@example.com
+model EmailAlias {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // bijvoorbeeld senaat
+  alias String @unique
+
+  // receivers
+  EmailContact        EmailContact[]
+  EmailAliasCommittee EmailAliasCommittee[]
+  EmailAliasUser      EmailAliasUser[]
+}
+
+model EmailAliasCommittee {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // bijvoorbeeld senaat
+  alias        EmailAlias @relation(fields: [emailAliasId], references: [id])
+  emailAliasId Int
+  committee    Committee  @relation(fields: [committeeId], references: [id])
+  committeeId  Int
+}
+
+model EmailAliasUser {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // bijvoorbeeld senaat
+  alias        EmailAlias @relation(fields: [emailAliasId], references: [id])
+  emailAliasId Int
+  user         User       @relation(fields: [userId], references: [id])
+  userId       Int
+}
+
+// Een extern email adres waar aliassen heen kunnen sturen
+// kan natuurlijk ook iets@ -> example@gmail.com
+model EmailContact {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  address      String     @unique
+  EmailAlias   EmailAlias @relation(fields: [emailAliasId], references: [id])
+  emailAliasId Int
 }
