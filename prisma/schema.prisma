@@ -532,9 +532,9 @@ model EmailAliasCommittee {
   updatedAt DateTime @updatedAt
 
   // bijvoorbeeld senaat
-  alias        EmailAlias @relation(fields: [emailAliasId], references: [id])
+  alias        EmailAlias @relation(fields: [emailAliasId], references: [id], onDelete: Cascade)
   emailAliasId Int
-  committee    Committee  @relation(fields: [committeeId], references: [id])
+  committee    Committee  @relation(fields: [committeeId], references: [id], onDelete: Cascade)
   committeeId  Int
 }
 
@@ -544,9 +544,9 @@ model EmailAliasUser {
   updatedAt DateTime @updatedAt
 
   // bijvoorbeeld senaat
-  alias        EmailAlias @relation(fields: [emailAliasId], references: [id])
+  alias        EmailAlias @relation(fields: [emailAliasId], references: [id], onDelete: Cascade)
   emailAliasId Int
-  user         User       @relation(fields: [userId], references: [id])
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int
 }
 
@@ -558,6 +558,6 @@ model EmailContact {
   updatedAt DateTime @updatedAt
 
   address      String     @unique
-  EmailAlias   EmailAlias @relation(fields: [emailAliasId], references: [id])
+  EmailAlias   EmailAlias @relation(fields: [emailAliasId], references: [id], onDelete: Cascade)
   emailAliasId Int
 }
