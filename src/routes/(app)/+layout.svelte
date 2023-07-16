@@ -20,8 +20,9 @@
 	import type { Committee } from '@prisma/client';
 	import { env } from '$env/dynamic/public';
 	import Toast from '$lib/components/toast.svelte';
-	import { toast } from '$lib/notification';
 	import Confirm from '$lib/components/confirm.svelte';
+	import Prompt from '$lib/components/prompt.svelte';
+	import PromptSelect from '$lib/components/promptSelect.svelte';
 
 	// vierkante schermen zijn voor homo's
 	$: innerWidth = 0;
@@ -102,6 +103,14 @@
 
 <div class="confirm">
 	<Confirm />
+</div>
+
+<div class="prompt">
+	<Prompt />
+</div>
+
+<div class="promptSelect">
+	<PromptSelect />
 </div>
 
 <div id="layout-background" class="w-screen col-span-0" />
