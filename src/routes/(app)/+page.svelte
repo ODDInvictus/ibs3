@@ -1,6 +1,9 @@
 <script lang="ts">
   import { page } from '$app/stores'
   import { env } from '$env/dynamic/public';
+  import knoppers from '$lib/assets/knoppers.png';
+	import { onDestroy, onMount } from 'svelte';
+	import type { Snapshot } from './$types';
 
   function getGreeting() {
     const hour = new Date().getHours();
@@ -51,6 +54,67 @@
   function getRandomWord() {
     return words[Math.floor(Math.random() * words.length)];
   }
+
+  /* Coockie clicker */
+  let isClicking = false;
+
+  let totalClicks = $page.data.clicks?._sum?.amount ?? 0;
+  let sessionClicks = 0;
+
+  $: satuationStyle = `filter: saturate(${Math.min(9, Math.max(1, sessionClicks / 100))})`
+
+  let timeouts: NodeJS.Timeout[] = []
+  let startTime: number;
+
+  let record = $page.data.topclicker?.amount;
+  let recordHolder = $page.data.topclicker?.firstName
+  $: {
+    if (totalClicks > record) {
+      record = totalClicks;
+      recordHolder = 'jou'
+    }
+  }
+
+  async function coockieClick() {
+    if (isClicking) {
+      timeouts.forEach(clearTimeout);
+    } else {
+      isClicking = true;
+      startTime = Date.now();
+    }
+
+    sessionClicks++;
+    totalClicks++;
+
+    const timeout = setTimeout(async() => {
+      await endSession(startTime, sessionClicks)
+    }, 5 * 1000);
+    timeouts.push(timeout);
+  }
+
+  async function endSession(startTime: number, amount: number, endTime?: number) {
+    isClicking = false;
+    await fetch("/", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({startTime, amount, endTime})
+    });
+    sessionClicks = 0;
+  }
+
+  export const snapshot: Snapshot = {
+    capture: () => {
+      return {
+        startTime, sessionClicks, endTime: Date.now()
+      };
+    },
+    restore: async ({startTime, sessionClicks, endTime}) => {
+      totalClicks += sessionClicks;
+      await endSession(startTime, sessionClicks, endTime);
+    } 
+  }
 </script>
 
 <h1>{getGreeting()}, {$page.data.user.firstName}!</h1>
@@ -68,6 +132,22 @@
 
   <img src={env.PUBLIC_UPLOAD_URL + '/users/' + $page.data.member?.picture ?? 'diederik_cropped.jpg'} alt="Diederik?">
   <h2>{$page.data.member?.firstName}</h2>
+</div>
+
+<div id="coockie-clicker">
+  <h1>Coockie clicker</h1>
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+  <img
+    style={satuationStyle}
+    id="coockie"
+    src={knoppers.replace("/@fs", "")}
+    alt="knoppers"
+    on:click={coockieClick}
+  >
+  <div id="coockieStats">
+    <p>Totaal clicks: {totalClicks}</p>
+    <p>Highscore: {record} door {recordHolder}</p>
+  </div>
 </div>
 
 <style lang="scss">
@@ -115,6 +195,22 @@
     @media screen and (max-width: 768px) {
       margin-top: 1rem;
       max-width: 65vw;
+    }
+  }
+
+  #coockie-clicker {
+    display: flex;
+    margin: 3rem 0;
+    align-items: center;
+    flex-direction: column;
+
+    #coockie {
+      width: 20rem;
+      cursor: pointer;
+    }
+
+    #coockieStats {
+      text-align: center;
     }
   }
 </style>
