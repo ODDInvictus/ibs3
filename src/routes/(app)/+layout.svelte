@@ -21,6 +21,7 @@
 	import { env } from '$env/dynamic/public';
 	import Toast from '$lib/components/toast.svelte';
 	import { toast } from '$lib/notification';
+	import Confirm from '$lib/components/confirm.svelte';
 
 	// vierkante schermen zijn voor homo's
 	$: innerWidth = 0;
@@ -97,6 +98,10 @@
 
 <div class="toast">
 	<Toast />
+</div>
+
+<div class="confirm">
+	<Confirm />
 </div>
 
 <div id="layout-background" class="w-screen col-span-0" />

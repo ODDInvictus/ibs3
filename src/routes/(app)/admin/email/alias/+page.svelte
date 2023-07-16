@@ -4,8 +4,7 @@
 	import CircleX from '~icons/tabler/circle-x';
 	import InfoCircle from '~icons/tabler/info-circle';
 	import { toast } from '$lib/notification';
-
-	console.log($page.data.customAliases);
+	import { confirm } from '$lib/confirm';
 
 	const domain = $page.data.domain;
 
@@ -19,10 +18,18 @@
 	}
 
 	function deleteAlias(id: number) {
-		toast({
+		confirm({
 			title: 'Weet je het zeker?',
-			message: 'Als je het echt wil verwijderen klik dan nog een keer op deze knop.',
-			type: 'warning'
+			message: 'Dit kan niet ongedaan worden!',
+			cb: (success: boolean) => {
+				if (success) {
+					toast({
+						title: 'Oei!',
+						message: 'Dit is nog niet geimplementeerd lmao.',
+						type: 'error'
+					});
+				}
+			}
 		});
 	}
 
