@@ -3,21 +3,20 @@
 
 	$: {
 		const c = $confirmStore;
-		console.log('change', c);
 		if (c && c.title !== '' && c.message !== '') {
-			const dialog = document.querySelector('dialog');
+			const dialog = document.querySelector('#confirm-dialog') as HTMLDialogElement;
 			dialog?.showModal();
 		}
 	}
 
 	function action(confirm: boolean) {
-		const dialog = document.querySelector('dialog');
+		const dialog = document.querySelector('#confirm-dialog') as HTMLDialogElement;
 		$confirmStore.cb(confirm);
 		dialog?.close();
 	}
 </script>
 
-<dialog>
+<dialog id="confirm-dialog">
 	<h1>{$confirmStore.title}</h1>
 
 	<p>{$confirmStore.message}</p>
