@@ -5,6 +5,8 @@
 	import InfoCircle from '~icons/tabler/info-circle';
 	import { toast } from '$lib/notification';
 	import { confirm } from '$lib/confirm';
+	import { goto } from '$app/navigation';
+	import MailPlus from '~icons/tabler/mail-plus';
 
 	const domain = $page.data.domain;
 
@@ -21,12 +23,27 @@
 		confirm({
 			title: 'Weet je het zeker?',
 			message: 'Dit kan niet ongedaan worden!',
-			cb: (success: boolean) => {
+			cb: async (success: boolean) => {
 				if (success) {
-					toast({
-						title: 'Oei!',
-						message: 'Dit is nog niet geimplementeerd lmao.',
-						type: 'error'
+					console.log('fetching');
+					await fetch(location.pathname + '?id=' + id, {
+						method: 'DELETE'
+					}).then(async (res) => {
+						const obj = await res.json();
+						if (res.ok) {
+							toast({
+								title: 'Gelukt!',
+								message: obj.message,
+								type: 'success'
+							});
+							location.reload();
+						} else {
+							toast({
+								title: 'Oei!',
+								message: obj.message,
+								type: 'error'
+							});
+						}
 					});
 				}
 			}
@@ -34,11 +51,7 @@
 	}
 
 	function editAlias(id: number) {
-		toast({
-			title: 'Oei!',
-			message: 'Dit is nog niet geimplementeerd lmao.',
-			type: 'error'
-		});
+		goto('/admin/email/alias/' + id);
 	}
 </script>
 
@@ -58,7 +71,13 @@
 		<tr>
 			<td class="bold"> Persoonlijke aliassen </td>
 			<td />
-			<td />
+			<td>
+				<div class="options">
+					<button on:click={() => goto('/admin/email/alias/new')}>
+						<MailPlus />
+					</button>
+				</div>
+			</td>
 		</tr>
 
 		{#each $page.data.userAliases as alias}
@@ -93,7 +112,13 @@
 		<tr>
 			<td class="bold"> Losse aliassen </td>
 			<td />
-			<td />
+			<td>
+				<div class="options">
+					<button on:click={() => goto('/admin/email/alias/new')}>
+						<MailPlus />
+					</button>
+				</div>
+			</td>
 		</tr>
 
 		{#each $page.data.customAliases as alias}
@@ -102,16 +127,16 @@
 					{alias.address}
 				</td>
 				<td>
-					<a href="/admin/email/alias/{alias.id}">
+					<a href="/admin/email/alias/{alias.emailAliasId}">
 						{alias.EmailAlias.alias}@{domain}
 					</a>
 				</td>
 				<td>
 					<div class="options">
-						<button on:click={() => editAlias(alias.id)}>
+						<button on:click={() => editAlias(alias.emailAliasId)}>
 							<Edit />
 						</button>
-						<button on:click={() => deleteAlias(alias.id)}>
+						<button on:click={() => deleteAlias(alias.emailAliasId)}>
 							<CircleX />
 						</button>
 					</div>
