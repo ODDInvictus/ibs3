@@ -55,7 +55,7 @@
     return words[Math.floor(Math.random() * words.length)];
   }
 
-  /* Coockie clicker */
+  /* Cookie clicker */
   let isClicking = false;
 
   let totalClicks = $page.data.clicks?._sum?.amount ?? 0;
@@ -75,7 +75,7 @@
     }
   }
 
-  async function coockieClick() {
+  async function cookieClick() {
     if (isClicking) {
       timeouts.forEach(clearTimeout);
     } else {
@@ -134,17 +134,17 @@
   <h2>{$page.data.member?.firstName}</h2>
 </div>
 
-<div id="coockie-clicker">
-  <h1>Coockie clicker</h1>
+<div id="cookie-clicker">
+  <h1>Cookie clicker</h1>
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <img
     style={satuationStyle}
-    id="coockie"
+    id="cookie"
     src={knoppers.replace("/@fs", "")}
     alt="knoppers"
-    on:click={coockieClick}
+    on:click={cookieClick}
   >
-  <div id="coockieStats">
+  <div id="cookieStats">
     <p>Totaal clicks: {totalClicks}</p>
     <p>Highscore: {record} door {recordHolder}</p>
   </div>
@@ -198,18 +198,18 @@
     }
   }
 
-  #coockie-clicker {
+  #cookie-clicker {
     display: flex;
     margin: 3rem 0;
     align-items: center;
     flex-direction: column;
 
-    #coockie {
+    #cookie {
       width: 20rem;
       cursor: pointer;
     }
 
-    #coockieStats {
+    #cookieStats {
       text-align: center;
     }
   }
