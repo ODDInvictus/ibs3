@@ -52,21 +52,34 @@ CREATE TABLE `EmailContact` (
     `address` VARCHAR(191) NOT NULL,
     `emailAliasId` INTEGER NOT NULL,
 
-    UNIQUE INDEX `EmailContact_address_key`(`address`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `ClickSession` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `userId` INTEGER NOT NULL,
+    `amount` INTEGER NOT NULL,
+    `startTime` DATETIME(3) NOT NULL,
+    `endTime` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `EmailAliasCommittee` ADD CONSTRAINT `EmailAliasCommittee_emailAliasId_fkey` FOREIGN KEY (`emailAliasId`) REFERENCES `EmailAlias`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `EmailAliasCommittee` ADD CONSTRAINT `EmailAliasCommittee_emailAliasId_fkey` FOREIGN KEY (`emailAliasId`) REFERENCES `EmailAlias`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `EmailAliasCommittee` ADD CONSTRAINT `EmailAliasCommittee_committeeId_fkey` FOREIGN KEY (`committeeId`) REFERENCES `Committee`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `EmailAliasCommittee` ADD CONSTRAINT `EmailAliasCommittee_committeeId_fkey` FOREIGN KEY (`committeeId`) REFERENCES `Committee`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `EmailAliasUser` ADD CONSTRAINT `EmailAliasUser_emailAliasId_fkey` FOREIGN KEY (`emailAliasId`) REFERENCES `EmailAlias`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `EmailAliasUser` ADD CONSTRAINT `EmailAliasUser_emailAliasId_fkey` FOREIGN KEY (`emailAliasId`) REFERENCES `EmailAlias`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `EmailAliasUser` ADD CONSTRAINT `EmailAliasUser_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `EmailAliasUser` ADD CONSTRAINT `EmailAliasUser_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `EmailContact` ADD CONSTRAINT `EmailContact_emailAliasId_fkey` FOREIGN KEY (`emailAliasId`) REFERENCES `EmailAlias`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `EmailContact` ADD CONSTRAINT `EmailContact_emailAliasId_fkey` FOREIGN KEY (`emailAliasId`) REFERENCES `EmailAlias`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ClickSession` ADD CONSTRAINT `ClickSession_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
