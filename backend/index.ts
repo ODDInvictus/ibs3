@@ -27,6 +27,6 @@ app.listen(port, async () => {
 */
 
 // Sync LDAP every day at 6:00
-cron.schedule('0 6 * * *', syncLDAPUsers)
+cron.schedule(process.env.CRONTAB_LDAP || '0 6 * * *', syncLDAPUsers)
 // Sync email every day at 7:00
-cron.schedule('0 7 * * *', syncEmail)
+cron.schedule(process.env.CRONTAB_EMAIL || '0 7 * * *', syncEmail)
