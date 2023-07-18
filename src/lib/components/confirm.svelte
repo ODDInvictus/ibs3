@@ -9,9 +9,9 @@
 		}
 	}
 
-	function action(confirm: boolean) {
+	async function action(confirm: boolean) {
 		const dialog = document.querySelector('#confirm-dialog') as HTMLDialogElement;
-		$confirmStore.cb(confirm);
+		await $confirmStore.cb(confirm);
 		dialog?.close();
 	}
 </script>
