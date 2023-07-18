@@ -4,7 +4,6 @@ WORKDIR /app
 
 COPY backend ./backend
 COPY package.json ./
-COPY .svelte-kit ./.svelte-kit
 COPY package-lock.json ./
 COPY prisma ./prisma/
 COPY tsconfig.json ./
