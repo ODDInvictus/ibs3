@@ -42,7 +42,7 @@ export const POST = (async ({ request, locals }) => {
     streeplijstId: number,
   }
 
-  db.$transaction(async (tx) => {
+  await db.$transaction(async (tx) => {
     const person = await tx.financialPersonDataUser.findFirst({
       where: {
         userId: locals.user.id
@@ -77,8 +77,6 @@ export const POST = (async ({ request, locals }) => {
         throw error(500, 'Fout bij opslaan van gegevens: ' + err.message)
       })
   })
-
-
 
   return new Response('ok')
 }) satisfies RequestHandler;
