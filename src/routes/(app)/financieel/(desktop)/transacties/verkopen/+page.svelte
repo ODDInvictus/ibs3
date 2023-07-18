@@ -8,7 +8,7 @@
 	const submit = () => {
 		confirm({
 			title: 'Weet je het zeker?',
-			message: 'Weet je zeker dat je deze streeplijst wilt verwerken?',
+			message: 'Weet je zeker dat je deze transacties wilt verwerken?',
 			cb: async (success) => {
 				if (success) await submitCb();
 			}

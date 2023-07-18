@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Row from './row.svelte';
 	import { confirm } from '$lib/confirm';
+	import { goto } from '$app/navigation';
+	import { toast } from '$lib/notification';
 
 	let data: RowData[] = [
 		{
@@ -38,7 +39,9 @@
 		confirm({
 			title: 'Weet je het zeker?',
 			message: 'Weet je zeker dat je deze streeplijst wilt verwerken?',
-			cb: submitCb
+			cb: async (success) => {
+				if (success) await submitCb();
+			}
 		});
 	};
 
@@ -51,7 +54,14 @@
 			body: JSON.stringify(data)
 		}).then((res) => {
 			if (res.status === 200) {
-				goto('/financieel/transacties/verkopen');
+				toast({
+					title: 'Success',
+					message:
+						'Alles is goed opgeslagen, je wordt binnenkort doorgestuurd naar de verkopen pagina',
+					type: 'success'
+				});
+
+				setTimeout(() => goto('/financieel/transacties/verkopen'), 3000);
 			} else {
 				res.json().then((err) => {
 					error = err.message;
