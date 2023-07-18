@@ -53,6 +53,7 @@ model User {
   Link                    Link[]
   LinkClick               LinkClick[]
   EmailAliasUser          EmailAliasUser[]
+  ClickSession            ClickSession[]
 }
 
 model Account {
@@ -560,4 +561,17 @@ model EmailContact {
   address      String
   EmailAlias   EmailAlias @relation(fields: [emailAliasId], references: [id], onDelete: Cascade)
   emailAliasId Int
+}
+
+//
+// Coockie clicker
+//
+
+model ClickSession {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  amount    Int
+  startTime DateTime
+  endTime   DateTime @default(now())
 }
