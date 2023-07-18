@@ -23,13 +23,18 @@
 	import Confirm from '$lib/components/confirm.svelte';
 	import Prompt from '$lib/components/prompt.svelte';
 	import PromptSelect from '$lib/components/promptSelect.svelte';
+	import { toast } from '$lib/notification';
 
 	// vierkante schermen zijn voor homo's
 	$: innerWidth = 0;
 	$: innerHeight = 0;
 
 	$: if (innerHeight / innerWidth >= 0.99 && innerHeight / innerWidth <= 1.01) {
-		alert('Vierkante schermen zijn voor homos');
+		toast({
+			title: 'Oei!',
+			message: 'Het lijkt erop dat je een vierkant scherm gebruikt',
+			type: 'warning'
+		});
 
 		// Toggle root element filter to turn everything black
 		const root = document.documentElement;
