@@ -1,16 +1,28 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Logo from '$lib/components/Logo.svelte'
-	import LogoMobile from '$lib/components/LogoSmallMobile.svelte'
-  import { clickOutside } from '$lib/events/clickOutside'
-  import { page } from '$app/stores'
-  import { goto } from '$app/navigation'
-  import { CalendarDays, Cake, Users, Folder, Cog6Tooth, InformationCircle, FaceFrown } from 'svelte-heros-v2'
-  import PopupMenu from '$lib/components/PopupMenu.svelte'
-	import Breadcrumps from '$lib/components/breadcrumps.svelte'
-	import { LDAP_IDS } from '$lib/constants'
-	import type { Committee } from '@prisma/client'
-  import { env } from '$env/dynamic/public'
+	import Logo from '$lib/components/Logo.svelte';
+	import LogoMobile from '$lib/components/LogoSmallMobile.svelte';
+	import { clickOutside } from '$lib/events/clickOutside';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
+	import {
+		CalendarDays,
+		Cake,
+		Users,
+		Folder,
+		Cog6Tooth,
+		InformationCircle,
+		FaceFrown
+	} from 'svelte-heros-v2';
+	import PopupMenu from '$lib/components/PopupMenu.svelte';
+	import Breadcrumps from '$lib/components/breadcrumps.svelte';
+	import { LDAP_IDS } from '$lib/constants';
+	import type { Committee } from '@prisma/client';
+	import { env } from '$env/dynamic/public';
+	import Toast from '$lib/components/toast.svelte';
+	import Confirm from '$lib/components/confirm.svelte';
+	import Prompt from '$lib/components/prompt.svelte';
+	import PromptSelect from '$lib/components/promptSelect.svelte';
 
 	// vierkante schermen zijn voor homo's
 	$: innerWidth = 0;
@@ -30,61 +42,76 @@
 		showMenu = !showMenu;
 	}
 
-  function closeMenu() {
-    showMenu = false
-  }
+	function closeMenu() {
+		showMenu = false;
+	}
 
-  let bestCommittee = 'Lid'
+	let bestCommittee = 'Lid';
 
-  onMount(() => {
-    const data = $page.data
-    if (data.committees && data.committees.length > 0) {
-      bestCommittee = getBestId(data.committees)
-    }
-  })
+	onMount(() => {
+		const data = $page.data;
+		if (data.committees && data.committees.length > 0) {
+			bestCommittee = getBestId(data.committees);
+		}
+	});
 
-  const getBestId = (committees: Committee[]): string => {
-    let order = [
-      LDAP_IDS.COLOSSEUM,
-      LDAP_IDS.MEMBERS,
-      LDAP_IDS.FINANCIE,
-      LDAP_IDS.ADMINS,
-      LDAP_IDS.SENAAT,
-      LDAP_IDS.FEUTEN,
-    ]
-    
-    let best = committees[0]
+	const getBestId = (committees: Committee[]): string => {
+		let order = [
+			LDAP_IDS.COLOSSEUM,
+			LDAP_IDS.MEMBERS,
+			LDAP_IDS.FINANCIE,
+			LDAP_IDS.ADMINS,
+			LDAP_IDS.SENAAT,
+			LDAP_IDS.FEUTEN
+		];
 
-    // Now find the committee where their ldapId is the highest in the order array
-    // Not every committee is in the order, ignore those
-    for (let i = 1; i < committees.length; i++) {
-      const committee = committees[i]
-      if (order.indexOf(committee.ldapId) > order.indexOf(best.ldapId)) {
-        best = committee
-      }
-    }
+		let best = committees[0];
 
+		// Now find the committee where their ldapId is the highest in the order array
+		// Not every committee is in the order, ignore those
+		for (let i = 1; i < committees.length; i++) {
+			const committee = committees[i];
+			if (order.indexOf(committee.ldapId) > order.indexOf(best.ldapId)) {
+				best = committee;
+			}
+		}
 
-    switch (best.ldapId) {
-    case LDAP_IDS.FEUTEN:
-      return 'Feut'
-    case LDAP_IDS.SENAAT:
-      return 'Senaat'
-    case LDAP_IDS.ADMINS:
-      return 'Admin'
-    case LDAP_IDS.FINANCIE:
-      return 'Financie'
-    case LDAP_IDS.COLOSSEUM:
-      return 'Colosseum-bewoner'
-    case LDAP_IDS.MEMBERS:
-      return 'Lid'
-    default:
-      return 'Lid'
-    }
-  }
+		switch (best.ldapId) {
+			case LDAP_IDS.FEUTEN:
+				return 'Feut';
+			case LDAP_IDS.SENAAT:
+				return 'Senaat';
+			case LDAP_IDS.ADMINS:
+				return 'Admin';
+			case LDAP_IDS.FINANCIE:
+				return 'Financie';
+			case LDAP_IDS.COLOSSEUM:
+				return 'Colosseum-bewoner';
+			case LDAP_IDS.MEMBERS:
+				return 'Lid';
+			default:
+				return 'Lid';
+		}
+	};
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
+
+<div class="toast">
+	<Toast />
+</div>
+
+<div class="confirm">
+	<Confirm />
+</div>
+
+<div class="prompt">
+	<Prompt />
+</div>
+
+<div class="promptSelect">
+	<PromptSelect />
+</div>
 
 <div id="layout-background" class="w-screen col-span-0" />
 <div id="layout-div" class="grid gap-4 grid-cols-12 grid-row-12">
@@ -99,7 +126,7 @@
 		rounded-lg
 		xl:col-span-3 2xl:col-span-3
 		md:m-5"
-		>
+	>
 		<section id="layout-top">
 			<button on:click={() => goto('/')}>
 				<div class="center-logo">
@@ -160,7 +187,10 @@
 		</section>
 	</aside>
 
-	<div id="layout-content" class="sm:block col-span-12 sm:col-span-8 xl:col-span-9 2xl:col-span-9 sm:p-0">
+	<div
+		id="layout-content"
+		class="sm:block col-span-12 sm:col-span-8 xl:col-span-9 2xl:col-span-9 sm:p-0"
+	>
 		<header class="p-5 sm:p-0 sm:pr-5">
 			<div class="hidden md:flex">
 				<Breadcrumps />
@@ -172,29 +202,32 @@
 				</button>
 			</div>
 
-      <button id="layout-user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
-        <div id="layout-user-card">
-          <p id="layout-name">{$page.data.user.firstName + ' ' + $page.data.user.lastName ?? 'Gebruiker'}</p>
-          <p id="layout-title">{bestCommittee}</p>
-        </div>
-        <!-- <button>Log uit</button> -->
+			<button id="layout-user" on:click={toggleMenu} use:clickOutside on:click_outside={closeMenu}>
+				<div id="layout-user-card">
+					<p id="layout-name">
+						{$page.data.user.firstName + ' ' + $page.data.user.lastName ?? 'Gebruiker'}
+					</p>
+					<p id="layout-title">{bestCommittee}</p>
+				</div>
+				<!-- <button>Log uit</button> -->
 				{#if $page.data.user.picture == null}
 					<img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
 				{:else}
-					<img src="{env.PUBLIC_UPLOAD_URL + 'users/' + $page.data.user.picture}" alt="user" />
+					<img src={env.PUBLIC_UPLOAD_URL + 'users/' + $page.data.user.picture} alt="user" />
 				{/if}
 				<PopupMenu {showMenu} />
 			</button>
 		</header>
 
-		<main class="pb-[15vh] sm:pb-[10vh] sm:pb-0 mr-0 sm:mr-5 sm:mt-3 p-5 sm:pr-5 sm:rounded-lg drop-shadow">
+		<main
+			class="pb-[15vh] sm:pb-[10vh] sm:pb-0 mr-0 sm:mr-5 sm:mt-3 p-5 sm:pr-5 sm:rounded-lg drop-shadow"
+		>
 			<slot />
 		</main>
 	</div>
 </div>
 
 <style lang="scss">
-
 	.center-logo {
 		justify-content: center;
 		align-items: center;
@@ -241,7 +274,6 @@
 			float: right;
 			color: var(--light-grey-color);
 		}
-
 	}
 
 	#layout-background {
@@ -263,10 +295,9 @@
 			top: calc(100vh - 135px);
 
 			// Mozilla
-			@supports (-moz-appearance:meterbar) {
+			@supports (-moz-appearance: meterbar) {
 				top: calc(100vh - 125px);
 			}
-
 
 			height: 80px;
 			margin-left: 1rem;
@@ -278,7 +309,9 @@
 			box-shadow: 0 0 5px var(--shadow-color);
 
 			// Haal logo, hr, en alles behalve de eerste 4 icoontjes weg
-			& > section:nth-child(-n+2), & > section:nth-child(n+7), hr {
+			& > section:nth-child(-n + 2),
+			& > section:nth-child(n + 7),
+			hr {
 				display: none;
 			}
 
@@ -328,9 +361,7 @@
 		}
 	}
 
-
 	section {
-	
 		a {
 			display: flex;
 			gap: 0.2rem;
@@ -354,5 +385,10 @@
 		}
 	}
 
-
+	.toast {
+		z-index: 1000;
+		position: fixed;
+		bottom: 2rem;
+		right: 2rem;
+	}
 </style>

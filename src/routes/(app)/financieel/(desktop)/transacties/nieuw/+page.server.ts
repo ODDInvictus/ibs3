@@ -50,8 +50,6 @@ export const actions = {
 
     const data = await request.formData()
 
-    console.log(data)
-
     // Validate form with formSchema
     const parse = formSchema.safeParse({
       giver: Number.parseInt(data.get('giver') ?? '-1'),
