@@ -557,7 +557,7 @@ model EmailContact {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  address      String     @unique
+  address      String
   EmailAlias   EmailAlias @relation(fields: [emailAliasId], references: [id], onDelete: Cascade)
   emailAliasId Int
 }
