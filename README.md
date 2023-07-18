@@ -2,6 +2,8 @@
 
 Invictus Bier Systeem is _het_ websysteem voor O.D.D. Invictus.
 
+[![Build Status](https://drone.oddinvictus.nl/api/badges/ODDInvictus/ibs3/status.svg)](https://drone.oddinvictus.nl/ODDInvictus/ibs3)
+
 ## Ontwikkelen
 
 Om te beginnen met ontwikkelen moet je eerst de repository clonen met
