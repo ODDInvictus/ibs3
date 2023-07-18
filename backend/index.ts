@@ -27,6 +27,10 @@ app.listen(port, async () => {
 */
 
 // Sync LDAP every day at 6:00
-cron.schedule(process.env.CRONTAB_LDAP || '0 6 * * *', syncLDAPUsers)
+const cronLdap = process.env.CRONTAB_LDAP || '0 6 * * *'
+console.log('[CRONTAB]', 'LDAP sync running at', cronLdap)
+cron.schedule(cronLdap, syncLDAPUsers)
 // Sync email every day at 7:00
-cron.schedule(process.env.CRONTAB_EMAIL || '0 7 * * *', syncEmail)
+const cronEmail = process.env.CRONTAB_EMAIL || '0 7 * * *'
+console.log('[CRONTAB]', 'Email sync running at', cronEmail)
+cron.schedule(cronEmail, syncEmail)
