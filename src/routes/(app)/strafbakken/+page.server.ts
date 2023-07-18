@@ -8,6 +8,9 @@ import { env } from "$env/dynamic/private";
 export const load = (async () => {
   return {
     strafbakken: await db.user.findMany({
+      where: {
+        isActive: true,
+      },
       select: {
         firstName: true,
         nickname: true,
@@ -23,18 +26,24 @@ export const load = (async () => {
         },
       },
       orderBy: [
-        { becameMember: {
-          sort: 'asc',
-          nulls: 'last' 
-        } },
-        { becameFeut: {
-          sort: 'asc',
-          nulls: 'last' 
-        } },
-        { firstDrink: {
-          sort: 'asc',
-          nulls: 'last' 
-        } },
+        {
+          becameMember: {
+            sort: 'asc',
+            nulls: 'last'
+          }
+        },
+        {
+          becameFeut: {
+            sort: 'asc',
+            nulls: 'last'
+          }
+        },
+        {
+          firstDrink: {
+            sort: 'asc',
+            nulls: 'last'
+          }
+        },
       ]
     }),
   };

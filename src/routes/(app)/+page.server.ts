@@ -9,6 +9,7 @@ export const load = (async ({ locals }) => {
   const getMemberOfTheDay = async () => {
     const query: { firstName: string, picture: string }[] = await db.$queryRaw`
       SELECT firstName, picture FROM User
+      WHERE isActive = true
       ORDER BY RAND(${dayInt})
       LIMIT 1;
     `
