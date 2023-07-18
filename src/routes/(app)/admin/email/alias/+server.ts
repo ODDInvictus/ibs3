@@ -11,8 +11,6 @@ export const DELETE = (async ({ url, locals }) => {
 
   const id = Number(url.searchParams.get('id'));
 
-  console.log(id)
-
   if (id) {
     try {
       await db.emailAlias.delete({

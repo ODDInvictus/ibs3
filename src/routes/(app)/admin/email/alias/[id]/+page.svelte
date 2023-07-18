@@ -6,7 +6,6 @@
 	import Edit from '~icons/tabler/edit';
 
 	const alias = $page.data.alias;
-	console.log(alias);
 
 	function edit() {
 		prompt({

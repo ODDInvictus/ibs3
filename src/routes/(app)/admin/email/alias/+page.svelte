@@ -25,7 +25,6 @@
 			message: 'Dit kan niet ongedaan worden!',
 			cb: async (success: boolean) => {
 				if (success) {
-					console.log('fetching');
 					await fetch(location.pathname + '?id=' + id, {
 						method: 'DELETE'
 					}).then(async (res) => {
@@ -73,7 +72,7 @@
 			<td />
 			<td>
 				<div class="options">
-					<button on:click={() => goto('/admin/email/alias/new')}>
+					<button on:click={() => goto('/admin/email/alias/new/personal')}>
 						<MailPlus />
 					</button>
 				</div>
@@ -114,7 +113,7 @@
 			<td />
 			<td>
 				<div class="options">
-					<button on:click={() => goto('/admin/email/alias/new')}>
+					<button on:click={() => goto('/admin/email/alias/new/custom')}>
 						<MailPlus />
 					</button>
 				</div>

@@ -3,8 +3,6 @@
 
 	let value: string = '';
 
-	console.log($promptSelectStore);
-
 	$: {
 		const prompt = $promptSelectStore;
 		if (prompt && prompt.title !== '' && prompt.message !== '') {
