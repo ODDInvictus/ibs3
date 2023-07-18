@@ -58,6 +58,11 @@
 
 <hr />
 
+<p>
+	Welkom op de alias pagina! Alle acties die hier ondernomen worden worden binnen 24 uur verwerkt
+	door de backend.
+</p>
+
 <table>
 	<thead>
 		<tr>
