@@ -24,7 +24,7 @@
 		}).then((res) => {
 			if (res.status === 200) {
 				toast({
-					title: 'Success',
+					',
 					message:
 						'Alles is goed opgeslagen, je wordt binnenkort doorgestuurd naar de transacties pagina',
 					type: 'success'

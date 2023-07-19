@@ -27,9 +27,16 @@
 	<p>{$promptSelectStore.message}</p>
 
 	<select bind:value>
-		{#each $promptSelectStore.options as option}
-			<option value={option}>{option}</option>
-		{/each}
+		{#if typeof $promptSelectStore.options[0] === 'string'}
+			{#each $promptSelectStore.options as option}
+				<option value={option}>{option}</option>
+			{/each}
+		{:else}
+			{#each $promptSelectStore.options as option}
+				<!-- @ts-expect-error -->
+				<option value={option.value}>{option.key}</option>
+			{/each}
+		{/if}
 	</select>
 
 	<div class="buttons">
