@@ -7,7 +7,7 @@ const md = new markdownIt({
 });
 export function markdown(text: string | null | undefined) {
   if (text === null || text === undefined) return null;
-  return sanitize(md.renderInline(text), {disallowedTagsMode: 'escape', allowedTags: ['em', 'strong', 's', 'br', 'hr', 'pre', 'code', 'blockquote', 'a']});
+  return sanitize(md.renderInline(text), {disallowedTagsMode: 'escape', allowedTags: ['em', 'strong', 's', 'br', 'hr', 'pre', 'code', 'blockquote', 'a', 'sup', 'sub']});
 }
 
 // Currently in dark mode?
