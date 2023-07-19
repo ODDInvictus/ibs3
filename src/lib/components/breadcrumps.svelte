@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { ChevronRight } from 'svelte-heros-v2';
+	import ChevronRight from '~icons/tabler/chevron-right';
 
 	let crumbs: any[] = [];
 
