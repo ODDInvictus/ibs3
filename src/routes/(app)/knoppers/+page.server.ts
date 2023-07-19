@@ -48,4 +48,4 @@ export const load = (() => {
     playTime: getPlaytime(),
     lastUpdates: getLastUpdates(),
   }
-}) satisfies PageServerLoad
+}) satisfies PageServerLoad;
