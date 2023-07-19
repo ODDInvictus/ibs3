@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	// import { XCircle, PencilSquare, Check } from 'svelte-heros-v2';
 	import Check from '~icons/tabler/square-rounded-check';
 	import Edit from '~icons/tabler/edit';
 	import XCircle from '~icons/tabler/circle-x';
