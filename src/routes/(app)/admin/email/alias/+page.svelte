@@ -151,7 +151,13 @@
 		<tr>
 			<td class="bold"> Commissie aliassen </td>
 			<td />
-			<td />
+			<td>
+				<div class="options">
+					<button on:click={() => goto('/admin/commissie')}>
+						<MailPlus />
+					</button>
+				</div>
+			</td>
 		</tr>
 
 		{#each $page.data.committeeAliases as alias}
