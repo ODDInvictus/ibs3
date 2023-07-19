@@ -109,8 +109,8 @@ model CommitteeMember {
 
 model Strafbak {
   id          Int       @id @default(autoincrement())
-  giver       User      @relation("strafbakGiver", fields: [giverId], references: [id])
-  giverId     Int
+  giver       User?     @relation("strafbakGiver", fields: [giverId], references: [id])
+  giverId     Int?
   receiver    User      @relation("strafbakReceiver", fields: [receiverId], references: [id])
   receiverId  Int
   reason      String?

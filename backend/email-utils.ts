@@ -21,7 +21,18 @@ const transporter = createTransport({
 
 export async function sendEmailNotification(title: string, text: string, receiver: string) {
   const info = await transporter.sendMail({
-    from: "IBS Backend Notificaties <ibs.backend@oddinvictus.nl>",
+    from: process.env.EMAIL_BACKEND_SENDER,
+    to: receiver,
+    subject: title,
+    text: text
+  })
+
+  console.log(`Email sent to ${receiver}: ${info.messageId}`)
+}
+
+export async function sendEmailNotificationFrontend(title: string, text: string, receiver: string) {
+  const info = await transporter.sendMail({
+    from: process.env.EMAIL_SENDER,
     to: receiver,
     subject: title,
     text: text
