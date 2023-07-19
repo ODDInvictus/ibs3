@@ -22,12 +22,16 @@
 	<div class="menu">
 		<div id="pointer" />
 
-		<button class="menu-item" on:click={() => toggleColor()}>{
-			isDarkMode() ? 'Light mode' : 'Dark mode'
-		}</button>
-		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/profiel">Profiel</a>
-		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/financieel/persoonlijk">Streeplijst</a>
-		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/instellingen">Instellingen</a>
+		<button class="menu-item" on:click={() => toggleColor()}
+			>{isDarkMode() ? 'Light mode' : 'Dark mode'}</button
+		>
+		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/leden/ik">Profiel</a>
+		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/financieel"
+			>Streeplijst</a
+		>
+		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/instellingen"
+			>Instellingen</a
+		>
 
 		<hr />
 
