@@ -3,7 +3,7 @@ import { writable } from 'svelte/store'
 type PromptSelect = {
   title: string
   message: string
-  options: string[]
+  options: string[] | { key: string, value: string }[]
   cb: (value: string) => void
 }
 
