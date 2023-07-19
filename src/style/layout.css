@@ -18,13 +18,13 @@ hr {
   width: 100%;
   position: relative;
   word-wrap: break-word;
+}
 
-  &::after {
-    content: 'markdown';
-    position: absolute;
-    color: #ccc;
-    font-size: 0.75rem;
-    top: 0.3rem;
-    left: 0.5rem;
-  }
+.md::after {
+  content: 'markdown';
+  position: absolute;
+  color: #ccc;
+  font-size: 0.75rem;
+  top: 0.3rem;
+  left: 0.5rem;
 }
