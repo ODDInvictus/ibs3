@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { XCircle, PencilSquare, Check } from 'svelte-heros-v2';
+	// import { XCircle, PencilSquare, Check } from 'svelte-heros-v2';
+	import Check from '~icons/tabler/square-rounded-check';
+	import Edit from '~icons/tabler/edit';
+	import XCircle from '~icons/tabler/circle-x';
 
 	let error = '';
 
@@ -86,16 +89,18 @@
 					<td>{declaration.person.name}</td>
 					<td>{declaration.reason}</td>
 					<td>{declaration.methodOfPayment}</td>
-					<td class="actions">
-						<button on:click={() => process(declaration.id, 'accept')}>
-							<Check class="text-green-500" />
-						</button>
-						<button on:click={() => process(declaration.id, 'decline')}>
-							<XCircle class="text-red-500" />
-						</button>
-						<a href="/financieel/declaratie/{declaration.id}">
-							<PencilSquare class="text-purple-500" />
-						</a>
+					<td>
+						<div class="actions">
+							<button on:click={() => process(declaration.id, 'accept')}>
+								<Check class="text-green-500" />
+							</button>
+							<button on:click={() => process(declaration.id, 'decline')}>
+								<XCircle class="text-red-500" />
+							</button>
+							<a href="/financieel/declaratie/{declaration.id}">
+								<Edit class="text-purple-500" />
+							</a>
+						</div>
 					</td>
 				</tr>
 			{/each}
@@ -133,8 +138,6 @@
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
-
-			height: 100%;
 		}
 	}
 
