@@ -4,7 +4,7 @@ import db from '$lib/server/db'
 
 export const DELETE = (async ({ request, locals }) => {
   const [authorized, committees] = authAdmin(locals)
-  if (!authorized) throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
+  if (!authorized) return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '), { status: 403 })
 
   const body = await request.json()
 
@@ -24,18 +24,16 @@ export const DELETE = (async ({ request, locals }) => {
 
       if (committeeMember) {
         // Then delete the CommitteeMember
-        try {
-          await db.committeeMember.delete({
-            where: {
-              id: body.id
-            }
+        return await db.committeeMember.delete({
+          where: {
+            id: body.id
+          }
+        })
+          .then(() => new Response(JSON.stringify({ message: 'Verwijderen gelukt!' }), { status: 200 }))
+          .catch(err => {
+            console.error('[Admin/Commissie]', err)
+            return new Response(JSON.stringify({ message: 'Verwijderen mislukt' }), { status: 500 })
           })
-        } catch (err) {
-          console.error('[Admin/Commissie]', err)
-          return new Response(JSON.stringify({ message: 'Verwijderen mislukt' }), { status: 500 })
-        }
-
-        return new Response(JSON.stringify({ message: 'Verwijderen gelukt!' }), { status: 200 })
       }
     }
 
@@ -44,21 +42,49 @@ export const DELETE = (async ({ request, locals }) => {
 
     if (body.id) {
       // Delete the committee
+      return await db.$transaction(async tx => {
+        // First delete the EmailAliases
+        const alias = await tx.emailAliasCommittee.findFirst({
+          where: {
+            committeeId: body.id
+          }
+        })
 
-      return await db.committee.delete({
-        where: {
-          id: body.id
+        if (alias) {
+          await tx.emailAlias.delete({
+            where: {
+              id: alias.emailAliasId
+            }
+          })
         }
-      }).then(() => new Response(JSON.stringify({ message: 'Commissie succesvol verwijderd' }), { status: 200 }))
+
+        // Then delete the CommitteeMembers
+        await tx.committeeMember.deleteMany({
+          where: {
+            committeeId: body.id
+          }
+        })
+
+        // Then "delete" the Committee
+        await tx.committee.update({
+          where: {
+            id: body.id
+          },
+          data: {
+            isActive: false
+          }
+        })
+      })
+        .then(() => new Response(JSON.stringify({ message: 'Commissie succesvol verwijderd' }), { status: 200 }))
         .catch(err => {
           console.error('[Admin/Commissie]', err)
-          new Response(JSON.stringify({ message: 'Iets ging fout aan onze kant. Probeer het later opnieuw' }), { status: 500 })
+          return new Response(JSON.stringify({ message: 'Iets ging fout aan onze kant. Probeer het later opnieuw' }), { status: 500 })
         })
     }
+    return new Response(JSON.stringify({ message: 'Commissie ID is verplicht' }), { status: 404 })
+  } else {
+    return new Response(JSON.stringify({ message: 'Type niet gevonden' }), { status: 404 })
   }
-
-  return new Response(JSON.stringify({ message: 'Type niet gevonden' }), { status: 404 })
-
 }) satisfies RequestHandler;
 
 export const POST = (async ({ request, locals }) => {

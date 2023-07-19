@@ -4,6 +4,9 @@ import type { PageServerLoad } from '../../$types';
 export const load = (async () => {
   return {
     committees: await db.committee.findMany({
+      where: {
+        isActive: true
+      },
       include: {
         CommitteeMember: {
           select: {
