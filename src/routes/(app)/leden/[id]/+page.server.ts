@@ -4,13 +4,19 @@ import fs from 'fs'
 import { env } from '$env/dynamic/private'
 
 export const load = (async ({ params, locals }) => {
+  let id = params.id
+
+  if (id === 'ik') {
+    id = locals.user.ldapId
+  }
+
   const member = await db.user.findFirstOrThrow({
     where: {
-      ldapId: params.id
+      ldapId: id
     }
   })
 
-  const isCurrentUser = locals.user?.ldapId === member.ldapId
+  const isCurrentUser = locals.user.ldapId === member.ldapId
 
   return {
     member,
@@ -27,11 +33,11 @@ export const actions = {
     }
 
     // save the image and update the user
-    
+
     const data = Object.fromEntries(await request.formData())
 
     db.$transaction(async tx => {
-      
+
       const d = new Date()
       const date = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
       const filename = `profiel-${locals.user.ldapId}-${date}-${data.image.name}`
