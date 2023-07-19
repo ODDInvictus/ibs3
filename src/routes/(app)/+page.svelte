@@ -112,6 +112,7 @@
 			};
 		},
 		restore: async ({ startTime, sessionClicks, endTime }) => {
+			if (!sessionClicks) return;
 			totalClicks += sessionClicks;
 			await endSession(startTime, sessionClicks, endTime);
 		}
@@ -143,12 +144,12 @@
 </div>
 
 <div id="cookie-clicker">
-	<h1>Cookie clicker</h1>
+	<h1>Knoppers klikker</h1>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<img
 		style={satuationStyle}
 		id="cookie"
-		src={knoppers.replace('/@fs', '')}
+		src={knoppers}
 		alt="knoppers"
 		on:click={cookieClick}
 	/>
@@ -157,6 +158,7 @@
 		{#if record && recordHolder}
 			<p>Highscore: {record} door {recordHolder}</p>
 		{/if}
+		<a href="/knoppers">Meer inforamatie</a>
 	</div>
 </div>
 
@@ -215,10 +217,15 @@
 		#cookie {
 			width: 20rem;
 			cursor: pointer;
+			-webkit-tap-highlight-color: transparent;
 		}
 
 		#cookieStats {
 			text-align: center;
+
+			a {
+				color: var(--primary-color)
+			}
 		}
 	}
 </style>
