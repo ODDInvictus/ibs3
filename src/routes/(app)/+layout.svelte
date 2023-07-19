@@ -5,15 +5,14 @@
 	import { clickOutside } from '$lib/events/clickOutside';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import {
-		CalendarDays,
-		Cake,
-		Users,
-		Folder,
-		Cog6Tooth,
-		InformationCircle,
-		FaceFrown
-	} from 'svelte-heros-v2';
+	import CalendarDays from '~icons/tabler/calendar-bolt';
+	import InformationCircle from '~icons/tabler/info-circle';
+	import Cake from '~icons/tabler/beer';
+	import Users from '~icons/tabler/users';
+	import Folder from '~icons/tabler/pig-money';
+	import Admin from '~icons/tabler/shield-check';
+	import Cog6Tooth from '~icons/tabler/settings';
+	import FaceFrown from '~icons/tabler/accessible-off';
 	import PopupMenu from '$lib/components/PopupMenu.svelte';
 	import Breadcrumps from '$lib/components/breadcrumps.svelte';
 	import { LDAP_IDS } from '$lib/constants';
@@ -144,49 +143,56 @@
 
 		<section>
 			<a href="/kalender" class="sm:justify-left sm:items-start sm:w-full ">
-				<i><CalendarDays /></i>
+				<i><CalendarDays font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Kalender</span>
 			</a>
 		</section>
 
 		<section>
 			<a href="/strafbakken" class="sm:justify-left sm:items-start sm:w-full ">
-				<i><Cake /></i>
+				<i><Cake font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Strafbakken</span>
 			</a>
 		</section>
 
 		<section>
 			<a href="/financieel" class="sm:justify-left sm:items-start sm:w-full ">
-				<i><Folder /></i>
+				<i><Folder font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Financieel</span>
 			</a>
 		</section>
 
 		<section>
 			<a href="/maluspunten" class="sm:justify-left sm:items-start sm:w-full ">
-				<i><FaceFrown /></i>
+				<i><FaceFrown font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Maluspunten</span>
 			</a>
 		</section>
 
 		<section>
 			<a href="/leden" class="sm:justify-left sm:items-start sm:w-full ">
-				<i><Users /></i>
+				<i><Users font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Leden</span>
 			</a>
 		</section>
 
 		<section>
 			<a href="/instellingen" class="sm:justify-left sm:items-start sm:w-full ">
-				<i><Cog6Tooth /></i>
+				<i><Cog6Tooth font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Instellingen</span>
 			</a>
 		</section>
 
 		<section>
+			<a href="/admin" class="sm:justify-left sm:items-start sm:w-full ">
+				<i><Admin font-size="1.3rem" /></i>
+				<span class="hidden sm:block">Admin</span>
+			</a>
+		</section>
+
+		<section>
 			<a href="/over">
-				<i><InformationCircle /></i>
+				<i><InformationCircle font-size="1.3rem" /></i>
 				<span class="hidden sm:block">IBS v{env.PUBLIC_VERSION}</span>
 			</a>
 		</section>
