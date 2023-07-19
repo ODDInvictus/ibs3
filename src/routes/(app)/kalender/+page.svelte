@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores'
   import { env } from '$env/dynamic/public';
+	import { markdown } from '$lib/utils';
 </script>
 
 
@@ -29,8 +30,8 @@
     </div>
 
     <div class="info">
-      <h2 class="activity-title">{activity.name}</h2>
-      <p class="activity-description">{activity.description}</p>
+      <h2 class="activity-title">{@html markdown(activity.name)}</h2>
+      <p class="activity-description">{@html markdown(activity.description)}</p>
       <p class="activity-date">{new Date(activity.startTime).toLocaleDateString('nl-NL')}</p>
       <p class="activity-time">{new Date(activity.startTime).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit'})} @ {activity.location?.name ?? 'Nog niet bepaald'}</p>
       <a href="/activiteit/{activity.id}">Meer informatie</a>

@@ -8,16 +8,16 @@
 	import UsersGroup from '~icons/tabler/users-group';
 	import ExternalLink from '~icons/tabler/external-link';
 	import AccessibleOff from '~icons/tabler/accessible-off';
-	import { getSlug } from '$lib/textUtils';
 	import UserCard from './UserCard.svelte';
 	import { generateICal } from '$lib/utils';
 	import { toast } from '$lib/notification';
+	import { markdown } from '$lib/utils';
 
 	const activity = $page.data.activity;
 	let attending = $page.data.attending;
-	$: bij = attending.filter((a) => a.isAttending).map((a) => a.user);
+	$: bij = attending.filter((a: any) => a.isAttending).map((a: any) => a.user);
 	$: unsure = attending
-		.filter((a) => {
+		.filter((a: any) => {
 			if (bij.includes(a.user)) return false;
 
 			let cr = new Date(a.createdAt);
@@ -30,9 +30,9 @@
 
 			return cr.getTime() === ua.getTime();
 		})
-		.map((a) => a.user);
+		.map((a: any) => a.user);
 
-	$: notBij = attending.map((a) => a.user).filter((u) => !bij.includes(u) && !unsure.includes(u));
+	$: notBij = attending.map((a: any) => a.user).filter((u: any) => !bij.includes(u) && !unsure.includes(u));
 
 	function formatTime(time: string) {
 		const date = new Date(time);
@@ -72,7 +72,7 @@
 
 	async function setAttending(status: boolean) {
 		// First check if the user is attending
-		const a = attending.find((a) => a.user.ldapId == $page.data.user.ldapId);
+		const a = attending.find((a: any) => a.user.ldapId == $page.data.user.ldapId);
 
 		if (a.isAttending === status) {
 			// The user is already attending/not attending, so do nothing
@@ -136,7 +136,7 @@
 
 <div>
 	<div id="title">
-		<h1>{activity.name}</h1>
+		<h1>{@html markdown(activity.name)}</h1>
 		<hr />
 	</div>
 
@@ -154,7 +154,7 @@
 				/>
 			{/if}
 
-			<h2>{activity.name}</h2>
+			<h2>{@html markdown(activity.name)}</h2>
 
 			<hr />
 
@@ -223,7 +223,7 @@
 			<hr />
 
 			<div id="description">
-				<span>{activity.description}</span>
+				<span>{@html markdown(activity.description)}</span>
 			</div>
 		</div>
 

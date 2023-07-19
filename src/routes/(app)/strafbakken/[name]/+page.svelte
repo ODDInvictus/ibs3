@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { markdown } from "$lib/utils";
 	import type { sbUserPageData } from '../types';
 
 	export let data: sbUserPageData;
@@ -38,7 +39,7 @@
 								IBS
 							{/if}
 						</td>
-						<td>{strafbak.reason ?? 'Geen reden gegeven'}</td>
+						<td>{@html markdown(strafbak.reason) ?? 'Geen reden gegeven'}</td>
 						<td>{strafbak.location ?? 'Onbekend'}</td>
 						<td>{strafbak.dateCreated.toLocaleDateString()}</td>
 						<td>{strafbak.dateCreated.toLocaleTimeString().slice(0, -3)}</td>

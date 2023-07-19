@@ -1,6 +1,7 @@
 <script lang="ts">
   import { closeModal } from "svelte-modals";
   import { enhance } from "$app/forms";
+  import { markdown } from "$lib/utils";
 
   export let submitted = false;
 
@@ -14,6 +15,8 @@
     bar: "",
     btn: "",
   };
+
+  let reason = '';
 </script>
 
 {#if isOpen}
@@ -46,7 +49,8 @@
         >
           <p>Reden:</p>
           <input type="number" name="receiver" hidden value={uid} />
-          <textarea name="reason" />
+          <textarea name="reason" bind:value={reason} />
+          <p class="md">{@html markdown(reason) || "..."}</p>
           <button type="submit" class={status.btn}> Verzenden </button>
         </form>
       </div>
@@ -102,6 +106,8 @@
       height: 4.3rem;
       margin-bottom: $spacing;
       border: 1px solid black;
+      overflow: scroll;
+      max-width: 50vw;
 
       &:focus {
         outline: none;
@@ -155,6 +161,11 @@
           rgba(108, 43, 217, 1) 100%
         );
       }
+    }
+
+    .md {
+      margin-bottom: $spacing;
+      max-width: 50vw;
     }
   }
 

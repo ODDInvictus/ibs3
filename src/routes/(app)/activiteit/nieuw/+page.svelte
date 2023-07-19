@@ -2,7 +2,6 @@
 	import { applyAction, enhance } from '$app/forms';
   import { page } from '$app/stores';
 	import type { ActionData } from './$types';
-  import { onMount } from 'svelte';
   import InfoCircle from '~icons/tabler/info-circle'
 
   function setEndDate() {
@@ -25,6 +24,10 @@
   }
 
   export let form: ActionData;
+
+  import { markdown } from '$lib/utils';
+  let name = '';
+  let description = '';
 </script>
 
 <h1>Nieuwe activiteit aanmaken</h1>
@@ -60,10 +63,16 @@
   }
 }}>
   <label for="name">Naam</label>
-  <input type="text" name="name" id="name" />
+  <div class="md-input">
+    <input type="text" name="name" id="name" bind:value={name} />
+    <p class="md">{@html markdown(name) || "..."}</p>
+  </div>
 
   <label for="description">Beschrijving</label>
-  <textarea name="description" id="description"></textarea>
+  <div class="md-input">
+    <textarea name="description" id="description" bind:value={description}></textarea>
+    <p class="md">{@html markdown(description) || "..."}</p>
+  </div>
 
   <label for="startDate">Begin datum</label>
   <input type="date" name="startDate" id="startDate" on:change={setEndDate}/>
@@ -137,11 +146,22 @@
     }
   }
 
+  $margin: 1rem;
+
   form {
     margin-top: 1rem;
     display: grid;
     grid-template-columns: 150px 1fr;
-    gap: 1rem;
+    gap: $margin;
+
+    .md-input {
+      display: flex;
+      flex-direction: column;
+
+      .md {
+        margin-top: $margin;
+      }
+    }
 
     label {
       font-weight: 600;

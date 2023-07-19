@@ -21,7 +21,7 @@ export async function verdubbelStrafbakken() {
     }
   })
 
-  const count = new Map()
+  const count: Map<number, number> = new Map()
 
   for (const strafbak of strafbakken) {
     // Now count per receiver
@@ -34,18 +34,12 @@ export async function verdubbelStrafbakken() {
   const year = new Date().getFullYear()
 
   count.forEach(async (bakken: number, user: number) => {
-    let doubled = bakken * 2
-
     const limit = Number(process.env.STRAFBAKKEN_DOUBLE_LIMIT) || 50
-
-    if (doubled >= limit) {
-      doubled = limit
-    }
+    const doubled = Math.min(bakken * 2, limit)
 
     const extra = doubled - bakken
 
-    const array = []
-
+    const array: { receiverId: number, reason: string, location: string }[] = []
 
     for (let i = 0; i < extra; i++) {
       array.push({
