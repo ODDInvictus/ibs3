@@ -300,7 +300,7 @@
 		background-color: var(--card-color);
 
 		// Mobile
-		@media (max-width: 640px) {
+		@media (max-width: 639px) {
 			position: fixed;
 			width: calc(100vw - 2em);
 			top: calc(100vh - 135px);
