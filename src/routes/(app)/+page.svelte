@@ -158,7 +158,7 @@
 		{#if record && recordHolder}
 			<p>Highscore: {record} door {recordHolder}</p>
 		{/if}
-		<a href="/knoppers">Meer inforamatie</a>
+		<a href="/knoppers">Meer informatie</a>
 	</div>
 </div>
 
