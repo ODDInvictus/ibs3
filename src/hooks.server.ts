@@ -30,9 +30,9 @@ const authorization = (async ({ event, resolve }) => {
 	// Fix this in NGINX
 
 	// If shortner, then ignore auth.
-	if (url.startsWith('/s')) {
+	if (url.startsWith('/s/')) {
 		// Resolve normally
-		return await resolve(event); 
+		return await resolve(event);
 	} else if (!url.startsWith('/auth')) {
 		// If the path is something other than /auth, check if the user is logged in
 
@@ -41,11 +41,11 @@ const authorization = (async ({ event, resolve }) => {
 			throw redirect(303, '/auth');
 		}
 	}
-	
+
 	// If the request is still here, just proceed as normally
 	const result = await resolve(event, {
 		transformPageChunk: ({ html }) => html
-	}); 
+	});
 	return result
 }) satisfies Handle
 
@@ -85,7 +85,7 @@ export const handleError = (async ({ error, event }) => {
 	console.error(error)
 
 	if (env.DISCORD_NOTIFICATION_WEBHOOK) {
-		await notifyDiscordError(env.DISCORD_NOTIFICATION_WEBHOOK, {event, error})
+		await notifyDiscordError(env.DISCORD_NOTIFICATION_WEBHOOK, { event, error })
 	}
 
 
