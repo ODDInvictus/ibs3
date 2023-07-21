@@ -7,24 +7,3 @@ hr {
 :root {
   --hr-margin: 0.5rem 0;
 }
-
-.md {
-  background-color: #eee;
-  color: #666;
-  padding: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 1.5rem;
-  border-radius: 6px;
-  width: 100%;
-  position: relative;
-  word-wrap: break-word;
-}
-
-.md::after {
-  content: 'markdown';
-  position: absolute;
-  color: #ccc;
-  font-size: 0.75rem;
-  top: 0.3rem;
-  left: 0.5rem;
-}

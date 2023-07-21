@@ -26,11 +26,12 @@
   export let form: ActionData;
 
   import { markdown } from '$lib/utils';
+  import Markdown from '$lib/components/Markdown.svelte';
   let name = '';
   $: nameMarkdown = markdown(name);
 
   let description = '';
-  $: descriptionMarkdown = markdown(description, true);
+  $: descriptionMarkdown = markdown(description);
 </script>
 
 <h1>Nieuwe activiteit aanmaken</h1>
@@ -68,16 +69,16 @@
   <label for="name">Naam</label>
   <div class="md-input">
     <input type="text" name="name" id="name" bind:value={name} />
-    {#if nameMarkdown && nameMarkdown !== name}
-      <p class="md">{@html nameMarkdown}</p>
+    {#if nameMarkdown && name !== nameMarkdown}
+      <Markdown class="md" text={nameMarkdown} />
     {/if}
   </div>
 
   <label for="description">Beschrijving</label>
   <div class="md-input">
     <textarea name="description" id="description" bind:value={description}></textarea>
-    {#if descriptionMarkdown && descriptionMarkdown !== description}
-      <p class="md">{@html descriptionMarkdown}</p>
+    {#if descriptionMarkdown && description !== descriptionMarkdown.replaceAll("<br />", "")}
+      <Markdown class="md" text={descriptionMarkdown} />
     {/if}
   </div>
 
@@ -165,7 +166,7 @@
       display: flex;
       flex-direction: column;
 
-      .md {
+      :global(.md) {
         margin-top: $margin;
       }
     }

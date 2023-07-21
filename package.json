@@ -61,6 +61,8 @@
 		"markdown-it": "^13.0.1",
 		"markdown-it-emoji": "^2.0.2",
 		"markdown-it-ins": "^3.0.1",
+		"markdown-it-kbd": "^2.2.2",
+		"markdown-it-smartarrows": "^1.0.1",
 		"markdown-it-sub": "^1.0.0",
 		"markdown-it-sup": "^1.0.0",
 		"next-auth": "^4.20.1",

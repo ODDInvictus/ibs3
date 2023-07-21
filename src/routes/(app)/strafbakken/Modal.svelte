@@ -16,8 +16,9 @@
   };
 
   import { markdown } from "$lib/utils";
+  import Markdown from "$lib/components/Markdown.svelte";
   let reason = '';
-  $: reasonMarkdown = markdown(reason, true);
+  $: reasonMarkdown = markdown(reason);
 </script>
 
 {#if isOpen}
@@ -51,8 +52,8 @@
           <p>Reden:</p>
           <input type="number" name="receiver" hidden value={uid} />
           <textarea name="reason" bind:value={reason} />
-          {#if reasonMarkdown && reason !== reasonMarkdown}
-            <p class="md">{@html reasonMarkdown}</p>
+          {#if reasonMarkdown && reason !== reasonMarkdown.replaceAll("<br />", "")}
+            <Markdown class="md" text={reasonMarkdown} />
           {/if}
           <button type="submit" class={status.btn}> Verzenden </button>
         </form>
@@ -166,7 +167,7 @@
       }
     }
 
-    .md {
+    :global(.md) {
       margin-bottom: $spacing;
       max-width: 50vw;
     }

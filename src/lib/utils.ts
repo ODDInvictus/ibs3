@@ -8,22 +8,27 @@ import markdownItSup from 'markdown-it-sup';
 // @ts-expect-error
 import markdownItIns from 'markdown-it-ins';
 import markdownItEmojis from 'markdown-it-emoji';
+// @ts-expect-error
+import markdownItArrow from 'markdown-it-smartarrows'
+import markdownItKbd from 'markdown-it-kbd';
 
 const md = new markdownIt({
   linkify: true,
-  typographer: true,
+  breaks: true,
 })
   .use(markdownItSub)
   .use(markdownItSup)
   .use(markdownItIns)
-  .use(markdownItEmojis);
+  .use(markdownItEmojis)
+  .use(markdownItArrow)
+  .use(markdownItKbd)
+  .disable(['image']);
 
-export function markdown(text: string | null | undefined, multiline=false): string | null {
+export function markdown(text: string | null | undefined): string | null {
   if (text === null || text === undefined) return null;
-  if (multiline) return text.split("\n").map(l => markdown(l)).join("<br>")
   return sanitize(md.renderInline(text), {
     disallowedTagsMode: 'escape',
-    allowedTags: ['em', 'strong', 's', 'br', 'pre', 'code', 'a', 'sup', 'sub', 'ins', 'span']
+    allowedTags: ['em', 'strong', 's', 'br', 'pre', 'code', 'a', 'sup', 'sub', 'ins', 'span', 'kbd']
   });
 }
 
