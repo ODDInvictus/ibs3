@@ -3,11 +3,11 @@ import { fail } from '@sveltejs/kit'
 import { z, type ZodError } from 'zod'
 
 // All possible fields
-export type FieldType = TextField | 'number' | 'date' | CheckboxField | 'time' | SelectField | CustomFields
+export type FieldType = TextField | 'number' | 'date' | CheckboxField | 'time' | SelectField | CustomFields | 'url'
 export type SelectField = 'select'
 export type TextField = 'text' | 'textarea'
 export type CheckboxField = 'checkbox'
-export type CustomFields = 'user'
+export type CustomFields = 'user' | 'committee' | 'location'
 
 export type OptionField<T extends InputType> = {
   label: string
@@ -30,6 +30,7 @@ export type Field<T extends FieldType> = {
       )
     )
   )
+  markdown?: boolean
   optional?: boolean
   maxValue?: number
   minValue?: number
@@ -40,15 +41,23 @@ export type Field<T extends FieldType> = {
   placeholder?: string
 }
 
+export type FormError = {
+  field: string | number
+  message: string
+}
+
 
 type FormType<T> = {
   title: string
-  description: string
+  description?: string
   formId: string
   fields: Field<FieldType>[]
   submitStr: string
   actionName?: string
+  needsConfirmation?: boolean
+  confirmText?: string
   logic: (data: T) => Promise<void>
+  extraValidators?: (data: T) => FormError[]
 }
 
 export class Form<T> {
@@ -71,14 +80,18 @@ export class Form<T> {
       let obj
       const label = field.label
 
+      // Generate a zod object for all possible types
+      // text, number, date, checkbox, time, select, url, textarea
+
       if (field.type === 'select') {
         const options = field.options.map(option => String(option.value))
 
-        console.log(options)
-
         obj = z.enum([options[0], ...(options.slice(1))])
       } else if (field.type === 'checkbox') {
-        obj = z.boolean()
+        obj = z.boolean({
+          required_error: `${label} is verplicht`,
+          invalid_type_error: `${label} is geen boolean`
+        })
       } else if (field.type === 'number') {
         const min = field.minValue || -Number.MIN_SAFE_INTEGER
         const max = field.maxValue || Number.MAX_SAFE_INTEGER
@@ -93,6 +106,19 @@ export class Form<T> {
         }).refine(value => {
           return value instanceof Date && !isNaN(value.getTime())
         }, { message: `${label} is verplicht` })
+      } else if (field.type === 'textarea') {
+        obj = z.string().min(3, { message: `${label} moet minimaal 3 karakters bevatten` })
+      } else if (field.type === 'time') {
+        obj = z.string().transform(value => {
+          const [hours, minutes] = value.split(':')
+
+          return new Date(0, 0, 0, Number(hours), Number(minutes))
+        }).refine(value => {
+          return value instanceof Date && !isNaN(value.getTime())
+        }, { message: `${label} is verplicht` })
+      } else if (field.type === 'url') {
+        obj = z.string().url({ message: `${label} is geen geldige URL` }).optional().or(z.literal(''))
+
       } else {
         const min = field.minLength || 0
         const max = field.maxLength || 190
@@ -100,7 +126,7 @@ export class Form<T> {
         obj = z.string().min(min, { message: `${label} moet minimaal ${min} karakters bevatten` }).max(max, { message: `${label} mag maximaal ${max} karakters bevatten` })
       }
 
-      if (field.optional) obj = obj.optional()
+      if (field.optional && field.type !== 'url') obj = obj.optional()
 
       zod = zod.extend({
         [field.name]: obj
@@ -123,23 +149,73 @@ export class Form<T> {
           label: `${user.firstName} ${user.lastName}`,
           value: user.ldapId
         }))
+        field.type = 'select'
+
+      } else if (field.type === 'committee') {
+        const committees = await db.committee.findMany({
+          where: {
+            isActive: true
+          }
+        })
+
+        field.options = committees.map(committee => ({
+          label: committee.name,
+          value: committee.ldapId
+        }))
 
         field.type = 'select'
+
+      } else if (field.type === 'location') {
+        const locations = await db.activityLocation.findMany({
+          where: {
+            isActive: true
+          }
+        })
+
+        field.options = locations.map(location => ({
+          label: location.name,
+          value: location.id
+        }))
+
+        field.type = 'select'
+
       }
     }
 
     this.transformed = true
   }
 
-  validate<T>(object: T): T | ZodError<typeof this.zodSchema> {
+  validate<T>(object: T): T | FormError[] {
     // Validate against the zod schema
     const x = this.zodSchema.safeParse(object)
 
     console.log(object)
 
-    // console.log('x', x)
+    let extraErrors: FormError[] = []
 
-    if (!x.success) return x.error
+    if (this.f.extraValidators) {
+      // Validate against the extra validators
+      // @ts-expect-error object is T, its fine
+      extraErrors = this.f.extraValidators(object)
+    }
+
+    let zodErrors: FormError[] = []
+
+    if (!x.success) {
+      zodErrors = x.error.issues.map(obj => {
+        return {
+          field: obj.path[0],
+          message: obj.message
+        }
+      })
+    }
+
+    console.log({ zodErrors, extraErrors })
+
+    if (zodErrors.length > 0 || extraErrors.length > 0) {
+
+      return [...zodErrors, ...extraErrors]
+    }
 
     return x.data as T
   }
@@ -152,14 +228,9 @@ export class Form<T> {
 
         const validated = this.validate<T>(body as T)
 
-        if (validated instanceof Error) {
+        if (validated instanceof Array && validated.length > 0) {
           return fail(400, {
-            success: false, message: 'Niet alles klopt...', errors: validated.issues.map(obj => {
-              return {
-                field: obj.path[0],
-                message: obj.message
-              }
-            })
+            success: false, message: 'Niet alles klopt...', errors: validated
           })
         }
 
@@ -180,6 +251,8 @@ export class Form<T> {
       title: this.f.title,
       description: this.f.description,
       fields: this.f.fields,
+      needsConfirmation: this.f.needsConfirmation,
+      confirmText: this.f.confirmText,
       submitStr: this.f.submitStr,
     }
   }

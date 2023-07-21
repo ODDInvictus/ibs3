@@ -1,75 +1,107 @@
 import { Form } from './form-generator';
-import type { Field, SelectField, UserField, CheckboxField } from './form-generator';
+import type { Field } from './form-generator';
 
 export const testForm = new Form<{
-  select: string
+  name: string
+  description: string
+  beginDate: string
+  beginTime: string
+  endDate: string
+  endTime: string
+  location: string
+  organisedBy: string
+  url: string
 }>({
-  title: 'Nieuwe iets',
-  description: 'Dit is een form die automatisch gegenereerd is.',
+  title: 'Nieuwe activiteit aanmaken',
+  description: 'Met dit formulier kan je een nieuwe activiteit aanmaken.',
   logic: async (data) => {
     console.log(data)
   },
+  extraValidators: (data) => {
+    const errors = []
+    if (data.beginDate > data.endDate) {
+      errors.push({
+        field: 'endDate',
+        message: 'De einddatum moet na de begindatum zijn.'
+      })
+    }
+    if (data.beginDate === data.endDate && data.beginTime > data.endTime) {
+      errors.push({
+        field: 'endTime',
+        message: 'De eindtijd moet na de begintijd zijn.'
+      })
+    }
+    return errors
+  },
+  needsConfirmation: true,
+  confirmText: 'Weet je zeker dat je deze activiteit wilt aanmaken?',
   formId: 'test-form',
   fields: [
     {
       label: 'Naam',
       name: 'name',
-      minLength: 5,
-      description: 'Dit is een beschrijving',
+      minLength: 3,
+      optional: true,
       type: 'text',
-      value: 'Naam',
+      value: '',
+      placeholder: 'Leuke activiteit'
     } as Field<'text'>,
     {
-      label: 'Leeftijd',
-      name: 'age',
-      type: 'number',
-      minValue: 50,
-      value: 44
-    } as Field<'number'>,
+      label: 'Beschrijving',
+      name: 'description',
+      optional: true,
+      type: 'textarea',
+    } as Field<'textarea'>,
     {
-      label: 'Datum',
-      name: 'date',
+      label: 'Begin datum',
+      name: 'beginDate',
       optional: true,
       type: 'date',
     } as Field<'date'>,
     {
-      label: 'Tijd',
-      name: 'time',
+      label: 'Begin tijd',
+      name: 'beginTime',
       type: 'time',
-      optional: true,
-      value: '12:00',
     } as Field<'time'>,
     {
-      label: 'Boolean',
+      label: 'Eind datum',
+      name: 'endDate',
+      optional: true,
+      type: 'date',
+    } as Field<'date'>,
+    {
+      label: 'Eind tijd',
+      name: 'endTime',
+      type: 'time',
+    } as Field<'time'>,
+    {
+      label: 'Locatie',
+      optional: true,
+      name: 'location',
+      type: 'location',
+      description: 'Locatie niet in de lijst? Sla dan maar over.',
+    } as Field<'location'>,
+    {
+      label: 'Georganiseerd door',
+      name: 'organisedBy',
+      description: 'Welke commissie organiseert dit?',
+      type: 'committee',
+      placeholder: 'Selecteer een commissie',
+    } as Field<'committee'>,
+    {
+      label: 'Website voor meer informatie',
+      optional: true,
+      name: 'url',
+      description: 'Website voor meer informatie',
+      type: 'url',
+    } as Field<'url'>,
+    {
+      label: 'Alleen voor leden',
       name: 'checkbox',
       type: 'checkbox',
-      description: 'Dit is een checkbox',
-    } as Field<CheckboxField>,
-    {
-      label: 'Selecteren',
-      name: 'select',
-      type: 'select',
-      options: [
-        {
-          label: 'Optie 1',
-          value: 'optie-1'
-        },
-        {
-          label: 'Optie 2',
-          value: 'optie-2'
-        },
-        {
-          label: 'Optie 3',
-          value: 'optie-3'
-        }
-      ]
-    } as Field<SelectField>,
-    {
-      label: 'Gebruiker',
-      name: 'user',
-      description: 'Dit is een gebruiker',
-      type: 'user',
-    } as Field<UserField>
+      description: 'Als dit geselecteerd is, zullen alleen leden deze activiteit zien.',
+      optional: true
+    } as Field<'checkbox'>,
   ],
-  submitStr: 'Verstuur',
+  submitStr: 'Opslaan',
 })
