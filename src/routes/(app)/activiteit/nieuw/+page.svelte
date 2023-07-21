@@ -27,7 +27,10 @@
 
   import { markdown } from '$lib/utils';
   let name = '';
+  $: nameMarkdown = markdown(name);
+
   let description = '';
+  $: descriptionMarkdown = description.split("\n").map(l => markdown(l)).join("<br>");
 </script>
 
 <h1>Nieuwe activiteit aanmaken</h1>
@@ -65,13 +68,17 @@
   <label for="name">Naam</label>
   <div class="md-input">
     <input type="text" name="name" id="name" bind:value={name} />
-    <p class="md">{@html markdown(name) || "..."}</p>
+    {#if nameMarkdown && nameMarkdown !== name}
+      <p class="md">{@html nameMarkdown}</p>
+    {/if}
   </div>
 
   <label for="description">Beschrijving</label>
   <div class="md-input">
     <textarea name="description" id="description" bind:value={description}></textarea>
-    <p class="md">{@html markdown(description) || "..."}</p>
+    {#if descriptionMarkdown && descriptionMarkdown !== description}
+      <p class="md">{@html descriptionMarkdown}</p>
+    {/if}
   </div>
 
   <label for="startDate">Begin datum</label>

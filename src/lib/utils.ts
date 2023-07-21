@@ -1,13 +1,29 @@
 // Render markdown
 import sanitize from 'sanitize-html';
 import markdownIt from 'markdown-it';
+// @ts-expect-error
+import markdownItSub from 'markdown-it-sub';
+// @ts-expect-error
+import markdownItSup from 'markdown-it-sup';
+// @ts-expect-error
+import markdownItIns from 'markdown-it-ins';
+import markdownItEmojis from 'markdown-it-emoji';
 
 const md = new markdownIt({
-  linkify: true
-});
+  linkify: true,
+  typographer: true,
+})
+  .use(markdownItSub)
+  .use(markdownItSup)
+  .use(markdownItIns)
+  .use(markdownItEmojis);
+
 export function markdown(text: string | null | undefined) {
   if (text === null || text === undefined) return null;
-  return sanitize(md.renderInline(text), {disallowedTagsMode: 'escape', allowedTags: ['em', 'strong', 's', 'br', 'hr', 'pre', 'code', 'blockquote', 'a', 'sup', 'sub']});
+  return sanitize(md.renderInline(text), {
+    disallowedTagsMode: 'escape',
+    allowedTags: ['em', 'strong', 's', 'br', 'pre', 'code', 'a', 'sup', 'sub', 'ins', 'span']
+  });
 }
 
 // Currently in dark mode?

@@ -1,7 +1,6 @@
 <script lang="ts">
   import { closeModal } from "svelte-modals";
   import { enhance } from "$app/forms";
-  import { markdown } from "$lib/utils";
 
   export let submitted = false;
 
@@ -16,7 +15,9 @@
     btn: "",
   };
 
+  import { markdown } from "$lib/utils";
   let reason = '';
+  $: reasonMarkdown = markdown(reason);
 </script>
 
 {#if isOpen}
@@ -50,7 +51,9 @@
           <p>Reden:</p>
           <input type="number" name="receiver" hidden value={uid} />
           <textarea name="reason" bind:value={reason} />
-          <p class="md">{@html markdown(reason) || "..."}</p>
+          {#if reasonMarkdown && reason !== reasonMarkdown}
+            <p class="md">{@html reasonMarkdown}</p>
+          {/if}
           <button type="submit" class={status.btn}> Verzenden </button>
         </form>
       </div>
