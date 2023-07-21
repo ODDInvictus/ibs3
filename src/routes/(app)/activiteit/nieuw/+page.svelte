@@ -30,7 +30,7 @@
   $: nameMarkdown = markdown(name);
 
   let description = '';
-  $: descriptionMarkdown = description.split("\n").map(l => markdown(l)).join("<br>");
+  $: descriptionMarkdown = markdown(description, true);
 </script>
 
 <h1>Nieuwe activiteit aanmaken</h1>

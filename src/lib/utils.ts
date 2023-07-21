@@ -18,8 +18,9 @@ const md = new markdownIt({
   .use(markdownItIns)
   .use(markdownItEmojis);
 
-export function markdown(text: string | null | undefined) {
+export function markdown(text: string | null | undefined, multiline=false): string | null {
   if (text === null || text === undefined) return null;
+  if (multiline) return text.split("\n").map(l => markdown(l)).join("<br>")
   return sanitize(md.renderInline(text), {
     disallowedTagsMode: 'escape',
     allowedTags: ['em', 'strong', 's', 'br', 'pre', 'code', 'a', 'sup', 'sub', 'ins', 'span']

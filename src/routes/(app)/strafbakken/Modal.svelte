@@ -17,7 +17,7 @@
 
   import { markdown } from "$lib/utils";
   let reason = '';
-  $: reasonMarkdown = markdown(reason);
+  $: reasonMarkdown = markdown(reason, true);
 </script>
 
 {#if isOpen}
