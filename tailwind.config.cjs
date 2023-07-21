@@ -12,7 +12,14 @@ const config = {
 		}
 	},
 
-	plugins: [require('flowbite/plugin')],
+	plugins: [
+		require('flowbite/plugin'),
+		({ addBase }) => {
+			addBase({
+				'a': { color: 'var(--link-color)' }
+			});
+		},
+	],
 	darkMode: 'class'
 };
 
