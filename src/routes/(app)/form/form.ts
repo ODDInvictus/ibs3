@@ -1,4 +1,5 @@
 import { Form } from './form-generator';
+import type { Field, SelectField, UserField, CheckboxField } from './form-generator';
 
 export const testForm = new Form<{
   select: string
@@ -17,62 +18,58 @@ export const testForm = new Form<{
       description: 'Dit is een beschrijving',
       type: 'text',
       value: 'Naam',
-    },
-    // {
-    //   label: 'Leeftijd',
-    //   name: 'age',
-    //   type: 'number',
-    //   minValue: 50,
-    //   value: 44
-    // },
+    } as Field<'text'>,
     {
-      label: 'Geboortedatum',
-      name: 'birthdate',
+      label: 'Leeftijd',
+      name: 'age',
+      type: 'number',
+      minValue: 50,
+      value: 44
+    } as Field<'number'>,
+    {
+      label: 'Datum',
+      name: 'date',
+      optional: true,
       type: 'date',
-    },
-    // {
-    //   label: 'Tijd',
-    //   name: 'time',
-    //   type: 'time',
-    //   value: '12:00',
-    // },
-    // {
-    //   label: 'Checkbox-true',
-    //   name: 'checkbox',
-    //   type: 'checkbox',
-    //   value: true,
-    // },
-    // {
-    //   label: 'Checkbox-false',
-    //   name: 'checkbox',
-    //   type: 'checkbox',
-    //   description: 'Dit is een checkbox',
-    // },
-    // {
-    //   label: 'Select',
-    //   name: 'select',
-    //   type: 'select',
-    //   options: [
-    //     {
-    //       label: 'Optie 1',
-    //       value: 'optie-1'
-    //     },
-    //     {
-    //       label: 'Optie 2',
-    //       value: 'optie-2'
-    //     },
-    //     {
-    //       label: 'Optie 3',
-    //       value: 'optie-3'
-    //     }
-    //   ]
-    // },
-    // {
-    //   label: 'User',
-    //   name: 'user',
-    //   description: 'Dit is een gebruiker',
-    //   type: 'user',
-    // }
+    } as Field<'date'>,
+    {
+      label: 'Tijd',
+      name: 'time',
+      type: 'time',
+      optional: true,
+      value: '12:00',
+    } as Field<'time'>,
+    {
+      label: 'Boolean',
+      name: 'checkbox',
+      type: 'checkbox',
+      description: 'Dit is een checkbox',
+    } as Field<CheckboxField>,
+    {
+      label: 'Selecteren',
+      name: 'select',
+      type: 'select',
+      options: [
+        {
+          label: 'Optie 1',
+          value: 'optie-1'
+        },
+        {
+          label: 'Optie 2',
+          value: 'optie-2'
+        },
+        {
+          label: 'Optie 3',
+          value: 'optie-3'
+        }
+      ]
+    } as Field<SelectField>,
+    {
+      label: 'Gebruiker',
+      name: 'user',
+      description: 'Dit is een gebruiker',
+      type: 'user',
+    } as Field<UserField>
   ],
   submitStr: 'Verstuur',
 })

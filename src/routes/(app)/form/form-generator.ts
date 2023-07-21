@@ -23,9 +23,11 @@ export type Field<T extends FieldType> = {
   label: string
   name: string
   type: T
-  value?: T extends TextField ? string : (
+  value?: T extends (TextField | 'time') ? string : (
     T extends SelectField ? OptionField<InputType> : (
-      T extends CheckboxField ? boolean : never
+      T extends CheckboxField ? boolean : (
+        T extends 'number' ? number : never
+      )
     )
   )
   optional?: boolean
@@ -33,7 +35,7 @@ export type Field<T extends FieldType> = {
   minValue?: number
   maxLength?: number
   minLength?: number
-  options: T extends SelectField ? OptionField<InputType>[] : never
+  options?: T extends SelectField ? OptionField<InputType>[] : never
   description?: string
   placeholder?: string
 }

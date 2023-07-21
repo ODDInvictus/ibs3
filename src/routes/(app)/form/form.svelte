@@ -70,40 +70,45 @@
 	<p>{description}</p>
 	{#each fields as field}
 		<div class="field" data-name={field.name} data-type={field.type}>
-			<label for={field.name} class="form-label">{field.label}</label>
-			<!-- DESCRIPTION -->
-			{#if field.description}
-				<div title={field.description}>
-					<Help />
-				</div>
-			{/if}
-
-			{#if field.type === 'select'}
-				<select name={field.name} class="form-select" id={field.name}>
-					{#each field.options as option}
-						<option value={option.value}>{option.label}</option>
-					{/each}
-				</select>
-			{:else if field.type === 'checkbox'}
-				<!-- 																													Dit klopt wel -->
-				<input
-					type="checkbox"
-					class="form-check-input"
-					name={field.name}
-					id={field.name}
-					checked={field.value}
-				/>
-			{:else}
-				<input
-					type={field.type}
-					name={field.name}
-					class="form-control"
-					id={field.name}
-					placeholder={field.placeholder}
-					value={field.value || ''}
-				/>
-			{/if}
-			<p id="{field.name}-error" class="form-error" />
+			<div>
+				<label for={field.name} class="form-label">{field.label}</label>
+				<!-- DESCRIPTION -->
+				{#if field.description}
+					<div class="field-description" title={field.description}>
+						<Help />
+					</div>
+				{:else}
+					<div />
+				{/if}
+			</div>
+			<div>
+				{#if field.type === 'select'}
+					<select name={field.name} class="form-select" id={field.name}>
+						{#each field.options as option}
+							<option value={option.value}>{option.label}</option>
+						{/each}
+					</select>
+				{:else if field.type === 'checkbox'}
+					<!-- 																													Dit klopt wel -->
+					<input
+						type="checkbox"
+						class="form-check-input"
+						name={field.name}
+						id={field.name}
+						checked={field.value}
+					/>
+				{:else}
+					<input
+						type={field.type}
+						name={field.name}
+						class="form-control"
+						id={field.name}
+						placeholder={field.placeholder}
+						value={field.value || ''}
+					/>
+				{/if}
+				<p id="{field.name}-error" class="form-error" />
+			</div>
 		</div>
 	{/each}
 
@@ -128,10 +133,14 @@
 		margin: 0.5rem 0;
 	}
 
-	form {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
+	.field {
+		display: grid;
+		grid-template-columns: 100px 1fr;
+
+		select,
+		input:not([type='checkbox']) {
+			width: 100%;
+		}
 	}
 
 	.form-error {
