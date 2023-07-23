@@ -140,18 +140,6 @@
 <a href="/admin/email/alias"> Terug </a>
 
 <style lang="scss">
-	h1 {
-		text-align: center;
-	}
-
-	a {
-		color: var(--primary-color);
-	}
-
-	hr {
-		margin: 0.5rem 0;
-	}
-
 	span {
 		font-weight: bold;
 	}

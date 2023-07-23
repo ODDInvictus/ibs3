@@ -1,24 +1,23 @@
 <script lang="ts">
-	import { page } from '$app/stores'
-	import { enhance, applyAction } from '$app/forms'
-	import StyledButton from '$lib/components/StyledButton.svelte'
+	import { page } from '$app/stores';
+	import { enhance, applyAction } from '$app/forms';
+	import StyledButton from '$lib/components/StyledButton.svelte';
+	import Title from '$lib/components/title.svelte';
 
-	let error = ''
+	let error = '';
 
 	function formatDate(dateString: string) {
-		const date = new Date(dateString)
+		const date = new Date(dateString);
 
-		const hour = ('0' + date.getHours()).slice(-2)
-		const minute = ('0' + date.getMinutes()).slice(-2)
+		const hour = ('0' + date.getHours()).slice(-2);
+		const minute = ('0' + date.getMinutes()).slice(-2);
 
-		return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${hour}:${minute}`
+		return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${hour}:${minute}`;
 	}
 </script>
 
 <div>
-	<h1>Maluspunten</h1>
-
-	<hr />
+	<Title title="Maluspunten" />
 
 	<div id="form-container">
 		<form
@@ -103,12 +102,6 @@
 </div>
 
 <style>
-	h1 {
-		text-align: center;
-		font-weight: 600;
-		font-size: larger;
-	}
-
 	hr {
 		margin: var(--hr-margin);
 	}

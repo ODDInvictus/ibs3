@@ -1,22 +1,33 @@
 <script lang="ts">
-	export let title: string = '';
+	export let title: string | undefined = '';
 	export let shortTitle: string | undefined = '';
+
+	export let underTitle: string | undefined = '';
 </script>
 
 <svelte:head>
-	{#if title}
+	{#if title || shortTitle}
 		<title>IBS :: {shortTitle || title}</title>
 	{:else}
 		<title>Invictus Bier Systeem</title>
 	{/if}
 </svelte:head>
 
-<h1>Nieuwe activiteit aanmaken</h1>
+{#if title}
+	<h1>{title}</h1>
+{:else}
+	<slot />
+{/if}
+
+{#if underTitle}
+	<p>{underTitle}</p>
+{/if}
 
 <hr />
 
 <style>
-	h1 {
+	h1,
+	p {
 		text-align: center;
 	}
 

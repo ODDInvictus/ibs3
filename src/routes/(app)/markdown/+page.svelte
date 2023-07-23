@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import Title from '$lib/components/title.svelte';
 	import Row from './Row.svelte';
 
 	const examples = [
@@ -18,8 +19,7 @@
 	];
 </script>
 
-<h1>Markdown</h1>
-<hr />
+<Title title="Markdown" />
 
 <table>
 	<thead>
@@ -40,14 +40,6 @@
 </a>
 
 <style>
-	h1 {
-		text-align: center;
-	}
-
-	hr {
-		margin: var(--hr-margin);
-	}
-
 	a {
 		display: block;
 		text-align: center;

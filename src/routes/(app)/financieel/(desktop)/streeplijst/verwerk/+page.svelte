@@ -4,6 +4,7 @@
 	import { confirm } from '$lib/confirm';
 	import { goto } from '$app/navigation';
 	import { toast } from '$lib/notification';
+	import Title from '$lib/components/title.svelte';
 
 	let data: RowData[] = [
 		{
@@ -72,9 +73,7 @@
 </script>
 
 <div id="root">
-	<h1>Verwerk een streeplijst</h1>
-
-	<hr />
+	<Title title="Streeplijst verwerken" shortTitle="Streeplijst" />
 
 	<button on:click={() => newRow()}>Rij toevoegen</button>
 	<button on:click={() => deleteRow()}>Rij verwijderen</button>
@@ -117,13 +116,5 @@
 		grid-template-columns: 1fr 14fr 14fr 14fr;
 		grid-gap: 1rem;
 		margin: 1rem;
-	}
-
-	h1 {
-		text-align: center;
-	}
-
-	hr {
-		margin: var(--hr-margin);
 	}
 </style>

@@ -12,6 +12,7 @@
 	import { generateICal } from '$lib/utils';
 	import { toast } from '$lib/notification';
 	import { markdown } from '$lib/utils';
+	import Title from '$lib/components/title.svelte';
 
 	const activity = $page.data.activity;
 	let attending = $page.data.attending;
@@ -32,7 +33,9 @@
 		})
 		.map((a: any) => a.user);
 
-	$: notBij = attending.map((a: any) => a.user).filter((u: any) => !bij.includes(u) && !unsure.includes(u));
+	$: notBij = attending
+		.map((a: any) => a.user)
+		.filter((u: any) => !bij.includes(u) && !unsure.includes(u));
 
 	function formatTime(time: string) {
 		const date = new Date(time);
@@ -136,8 +139,9 @@
 
 <div>
 	<div id="title">
-		<h1>{@html markdown(activity.name)}</h1>
-		<hr />
+		<Title shortTitle={activity.name}>
+			<h1>{@html markdown(activity.name)}</h1>
+		</Title>
 	</div>
 
 	<div class="cols">

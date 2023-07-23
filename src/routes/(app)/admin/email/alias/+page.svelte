@@ -7,6 +7,7 @@
 	import { confirm } from '$lib/confirm';
 	import { goto } from '$app/navigation';
 	import MailPlus from '~icons/tabler/mail-plus';
+	import Title from '$lib/components/title.svelte';
 
 	const domain = $page.data.domain;
 
@@ -54,9 +55,7 @@
 	}
 </script>
 
-<h1>Email aliassen</h1>
-
-<hr />
+<Title title="Email aliassen" />
 
 <p>
 	Welkom op de alias pagina! Alle acties die hier ondernomen worden worden binnen 24 uur verwerkt
@@ -187,18 +186,6 @@
 <br />
 
 <style lang="scss">
-	h1 {
-		text-align: center;
-	}
-
-	hr {
-		margin: 0.5rem 0;
-	}
-
-	a {
-		color: var(--primary-color);
-	}
-
 	.bold {
 		font-weight: bold;
 	}

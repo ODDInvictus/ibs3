@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import Title from '$lib/components/title.svelte';
 	import { toast } from '$lib/notification';
 
 	let email = '';
@@ -35,9 +36,7 @@
 	}
 </script>
 
-<h1>Nieuwe custom alias</h1>
-
-<hr />
+<Title title="Nieuwe custom alias" shortTitle="Custom alias" />
 
 <p>
 	Op deze pagina kan je een nieuwe custom alias maken, dit is om een <b>niet</b>
@@ -59,14 +58,6 @@
 </form>
 
 <style lang="scss">
-	h1 {
-		text-align: center;
-	}
-
-	hr {
-		margin: 0.5rem 0;
-	}
-
 	form {
 		margin-top: 1rem;
 		display: grid;
