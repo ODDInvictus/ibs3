@@ -17,8 +17,6 @@ export const newCommitteeForm = new Form<{
   logic: async (data) => {
     const ldapId = data.ldapId.toLowerCase()
 
-    console.log(ldapId)
-
     await db.committee.create({
       data: {
         name: data.name,
