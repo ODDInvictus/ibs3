@@ -4,7 +4,7 @@ import { fail } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ locals }) => {
-  const dayInt = new Date().getDay()
+  const dayInt = new Date().getDay();
 
   const getMemberOfTheDay = async () => {
     const query: { firstName: string, picture: string }[] = await db.$queryRaw`
@@ -13,7 +13,7 @@ export const load = (async ({ locals }) => {
       ORDER BY RAND(${dayInt})
       LIMIT 1;
     `
-    return query[0]
+    return query[0];
   }
 
   const getTotalClicks = async () => {
@@ -34,10 +34,10 @@ export const load = (async ({ locals }) => {
         where: {
           userId
         }
-      })
+      });
     } catch (error) {
       console.error(error);
-      return fail(500)
+      return fail(500);
     }
   }
 
@@ -51,13 +51,13 @@ export const load = (async ({ locals }) => {
         ORDER BY amount DESC
         LIMIT 1` as { firstName: string, amount: number }[]
 
-      q = q.map((e) => { return { ...e, amount: Math.round(e.amount) } })
+      q = q.map((e) => { return { ...e, amount: Number(e.amount) } });
 
-      return q[0]
+      return q[0];
 
     } catch (error) {
       console.error(error);
-      return fail(500)
+      return fail(500);
     }
   }
 
