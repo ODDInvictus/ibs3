@@ -25,14 +25,22 @@ body {
 
 /* Select */
 select,
-input[type='text'],
-input[type='url'],
-input[type='number'] {
+input,
+textarea {
 	background-color: var(--background-focus-color);
 	color: var(--text-color);
 	border: 1px solid var(--border-color);
 	border-radius: 0.25rem;
 	padding: 0.5rem;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+	outline: none !important;
+	border-style: solid;
+	box-shadow: 0 0 0 1px var(--primary-focus-color) !important;
+	border-color: var(--primary-focus-color);
 }
 
 /* feut theme */
