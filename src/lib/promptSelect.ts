@@ -4,14 +4,14 @@ type PromptSelect = {
   title: string
   message: string
   options: string[] | { key: string, value: string }[]
-  cb: (value: string) => void
+  cb: (value: string) => Promise<void>
 }
 
 export const promptSelectStore = writable<PromptSelect>({
   title: '',
   message: '',
   options: [],
-  cb: () => alert(),
+  cb: async () => alert(),
 })
 
 export function promptSelect(c: PromptSelect) {
