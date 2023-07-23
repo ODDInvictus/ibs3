@@ -71,7 +71,6 @@ export async function syncLDAPUsers() {
 
   console.log('[LDAP] Syncing financial people')
 
-  const financialPeople = await prisma.financialPerson.findMany({ where: { isActive: true } })
   const financialPeopleDataUser = await prisma.financialPersonDataUser.findMany()
 
   // Add a FinancialPerson for every user that doesn't have one yet
