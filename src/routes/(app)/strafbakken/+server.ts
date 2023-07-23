@@ -25,7 +25,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       }
     );
 
-  const res = await db.strafbak.update({
+  await db.strafbak.update({
     where: {
       id: strafbak.id,
     },

@@ -1,7 +1,6 @@
 import db from '$lib/server/db';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import type { User } from '@prisma/client';
 
 export const load = (async ({ params }) => {
   const alias = await db.emailAlias.findUnique({

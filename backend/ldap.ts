@@ -18,7 +18,7 @@ export async function syncLDAPUsers() {
     let ibsGroup = ibsGroups.find((ibsGroup) => ibsGroup.ldapId === group.name)
 
     // If it doesn't exist, create it in IBS
-    if (!ibsGroup || ibsGroup === undefined) {
+    if (!ibsGroup) {
       console.log('[LDAP] Creating group', group.name)
       ibsGroup = await prisma.committee.create({
         data: {
@@ -27,7 +27,7 @@ export async function syncLDAPUsers() {
         }
       })
 
-      if (!ibsGroup || ibsGroup === undefined) {
+      if (!ibsGroup) {
         // Something went wrong, just crash
         throw new Error(`[LDAP] Failed to create group ${group.name}`)
       }
@@ -38,7 +38,7 @@ export async function syncLDAPUsers() {
       // first check if the user has already logged into IBS at least once
       const ibsUser = ibsUsers.find((ibsUser) => ibsUser.ldapId === member.username)
 
-      if (!ibsUser || ibsUser === undefined) {
+      if (!ibsUser) {
         // User hasn't logged in yet, skip
         continue
       }
@@ -47,7 +47,7 @@ export async function syncLDAPUsers() {
       const ibsGroupMember = ibsGroupMembers.find((ibsGroupMember) => ibsGroupMember.userId === ibsUser.id && ibsGroupMember.committeeId === ibsGroup?.id)
 
 
-      if (!ibsGroupMember || ibsGroupMember === undefined) {
+      if (!ibsGroupMember) {
         console.log('[LDAP] Adding user', member.username, 'to group', ibsGroup.id)
         // User is not a member of the group, add them
         await prisma.committeeMember.create({
@@ -71,7 +71,6 @@ export async function syncLDAPUsers() {
 
   console.log('[LDAP] Syncing financial people')
 
-  const financialPeople = await prisma.financialPerson.findMany({ where: { isActive: true } })
   const financialPeopleDataUser = await prisma.financialPersonDataUser.findMany()
 
   // Add a FinancialPerson for every user that doesn't have one yet
