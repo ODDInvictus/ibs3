@@ -38,7 +38,7 @@ export async function syncLDAPUsers() {
       // first check if the user has already logged into IBS at least once
       const ibsUser = ibsUsers.find((ibsUser) => ibsUser.ldapId === member.username)
 
-      if (!ibsUser || ibsUser === undefined) {
+      if (!ibsUser) {
         // User hasn't logged in yet, skip
         continue
       }
