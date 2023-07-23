@@ -66,40 +66,6 @@
 <style lang="scss">
   $spacing: 1.5em;
 
-  /* Copy pasta styles */
-  .modal {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 2;
-
-    color: black;
-
-    pointer-events: none;
-  }
-
-  .contents {
-    min-width: 240px;
-    border-radius: 6px;
-    padding: $spacing;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    pointer-events: auto;
-
-    h2 {
-      text-align: center;
-      font-size: 1.5rem;
-    }
-  }
-
-  /* Naut's styles */
   form {
     display: flex;
     flex-direction: column;

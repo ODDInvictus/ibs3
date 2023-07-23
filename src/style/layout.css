@@ -7,3 +7,45 @@ hr {
 :root {
   --hr-margin: 0.5rem 0;
 }
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 20;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 21;
+
+  color: black;
+
+  pointer-events: none;
+}
+
+.modal .contents {
+  min-width: 240px;
+  border-radius: 6px;
+  padding: 1.5rem;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+}
+
+.modal .contents h2 {
+  text-align: center;
+  font-size: 1.5rem;
+}

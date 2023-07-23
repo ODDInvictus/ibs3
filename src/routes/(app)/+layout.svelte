@@ -23,6 +23,7 @@
 	import Prompt from '$lib/components/prompt.svelte';
 	import PromptSelect from '$lib/components/promptSelect.svelte';
 	import { toast } from '$lib/notification';
+	import { Modals, closeModal } from 'svelte-modals';
 
 	// vierkante schermen zijn voor homo's
 	$: innerWidth = 0;
@@ -100,6 +101,11 @@
 </script>
 
 <svelte:window bind:innerWidth bind:innerHeight />
+
+<Modals>
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<div slot="backdrop" class="backdrop" on:click={closeModal} />
+</Modals>
 
 <div class="toast">
 	<Toast />
