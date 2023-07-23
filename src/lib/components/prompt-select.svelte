@@ -11,10 +11,10 @@
 		}
 	}
 
-	function action(confirm: boolean) {
+	async function action(confirm: boolean) {
 		const dialog = document.querySelector('#prompt-select-dialog') as HTMLDialogElement;
 		if (confirm) {
-			$promptSelectStore.cb(value);
+			await $promptSelectStore.cb(value);
 			value = '';
 		}
 		dialog?.close();
