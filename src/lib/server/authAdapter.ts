@@ -1,5 +1,5 @@
 import type { PrismaClient, User } from '@prisma/client'
-import type { Adapter, AdapterUser } from 'next-auth/adapters'
+import type { AdapterUser } from 'next-auth/adapters'
 
 export default function IBSAdapter(client: PrismaClient) {
   return {
@@ -38,7 +38,7 @@ export default function IBSAdapter(client: PrismaClient) {
       })
     },
     async linkAccount(data: any) {
-      const account = await client.account.create({ data }) 
+      const account = await client.account.create({ data })
       return account
     },
     unlinkAccount: (provider_providerAccountId) => client.account.delete({ where: { provider_providerAccountId } }) as any,
@@ -49,7 +49,7 @@ export default function IBSAdapter(client: PrismaClient) {
       })
       if (!userAndSession) return null
       const { user, ...session } = userAndSession
-      return { user, session}
+      return { user, session }
     },
     createSession: (data) => client.session.create({ data }),
     updateSession: (data) => client.session.update({ data, where: { sessionToken: data.sessionToken } }),
