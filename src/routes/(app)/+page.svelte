@@ -119,6 +119,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Invictus Bier Systeem</title>
+</svelte:head>
+
 <h1>{getGreeting()}, {$page.data.user.firstName}!</h1>
 
 <p>Welkom bij Invictus Bier Systeem</p>
@@ -146,13 +150,7 @@
 <div id="cookie-clicker">
 	<h1>Knoppers klikker</h1>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<img
-		style={satuationStyle}
-		id="cookie"
-		src={knoppers}
-		alt="knoppers"
-		on:click={cookieClick}
-	/>
+	<img style={satuationStyle} id="cookie" src={knoppers} alt="knoppers" on:click={cookieClick} />
 	<div id="cookieStats">
 		<p>Totaal clicks: {totalClicks}</p>
 		{#if record && recordHolder}
@@ -224,7 +222,7 @@
 			text-align: center;
 
 			a {
-				color: var(--primary-color)
+				color: var(--primary-color);
 			}
 		}
 	}

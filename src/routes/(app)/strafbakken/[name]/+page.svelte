@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { markdown } from "$lib/utils";
+	import Title from '$lib/components/title.svelte';
+	import { markdown } from '$lib/utils';
 	import type { sbUserPageData } from '../types';
 
 	export let data: sbUserPageData;
@@ -16,8 +17,10 @@
 </script>
 
 <main>
-	<h1>{name} zijn {data.strafbakken.StrafbakReceived.length} strafbakken</h1>
-	<hr />
+	<Title
+		title="{name} zijn {data.strafbakken.StrafbakReceived.length} strafbakken"
+		shortTitle="{name} :: Strafbakken"
+	/>
 	<table-container>
 		<table>
 			<thead>
@@ -51,16 +54,6 @@
 </main>
 
 <style lang="scss">
-	h1 {
-		text-align: center;
-		font-weight: 600;
-		font-size: larger;
-	}
-
-	hr {
-		margin: 1rem 0;
-	}
-
 	$tr-padding: 0.75rem;
 
 	table-container {

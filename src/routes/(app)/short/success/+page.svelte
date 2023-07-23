@@ -1,33 +1,22 @@
-<script lang="ts"> 
-  import { page } from '$app/stores'
+<script lang="ts">
+	import { page } from '$app/stores';
+	import Title from '$lib/components/title.svelte';
 
-  const slug = $page.url.searchParams.get('slug')
+	const slug = $page.url.searchParams.get('slug');
 
-  const origin = $page.url.hostname
+	const origin = $page.url.hostname;
 </script>
 
-<h1>Aanmaken gelukt!</h1>
-
-<hr />
+<Title title="Shortlink aangemaakt" />
 
 <p>Je kan de link vinden op <a href={`https://${origin}/s/${slug}`}>{origin}/s/{slug}</a></p>
 
-
-
 <style lang="scss">
-  h1 {
-    text-align: center;
-  }
+	p {
+		text-align: center;
+	}
 
-  hr {
-    margin: 0.5rem 0;
-  }
-
-  p {
-    text-align: center;
-  }
-
-  a {
-    color: var(--primary-color);
-  }
+	a {
+		color: var(--primary-color);
+	}
 </style>

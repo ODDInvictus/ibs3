@@ -1,13 +1,7 @@
-<h1>Persoonlijke Streeplijst</h1>
+<script>
+	import Title from '$lib/components/title.svelte';
+</script>
 
-<hr />
+<Title title="Persoonlijke streeplijst" />
 
-<style>
-  h1 {
-    text-align: center;
-  }
-
-  hr {
-    margin: 0.5rem 0;
-  }
-</style>
+TODO

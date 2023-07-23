@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import Title from '$lib/components/title.svelte';
 	import { toast } from '$lib/notification';
 
 	let user = -1;
@@ -35,9 +36,7 @@
 	}
 </script>
 
-<h1>Nieuwe persoonlijke alias</h1>
-
-<hr />
+<Title title="Nieuwe persoonlijke alias" shortTitle="Persoonlijke alias" />
 
 <p>
 	Op deze pagina kan je een nieuwe persoonlijke alias maken. Deze alias mapt dan van een IBS
@@ -62,14 +61,6 @@
 </form>
 
 <style lang="scss">
-	h1 {
-		text-align: center;
-	}
-
-	hr {
-		margin: 0.5rem 0;
-	}
-
 	form {
 		margin-top: 1rem;
 		display: grid;

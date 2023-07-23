@@ -3,6 +3,7 @@
 	import Check from '~icons/tabler/square-rounded-check';
 	import Edit from '~icons/tabler/edit';
 	import XCircle from '~icons/tabler/circle-x';
+	import Title from '$lib/components/title.svelte';
 
 	let error = '';
 
@@ -40,18 +41,16 @@
 </script>
 
 <div id="root">
-	<h1>Declaratie overzicht</h1>
+	<Title
+		title="Declaratie overzicht"
+		shortTitle="Declaratie overzicht"
+		underTitle="Hieronder staan alle declaraties die zijn gedaan door gebruikers van IBS. Wanneer je een
+	declaratie goedkeurd zal het saldo worden aangepast."
+	/>
 
-	<hr />
-
-	<p>
-		Hieronder staan alle declaraties die zijn gedaan door gebruikers van IBS. Wanneer je een
-		declaratie goedkeurd zal het saldo worden aangepast.
-	</p>
-
-	<p>
+	<div class="buttons">
 		<a href="/financieel/declaratie">Wil je een declaratie doen?</a>
-	</p>
+	</div>
 
 	<p class="error">
 		{#if error}
@@ -114,6 +113,12 @@
 		justify-content: center;
 	}
 
+	.buttons {
+		display: flex;
+		justify-content: center;
+		margin-bottom: 1rem;
+	}
+
 	@media (max-width: 640px) {
 		#root {
 			overflow: scroll;
@@ -138,18 +143,6 @@
 			justify-content: center;
 			align-items: center;
 		}
-	}
-
-	h1 {
-		text-align: center;
-	}
-
-	hr {
-		margin: var(--hr-margin);
-	}
-
-	a {
-		color: var(--link-color);
 	}
 
 	.error {

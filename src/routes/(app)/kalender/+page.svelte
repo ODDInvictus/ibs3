@@ -1,15 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { env } from '$env/dynamic/public';
+	import Title from '$lib/components/title.svelte';
 	import { markdown } from '$lib/utils';
 </script>
 
-<div id="top">
-	<h1>Kalender</h1>
-	<a href="/activiteit/nieuw">Activiteit aanmaken</a>
-</div>
-
-<hr />
+<Title title="Kalender" />
+<a id="new-activity-link" href="/activiteit/nieuw">Activiteit aanmaken</a>
 
 <div id="activities">
 	{#each $page.data.activities as activity}
@@ -174,15 +171,12 @@
 		}
 	}
 
-	#top {
+	#new-activity-link {
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
 		align-items: center;
 
-		h1 {
-			text-align: center;
-		}
+		margin-bottom: 1rem;
 	}
 
 	hr {

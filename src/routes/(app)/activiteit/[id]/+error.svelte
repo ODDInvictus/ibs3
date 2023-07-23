@@ -1,21 +1,14 @@
 <script lang="ts">
-  import { page } from '$app/stores'
+	import { page } from '$app/stores';
+	import Title from '$lib/components/title.svelte';
 </script>
 
-<h1>
-  Oei! Activiteit {$page.params.id} niet gevonden.
-</h1>
-
-<hr />
+<Title title="Oei! Activiteit {$page.params.id} niet gevonden." shortTitle="Pagina niet gevonden" />
 
 <p>Misschien is dit verwijderd of ben je zelf gewoon dom.</p>
 
 <style>
-  h1, p {
-    text-align: center;
-  }
-
-  hr {
-    margin: var(--hr-margin);
-  }
+	p {
+		text-align: center;
+	}
 </style>

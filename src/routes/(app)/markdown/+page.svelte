@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+	import Title from '$lib/components/title.svelte';
 	import Row from './Row.svelte';
 
 	const examples = [
@@ -9,16 +11,15 @@
 		'++ondersteept++',
 		'--> <==>',
 		'`code` [[ctrl]]',
-		'oddinvictus.nl',
-		'[strafbakken](http://oddinvictus.nl/strafbakken)',
+		$page.data.url,
+		`[strafbakken](${$page.data.url}/strafbakken)`,
 		':)  :clap:',
 		'20^e^ H~2~O',
 		'\\*geen markdown* *wel markdown*'
 	];
 </script>
 
-<h1>Markdown</h1>
-<hr />
+<Title title="Markdown" />
 
 <table>
 	<thead>
@@ -39,14 +40,6 @@
 </a>
 
 <style>
-	h1 {
-		text-align: center;
-	}
-
-	hr {
-		margin: var(--hr-margin);
-	}
-
 	a {
 		display: block;
 		text-align: center;

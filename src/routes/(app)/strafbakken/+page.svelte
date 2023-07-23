@@ -2,6 +2,7 @@
 	import { Modals, closeModal } from 'svelte-modals';
 	import Table from './Table.svelte';
 	import type { sbPageData } from './types';
+	import Title from '$lib/components/title.svelte';
 
 	export let data: sbPageData;
 
@@ -18,9 +19,7 @@
 
 <svelte:window bind:innerWidth={width} />
 
-<h1>Strafbakken</h1>
-
-<hr />
+<Title title="Strafbakken" />
 
 <main>
 	<Modals>
@@ -50,14 +49,6 @@
 
 <style lang="scss">
 	$margin: 1rem;
-
-	h1 {
-		text-align: center;
-	}
-
-	hr {
-		margin: var(--hr-margin);
-	}
 
 	main {
 		display: flex;

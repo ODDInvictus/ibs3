@@ -4,11 +4,10 @@
 	import CirclePlus from '~icons/tabler/circle-plus';
 	import FilePencil from '~icons/tabler/file-pencil';
 	import { addMember, removeMember, renameCommittee, deleteCommittee } from './functions';
+	import Title from '$lib/components/title.svelte';
 </script>
 
-<h1>Commissie beheer</h1>
-
-<hr />
+<Title title="Commissie beheer" />
 
 <p>Hier kan je commissies aanmaken en verwijderen</p>
 
@@ -75,14 +74,6 @@
 </table>
 
 <style lang="scss">
-	h1 {
-		text-align: center;
-	}
-
-	hr {
-		margin: 0.5rem 0;
-	}
-
 	p,
 	a {
 		display: block;
@@ -90,7 +81,6 @@
 	}
 
 	a {
-		color: var(--primary-color);
 		margin-bottom: 1rem;
 	}
 

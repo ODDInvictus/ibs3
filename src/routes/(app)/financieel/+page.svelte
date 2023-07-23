@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import Title from '$lib/components/title.svelte';
 
 	function formatPrice(price: number) {
 		let color = '';
@@ -16,9 +17,7 @@
 	}
 </script>
 
-<h1>Financieel</h1>
-
-<hr />
+<Title title="Financieel" />
 
 {#if !$page.data.person}
 	<p class="text-red-500">
@@ -46,13 +45,5 @@
 		margin: 1rem 0;
 		display: block;
 		width: fit-content;
-	}
-
-	h1 {
-		text-align: center;
-	}
-
-	hr {
-		margin: var(--hr-margin);
 	}
 </style>

@@ -1,69 +1,66 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-  import { page } from '$app/stores';
+	import { page } from '$app/stores';
+	import Title from '$lib/components/title.svelte';
 	import type { ActionData } from './$types';
 
-  export let form: ActionData;
+	export let form: ActionData;
 </script>
 
-<h1>Maak een kortere link aan!</h1>
-
-<hr />
+<Title title="Maak een kortere link aan!" shortTitle="Link shortner" />
 
 {#if form?.error}
-  <p class="error">{form.error}</p>
+	<p class="error">{form.error}</p>
 {/if}
 
 <form action="short" method="POST">
-  <div>
-    <label for="url">Link</label>
-    <input type="url" name="url" id="url" placeholder="https://www.youtube.com/watch?v=dgha9S39Y6M" required />
-  
-    <label for="slug">Verkorting</label>
-    <input type="text" name="slug" id="slug" placeholder="muziek" />
-  </div>
+	<div>
+		<label for="url">Link</label>
+		<input
+			type="url"
+			name="url"
+			id="url"
+			placeholder="https://www.youtube.com/watch?v=dgha9S39Y6M"
+			required
+		/>
 
-  <p>Als je niks kiest wordt er iets gegenereerd</p>
+		<label for="slug">Verkorting</label>
+		<input type="text" name="slug" id="slug" placeholder="muziek" />
+	</div>
 
-  <button type="submit">Verkorten</button>
+	<p>Als je niks kiest wordt er iets gegenereerd</p>
+
+	<button type="submit">Verkorten</button>
 </form>
 
 <style lang="scss">
-  h1 {
-    text-align: center;
-  }
+	.error {
+		color: red;
+	}
 
-  .error {
-    color: red;
-  }
+	form {
+		div {
+			margin-top: 1rem;
+			display: grid;
+			grid-template-columns: 150px 1fr;
+			gap: 1rem;
 
-  hr {
-    margin: 0.5rem 0;
-  }
+			@media screen and (max-width: 600px) {
+				grid-template-columns: 1fr;
 
-  form {
-    div {
-      margin-top: 1rem;
-      display: grid;
-      grid-template-columns: 150px 1fr;
-      gap: 1rem;
+				label + input {
+					margin-bottom: 0;
+				}
+			}
+		}
 
-      @media screen and (max-width: 600px) {
-        grid-template-columns: 1fr;
+		label {
+			font-weight: 600;
+			padding-top: 0.4rem;
+		}
 
-        label + input {
-          margin-bottom: 0;
-        }
-      }
-    }
-
-    label {
-      font-weight: 600;
-      padding-top: 0.4rem;
-    }
-
-    button {
-      margin-top: 1rem;
-    }
-  }
+		button {
+			margin-top: 1rem;
+		}
+	}
 </style>
