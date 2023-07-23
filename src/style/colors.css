@@ -14,6 +14,9 @@
 	--dark-color: #181f2f;
 	--dark-highlight-color: #272d39;
 
+	--code-background-color: #272822;
+	--code-text-color:#f8f8f2;
+
 	--border-color: var(--grey-color);
 	--button-text-color: var(--light-color);
 }
@@ -28,6 +31,9 @@
 	--background-focus-color: var(--dark-color);
 	--seperator-color: var(--light-color);
 	--link-color: var(--secondary-color);
+
+	--code-background-color: #000;
+	--code-text-color: #e2e2d7;
 
 	/* --shadow-color: rgba(var(--light-color), 0.5); */
 	--shadow-color: rgba(255, 255, 255, 0.1);
@@ -49,4 +55,7 @@
 	--text-color: var(--dark-color);
 	--background-focus-color: var(--light-color);
 	--seperator-color: var(--dark-color);
+	
+	--code-background-color: #ff21e5;
+	--code-text-color: #000;
 }

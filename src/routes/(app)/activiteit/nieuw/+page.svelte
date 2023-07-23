@@ -2,7 +2,6 @@
 	import { applyAction, enhance } from '$app/forms';
   import { page } from '$app/stores';
 	import type { ActionData } from './$types';
-  import { onMount } from 'svelte';
   import InfoCircle from '~icons/tabler/info-circle'
 
   function setEndDate() {
@@ -25,6 +24,14 @@
   }
 
   export let form: ActionData;
+
+  import { markdown } from '$lib/utils';
+  import Markdown from '$lib/components/Markdown.svelte';
+  let name = '';
+  $: nameMarkdown = markdown(name);
+
+  let description = '';
+  $: descriptionMarkdown = markdown(description);
 </script>
 
 <h1>Nieuwe activiteit aanmaken</h1>
@@ -60,10 +67,20 @@
   }
 }}>
   <label for="name">Naam</label>
-  <input type="text" name="name" id="name" />
+  <div class="md-input">
+    <input type="text" name="name" id="name" bind:value={name} />
+    {#if nameMarkdown && name !== nameMarkdown}
+      <Markdown class="md" text={nameMarkdown} />
+    {/if}
+  </div>
 
   <label for="description">Beschrijving</label>
-  <textarea name="description" id="description"></textarea>
+  <div class="md-input">
+    <textarea name="description" id="description" bind:value={description}></textarea>
+    {#if descriptionMarkdown && description !== descriptionMarkdown.replaceAll("<br />", "")}
+      <Markdown class="md" text={descriptionMarkdown} />
+    {/if}
+  </div>
 
   <label for="startDate">Begin datum</label>
   <input type="date" name="startDate" id="startDate" on:change={setEndDate}/>
@@ -137,11 +154,22 @@
     }
   }
 
+  $margin: 1rem;
+
   form {
     margin-top: 1rem;
     display: grid;
     grid-template-columns: 150px 1fr;
-    gap: 1rem;
+    gap: $margin;
+
+    .md-input {
+      display: flex;
+      flex-direction: column;
+
+      :global(.md) {
+        margin-top: $margin;
+      }
+    }
 
     label {
       font-weight: 600;

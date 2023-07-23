@@ -1,3 +1,37 @@
+// Render markdown
+import sanitize from 'sanitize-html';
+import markdownIt from 'markdown-it';
+// @ts-expect-error Geen types
+import markdownItSub from 'markdown-it-sub';
+// @ts-expect-error Geen types
+import markdownItSup from 'markdown-it-sup';
+// @ts-expect-error Geen types
+import markdownItIns from 'markdown-it-ins';
+import markdownItEmojis from 'markdown-it-emoji';
+// @ts-expect-error Geen types
+import markdownItArrow from 'markdown-it-smartarrows'
+// @ts-expect-error Geen types
+import markdownItKbd from 'markdown-it-kbd';
+
+const md = new markdownIt({
+  linkify: true,
+  breaks: true,
+})
+  .use(markdownItSub)
+  .use(markdownItSup)
+  .use(markdownItIns)
+  .use(markdownItEmojis)
+  .use(markdownItArrow)
+  .use(markdownItKbd)
+  .disable(['image']);
+
+export function markdown(text: string | null | undefined): string | null {
+  if (text === null || text === undefined) return null;
+  return sanitize(md.renderInline(text), {
+    disallowedTagsMode: 'escape',
+    allowedTags: ['em', 'strong', 's', 'br', 'pre', 'code', 'a', 'sup', 'sub', 'ins', 'span', 'kbd']
+  });
+}
 
 // Currently in dark mode?
 export function isDarkMode(): boolean {
@@ -12,7 +46,7 @@ export function randomSortDay<T>(array: T[]): T[] {
 }
 
 function shuffle<T>(array: T[], num: number): T[] {
-  let currentIndex = array.length,  randomIndex;
+  let currentIndex = array.length, randomIndex;
   const random = seed(num)
 
   // While there remain elements to shuffle.
@@ -33,10 +67,10 @@ function shuffle<T>(array: T[], num: number): T[] {
 // https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
 function seed(s: number) {
   const mask = 0xffffffff;
-  let m_w  = (123456789 + s) & mask;
-  let m_z  = (987654321 - s) & mask;
+  let m_w = (123456789 + s) & mask;
+  let m_z = (987654321 - s) & mask;
 
-  return function() {
+  return function () {
     m_z = (36969 * (m_z & 65535) + (m_z >>> 16)) & mask;
     m_w = (18000 * (m_w & 65535) + (m_w >>> 16)) & mask;
 

@@ -98,6 +98,9 @@
 			&:nth-child(odd) {
 				background-color: var(--primary-focus-color);
 				color: white;
+				a {
+					color: white !important;
+				}
 			}
 
 			&:has(.cell:not(.actions):hover) {
