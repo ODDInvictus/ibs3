@@ -3,6 +3,7 @@
 	import type { Field, FieldType } from './form-generator';
 	import Help from '~icons/tabler/help';
 	import { confirm } from '$lib/confirm';
+	import { toast } from '$lib/notification';
 
 	export let title: string;
 	export let description: string;
@@ -33,8 +34,6 @@
 
 			// select element where name=name
 			const input = field.querySelector(`[name="${name}"]`)!;
-
-			console.log(input);
 
 			// If there is an error, show it
 			if (error) {
@@ -79,9 +78,31 @@
 			if (result.type === 'failure') {
 				// We know now that we have data.errors
 				const errors = result.data?.errors;
+				const msg = result.data?.message;
 
 				// We can now update the form with the errors
-				if (errors.length > 0) updateErrors(errors);
+				if (errors && errors.length > 0) updateErrors(errors);
+				if (msg) {
+					toast({
+						title: 'Oei!',
+						message: msg,
+						type: 'error'
+					});
+				}
+			} else if (result.type === 'success') {
+				updateErrors([]);
+
+				toast({
+					title: 'Gelukt!',
+					message:
+						result.data?.message ||
+						'Het formulier is succesvol verstuurd. Je wordt zo doorgestuurd.',
+					type: 'success'
+				});
+
+				setTimeout(() => {
+					window.location.href = result.data?.redirectTo || '/';
+				}, 1000);
 			}
 		};
 	}}
@@ -121,13 +142,12 @@
 						{/if}
 					</select>
 				{:else if field.type === 'checkbox'}
-					<!-- 																													Dit klopt wel -->
 					<input
 						type="checkbox"
 						class="form-check-input"
 						name={field.name}
 						id={field.name}
-						checked={field.value}
+						checked={Boolean(field.value)}
 					/>
 				{:else if field.type === 'textarea'}
 					<textarea

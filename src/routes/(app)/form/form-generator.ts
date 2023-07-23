@@ -1,6 +1,6 @@
 import db from '$lib/server/db'
-import { fail } from '@sveltejs/kit'
-import { z, type ZodError } from 'zod'
+import { fail, type Actions } from '@sveltejs/kit'
+import { z } from 'zod'
 
 // All possible fields
 export type FieldType = TextField | 'number' | 'date' | CheckboxField | 'time' | SelectField | CustomFields | 'url'
@@ -46,6 +46,21 @@ export type FormError = {
   message: string
 }
 
+export type LogicReturnType = LogicReturnSuccessType | LogicReturnErrorType
+
+type LogicReturnSuccessType = {
+  success: true
+  message: string
+  status: 200 | 201 | 204
+  redirectTo: string
+}
+
+type LogicReturnErrorType = {
+  success: false
+  message: string
+  status: number
+}
+
 
 type FormType<T> = {
   title: string
@@ -56,7 +71,7 @@ type FormType<T> = {
   actionName?: string
   needsConfirmation?: boolean
   confirmText?: string
-  logic: (data: T) => Promise<void>
+  logic: (data: T) => Promise<LogicReturnType>
   extraValidators?: (data: T) => FormError[]
 }
 
@@ -84,15 +99,18 @@ export class Form<T> {
       // text, number, date, checkbox, time, select, url, textarea
 
       if (field.type === 'select') {
+        if (!field.options || field.options.length === 0) throw new Error(`Select field has no options`)
+
+
         const options = field.options.map(option => String(option.value))
 
         obj = z.enum([options[0], ...(options.slice(1))])
       } else if (field.type === 'checkbox') {
-        obj = z.boolean({
-          required_error: `${label} is verplicht`,
-          invalid_type_error: `${label} is geen boolean`
-        })
+
+        obj = z.preprocess(value => value === 'on', z.boolean())
+
       } else if (field.type === 'number') {
+
         const min = field.minValue || -Number.MIN_SAFE_INTEGER
         const max = field.maxValue || Number.MAX_SAFE_INTEGER
 
@@ -100,14 +118,19 @@ export class Form<T> {
           .number()
           .min(min, { message: `${label} moet minimaal ${min} zijn` })
           .max(max, { message: `${label} mag maximaal ${max} zijn` })
+
       } else if (field.type === 'date') {
+
         obj = z.string().transform(value => {
           return new Date(value)
         }).refine(value => {
           return value instanceof Date && !isNaN(value.getTime())
         }, { message: `${label} is verplicht` })
+
       } else if (field.type === 'textarea') {
+
         obj = z.string().min(3, { message: `${label} moet minimaal 3 karakters bevatten` })
+
       } else if (field.type === 'time') {
         obj = z.string().transform(value => {
           const [hours, minutes] = value.split(':')
@@ -126,7 +149,11 @@ export class Form<T> {
         obj = z.string().min(min, { message: `${label} moet minimaal ${min} karakters bevatten` }).max(max, { message: `${label} mag maximaal ${max} karakters bevatten` })
       }
 
-      if (field.optional && field.type !== 'url') obj = obj.optional()
+      if (field.optional) {
+        if (field.type !== 'url') {
+          obj = obj.optional().or(z.literal(''))
+        }
+      }
 
       zod = zod.extend({
         [field.name]: obj
@@ -189,13 +216,11 @@ export class Form<T> {
     // Validate against the zod schema
     const x = this.zodSchema.safeParse(object)
 
-    console.log(object)
-
     let extraErrors: FormError[] = []
 
     if (this.f.extraValidators) {
       // Validate against the extra validators
-      // @ts-expect-error object is T, its fine
+      // @ts-expect-error Klopt wel
       extraErrors = this.f.extraValidators(object)
     }
 
@@ -210,13 +235,12 @@ export class Form<T> {
       })
     }
 
-    console.log({ zodErrors, extraErrors })
-
     if (zodErrors.length > 0 || extraErrors.length > 0) {
 
       return [...zodErrors, ...extraErrors]
     }
 
+    // @ts-expect-error Klopt wel
     return x.data as T
   }
 
@@ -226,22 +250,25 @@ export class Form<T> {
         const formData = await request.formData()
         const body = Object.fromEntries(formData)
 
-        const validated = this.validate<T>(body as T)
+        let validated = this.validate<T>(body as T)
 
         if (validated instanceof Array && validated.length > 0) {
           return fail(400, {
-            success: false, message: 'Niet alles klopt...', errors: validated
+            success: false, message: 'Niet elk veld is correct ingevuld.', errors: validated
           })
         }
 
-        return await this.f.logic(validated)
-          .then(() => {
-            return { success: true }
-          }).catch(err => {
-            return fail(500, { success: false, message: err.message })
-          })
+        validated = validated as T
+
+        const ret = await this.f.logic(validated)
+
+        if (ret.success) {
+          return ret
+        } else {
+          return fail(ret.status, ret)
+        }
       }
-    }
+    } satisfies Actions
   }
 
   get attributes() {

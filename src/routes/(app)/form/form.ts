@@ -15,7 +15,13 @@ export const testForm = new Form<{
   title: 'Nieuwe activiteit aanmaken',
   description: 'Met dit formulier kan je een nieuwe activiteit aanmaken.',
   logic: async (data) => {
-    console.log(data)
+
+    return {
+      success: true,
+      message: 'Activiteit aangemaakt, je wordt nu doorgestuurd.',
+      status: 201,
+      redirectTo: '/activiteit/20'
+    }
   },
   extraValidators: (data) => {
     const errors = []
@@ -55,7 +61,6 @@ export const testForm = new Form<{
     {
       label: 'Begin datum',
       name: 'beginDate',
-      optional: true,
       type: 'date',
     } as Field<'date'>,
     {
@@ -66,7 +71,6 @@ export const testForm = new Form<{
     {
       label: 'Eind datum',
       name: 'endDate',
-      optional: true,
       type: 'date',
     } as Field<'date'>,
     {
@@ -97,10 +101,9 @@ export const testForm = new Form<{
     } as Field<'url'>,
     {
       label: 'Alleen voor leden',
-      name: 'checkbox',
+      name: 'membersOnly',
       type: 'checkbox',
       description: 'Als dit geselecteerd is, zullen alleen leden deze activiteit zien.',
-      optional: true
     } as Field<'checkbox'>,
   ],
   submitStr: 'Opslaan',
