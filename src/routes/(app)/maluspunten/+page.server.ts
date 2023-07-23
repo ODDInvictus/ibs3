@@ -1,8 +1,15 @@
 import type { Actions, PageServerLoad } from "./$types";
 import db, { getFeuten, getMembers } from "$lib/server/db";
-import { fail } from "@sveltejs/kit";
+import { error, fail } from "@sveltejs/kit";
+import { authMember } from '$lib/server/authorizationMiddleware';
 
-export const load = (async () => {
+export const load = (async ({ locals }) => {
+  const [ok] = authMember(locals)
+
+  if (!ok) {
+    return error(403)
+  }
+
   return {
     maluspunten: await db.maluspunt.findMany({
       include: {
@@ -16,7 +23,8 @@ export const load = (async () => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-  default: async ({ request }: { request: Request }) => {
+  default: async ({ request, locals }) => {
+
     const data = await request.formData();
 
     const giverId = Number(data.get("giverId"));
