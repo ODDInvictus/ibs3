@@ -28,7 +28,7 @@ export const actions = {
       return fail(400, { message: "Niet alle velden zijn ingevuld" });
     }
 
-    if (reason === undefined || reason === null || reason === "") {
+    if (reason === undefined || reason === null) {
       reason = "Geen reden opgegeven";
     }
 
