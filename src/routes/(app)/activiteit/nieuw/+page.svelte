@@ -4,6 +4,9 @@
 	import type { ActionData } from './$types';
 	import InfoCircle from '~icons/tabler/info-circle';
 
+	const activity = $page.data.activity;
+	const activityTime = $page.data.times;
+
 	function setEndDate() {
 		const startDate = document.getElementById('startDate') as HTMLInputElement;
 		const endDate = document.getElementById('endDate') as HTMLInputElement;
@@ -28,10 +31,10 @@
 	import { markdown } from '$lib/utils';
 	import Markdown from '$lib/components/Markdown.svelte';
 	import Title from '$lib/components/title.svelte';
-	let name = '';
+	let name = activity?.name || '';
 	$: nameMarkdown = markdown(name);
 
-	let description = '';
+	let description = activity?.description || '';
 	$: descriptionMarkdown = markdown(description);
 </script>
 
@@ -86,19 +89,25 @@
 	</div>
 
 	<label for="startDate">Begin datum</label>
-	<input type="date" name="startDate" id="startDate" on:change={setEndDate} />
+	<input
+		type="date"
+		name="startDate"
+		id="startDate"
+		on:change={setEndDate}
+		value={activityTime?.startDate ?? ''}
+	/>
 
 	<label for="startTime">Begin tijd</label>
-	<input type="time" name="startTime" id="startTime" />
+	<input type="time" name="startTime" id="startTime" value={activityTime?.startTime ?? ''} />
 
 	<label for="endDate">Eind datum</label>
-	<input type="date" name="endDate" id="endDate" />
+	<input type="date" name="endDate" id="endDate" value={activityTime?.endDate ?? ''} />
 
 	<label for="endTime">Eind tijd</label>
-	<input type="time" name="endTime" id="endTime" />
+	<input type="time" name="endTime" id="endTime" value={activityTime?.endTime ?? ''} />
 
 	<label for="location">Locatie <span>(optioneel)</span></label>
-	<select name="location" id="location" value={0}>
+	<select name="location" id="location" value={activity?.location?.id ?? 0}>
 		<option value={0}>Nog niet bekend</option>
 		{#each $page.data.locations as location}
 			<option value={location.id}>{location.name}</option>
@@ -106,7 +115,7 @@
 	</select>
 
 	<label for="organisedBy">Georganiseerd door</label>
-	<select name="organisedBy" id="organisedBy">
+	<select name="organisedBy" id="organisedBy" value={activity?.organisedBy?.id ?? 0}>
 		<option value={0}>Selecteer een commissie!</option>
 		{#each $page.data.committees as committee}
 			<option value={committee.id}>{committee.name}</option>
@@ -114,13 +123,18 @@
 	</select>
 
 	<label for="url">Website voor meer informatie <span>(optioneel)</span></label>
-	<input type="url" name="url" id="url" placeholder="URL" />
+	<input type="url" name="url" id="url" placeholder="URL" value={activity?.url ?? ''} />
 
 	<label for="image">Afbeelding <span>(optioneel)</span></label>
 	<input type="file" name="image" id="image" />
 
 	<label for="membersOnly">Alleen voor leden</label>
-	<input type="checkbox" name="membersOnly" id="membersOnly" />
+	<input
+		type="checkbox"
+		name="membersOnly"
+		id="membersOnly"
+		value={activity?.membersOnly ?? false}
+	/>
 
 	<button type="submit">Opslaan</button>
 </form>
@@ -180,7 +194,6 @@
 		}
 
 		label + input,
-		label + textarea,
 		label + select {
 			padding-bottom: 1rem;
 		}
@@ -199,7 +212,6 @@
 			grid-template-columns: 1fr;
 
 			label + input,
-			label + textarea,
 			label + select {
 				margin-bottom: 0;
 			}

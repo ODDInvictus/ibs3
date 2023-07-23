@@ -5,6 +5,7 @@
 	import Clock from '~icons/tabler/clock';
 	import Calendar from '~icons/tabler/calendar';
 	import CalendarPlus from '~icons/tabler/calendar-plus';
+	import Edit from '~icons/tabler/edit';
 	import UsersGroup from '~icons/tabler/users-group';
 	import ExternalLink from '~icons/tabler/external-link';
 	import AccessibleOff from '~icons/tabler/accessible-off';
@@ -216,6 +217,13 @@
 					<p>Alleen voor leden</p>
 				</div>
 			{/if}
+
+			<hr />
+
+			<div class="row">
+				<Edit />
+				<p><a href="/activiteit/nieuw?edit=true&id={activity.id}">Activiteit bewerken</a></p>
+			</div>
 
 			<hr />
 
