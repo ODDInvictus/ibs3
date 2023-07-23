@@ -24,11 +24,11 @@ export const actions = {
     const amount = Number(data.get("amount"));
     let reason = data.get("reason")?.toString();
 
-    if (!giverId || !receiverId || !reason || !amount || amount === 0) {
+    if (!giverId || !receiverId || !amount) {
       return fail(400, { message: "Niet alle velden zijn ingevuld" });
     }
 
-    if (reason === undefined || reason === null) {
+    if (!reason) {
       reason = "Geen reden opgegeven";
     }
 
