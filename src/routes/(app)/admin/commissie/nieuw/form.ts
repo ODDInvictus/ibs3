@@ -1,3 +1,4 @@
+import { Roles } from '$lib/constants';
 import { Form } from '$lib/form/form-generator';
 import type { Field } from '$lib/form/form-generator';
 import db from '$lib/server/db'
@@ -12,6 +13,7 @@ export const newCommitteeForm = new Form<{
   confirmText: 'Weet je zeker dat je deze commissie wilt aanmaken?',
   formId: 'new-committee-form',
   submitStr: 'Opslaan',
+  requiredRoles: [Roles.Senaat, Roles.Admins],
   logic: async (data) => {
     const ldapId = data.ldapId.toLowerCase()
 
