@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import Row from './Row.svelte';
 
 	const examples = [
@@ -9,8 +10,8 @@
 		'++ondersteept++',
 		'--> <==>',
 		'`code` [[ctrl]]',
-		'oddinvictus.nl',
-		'[strafbakken](http://oddinvictus.nl/strafbakken)',
+		$page.data.url,
+		`[strafbakken](${$page.data.url}/strafbakken)`,
 		':)  :clap:',
 		'20^e^ H~2~O',
 		'\\*geen markdown* *wel markdown*'
