@@ -26,7 +26,7 @@
 			<thead>
 				<th>Gever</th>
 				<th>Reden</th>
-				<th>Locatie</th>
+				<!-- <th>Locatie</th> -->
 				<th>Datum</th>
 				<th>Tijd</th>
 			</thead>
@@ -43,7 +43,7 @@
 							{/if}
 						</td>
 						<td>{@html markdown(strafbak.reason) ?? 'Geen reden gegeven'}</td>
-						<td>{strafbak.location ?? 'Onbekend'}</td>
+						<!-- <td>{strafbak.location ?? 'Onbekend'}</td> -->
 						<td>{strafbak.dateCreated.toLocaleDateString()}</td>
 						<td>{strafbak.dateCreated.toLocaleTimeString().slice(0, -3)}</td>
 					</tr>
@@ -60,13 +60,46 @@
 		display: grid;
 		place-items: center;
 
+		thead {
+			display: grid;
+			grid-template-columns: 1fr 2fr 1fr 1fr;
+			place-items: center;
+
+			th {
+				text-align: center;
+				width: fit-content;
+			}
+		}
+
 		tbody {
 			tr {
+				display: grid;
+				grid-template-columns: 1fr 2fr 1fr 1fr;
+				color: var(--primary-color);
+				
+				td {
+					border: none;
+				}
+
+				a {
+					color: var(--primary-color);
+				}
+
 				&:nth-child(odd) {
 					background-color: var(--primary-color);
 					color: white;
+					
+					a {
+						color: white;
+					}
 				}
 			}
+		}
+	}
+
+	:root.dark tr:nth-child(even) {
+		td, a {
+			color: white;
 		}
 	}
 </style>

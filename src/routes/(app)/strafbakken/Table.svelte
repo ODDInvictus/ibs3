@@ -4,6 +4,7 @@
 	import Modal from './Modal.svelte';
 	import { openModal } from 'svelte-modals';
 	import type { sbUser } from './types';
+	import './table.scss';
 
 	export let data: sbUser[];
 	export let longestName: string | null;
@@ -74,71 +75,7 @@
 </main>
 
 <style lang="scss">
-	$cell-padding: 0.75rem;
-
-	thead {
-		display: flex;
-		justify-content: space-around;
-
-		th {
-			padding: $cell-padding;
-			text-align: left;
-		}
-	}
-
-	tbody {
-		display: grid;
-		grid-template-columns: 1fr;
-
-		row {
-			display: grid;
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-			transition: all 0.4s ease;
-
-			&:nth-child(odd) {
-				background-color: var(--primary-focus-color);
-				color: white;
-				a {
-					color: white !important;
-				}
-			}
-
-			&:has(.cell:not(.actions):hover) {
-				background-color: var(--primary-color);
-				color: white;
-				text-decoration: underline;
-			}
-
-			.cell {
-				padding: $cell-padding;
-				word-wrap: break-word;
-				position: relative;
-
-				p {
-					position: absolute;
-					top: 50%;
-					transform: translateY(-50%);
-				}
-			}
-
-			&#invisible {
-				opacity: 0;
-				cursor: default;
-				height: 0px;
-
-				.cell {
-					padding: 0 $cell-padding;
-					word-wrap: normal;
-					text-overflow: clip;
-					line-height: 0%;
-				}
-			}
-		}
-
-		.actions {
-			display: flex;
-			align-items: center;
-			gap: $cell-padding;
-		}
-	}
+row {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
 </style>
