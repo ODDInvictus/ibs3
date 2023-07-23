@@ -72,7 +72,7 @@ type FormType<T> = {
   needsConfirmation?: boolean
   confirmText?: string
   logic: (data: T) => Promise<LogicReturnType>
-  extraValidators?: (data: T) => FormError[]
+  extraValidators?: (data: T) => Promise<FormError[]>
 }
 
 export class Form<T> {
@@ -212,7 +212,7 @@ export class Form<T> {
     this.transformed = true
   }
 
-  validate<T>(object: T): T | FormError[] {
+  async validate<T>(object: T): Promise<T | FormError[]> {
     // Validate against the zod schema
     const x = this.zodSchema.safeParse(object)
 
@@ -221,7 +221,7 @@ export class Form<T> {
     if (this.f.extraValidators) {
       // Validate against the extra validators
       // @ts-expect-error Klopt wel
-      extraErrors = this.f.extraValidators(object)
+      extraErrors = await this.f.extraValidators(object)
     }
 
     let zodErrors: FormError[] = []
@@ -250,7 +250,7 @@ export class Form<T> {
         const formData = await request.formData()
         const body = Object.fromEntries(formData)
 
-        let validated = this.validate<T>(body as T)
+        let validated = await this.validate<T>(body as T)
 
         if (validated instanceof Array && validated.length > 0) {
           return fail(400, {
@@ -258,7 +258,7 @@ export class Form<T> {
           })
         }
 
-        validated = validated as T
+        validated = validated as Awaited<T>
 
         const ret = await this.f.logic(validated)
 
