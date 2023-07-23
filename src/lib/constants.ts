@@ -8,6 +8,16 @@ export const LDAP_IDS = {
   FINANCIE: 'financie'
 }
 
+export enum Roles {
+  Feuten = 'feuten',
+  Members = 'leden',
+  Users = 'ibs-users',
+  Senaat = 'senaat',
+  Colosseum = 'colosseum',
+  Admins = 'ibs-admins',
+  FinanCie = 'financie'
+}
+
 export const LEDGER_IDS = {
   SALE_BEER: 4501,
   SALE_FOOD: 4502,

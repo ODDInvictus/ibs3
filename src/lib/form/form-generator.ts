@@ -1,3 +1,4 @@
+import type { Roles } from '$lib/constants'
 import db from '$lib/server/db'
 import { fail, type Actions } from '@sveltejs/kit'
 import { z } from 'zod'
@@ -68,6 +69,7 @@ type FormType<T> = {
   formId: string
   fields: Field<FieldType>[]
   submitStr: string
+  requiredRoles: Roles[]
   actionName?: string
   needsConfirmation?: boolean
   confirmText?: string
@@ -212,6 +214,32 @@ export class Form<T> {
     this.transformed = true
   }
 
+  async checkRoles(locals: App.Locals): Promise<[boolean, string[]]> {
+    // Check if the user has the required roles
+    const committees = await db.committeeMember.findMany({
+      where: {
+        userId: locals.user.id
+      },
+      include: {
+        committee: {
+          select: {
+            ldapId: true
+          }
+        }
+      }
+    })
+
+    const userRoles = committees.map(cm => cm.committee.ldapId)
+
+    const hasOneRole = this.f.requiredRoles.some(role => userRoles.includes(role))
+
+    if (hasOneRole) {
+      return [true, []]
+    } else {
+      return [false, this.f.requiredRoles.filter(role => !userRoles.includes(role))]
+    }
+  }
+
   async validate<T>(object: T): Promise<T | FormError[]> {
     // Validate against the zod schema
     const x = this.zodSchema.safeParse(object)
@@ -246,7 +274,15 @@ export class Form<T> {
 
   get actions() {
     return {
-      [this.f.actionName || 'default']: async ({ request }) => {
+      [this.f.actionName || 'default']: async ({ request, locals }) => {
+        const [ok, committees] = await this.checkRoles(locals)
+
+        if (!ok) {
+          return fail(403, {
+            success: false, message: 'Je hebt niet de juiste rechten om dit formulier te gebruiken. Je mist een van de volgende rollen: ' + committees.join(', '), errors: []
+          })
+        }
+
         const formData = await request.formData()
         const body = Object.fromEntries(formData)
 

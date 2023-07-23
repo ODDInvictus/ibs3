@@ -1,3 +1,4 @@
+import { Roles } from '$lib/constants';
 import { Form } from '$lib/form/form-generator';
 import type { Field } from '$lib/form/form-generator';
 
@@ -23,7 +24,7 @@ export const testForm = new Form<{
       redirectTo: '/activiteit/20'
     }
   },
-  extraValidators: (data) => {
+  extraValidators: async (data) => {
     const errors = []
     if (data.beginDate > data.endDate) {
       errors.push({
@@ -41,6 +42,7 @@ export const testForm = new Form<{
   },
   needsConfirmation: true,
   confirmText: 'Weet je zeker dat je deze activiteit wilt aanmaken?',
+  requiredRoles: [Roles.Users],
   formId: 'test-form',
   fields: [
     {
