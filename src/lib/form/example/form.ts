@@ -1,5 +1,5 @@
-import { Form } from './form-generator';
-import type { Field } from './form-generator';
+import { Form } from '$lib/form/form-generator';
+import type { Field } from '$lib/form/form-generator';
 
 export const testForm = new Form<{
   name: string
