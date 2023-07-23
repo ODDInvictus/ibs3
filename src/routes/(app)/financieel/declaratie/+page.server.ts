@@ -31,8 +31,8 @@ export const actions = {
       const data = Object.fromEntries(await event.request.formData()) as unknown as FormData
 
       // save declaration
-      if (!data.product || data.product === '') throw new Error('Product is verplicht')
-      if (!data.methode || data.methode === '') throw new Error('Methode is verplicht')
+      if (!data.product) throw new Error('Product is verplicht')
+      if (!data.methode) throw new Error('Methode is verplicht')
       if (!data.prijs || parseFloat(data.prijs) < 0.01) throw new Error('Prijs is verplicht')
       if (!data.statiegeld || parseFloat(data.statiegeld) < 0) throw new Error('Statiegeld is verplicht of onder 0')
       if (!data.receipt) throw new Error('Bonnetje is verplicht')
@@ -58,8 +58,8 @@ export const actions = {
             reason: data.product,
             methodOfPayment: data.methode,
             personId: personData.personId,
-            }
-          })
+          }
+        })
 
         const filename = `receipt-${declaration.id}-${data.receipt.name}`
 
@@ -95,8 +95,9 @@ export const actions = {
         message: 'Declaratie is opgeslagen. Je kan gelijk nog een declaratie doen!'
       }
 
-    } catch (err: Error) {
+    } catch (err) {
       console.error(err)
+      // @ts-expect-error Tis ook nooit goed he
       return fail(400, { succes: false, message: err.message ?? 'Internal Error' })
     }
   }
