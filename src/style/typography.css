@@ -1,4 +1,3 @@
-
 h1,
 h2,
 h3,
@@ -20,7 +19,13 @@ h3 {
 	font-size: 1.125rem !important;
 }
 
-a:hover, button:hover {
+a {
+	/* DIT WERKT NIET! Zie tailwind.config.cjs waar dit wordt geset */
+	color: var(--primary-color);
+}
+
+a:hover,
+button:hover {
 	text-decoration: underline;
 }
 
@@ -58,5 +63,5 @@ textarea,
 select,
 button {
 	/* font-family: 'Varela Round', sans-serif !important; */
-	/* font-weight: 400; */
+/* font-weight: 400; */
 /* } */
