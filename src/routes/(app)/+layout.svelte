@@ -21,7 +21,8 @@
 	import Toast from '$lib/components/toast.svelte';
 	import Confirm from '$lib/components/confirm.svelte';
 	import Prompt from '$lib/components/prompt.svelte';
-	import PromptSelect from '$lib/components/promptSelect.svelte';
+	import PromptSelect from '$lib/components/prompt-select.svelte';
+	import PromptCheckbox from '$lib/components/prompt-checkbox.svelte';
 	import { toast } from '$lib/notification';
 
 	// vierkante schermen zijn voor homo's
@@ -115,6 +116,10 @@
 
 <div class="promptSelect">
 	<PromptSelect />
+</div>
+
+<div class="promptCheckbox">
+	<PromptCheckbox />
 </div>
 
 <div id="layout-background" class="w-screen col-span-0" />
