@@ -7,7 +7,6 @@ import type { CommitteeMember } from '@prisma/client'
 import { z } from 'zod'
 import { pad } from '$lib/utils.js'
 import { authUser } from '$lib/server/authorizationMiddleware'
-import { BACKEND_URL } from '$env/static/private'
 
 export const load = (async ({ url, locals }) => {
   const locations = db.activityLocation.findMany({
@@ -238,9 +237,8 @@ export const actions = {
       })
 
       // Now, we notify everyone
-      console.log(BACKEND_URL)
-
-      await fetch(`${BACKEND_URL}/notify/activity/${id}`, {
+      console.log('[Activity/new] Notifying everyone')
+      await fetch(`${env.BACKEND_URL}/notify/activity/${id}`, {
         method: 'POST'
       })
     } catch (e) {
