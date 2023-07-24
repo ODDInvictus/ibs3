@@ -1,6 +1,6 @@
-import { User } from '@prisma/client';
 import { sendNotification } from './discord-utils';
 import { sendEmailNotificationFrontend } from './email-utils';
+import { getPreference } from './preference-utils';
 import { prisma } from './prisma';
 
 const MONTH_NAMES = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December']
@@ -64,23 +64,21 @@ export async function verdubbelStrafbakken() {
   // Send mails
   log('Sending emails')
 
-  count.forEach(async (bakken: number, userId: number) => {
-    // First get user
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userId
-      }
-    })
+  const preferences = await getPreference('email_strafbakken_doubled')
 
-    if (!user) {
-      log(`User ${userId} not found`)
+  count.forEach(async (bakken: number, userId: number) => {
+    // get preference
+    const pref = preferences.find(p => p.userId === userId)
+
+    if (!pref) {
+      log(`No preference found for user ${userId}`)
       return
     }
 
-    log(`Sending email to ${user.firstName}`)
+    log(`Sending email to ${pref.user.firstName}`)
 
     // Send email
-    await sendEmail(user, bakken)
+    await sendEmailNotificationFrontend('strafbakken-doubled', pref.user, { bakken })
   })
 }
 
@@ -179,20 +177,4 @@ export async function notifyStrafbakken() {
     color: 0xff0000,
     fields
   })
-}
-
-async function sendEmail(to: User, bakken: number) {
-  const receiver = `${to.firstName} ${to.lastName} <${to.email}>`
-
-  await sendEmailNotificationFrontend('Strafbakken verdubbeld!',
-    `
-Beste ${to.firstName},
-
-De strafbakken zijn weer verdubbeld! Je hebt nu ${bakken} strafbakken.
-
-Bekijk de tussenstand op ${process.env.IBS_URL}/strafbakken
-
-Groetjes,
-Invictus Bier Systeem
-`, receiver)
 }
