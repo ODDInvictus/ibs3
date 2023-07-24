@@ -38,11 +38,11 @@ app.post('/notify/activity/:id', async (req, res) => {
     return
   }
 
-  // Send notifications
-  await newActivitiyNotification(activity)
-
   // Now return to the client
   res.sendStatus(200)
+
+  // Send notifications
+  await newActivitiyNotification(activity)
 })
 
 app.post('/email/send', async (req, res) => {
@@ -54,8 +54,6 @@ app.post('/email/send', async (req, res) => {
   }
 
   const { to, from, subject, text, toName, fromName, senderFirstName } = req.body
-
-  console.log(req.body)
 
   // Now return to the client
   res.sendStatus(200)
