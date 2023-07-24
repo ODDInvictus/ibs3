@@ -6,6 +6,9 @@ export const load = (async ({ locals }) => {
     preferences: db.preference.findMany({
       where: {
         userId: locals.user.id
+      },
+      include: {
+        base: true
       }
     })
   };

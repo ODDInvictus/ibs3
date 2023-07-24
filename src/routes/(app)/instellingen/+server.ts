@@ -4,7 +4,8 @@ import db from '$lib/server/db'
 export const POST: RequestHandler = async ({ request, locals }) => {
   const body = await request.json()
 
-  let { id, value } = body
+  const { id } = body
+  let { value } = body
 
   if (!id) {
     return new Response(JSON.stringify({ message: 'Voorkeur id is verplicht', success: false }), {
@@ -23,6 +24,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     where: {
       id: Number(id),
       userId: locals.user.id
+    },
+    include: {
+      base: true
     }
   })
 
@@ -32,15 +36,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     })
   }
 
-  // Check if the preference is admin only
-  if (preference.adminOnly) {
-    return new Response(JSON.stringify({ message: 'Deze voorkeur kan alleen door admins worden bewerkt', success: false }), {
-      status: 403
-    })
-  }
-
   if (body.action === 'revert') {
-    value = preference.defaultValue
+    value = preference.base.defaultValue
   }
 
   if (preference.value === value) {

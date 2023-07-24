@@ -76,7 +76,7 @@
 	tableId="settings-table"
 	columns={['Voorkeur', 'Waarde', 'Acties']}
 	rows={preferences.map((p) => {
-		return [String(p.id), p.description, String(p.value)];
+		return [String(p.id), p.base.description, String(p.value)];
 	})}
 	actions={[
 		{
