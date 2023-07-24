@@ -21,6 +21,17 @@ model Settings {
   updatedAt   DateTime @updatedAt
 }
 
+model BasePreference {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  key          String
+  defaultValue Boolean
+  description  String
+  Preference   Preference[]
+}
+
 // User settings
 model Preference {
   id        Int      @id @default(autoincrement())
@@ -30,14 +41,9 @@ model Preference {
   userId    Int
 
   // Settings
-  key          String
-  value        Boolean
-
-  name         String
-  description  String
-  
-  defaultValue Boolean
-  adminOnly    Boolean
+  base   BasePreference @relation(fields: [baseId], references: [id])
+  baseId Int
+  value  Boolean
 }
 
 // USER
