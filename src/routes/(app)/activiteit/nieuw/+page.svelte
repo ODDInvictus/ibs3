@@ -3,6 +3,9 @@
 	import { page } from '$app/stores';
 	import type { ActionData } from './$types';
 	import InfoCircle from '~icons/tabler/info-circle';
+	import { markdown } from '$lib/utils';
+	import Markdown from '$lib/components/Markdown.svelte';
+	import Title from '$lib/components/title.svelte';
 
 	const activity = $page.data.activity;
 	const activityTime = $page.data.times;
@@ -28,9 +31,6 @@
 
 	export let form: ActionData;
 
-	import { markdown } from '$lib/utils';
-	import Markdown from '$lib/components/Markdown.svelte';
-	import Title from '$lib/components/title.svelte';
 	let name = activity?.name || '';
 	$: nameMarkdown = markdown(name);
 
