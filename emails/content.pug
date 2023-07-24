@@ -18,7 +18,7 @@ block container
       <!--[if !true]><!-->
       p(style='padding:0;margin:0;margin-top:16px;') Groetjes,
       <!--<![endif]-->
-      if {isCustom}
+      if (isCustom && isCustom == true)
         p(style='padding:0;margin:0;') 
         | #{sender}
       else
@@ -29,6 +29,6 @@ block container
     p(style='margin-top:16px;')
       | Je ontvangt deze e-mail omdat #{isAdmin ? 'je admin bent van Invictus Bier Systeem': (isCustom ? senderFirstName + ' deze heeft verstuurd vanaf Invictus Bier Systeem' : (isMember ? 'je lid bent van O.D.D. Invictus' : 'je feut bent bij O.D.D. Invictus'))} 
 
-    unless {isCustom}
+    unless (isCustom && isCustom == true)
       a(href=url + '/instellingen' style='color:#551b8a;')
         | Niet meer zulke e-mails ontvangen?
