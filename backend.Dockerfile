@@ -7,6 +7,7 @@ COPY package.json ./
 COPY package-lock.json ./
 COPY prisma ./prisma/
 COPY tsconfig.json ./
+COPY emails ./emails/
 
 RUN npm install
 RUN npx prisma generate

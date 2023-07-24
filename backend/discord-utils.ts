@@ -2,7 +2,12 @@ type Embed = {
   title: string
   description: string
   color: number
+  thumbnail?: Thumbnail
   fields: EmbedField[]
+}
+
+type Thumbnail = {
+  url: string
 }
 
 type EmbedField = {

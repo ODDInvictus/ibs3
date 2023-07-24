@@ -8,7 +8,7 @@
 
 <br />
 
-<a href="/admin/email">Beheer email</a>
+<a href="/admin/email/alias">Beheer email</a>
 <br />
 <a href="/admin/commissie">Beheer commissies</a>
 <br />

@@ -1,43 +1,41 @@
 <script lang="ts">
-	import { promptSelectStore } from '$lib/promptSelect';
+	import { promptCheckboxStore } from '$lib/promptCheckbox';
 
-	let value: string = '';
+	let currentValue = false;
 
 	$: {
-		const prompt = $promptSelectStore;
+		const prompt = $promptCheckboxStore;
 		if (prompt && prompt.title !== '' && prompt.message !== '') {
-			const dialog = document.querySelector('#prompt-select-dialog') as HTMLDialogElement;
+			const dialog = document.querySelector('#prompt-checkbox-dialog') as HTMLDialogElement;
 			dialog?.showModal();
 		}
 	}
 
-	function action(confirm: boolean) {
-		const dialog = document.querySelector('#prompt-select-dialog') as HTMLDialogElement;
+	async function action(confirm: boolean) {
+		const dialog = document.querySelector('#prompt-checkbox-dialog') as HTMLDialogElement;
 		if (confirm) {
-			$promptSelectStore.cb(value);
-			value = '';
+			await $promptCheckboxStore.cb(currentValue);
+			currentValue = false;
 		}
 		dialog?.close();
 	}
 </script>
 
-<dialog id="prompt-select-dialog">
-	<h1>{$promptSelectStore.title}</h1>
+<dialog id="prompt-checkbox-dialog">
+	<h1>{$promptCheckboxStore.title}</h1>
 
-	<p>{$promptSelectStore.message}</p>
+	<p>{$promptCheckboxStore.message}</p>
 
-	<select bind:value>
-		{#if typeof $promptSelectStore.options[0] === 'string'}
-			{#each $promptSelectStore.options as option}
-				<option value={option}>{option}</option>
-			{/each}
-		{:else}
-			{#each $promptSelectStore.options as option}
-				<!-- @ts-expect-error -->
-				<option value={option.value}>{option.key}</option>
-			{/each}
-		{/if}
-	</select>
+	<div id="checkbox">
+		<input
+			type="checkbox"
+			checked={$promptCheckboxStore.value}
+			on:change={(e) => {
+				// @ts-expect-error
+				return (currentValue = e.target?.value === 'on');
+			}}
+		/>
+	</div>
 
 	<div class="buttons">
 		<button class="ok" on:click={() => action(true)}>Opslaan</button>
@@ -64,11 +62,21 @@
 		z-index: 1000;
 	}
 
-	select {
+	#checkbox {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 		width: 100%;
+	}
+
+	input {
 		padding: 0.5rem;
-		border-radius: $border;
+		border-radius: 2px;
 		border: none;
+	}
+
+	input[type='checkbox']:checked {
+		background-color: var(--secondary-color);
 	}
 
 	.ok {
@@ -93,7 +101,7 @@
 
 	// media query for phones
 	@media (max-width: 600px) {
-		#prompt-select-dialog {
+		#prompt-checkbox-dialog {
 			width: 550px !important;
 			min-width: auto;
 		}

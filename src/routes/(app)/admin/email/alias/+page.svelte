@@ -3,6 +3,7 @@
 	import Edit from '~icons/tabler/edit';
 	import CircleX from '~icons/tabler/circle-x';
 	import InfoCircle from '~icons/tabler/info-circle';
+	import Send from '~icons/tabler/send';
 	import { toast } from '$lib/notification';
 	import { confirm } from '$lib/confirm';
 	import { goto } from '$app/navigation';
@@ -16,6 +17,14 @@
 			title: 'Niks aan te doen',
 			message:
 				'Deze worden automatisch aangemaakt voor commissies. Deze aliassen zijn niet te verwijderen.',
+			type: 'info'
+		});
+	}
+
+	function userInfo() {
+		toast({
+			title: 'Niks aan te doen',
+			message: 'Dit zijn de email adressen van de leden. Deze zijn niet te verwijderen.',
 			type: 'info'
 		});
 	}
@@ -52,6 +61,10 @@
 
 	function editAlias(id: number) {
 		goto('/admin/email/alias/' + id);
+	}
+
+	function sendMail(alias: string) {
+		goto('/admin/email/send/' + alias);
 	}
 </script>
 
@@ -107,6 +120,9 @@
 						<button on:click={() => deleteAlias(alias.alias.id)}>
 							<CircleX />
 						</button>
+						<button on:click={() => sendMail(alias.alias.alias)}>
+							<Send />
+						</button>
 					</div>
 				</td>
 			</tr>
@@ -142,6 +158,45 @@
 						<button on:click={() => deleteAlias(alias.emailAliasId)}>
 							<CircleX />
 						</button>
+						<button on:click={() => sendMail(alias.alias.alias)}>
+							<Send />
+						</button>
+					</div>
+				</td>
+			</tr>
+		{/each}
+
+		<tr>
+			<td class="bold"> Gebruikers </td>
+			<td />
+			<td>
+				<div class="options">
+					<button on:click={userInfo}>
+						<InfoCircle />
+					</button>
+				</div>
+			</td>
+		</tr>
+
+		{#each $page.data.users as alias}
+			<tr>
+				<td>
+					<a href="/leden/{alias.ldapId}">
+						{alias.firstName}
+						{alias.lastName}
+						{#if alias.nickname}
+							({alias.nickname})
+						{/if}
+					</a>
+				</td>
+				<td>
+					{alias.email}
+				</td>
+				<td>
+					<div class="options">
+						<button on:click={() => sendMail(alias.ldapId)}>
+							<Send />
+						</button>
 					</div>
 				</td>
 			</tr>
@@ -174,6 +229,9 @@
 				<td>
 					<button on:click={info}>
 						<InfoCircle />
+					</button>
+					<button on:click={() => sendMail(alias.alias.alias)}>
+						<Send />
 					</button>
 				</td>
 			</tr>

@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev:backend": "nodemon --watch backend -e ts --exec \"ts-node-esm ./backend/index.ts\"",
 		"dev:frontend": "vite dev --host 0.0.0.0",
+		"dev:email-templates": "npx sass --watch ./emails/scss/style-test.sass ./build/css/style-test.css",
 		"dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
 		"build": "vite build",
 		"preview": "vite preview",
@@ -12,7 +13,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"log": "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+		"log": "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit",
+		"mailhog": "docker run --rm -it -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog"
 	},
 	"devDependencies": {
 		"@iconify/json": "^2.2.47",
@@ -20,6 +22,7 @@
 		"@sveltejs/adapter-auto": "^1.0.0",
 		"@sveltejs/adapter-node": "^1.2.3",
 		"@sveltejs/kit": "^1.15.2",
+		"@types/express": "^4.17.17",
 		"@types/markdown-it": "^12.2.3",
 		"@types/markdown-it-emoji": "^2.0.2",
 		"@types/minio": "^7.0.17",
@@ -35,6 +38,7 @@
 		"eslint-plugin-svelte3": "^4.0.0",
 		"flowbite": "^1.6.3",
 		"flowbite-svelte": "^0.29.12",
+		"nodemon": "^3.0.1",
 		"postcss": "^8.4.21",
 		"postcss-load-config": "^4.0.1",
 		"prettier": "^2.8.0",
@@ -46,6 +50,7 @@
 		"svelte-hamburgers": "^4.0.1",
 		"svelte-preprocess": "^4.10.7",
 		"tailwindcss": "^3.2.4",
+		"ts-node": "^10.9.1",
 		"tslib": "^2.4.1",
 		"typescript": "^4.9.3",
 		"unplugin-icons": "^0.16.1",
@@ -55,8 +60,7 @@
 	"dependencies": {
 		"@auth/sveltekit": "^0.2.0",
 		"@prisma/client": "^4.9.0",
-		"@types/express": "^4.17.17",
-		"dotenv": "^16.0.3",
+		"dotenv": "^16.3.1",
 		"express": "^4.18.2",
 		"markdown-it": "^13.0.1",
 		"markdown-it-emoji": "^2.0.2",
@@ -67,11 +71,8 @@
 		"markdown-it-sup": "^1.0.0",
 		"next-auth": "^4.20.1",
 		"node-cache": "^5.1.2",
-		"node-cron": "^3.0.2",
-		"nodemon": "^2.0.21",
 		"sanitize-html": "^2.11.0",
 		"svelte-modals": "^1.2.1",
-		"ts-node": "^10.9.1",
 		"zod": "^3.20.6"
 	}
 }

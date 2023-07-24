@@ -1,32 +1,43 @@
 <script lang="ts">
-	import { promptStore } from '$lib/prompt';
+	import { promptSelectStore } from '$lib/promptSelect';
 
 	let value: string = '';
 
 	$: {
-		const prompt = $promptStore;
+		const prompt = $promptSelectStore;
 		if (prompt && prompt.title !== '' && prompt.message !== '') {
-			const dialog = document.querySelector('#prompt-dialog') as HTMLDialogElement;
+			const dialog = document.querySelector('#prompt-select-dialog') as HTMLDialogElement;
 			dialog?.showModal();
 		}
 	}
 
 	async function action(confirm: boolean) {
-		const dialog = document.querySelector('#prompt-dialog') as HTMLDialogElement;
+		const dialog = document.querySelector('#prompt-select-dialog') as HTMLDialogElement;
 		if (confirm) {
-			await $promptStore.cb(value);
+			await $promptSelectStore.cb(value);
 			value = '';
 		}
 		dialog?.close();
 	}
 </script>
 
-<dialog id="prompt-dialog">
-	<h1>{$promptStore.title}</h1>
+<dialog id="prompt-select-dialog">
+	<h1>{$promptSelectStore.title}</h1>
 
-	<p>{$promptStore.message}</p>
+	<p>{$promptSelectStore.message}</p>
 
-	<input type="text" bind:value />
+	<select bind:value>
+		{#if typeof $promptSelectStore.options[0] === 'string'}
+			{#each $promptSelectStore.options as option}
+				<option value={option}>{option}</option>
+			{/each}
+		{:else}
+			{#each $promptSelectStore.options as option}
+				<!-- @ts-expect-error -->
+				<option value={option.value}>{option.key}</option>
+			{/each}
+		{/if}
+	</select>
 
 	<div class="buttons">
 		<button class="ok" on:click={() => action(true)}>Opslaan</button>
@@ -53,7 +64,7 @@
 		z-index: 1000;
 	}
 
-	input {
+	select {
 		width: 100%;
 		padding: 0.5rem;
 		border-radius: $border;
@@ -82,7 +93,7 @@
 
 	// media query for phones
 	@media (max-width: 600px) {
-		#prompt-dialog {
+		#prompt-select-dialog {
 			width: 550px !important;
 			min-width: auto;
 		}
