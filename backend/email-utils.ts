@@ -1,6 +1,7 @@
 import { User } from '@prisma/client'
 import Email from 'email-templates'
-import { createTransport } from 'nodemailer'
+import { Transporter, createTransport } from 'nodemailer'
+import SMTPTransport from 'nodemailer/lib/smtp-transport'
 
 const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD } = process.env
 
@@ -16,7 +17,7 @@ function log(...args: any[]) {
   console.log('[EMAILER]', ...args)
 }
 
-let emailTransport
+let emailTransport: Transporter<SMTPTransport.SentMessageInfo>
 
 if (dev) {
   emailTransport = createTransport({
@@ -105,5 +106,48 @@ export async function sendEmailNotificationFrontend(template: string, receiver: 
     locals: l
   }).then(() => {
     log('Email sent to user:', receiver.ldapId)
+  })
+}
+
+type CustomEmail = {
+  subject: string
+  from: string
+  to: string
+  toName: string
+  text: string
+  fromName: string
+  senderFirstName: string
+}
+
+export async function sendCustomEmail(mail: CustomEmail) {
+  const logo = process.env.EMAIL_IBS_LOGO
+
+  if (!logo) throw new Error('Missing EMAIL_IBS_LOGO in env')
+
+  const l = {
+    name: mail.toName,
+    isCustom: true,
+    logo,
+    subject: mail.subject,
+    content: mail.text,
+    sender: mail.fromName,
+    senderFirstName: mail.senderFirstName
+  }
+
+  const template = new Email({
+    message: {
+      from: mail.from,
+      to: mail.to,
+    },
+    send: true,
+    preview: dev,
+    transport: emailTransport,
+  })
+
+  template.send({
+    template: 'api',
+    locals: l,
+  }).then(() => {
+    log(`Custom email sent from ${mail.from} to ${mail.to}`)
   })
 }

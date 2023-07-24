@@ -1,5 +1,6 @@
 import type { Roles } from '$lib/constants'
 import db from '$lib/server/db'
+import type { User } from '@prisma/client'
 import { fail, type Actions } from '@sveltejs/kit'
 import { z } from 'zod'
 
@@ -38,6 +39,7 @@ export type Field<T extends FieldType> = {
   maxLength?: number
   minLength?: number
   options?: T extends SelectField ? OptionField<InputType>[] : never
+  getOptions?: (user: User) => Promise<OptionField<InputType>[]>
   description?: string
   placeholder?: string
 }
@@ -87,7 +89,6 @@ export class Form<T> {
 
   constructor(form: FormType<T>) {
     this.f = form
-    this.generateZod()
   }
 
   private generateZod() {
@@ -102,7 +103,6 @@ export class Form<T> {
 
       if (field.type === 'select') {
         if (!field.options || field.options.length === 0) throw new Error(`Select field has no options`)
-
 
         const options = field.options.map(option => String(option.value))
 
@@ -165,7 +165,7 @@ export class Form<T> {
     this.zodSchema = zod
   }
 
-  async transform() {
+  async transform(user: User) {
     for (const field of this.f.fields) {
       if (field.type === 'user') {
         const users = await db.user.findMany({
@@ -208,9 +208,17 @@ export class Form<T> {
 
         field.type = 'select'
 
+      } else if (field.type === 'select') {
+        if (!field.getOptions) {
+          throw new Error('Select field has no getOptions function')
+        }
+
+        field.options = await field.getOptions(user)
+        field.getOptions = undefined
       }
     }
 
+    this.generateZod()
     this.transformed = true
   }
 

@@ -7,6 +7,7 @@ import { syncLDAPUsers } from './ldap';
 import { verdubbelStrafbakken } from './strafbakken';
 import { prisma } from './prisma';
 import { newActivitiyNotification } from './notifications';
+import { sendCustomEmail } from './email-utils';
 
 const API_VERSION = '1.0.1'
 
@@ -18,6 +19,8 @@ dotenv.config()
 
 const app = express()
 const port = process.env.BACKEND_PORT || 3000
+
+app.use(express.json())
 
 app.get('/version', (req, res) => res.json({ version: API_VERSION }))
 
@@ -35,11 +38,30 @@ app.post('/notify/activity/:id', async (req, res) => {
     return
   }
 
+  // Send notifications
+  await newActivitiyNotification(activity)
+
+  // Now return to the client
+  res.sendStatus(200)
+})
+
+app.post('/email/send', async (req, res) => {
+  const b = req.body
+
+  if (!b.to || !b.subject || !b.from || !b.text || !b.toName || !b.fromName || !b.senderFirstName) {
+    res.sendStatus(400)
+    return
+  }
+
+  const { to, from, subject, text, toName, fromName, senderFirstName } = req.body
+
+  console.log(req.body)
+
   // Now return to the client
   res.sendStatus(200)
 
-  // Send notifications
-  await newActivitiyNotification(activity)
+  // Send email
+  await sendCustomEmail({ subject, to, from, text, toName, fromName, senderFirstName })
 })
 
 app.listen(port, async () => {

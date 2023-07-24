@@ -4,6 +4,7 @@
 	import Help from '~icons/tabler/help';
 	import { confirm } from '$lib/confirm';
 	import { toast } from '$lib/notification';
+	import Title from '$lib/components/title.svelte';
 
 	export let title: string;
 	export let description: string;
@@ -107,9 +108,7 @@
 		};
 	}}
 >
-	<h1>{title}</h1>
-
-	<hr />
+	<Title {title} />
 
 	{#if description}
 		<p>{description}</p>
@@ -184,15 +183,6 @@
 	$row-height: 3rem;
 	$padding: 0.25rem;
 	$button-padding: 0.5rem;
-
-	h1 {
-		text-align: center;
-		margin-bottom: 1rem;
-	}
-
-	hr {
-		margin: var(--hr-margin);
-	}
 
 	p {
 		margin: 0.5rem 0;

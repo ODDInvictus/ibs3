@@ -5,7 +5,7 @@ block container
     div(style='text-align:center; margin-top:32px;')
       img(src=logo alt="Invictus Bier Systeem" style='width:100%;max-width:342px;')
 
-    h3.
+    p.
       Beste #{name},
 
   block content
@@ -18,12 +18,17 @@ block container
       <!--[if !true]><!-->
       p(style='padding:0;margin:0;margin-top:16px;') Groetjes,
       <!--<![endif]-->
-      p(style='padding:0;margin:0;') Invictus Bier Systeem
+      if {isCustom}
+        p(style='padding:0;margin:0;') 
+        | #{sender}
+      else
+        p(style='padding:0;margin:0;') Invictus Bier Systeem
 
     hr(style='margin:16px 0;width:100%;')
 
     p(style='margin-top:16px;')
-      | Je ontvangt deze e-mail omdat je #{isAdmin ? 'admin bent van Invictus Bier Systeem': (isMember ? 'lid bent van O.D.D. Invictus' : 'feut bent bij O.D.D. Invictus')} 
+      | Je ontvangt deze e-mail omdat #{isAdmin ? 'je admin bent van Invictus Bier Systeem': (isCustom ? senderFirstName + ' deze heeft verstuurd vanaf Invictus Bier Systeem' : (isMember ? 'je lid bent van O.D.D. Invictus' : 'je feut bent bij O.D.D. Invictus'))} 
 
-    a(href=url + '/instellingen' style='color:#551b8a;')
-      | Niet meer zulke e-mails ontvangen?
+    unless {isCustom}
+      a(href=url + '/instellingen' style='color:#551b8a;')
+        | Niet meer zulke e-mails ontvangen?
