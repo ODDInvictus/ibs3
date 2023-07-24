@@ -1,0 +1,28 @@
+extends ../content.pug
+
+block content
+  p.
+    Er staat een geweldige nieuwe activiteit op de planning bij Invictus 🎉
+
+  p 🎈 Wat? #{activity.name}
+  p 📅 Wanneer? #{date}
+  p 🏠 Waar? #{location}
+  p 💼 Wie? #{committee.name} 
+  p 📝 Omschrijving: #{activity.description}
+
+  <!--[if true]>
+    div(style='margin-bottom: 16px;')
+      p
+        | Ben jij ook bij? 
+
+      a(href=url + '/activiteit/' + activity.id style='color:#551b8a;')
+        | Meld je dan nu aan!
+  <![endif]-->
+  <!--[if !true]><!-->
+    div
+      p(style='display:inline;')
+        | Ben jij ook bij? 
+
+      a(href=url + '/activiteit/' + activity.id style='color:#551b8a; display:inline;')
+        | Meld je dan nu aan!
+  <![endif]-->
