@@ -66,26 +66,9 @@ async function syncFilters(api: MailcowAPI, users: User[]) {
     log('No personal email found for the following users:')
     log(noPersonalEmail.map(user => `${user.firstName} ${user.lastName} (${user.ldapId})`).join(', '))
 
-    const adminEmail = process.env.ADMIN_EMAIL
-
-    if (!adminEmail) return
-
-    await sendEmailNotification('Geen persoonlijke email gevonden',
-      `
-Hoi Admin,
-
-Er zijn een aantal gebruikers zonder persoonlijk email adres gevonden. Dit betekent dat ze geen mail ontvangen op hun persoonlijke email adres.
-Het gaat om de volgende mensen:
-${noPersonalEmail.map(user => `${user.firstName} ${user.lastName} (${user.ldapId})`).join('\n')}
-
-Persoonlijke email adres kan je in de database instellen onder 'personalEmail'.
-Vervolgens zal dit scriptje de filters aanmaken om 7 uur sochtends.
-
-Groetjes,
-Invictus Bier Systeem
-      `,
-      adminEmail
-    )
+    await sendEmailNotification('backend/no-personal-emails', {
+      users: noPersonalEmail
+    })
   }
 
   const filters = await api.getFilters()
