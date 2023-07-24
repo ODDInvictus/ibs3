@@ -7,6 +7,7 @@ import type { CommitteeMember } from '@prisma/client'
 import { z } from 'zod'
 import { pad } from '$lib/utils.js'
 import { authUser } from '$lib/server/authorizationMiddleware'
+import { BACKEND_URL } from '$env/static/private'
 
 export const load = (async ({ url, locals }) => {
   const locations = db.activityLocation.findMany({
@@ -99,7 +100,6 @@ export const actions = {
 
     const data = Object.fromEntries(await event.request.formData())
 
-    console.log(event.url)
     const edit = event.url.searchParams.get('edit') === 'true'
     const editId = event.url.searchParams.get('id')
 
@@ -235,6 +235,13 @@ export const actions = {
             data: attending
           })
         }
+      })
+
+      // Now, we notify everyone
+      console.log(BACKEND_URL)
+
+      await fetch(`${BACKEND_URL}/notify/activity/${id}`, {
+        method: 'POST'
       })
     } catch (e) {
       console.error(e)

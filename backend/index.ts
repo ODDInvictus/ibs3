@@ -5,6 +5,8 @@ import cron from 'node-cron'
 import { syncEmail } from './email';
 import { syncLDAPUsers } from './ldap';
 import { verdubbelStrafbakken } from './strafbakken';
+import { prisma } from './prisma';
+import { newActivitiyNotification } from './notifications';
 
 const API_VERSION = '1.0.1'
 
@@ -18,6 +20,27 @@ const app = express()
 const port = process.env.BACKEND_PORT || 3000
 
 app.get('/version', (req, res) => res.json({ version: API_VERSION }))
+
+app.post('/notify/activity/:id', async (req, res) => {
+  const id = req.params.id
+
+  const activity = await prisma.activity.findUnique({
+    where: {
+      id: Number(id)
+    }
+  })
+
+  if (!activity) {
+    res.sendStatus(404)
+    return
+  }
+
+  // Now return to the client
+  res.sendStatus(200)
+
+  // Send notifications
+  await newActivitiyNotification(activity)
+})
 
 app.listen(port, async () => {
   console.log(`Job scheduler listening at http://localhost:${port}`)
