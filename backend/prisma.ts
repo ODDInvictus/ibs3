@@ -1,6 +1,16 @@
 import { PrismaClient } from '@prisma/client';
+import { newActivitiyNotification } from './notifications';
 
 export const prisma = new PrismaClient();
+
+prisma.$use(async (params, next) => {
+  if (params.model === 'Activity' && params.action === 'create') {
+    await newActivitiyNotification(params.args.data);
+  }
+
+  return await next(params)
+})
+
 
 export async function getUsers() {
   return await prisma.user.findMany({
