@@ -236,11 +236,13 @@ export const actions = {
         }
       })
 
-      // Now, we notify everyone
-      console.log('[Activity/new] Notifying everyone')
-      await fetch(`${env.BACKEND_URL}/notify/activity/${id}`, {
-        method: 'POST'
-      })
+      if (!edit) {
+        // Now, we notify everyone
+        console.log('[Activity/new] Notifying everyone')
+        await fetch(`${env.BACKEND_URL}/notify/activity/${id}`, {
+          method: 'POST'
+        })
+      }
     } catch (e) {
       console.error(e)
       return fail(500, { error: true, message: 'Er ging iets mis bij het opslaan van de activiteit' })
