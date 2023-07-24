@@ -1,0 +1,29 @@
+extends ./base.pug
+
+block container
+  block header
+    div(style='text-align:center; margin-top:32px;')
+      img(src=logo alt="Invictus Bier Systeem" style='width:100%;max-width:342px;')
+
+    h3.
+      Beste #{name},
+
+  block content
+
+  block footer
+    div
+      <!--[if true]>
+      p(style='padding:0;margin:0;') Groetjes,
+      <![endif]-->
+      <!--[if !true]><!-->
+      p(style='padding:0;margin:0;margin-top:16px;') Groetjes,
+      <!--<![endif]-->
+      p(style='padding:0;margin:0;') Invictus Bier Systeem
+
+    hr(style='margin:16px 0;width:100%;')
+
+    p(style='margin-top:16px;')
+      | Je ontvangt deze e-mail omdat je #{isAdmin ? 'admin bent van Invictus Bier Systeem': (isMember ? 'lid bent van O.D.D. Invictus' : 'feut bent bij O.D.D. Invictus')} 
+
+    a(href=url + '/instellingen' style='color:#551b8a;')
+      | Niet meer zulke e-mails ontvangen?
