@@ -24,6 +24,22 @@
 	import PromptSelect from '$lib/components/prompt-select.svelte';
 	import PromptCheckbox from '$lib/components/prompt-checkbox.svelte';
 	import { toast } from '$lib/notification';
+	import { useRegisterSW } from 'virtual:pwa-register/svelte';
+
+	if (typeof window !== 'undefined') {
+		useRegisterSW({
+			onRegistered(swr) {
+				console.log('Service worker registerd', swr);
+			},
+			onRegisterError(error) {
+				console.error('Service worker error', error);
+			},
+			onOfflineReady() {
+				// show a ready to work offline to user
+				console.log('App is ready to work offline');
+			}
+		});
+	}
 
 	// vierkante schermen zijn voor homo's
 	$: innerWidth = 0;
@@ -126,10 +142,10 @@
 <div id="layout-div" class="grid gap-4 grid-cols-12 grid-row-12">
 	<aside
 		class="z-10 h-[10vh]
-		sm:relative 
+		sm:relative
 		sm:h-[calc(100vh-2.5rem)]
 		sm:row-span-12
-		drop-shadow 
+		drop-shadow
 		sm:flex-col
 		sm:col-span-4
 		rounded-lg
@@ -147,49 +163,49 @@
 		<hr />
 
 		<section>
-			<a href="/kalender" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/kalender" class="sm:justify-left sm:items-start sm:w-full">
 				<i><CalendarDays font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Kalender</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/strafbakken" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/strafbakken" class="sm:justify-left sm:items-start sm:w-full">
 				<i><Cake font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Strafbakken</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/financieel" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/financieel" class="sm:justify-left sm:items-start sm:w-full">
 				<i><Folder font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Financieel</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/maluspunten" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/maluspunten" class="sm:justify-left sm:items-start sm:w-full">
 				<i><FaceFrown font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Maluspunten</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/leden" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/leden" class="sm:justify-left sm:items-start sm:w-full">
 				<i><Users font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Leden</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/instellingen" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/instellingen" class="sm:justify-left sm:items-start sm:w-full">
 				<i><Cog6Tooth font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Instellingen</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/admin" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/admin" class="sm:justify-left sm:items-start sm:w-full">
 				<i><Admin font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Admin</span>
 			</a>
