@@ -1,4 +1,4 @@
-# Invictus Bier Systeem 3
+![#Invictus Bier Systeem](https://raw.githubusercontent.com/ODDInvictus/ibs3/main/static/ibs_logo_v2.png)
 
 Invictus Bier Systeem is _het_ websysteem voor O.D.D. Invictus.
 
