@@ -62,126 +62,128 @@
 	door de backend.
 </p>
 
-<table>
-	<div class="table-content">
-		<thead>
-			<tr>
-				<th>Naam</th>
-				<th>Alias</th>
-				<th>Opties</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td class="bold"> Persoonlijke aliassen </td>
-				<td />
-				<td>
-					<div class="options">
-						<button on:click={() => goto('/admin/email/alias/new/personal')}>
-							<MailPlus />
-						</button>
-					</div>
-				</td>
-			</tr>
-
-			{#each $page.data.userAliases as alias}
+<div class="h-scroll-1">
+	<div class="h-scroll-2">
+		<table>
+			<thead>
 				<tr>
-					<td>
-						<a href="/leden/{alias.user.ldapId}">
-							{alias.user.firstName}
-							{alias.user.lastName}
-							{#if alias.user.nickname}
-								({alias.user.nickname})
-							{/if}
-						</a>
-					</td>
-					<td>
-						<a href="/admin/email/alias/{alias.alias.id}">
-							{alias.alias.alias}@{domain}
-						</a>
-					</td>
+					<th>Naam</th>
+					<th>Alias</th>
+					<th>Opties</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="bold"> Persoonlijke aliassen </td>
+					<td />
 					<td>
 						<div class="options">
-							<button on:click={() => editAlias(alias.alias.id)}>
-								<Edit />
-							</button>
-							<button on:click={() => deleteAlias(alias.alias.id)}>
-								<CircleX />
+							<button on:click={() => goto('/admin/email/alias/new/personal')}>
+								<MailPlus />
 							</button>
 						</div>
 					</td>
 				</tr>
-			{/each}
 
-			<tr>
-				<td class="bold"> Losse aliassen </td>
-				<td />
-				<td>
-					<div class="options">
-						<button on:click={() => goto('/admin/email/alias/new/custom')}>
-							<MailPlus />
-						</button>
-					</div>
-				</td>
-			</tr>
+				{#each $page.data.userAliases as alias}
+					<tr>
+						<td>
+							<a href="/leden/{alias.user.ldapId}">
+								{alias.user.firstName}
+								{alias.user.lastName}
+								{#if alias.user.nickname}
+									({alias.user.nickname})
+								{/if}
+							</a>
+						</td>
+						<td>
+							<a href="/admin/email/alias/{alias.alias.id}">
+								{alias.alias.alias}@{domain}
+							</a>
+						</td>
+						<td>
+							<div class="options">
+								<button on:click={() => editAlias(alias.alias.id)}>
+									<Edit />
+								</button>
+								<button on:click={() => deleteAlias(alias.alias.id)}>
+									<CircleX />
+								</button>
+							</div>
+						</td>
+					</tr>
+				{/each}
 
-			{#each $page.data.customAliases as alias}
 				<tr>
-					<td>
-						{alias.address}
-					</td>
-					<td>
-						<a href="/admin/email/alias/{alias.emailAliasId}">
-							{alias.EmailAlias.alias}@{domain}
-						</a>
-					</td>
+					<td class="bold"> Losse aliassen </td>
+					<td />
 					<td>
 						<div class="options">
-							<button on:click={() => editAlias(alias.emailAliasId)}>
-								<Edit />
-							</button>
-							<button on:click={() => deleteAlias(alias.emailAliasId)}>
-								<CircleX />
+							<button on:click={() => goto('/admin/email/alias/new/custom')}>
+								<MailPlus />
 							</button>
 						</div>
 					</td>
 				</tr>
-			{/each}
 
-			<tr>
-				<td class="bold"> Commissie aliassen </td>
-				<td />
-				<td>
-					<div class="options">
-						<button on:click={() => goto('/admin/commissie')}>
-							<MailPlus />
-						</button>
-					</div>
-				</td>
-			</tr>
+				{#each $page.data.customAliases as alias}
+					<tr>
+						<td>
+							{alias.address}
+						</td>
+						<td>
+							<a href="/admin/email/alias/{alias.emailAliasId}">
+								{alias.EmailAlias.alias}@{domain}
+							</a>
+						</td>
+						<td>
+							<div class="options">
+								<button on:click={() => editAlias(alias.emailAliasId)}>
+									<Edit />
+								</button>
+								<button on:click={() => deleteAlias(alias.emailAliasId)}>
+									<CircleX />
+								</button>
+							</div>
+						</td>
+					</tr>
+				{/each}
 
-			{#each $page.data.committeeAliases as alias}
 				<tr>
+					<td class="bold"> Commissie aliassen </td>
+					<td />
 					<td>
-						<a href="/leden/commissie/{alias.committee.ldapId}">
-							{alias.committee.name}
-						</a>
-					</td>
-					<td>
-						<a href="/admin/email/alias/{alias.alias.id}">
-							{alias.alias.alias}@{domain}
-						</a>
-					</td>
-					<td>
-						<button on:click={info}>
-							<InfoCircle />
-						</button>
+						<div class="options">
+							<button on:click={() => goto('/admin/commissie')}>
+								<MailPlus />
+							</button>
+						</div>
 					</td>
 				</tr>
-			{/each}
-		</tbody>
+
+				{#each $page.data.committeeAliases as alias}
+					<tr>
+						<td>
+							<a href="/leden/commissie/{alias.committee.ldapId}">
+								{alias.committee.name}
+							</a>
+						</td>
+						<td>
+							<a href="/admin/email/alias/{alias.alias.id}">
+								{alias.alias.alias}@{domain}
+							</a>
+						</td>
+						<td>
+							<button on:click={info}>
+								<InfoCircle />
+							</button>
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
 	</div>
-</table>
+</div>
 
 <br />
 <br />
@@ -201,14 +203,6 @@
 	table {
 		width: 100%;
 		border-collapse: collapse;
-		display: block;
-		overflow-x: auto;
-    white-space: nowrap;
-
-		.table-content {
-			display: table;
-			width: 100%;
-		}
 
 		thead {
 			font-size: 1.1rem;
@@ -218,9 +212,22 @@
 		td {
 			text-align: left;
 
+			a {
+				display: inline-block;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
+			}
+
 			@media screen and (max-width: 930px) {				
 				&:first-child {
 					display: none;
+				}
+			}
+
+			@media screen and (max-width: 400px) {
+				&:nth-child(2), &:nth-child(2) a {
+					max-width: 165px;
 				}
 			}
 		}

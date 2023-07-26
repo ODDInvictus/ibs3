@@ -49,3 +49,15 @@ hr {
   text-align: center;
   font-size: 1.5rem;
 }
+
+.h-scroll-1 {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.h-scroll-1 .h-scroll-2 {
+  display: table-cell;
+  overflow-x: auto;
+  width: 100%;
+}

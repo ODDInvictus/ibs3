@@ -21,77 +21,75 @@
 		title="{name} zijn {data.strafbakken.StrafbakReceived.length} strafbakken"
 		shortTitle="{name} :: Strafbakken"
 	/>
-	<table-container>
-		<table>
-			<thead>
-				<th>Gever</th>
-				<th>Reden</th>
-				<!-- <th>Locatie</th> -->
-				<th>Datum</th>
-				<th>Tijd</th>
-			</thead>
-			<tbody>
-				{#each data.strafbakken.StrafbakReceived as strafbak}
-					<tr>
-						<td>
-							{#if strafbak.giver}
-								<a href={`/strafbakken/${strafbak.giver.firstName}`}>
-									{formatName(strafbak.giver)}
-								</a>
-							{:else}
-								IBS
-							{/if}
-						</td>
-						<td>{@html markdown(strafbak.reason) ?? 'Geen reden gegeven'}</td>
-						<!-- <td>{strafbak.location ?? 'Onbekend'}</td> -->
-						<td>{strafbak.dateCreated.toLocaleDateString()}</td>
-						<td>{strafbak.dateCreated.toLocaleTimeString().slice(0, -3)}</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</table-container>
+	<div class="h-scroll-1">
+		<div class="h-scroll-2">
+			<table>
+				<thead>
+					<th>Gever</th>
+					<th>Reden</th>
+					<!-- <th>Locatie</th> -->
+					<th>Datum</th>
+					<th>Tijd</th>
+				</thead>
+				<tbody>
+					{#each data.strafbakken.StrafbakReceived as strafbak}
+						<tr>
+							<td>
+								{#if strafbak.giver}
+									<a href={`/strafbakken/${strafbak.giver.firstName}`}>
+										{formatName(strafbak.giver)}
+									</a>
+								{:else}
+									IBS
+								{/if}
+							</td>
+							<td>{@html markdown(strafbak.reason) ?? 'Geen reden gegeven'}</td>
+							<!-- <td>{strafbak.location ?? 'Onbekend'}</td> -->
+							<td>{strafbak.dateCreated.toLocaleDateString()}</td>
+							<td>{strafbak.dateCreated.toLocaleTimeString().slice(0, -3)}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+	</div>
 </main>
 
 <style lang="scss">
 	$tr-padding: 0.75rem;
 
-	table-container {
+	thead {
 		display: grid;
+		grid-template-columns: 1fr 2fr 1fr 1fr;
 		place-items: center;
 
-		thead {
+		th {
+			text-align: center;
+			width: fit-content;
+		}
+	}
+
+	tbody {
+		tr {
 			display: grid;
 			grid-template-columns: 1fr 2fr 1fr 1fr;
-			place-items: center;
-
-			th {
-				text-align: center;
-				width: fit-content;
+			color: var(--primary-color);
+			max-width: 100vw;
+			
+			td {
+				border: none;
 			}
-		}
 
-		tbody {
-			tr {
-				display: grid;
-				grid-template-columns: 1fr 2fr 1fr 1fr;
+			a {
 				color: var(--primary-color);
+			}
+
+			&:nth-child(odd) {
+				background-color: var(--primary-color);
+				color: white;
 				
-				td {
-					border: none;
-				}
-
 				a {
-					color: var(--primary-color);
-				}
-
-				&:nth-child(odd) {
-					background-color: var(--primary-color);
 					color: white;
-					
-					a {
-						color: white;
-					}
 				}
 			}
 		}
