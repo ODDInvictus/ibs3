@@ -203,7 +203,7 @@
 		border-collapse: collapse;
 		display: block;
 		overflow-x: auto;
-    white-space: nowrap;
+		white-space: nowrap;
 
 		.table-content {
 			display: table;
@@ -217,12 +217,6 @@
 		th,
 		td {
 			text-align: left;
-
-			@media screen and (max-width: 930px) {				
-				&:first-child {
-					display: none;
-				}
-			}
 		}
 	}
 </style>
