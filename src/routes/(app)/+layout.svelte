@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import Logo from '$lib/components/Logo.svelte';
 	import LogoMobile from '$lib/components/LogoSmallMobile.svelte';
 	import { clickOutside } from '$lib/events/clickOutside';
@@ -15,31 +14,12 @@
 	import FaceFrown from '~icons/tabler/accessible-off';
 	import PopupMenu from '$lib/components/PopupMenu.svelte';
 	import Breadcrumps from '$lib/components/breadcrumps.svelte';
-	import { LDAP_IDS } from '$lib/constants';
-	import type { Committee } from '@prisma/client';
 	import { env } from '$env/dynamic/public';
 	import Toast from '$lib/components/toast.svelte';
 	import Confirm from '$lib/components/confirm.svelte';
 	import Prompt from '$lib/components/prompt.svelte';
 	import PromptSelect from '$lib/components/promptSelect.svelte';
-	import { toast } from '$lib/notification';
 	import { Modals, closeModal } from 'svelte-modals';
-
-	// vierkante schermen zijn voor homo's
-	$: innerWidth = 0;
-	$: innerHeight = 0;
-
-	$: if (innerHeight / innerWidth >= 0.99 && innerHeight / innerWidth <= 1.01) {
-		toast({
-			title: 'Oei!',
-			message: 'Het lijkt erop dat je een vierkant scherm gebruikt',
-			type: 'warning'
-		});
-
-		// Toggle root element filter to turn everything black
-		const root = document.documentElement;
-		root.style.filter = 'grayscale(100%) contrast(0.5)';
-	}
 
 	let showMenu: boolean = false;
 
@@ -50,61 +30,11 @@
 	function closeMenu() {
 		showMenu = false;
 	}
-
-	let bestCommittee = 'Lid';
-
-	onMount(() => {
-		const data = $page.data;
-		if (data.committees && data.committees.length > 0) {
-			bestCommittee = getBestId(data.committees);
-		}
-	});
-
-	const getBestId = (committees: Committee[]): string => {
-		let order = [
-			LDAP_IDS.COLOSSEUM,
-			LDAP_IDS.MEMBERS,
-			LDAP_IDS.FINANCIE,
-			LDAP_IDS.ADMINS,
-			LDAP_IDS.SENAAT,
-			LDAP_IDS.FEUTEN
-		];
-
-		let best = committees[0];
-
-		// Now find the committee where their ldapId is the highest in the order array
-		// Not every committee is in the order, ignore those
-		for (let i = 1; i < committees.length; i++) {
-			const committee = committees[i];
-			if (order.indexOf(committee.ldapId) > order.indexOf(best.ldapId)) {
-				best = committee;
-			}
-		}
-
-		switch (best.ldapId) {
-			case LDAP_IDS.FEUTEN:
-				return 'Feut';
-			case LDAP_IDS.SENAAT:
-				return 'Senaat';
-			case LDAP_IDS.ADMINS:
-				return 'Admin';
-			case LDAP_IDS.FINANCIE:
-				return 'Financie';
-			case LDAP_IDS.COLOSSEUM:
-				return 'Colosseum-bewoner';
-			case LDAP_IDS.MEMBERS:
-				return 'Lid';
-			default:
-				return 'Lid';
-		}
-	};
 </script>
-
-<svelte:window bind:innerWidth bind:innerHeight />
 
 <Modals>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<div slot="backdrop" class="backdrop" on:click={closeModal} />
+	<div slot="backdrop" class="backdrop" role="button" tabindex="0" on:click={closeModal} />
 </Modals>
 
 <div class="toast">
@@ -127,10 +57,10 @@
 <div id="layout-div" class="grid gap-4 grid-cols-12 grid-row-12">
 	<aside
 		class="z-10 h-[10vh]
-		sm:relative 
+		sm:relative
 		sm:h-[calc(100vh-2.5rem)]
 		sm:row-span-12
-		drop-shadow 
+		drop-shadow
 		sm:flex-col
 		sm:col-span-4
 		rounded-lg
@@ -148,49 +78,49 @@
 		<hr />
 
 		<section>
-			<a href="/kalender" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/kalender" class="sm:justify-left sm:items-start sm:w-full">
 				<i><CalendarDays font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Kalender</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/strafbakken" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/strafbakken" class="sm:justify-left sm:items-start sm:w-full">
 				<i><Cake font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Strafbakken</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/financieel" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/financieel" class="sm:justify-left sm:items-start sm:w-full">
 				<i><Folder font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Financieel</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/maluspunten" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/maluspunten" class="sm:justify-left sm:items-start sm:w-full">
 				<i><FaceFrown font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Maluspunten</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/leden" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/leden" class="sm:justify-left sm:items-start sm:w-full">
 				<i><Users font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Leden</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/instellingen" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/instellingen" class="sm:justify-left sm:items-start sm:w-full">
 				<i><Cog6Tooth font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Instellingen</span>
 			</a>
 		</section>
 
 		<section>
-			<a href="/admin" class="sm:justify-left sm:items-start sm:w-full ">
+			<a href="/admin" class="sm:justify-left sm:items-start sm:w-full">
 				<i><Admin font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Admin</span>
 			</a>
@@ -224,7 +154,7 @@
 					<p id="layout-name">
 						{$page.data.user.firstName + ' ' + $page.data.user.lastName ?? 'Gebruiker'}
 					</p>
-					<p id="layout-title">{bestCommittee}</p>
+					<p id="layout-title">{$page.data.topRole}</p>
 				</div>
 				<!-- <button>Log uit</button> -->
 				{#if $page.data.user.picture == null}
