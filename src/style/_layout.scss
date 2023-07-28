@@ -1,0 +1,14 @@
+hr {
+	margin: 0.5rem 0;
+	background-color: var(--color-hr);
+}
+
+.ibs-card {
+	width: auto;
+	height: auto;
+
+	background-color: var(--color-card);
+	border-radius: var(--border-radius);
+	box-shadow: 0 0 0.5rem 0 var(--color-shadow);
+	padding: 2rem;
+}

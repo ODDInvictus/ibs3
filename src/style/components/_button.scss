@@ -1,0 +1,39 @@
+button {
+	background-color: var(--color-primary);
+	color: var(--color-text-light);
+
+	border: none;
+	border-radius: var(--border-radius);
+
+	cursor: pointer;
+
+	font-family: var(--font-family);
+
+	font-size: 1rem;
+	font-weight: 500;
+
+	padding: 0.8rem 1.1rem;
+
+	min-height: 3rem;
+	min-width: 8rem;
+	height: auto;
+	width: auto;
+}
+
+button.btn-danger {
+	background-color: var(--color-danger);
+}
+
+button.btn-secondary {
+	background-color: var(--color-secondary);
+}
+
+button.btn-warning {
+	background-color: var(--color-warning);
+	color: var(--color-text);
+}
+
+// Select all buttons that have the class btn-info
+button.btn-info {
+	background-color: var(--color-tertiary);
+}

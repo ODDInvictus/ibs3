@@ -1,0 +1,37 @@
+textarea,
+input:not([type='file'], [type='checkbox'], [type='radio'], [type='color']),
+select {
+	all: unset;
+
+	padding: var(--form-padding);
+
+	border: 1px solid var(--color-form-border);
+	border-radius: var(--form-border-radius);
+
+	&::placeholder {
+		text-transform: lowercase;
+	}
+
+	&:focus {
+		outline: none;
+		border: 1px solid var(--color-form-focus);
+		box-shadow: var(--form-box-shadow);
+	}
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+	all: unset;
+
+	height: 1rem;
+	width: 1rem;
+
+	border: 1px solid var(--color-form-border);
+	border-radius: var(--form-border-radius);
+
+	&:checked {
+		background-color: var(--color-primary);
+		color: var(--color-text-light);
+		border-color: var(--color-primary);
+	}
+}

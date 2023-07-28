@@ -1,0 +1,34 @@
+@use './style/variables';
+@use './style/typography';
+@use './style/layout';
+@use './style/components/button';
+@use './style/components/table';
+@use './style/components/form';
+
+// Open Sans
+// @font-face {
+// 	font-family: 'Open Sans';
+// 	font-style: normal;
+// 	font-weight: 400;
+// 	src: local('Open Sans') local('OpenSans') url('/fonts/OpenSans.ttf');
+// }
+
+// // Open Sans Italic
+// @font-face {
+// 	font-family: 'Open Sans';
+// 	font-style: italic;
+// 	font-weight: 400;
+// 	src: local('Open Sans') local('OpenSans') url('/fonts/OpenSans-Italic.ttf');
+// }
+
+html {
+	padding: 0;
+	margin: 0;
+}
+
+html,
+body {
+	width: 100%;
+	height: 100%;
+	font-family: var(--font-family);
+}

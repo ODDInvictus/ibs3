@@ -1,0 +1,48 @@
+// Alle variablen hiero
+
+:root {
+	/*
+		Kleurtjes
+	*/
+	--color-primary: #551b8a;
+	--color-secondary: #ff007f;
+	--color-tertiary: #470ff4;
+
+	--color-primary-transparant: rgba(85, 27, 138, 0.1);
+
+	--color-danger: red;
+	--color-warning: yellow;
+	--color-success: var(--color-primary);
+	--color-info: var(--color-tertiary);
+
+	--color-text: #0c0c0c;
+	--color-text-light: #f0f0f0;
+	--color-text-muted: #5d656b;
+
+	--color-bg: #f4eeff;
+	--color-hr: #e0e0e0;
+	--color-card: #ffffff;
+	--color-box-shadow: rgba(0, 0, 0, 0.1);
+
+	--color-form-border: var(--color-hr);
+	--color-form-focus: var(--color-primary);
+
+	/*
+		Font
+	*/
+	--font-family: 'Ubuntu', sans-serif;
+	--icon-vertical-align: -0.25em;
+	--icon-size: 20px;
+
+	/*
+		Forms	
+	*/
+	--form-padding: 0.5rem 0.8rem;
+	--form-border-radius: 5px;
+	--form-box-shadow: 0 0 0 1px var(--color-primary-transparant);
+
+	/*
+		Rest
+	*/
+	--border-radius: 20px;
+}
