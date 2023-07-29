@@ -1,7 +1,4 @@
 button {
-	background-color: var(--color-primary);
-	color: var(--color-text-light);
-
 	border: none;
 	border-radius: var(--border-radius);
 
@@ -18,6 +15,13 @@ button {
 	min-width: 8rem;
 	height: auto;
 	width: auto;
+
+	color: var(--color-text-light);
+	background-color: var(--color-primary);
+}
+
+button.btn-primary {
+	background-color: var(--color-primary);
 }
 
 button.btn-danger {
