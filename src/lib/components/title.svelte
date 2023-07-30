@@ -30,8 +30,4 @@
 	p {
 		text-align: center;
 	}
-
-	hr {
-		margin: 0.5rem 0;
-	}
 </style>
