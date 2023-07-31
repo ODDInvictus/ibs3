@@ -39,7 +39,6 @@
 
 <style>
 	nav {
-		color: white;
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
@@ -47,13 +46,13 @@
 		gap: 0.3rem;
 	}
 
-	a {
-		color: white;
-	}
-
 	span,
 	i {
 		display: inline-block;
+	}
+
+	a {
+		color: var(--color-text-light);
 	}
 
 	i {
