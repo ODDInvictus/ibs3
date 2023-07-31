@@ -28,6 +28,7 @@
 		"@types/minio": "^7.0.17",
 		"@types/node-cron": "^3.0.7",
 		"@types/sanitize-html": "^2.9.0",
+		"@types/spotify-web-api-node": "^5.0.7",
 		"@typescript-eslint/eslint-plugin": "^6.2.0",
 		"@typescript-eslint/parser": "^6.2.0",
 		"autoprefixer": "^10.4.13",
@@ -71,6 +72,7 @@
 		"next-auth": "^4.22.3",
 		"node-cache": "^5.1.2",
 		"sanitize-html": "^2.11.0",
+		"spotify-web-api-node": "^5.0.2",
 		"svelte-modals": "^1.2.1",
 		"zod": "^3.20.6"
 	}
