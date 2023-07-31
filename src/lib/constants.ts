@@ -8,6 +8,10 @@ export const LDAP_IDS = {
   FINANCIE: 'financie'
 }
 
+export type UserRoles = {
+  [key in Roles]: boolean
+}
+
 export enum Roles {
   Feuten = 'feuten',
   Members = 'leden',
@@ -16,6 +20,16 @@ export enum Roles {
   Colosseum = 'colosseum',
   Admins = 'ibs-admins',
   FinanCie = 'financie'
+}
+
+export const UserRolesEmpty = {
+  [Roles.Feuten]: false,
+  [Roles.Members]: false,
+  [Roles.Users]: false,
+  [Roles.Senaat]: false,
+  [Roles.Colosseum]: false,
+  [Roles.Admins]: false,
+  [Roles.FinanCie]: false
 }
 
 export const LEDGER_IDS = {
