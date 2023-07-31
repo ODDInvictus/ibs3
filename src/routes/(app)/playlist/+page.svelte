@@ -1,9 +1,11 @@
 <script lang="ts">
-  import Title from "$lib/components/title.svelte";
-  import { toast } from "$lib/notification";
-  import { onMount } from "svelte";
-  import Login from "./Login.svelte";
   import SpotifyWebApi from "spotify-web-api-node";
+  import { onMount } from "svelte";
+  import { toast } from "$lib/notification";
+  import Title from "$lib/components/title.svelte";
+  import Login from "./Login.svelte";
+  import Tracklist from "./Tracklist.svelte";
+  import { accesstokenStore } from "./store";
   import { page } from "$app/stores";
   import { goto } from "$app/navigation";
 
@@ -16,10 +18,20 @@
   });
 
   const searchParams = $page.url.searchParams;
-  const data = searchParams.has("data")
+  const data: {
+    access_token: string;
+    refresh_token: string;
+    expires_in: number;
+  } | null = searchParams.has("data")
     ? JSON.parse(searchParams.get("data")!)
     : null;
   const error = searchParams.get("error");
+
+  accesstokenStore.subscribe((value) => {
+    spotify.setAccessToken(value);
+  });
+
+  let mounted = false;
 
   onMount(() => {
     if (error)
@@ -30,80 +42,55 @@
       });
 
     if (data) {
-      spotify.setAccessToken(data.access_token);
-      spotify.setRefreshToken(data.refresh_token);
+      accesstokenStore.set(data.access_token);
       $page.url.searchParams.delete("data");
       goto(`?${$page.url.searchParams.toString()}`);
     }
+
+    mounted = true;
   });
 
   let search = "";
-  $: tracks = data && search ? spotify.searchTracks(search) : null;
-
-  const getSmallestImage = (images: SpotifyApi.ImageObject[]) => {
-    return images.reduce((smallest, image) => {
-      if (image.height && image.width) {
-        if (image.height < smallest.height! && image.width < smallest.width!)
-          return image;
-      }
-      return smallest;
-    }, images[0]);
-  };
-
-  const formatArtists = (artists: SpotifyApi.ArtistObjectSimplified[]) => {
-    return artists.map((artist) => artist.name).join(", ");
-  };
+  $: tracks =
+    spotify.getAccessToken() && search ? spotify.searchTracks(search) : null;
 </script>
 
 <Title title="Playlist" />
 <main>
-  {#if !data}
-    <Login />
-  {:else}
-    <input type="text" name="search" bind:value={search} />
+  {#if mounted}
+    {#if !data && !spotify.getAccessToken()}
+      <Login />
+    {:else}
+      <input
+        type="text"
+        name="search"
+        bind:value={search}
+        placeholder="Zoeken..."
+      />
 
-    {#await tracks}
-      <p>loading...</p>
-    {:then tracks}
-      {#if !tracks?.body?.tracks?.items}
-        <p>Geen resultaten gevonden</p>
-      {:else}
-        <ul>
-          {#each tracks.body.tracks.items as track}
-            <li>
-              <img
-                src={getSmallestImage(track.album.images).url}
-                alt={track.name}
-              />
-              <div class="right">
-                <p>{track.name}</p>
-                <p class="artists">{formatArtists(track.artists)}</p>
-              </div>
-            </li>
-          {/each}
-        </ul>
-      {/if}
-    {/await}
+      {#await tracks}
+        <p>loading...</p>
+      {:then tracks}
+        {#if tracks?.body?.tracks?.items !== undefined}
+          <Tracklist tracks={tracks.body.tracks.items} {search} />
+        {/if}
+      {:catch error}
+        <Login />
+        <p>error: {error.message}</p>
+      {/await}
+    {/if}
+  {:else}
+    <p>loading...</p>
   {/if}
 </main>
 
-<style lang="scss">
-  ul {
-    li {
-      display: flex;
-
-      .right {
-        margin-left: 10px;
-
-        .artists {
-          font-size: 0.8rem;
-          color: #888;
-        }
-      }
-
-      &:not(:last-child) {
-        margin-bottom: 10px;
-      }
-    }
+<style>
+  input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
   }
 </style>
