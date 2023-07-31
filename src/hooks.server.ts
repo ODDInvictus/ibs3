@@ -5,10 +5,8 @@ import { sequence } from '@sveltejs/kit/hooks';
 import AuthentikProvider from '@auth/core/providers/authentik'
 import IBSAdapter from '$lib/server/authAdapter'
 import prisma from '$lib/server/db'
-import { getCommittees, getUser } from '$lib/server/userCache';
+import { getCommittees, getRoles, getUser } from '$lib/server/userCache';
 import { notifyDiscordError } from '$lib/server/notifications/discord';
-import { getSettings } from '$lib/server/settings';
-
 
 
 const authorization = (async ({ event, resolve }) => {
@@ -16,13 +14,13 @@ const authorization = (async ({ event, resolve }) => {
 	const session = await event.locals.getSession()
 	const user = await getUser(session)
 	const committees = await getCommittees(user)
-	const settings = await getSettings()
+	const roles = await getRoles(user, committees)
 
 	// @ts-expect-error Dit wordt geset wanneer de gebruiker inlogd, dus dit is geen probleem
 	event.locals.user = user
 	// @ts-expect-error Dit wordt geset wanneer de gebruiker inlogd, dus dit is geen probleem
 	event.locals.committees = committees
-	event.locals.settings = settings
+	event.locals.roles = roles
 
 	// If the url starts with /jobs, we don't need to check if the user is logged in
 	// This route is used by the jobs server to execute jobs
@@ -49,16 +47,20 @@ const authorization = (async ({ event, resolve }) => {
 	return result
 }) satisfies Handle
 
-const options = {
+
+const authentikOptions = {
 	clientSecret: env.IBS_CLIENT_SECRET,
 	clientId: env.IBS_CLIENT_ID,
 	issuer: env.IBS_ISSUER,
 }
 
+
 export const handle: Handle = sequence(
 	SvelteKitAuth({
 		trustHost: true,
-		providers: [AuthentikProvider(options)],
+		providers: [
+			AuthentikProvider(authentikOptions),
+		],
 		adapter: IBSAdapter(prisma),
 		secret: env.IBS_CLIENT_SECRET,
 		session: {
