@@ -18,16 +18,18 @@
 				<LogoBig />
 				<div class="spacer" />
 				<div class="buttons">
-					<button on:click={() => (selection = 'login')}>
-						<i><Login /></i>
-						Login
-					</button>
 					<button on:click={() => signIn('authentik')}>
 						<i>
 							<OAuth />
 						</i>
 						Login met Authentik
 					</button>
+
+					<button on:click={() => (selection = 'login')}>
+						<i><Login /></i>
+						Login
+					</button>
+
 					<button on:click={() => (selection = 'register')}>
 						<i>
 							<Register />
@@ -42,6 +44,7 @@
 			<div class="ibs-card">
 				{#if selection === 'login'}
 					<h1>Login</h1>
+					<p>Werkt nog niet; Gebruik Authentik</p>
 					<input name="username" type="text" placeholder="gebruikersnaam" />
 					<input name="password" type="password" placeholder="wachtwoord" />
 					<button>Login</button>
@@ -56,7 +59,7 @@
 		<footer>
 			<p>O.D.D. Invictus</p>
 			<p>
-				{env.PUBLIC_VERSION} -
+				v{env.PUBLIC_VERSION} -
 				<a href={env.PUBLIC_GITHUB_LINK + '/tree/' + env.PUBLIC_GIT_REV}>
 					({env.PUBLIC_GIT_REV_SHORT})
 				</a>
@@ -69,7 +72,7 @@
 	$padding: 2rem;
 
 	:global(body) {
-		background-color: var(--color-bg);
+		background-color: var(--color-bg-base);
 	}
 
 	main {
@@ -142,7 +145,6 @@
 		grid-row: 2;
 
 		display: flex;
-		justify-content: center;
 		align-items: center;
 
 		.ibs-card {
