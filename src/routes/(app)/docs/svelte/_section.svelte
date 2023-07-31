@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 
 	onMount(() => {
+		if (noGeneration) return;
+
 		const items = document.querySelectorAll(`.elements-${title} > *`) as NodeListOf<HTMLElement>;
 		// const code = document.querySelector(`.code-${title} code`) as HTMLElement;
 		const table = document.querySelector(`.items-${title}`) as HTMLElement;
@@ -54,28 +56,43 @@
 	}
 
 	export let title: string;
+	export let noGeneration = false;
 </script>
 
 <section>
 	<h1>{title}</h1>
 
-	<div class="elements-{title}" style="display:none;">
-		<slot />
-	</div>
+	{#if noGeneration}
+		<div class="elements-{title} no-generation">
+			<slot />
+		</div>
+	{:else}
+		<div class="elements-{title}" style="display:none;">
+			<slot />
+		</div>
 
-	<table>
-		<thead>
-			<tr>
-				<th>Code</th>
-				<th>Element</th>
-			</tr>
-		</thead>
-		<tbody class="items-{title}" />
-	</table>
+		<table>
+			<thead>
+				<tr>
+					<th>Code</th>
+					<th>Element</th>
+				</tr>
+			</thead>
+			<tbody class="items-{title}" />
+		</table>
+	{/if}
 </section>
 
 <style>
 	section {
 		margin: 1rem;
+	}
+
+	.no-generation {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 1rem;
 	}
 </style>
