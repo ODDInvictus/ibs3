@@ -1,6 +1,6 @@
 button {
 	border: none;
-	border-radius: var(--border-radius);
+	border-radius: var(--border-radius-button);
 
 	cursor: pointer;
 
@@ -22,6 +22,10 @@ button {
 
 button.btn-primary {
 	background-color: var(--color-primary);
+}
+
+button.btn-success {
+	background-color: var(--color-success);
 }
 
 button.btn-danger {
