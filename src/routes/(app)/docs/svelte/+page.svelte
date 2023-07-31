@@ -1,6 +1,19 @@
-<script>
+<script lang="ts">
 	import Title from '$lib/components/title.svelte';
+	import { toast } from '$lib/notification';
+	import { prompt } from '$lib/prompt';
+	import { confirm } from '$lib/confirm';
 	import Section from './_section.svelte';
+	import { promptSelect } from '$lib/promptSelect';
+	import { promptCheckbox } from '$lib/promptCheckbox';
+
+	function testToast(toastType: 'success' | 'danger' | 'warning' | 'info') {
+		toast({
+			title: `Dit is een ${toastType} toast!`,
+			message: 'Je kan hier allerlei dingen in zetten!',
+			type: toastType
+		});
+	}
 </script>
 
 <Title title="IBS UI toolkit" />
@@ -24,6 +37,8 @@
 	<h5>Dit is een heading in h5</h5>
 	<h6>Dit is een heading in h6</h6>
 	<p>Dit is een paragraph</p>
+
+	<a href="/docs/svelte">Dit is een anchor</a>
 </Section>
 
 <Section title="Form">
@@ -56,6 +71,75 @@
 	<input type="color" />
 
 	<input type="range" />
+</Section>
+
+<Section title="HR">
+	<hr />
+
+	<hr class="hr-light" />
+</Section>
+
+<Section title="Toasts" noGeneration>
+	<button class="btn-info" on:click={() => testToast('info')}> Klik voor info toast </button>
+	<button class="btn-danger" on:click={() => testToast('danger')}> Klik voor danger toast </button>
+	<button class="btn-warning" on:click={() => testToast('warning')}>
+		Klik voor warning toast
+	</button>
+	<button class="btn-success" on:click={() => testToast('success')}>
+		Klik voor success toast
+	</button>
+</Section>
+
+<Section title="Confirm, Prompt, Select, etc." noGeneration>
+	<button
+		class="btn-info"
+		on:click={() =>
+			prompt({
+				title: 'Dit is een prompt',
+				message: 'Dit is een prompt message',
+				cb: async () => {}
+			})}
+	>
+		Klik hier voor prompt()
+	</button>
+
+	<button
+		class="btn-info"
+		on:click={() =>
+			confirm({
+				title: 'Dit is een confirm',
+				message: 'Dit is een confirm message',
+				cb: async () => {}
+			})}
+	>
+		Klik hier voor confirm()
+	</button>
+
+	<button
+		class="btn-info"
+		on:click={() =>
+			promptSelect({
+				title: 'Dit is een promptSelect',
+				message: 'Dit is een promptSelect message',
+				options: ['option 1', 'option 2', 'option 3'],
+				cb: async () => {}
+			})}
+	>
+		Klik hier voor promptSelect()
+	</button>
+
+	<button
+		class="btn-info"
+		on:click={() =>
+			promptCheckbox({
+				title: 'Dit is een promptCheckbox',
+				message: 'Dit is een promptCheckbox message',
+				value: true,
+				cb: async () => {}
+			})}
+	>
+		Klik hier voor promptCheckbox()
+	</button>
 </Section>
 
 <hr />
