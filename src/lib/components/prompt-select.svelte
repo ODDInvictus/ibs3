@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { promptSelectStore } from '$lib/promptSelect';
 
-	let value: string = '';
+	const opts = $promptSelectStore.options;
+
+	let value: string =
+		opts.length > 0 ? (typeof opts[0] === 'string' ? opts[0] : opts[0].value) : '';
 
 	$: {
 		const prompt = $promptSelectStore;
@@ -40,7 +43,7 @@
 	</select>
 
 	<div class="buttons">
-		<button class="ok" on:click={() => action(true)}>Opslaan</button>
+		<button class="btn-secondary ok" on:click={() => action(true)}>Opslaan</button>
 		<button on:click={() => action(false)}>Annuleren</button>
 	</div>
 </dialog>
@@ -56,9 +59,9 @@
 		transform: translate(-50%, -50%);
 		min-width: 25rem;
 
-		background: var(--primary-color);
-		color: white;
-		border-radius: $border;
+		background: var(--color-primary);
+		color: var(--color-text-light);
+		border-radius: var(--border-radius);
 		padding: 2rem;
 
 		z-index: 1000;
@@ -67,13 +70,15 @@
 	select {
 		width: 100%;
 		padding: 0.5rem;
-		border-radius: $border;
 		border: none;
+		color: var(--color-text-light);
+	}
+
+	option {
+		color: var(--color-text);
 	}
 
 	.ok {
-		background: var(--secondary-color);
-		border-radius: $border;
 		padding: 0.5rem;
 		width: 8rem;
 	}

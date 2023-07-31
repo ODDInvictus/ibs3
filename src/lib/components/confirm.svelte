@@ -22,7 +22,7 @@
 	<p>{$confirmStore.message}</p>
 
 	<div class="buttons">
-		<button class="ok" on:click={() => action(true)}>OK</button>
+		<button class="btn-secondary ok" on:click={() => action(true)}>OK</button>
 		<button on:click={() => action(false)}>Annuleren</button>
 	</div>
 </dialog>
@@ -38,9 +38,11 @@
 		transform: translate(-50%, -50%);
 		min-width: 25rem;
 
-		background: var(--primary-color);
-		color: white;
-		border-radius: $border;
+		background: var(--color-primary);
+		color: var(--color-text-light);
+		border-radius: var(--border-radius);
+		border: none;
+
 		padding: 2rem;
 
 		z-index: 1000;
@@ -54,8 +56,6 @@
 	}
 
 	.ok {
-		background: var(--secondary-color);
-		border-radius: $border;
 		padding: 0.5rem;
 		width: 4rem;
 	}

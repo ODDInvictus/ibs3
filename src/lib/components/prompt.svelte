@@ -29,13 +29,12 @@
 	<input type="text" bind:value />
 
 	<div class="buttons">
-		<button class="ok" on:click={() => action(true)}>Opslaan</button>
+		<button class="ok btn-secondary" on:click={() => action(true)}>Opslaan</button>
 		<button on:click={() => action(false)}>Annuleren</button>
 	</div>
 </dialog>
 
 <style lang="scss">
-	$border: 10px;
 	$padding: 1rem;
 
 	dialog {
@@ -45,10 +44,12 @@
 		transform: translate(-50%, -50%);
 		min-width: 25rem;
 
-		background: var(--primary-color);
-		color: white;
-		border-radius: $border;
+		background: var(--color-primary);
+		color: var(--color-text-light);
+		border-radius: var(--border-radius);
 		padding: 2rem;
+
+		border: none;
 
 		z-index: 1000;
 	}
@@ -56,13 +57,10 @@
 	input {
 		width: 100%;
 		padding: 0.5rem;
-		border-radius: $border;
 		border: none;
 	}
 
 	.ok {
-		background: var(--secondary-color);
-		border-radius: $border;
 		padding: 0.5rem;
 		width: 8rem;
 	}
