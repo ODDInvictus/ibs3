@@ -107,7 +107,7 @@
 				border-bottom-left-radius: $border-radius;
 				border-bottom-right-radius: $border-radius;
 
-				background-color: var(--card-color);
+				background-color: var(--color-card);
 
 				position: absolute;
 				z-index: 1;
