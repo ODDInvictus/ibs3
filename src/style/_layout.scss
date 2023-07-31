@@ -1,6 +1,11 @@
 hr {
 	margin: 0.5rem;
-	background-color: var(--color-hr);
+	border: none;
+	border-top: 1px solid var(--color-hr);
+}
+
+hr.hr-light {
+	border-top: 1px solid var(--color-hr-light);
 }
 
 .ibs-card {
@@ -11,4 +16,91 @@ hr {
 	border-radius: var(--border-radius);
 	box-shadow: 0 0 0.5rem 0 var(--color-shadow);
 	padding: 2rem;
+}
+
+.layout--main {
+	position: relative;
+	width: 100vw;
+	height: 100vh;
+	z-index: 0;
+
+	overflow: hidden;
+
+	background-color: var(--color-bg-base);
+	scrollbar-color: var(--color-scrollbar) var(--color-bg-base);
+	scrollbar-width: thin;
+
+	display: grid;
+	grid-template-areas: 'nav top' 'nav main';
+	grid-template-columns: calc(var(--navbar-width) + 2 * var(--navbar-padding)) 1fr;
+	grid-template-rows: var(--topbar-height) 1fr;
+
+	gap: 2rem;
+}
+
+.layout--main::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+.layout--main::-webkit-scrollbar-thumb {
+	background: var(--color-scrollbar) var(--color-bg-base);
+}
+
+.layout--overlay {
+	position: absolute;
+	z-index: 1000;
+}
+
+.layout--toast {
+	bottom: 2rem;
+	right: 2rem;
+}
+
+.layout--stripe {
+	z-index: -1;
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	background-color: var(--color-primary);
+	height: var(--stripe-height);
+	width: 100vw;
+}
+
+.layout--navbar {
+	z-index: 10;
+	grid-area: nav;
+	height: calc(100vh - 2 * var(--navbar-margin) - 2 * var(--navbar-padding));
+	width: var(--navbar-width);
+	background-color: var(--color-bg);
+	color: var(--color-text);
+
+	border-radius: var(--border-radius);
+	margin: var(--navbar-margin);
+	padding: var(--navbar-padding);
+
+	box-shadow: 0 0 1rem 0 var(--color-box-shadow);
+}
+
+.layout--topbar {
+	z-index: 10;
+	grid-area: top;
+	height: var(--topbar-height);
+	color: var(--color-text-light);
+}
+
+.layout--container {
+	z-index: 10;
+
+	grid-area: main;
+
+	background-color: var(--color-bg);
+	border-radius: var(--border-radius);
+	overflow-x: hidden;
+	overflow-y: scroll;
+
+	margin-bottom: var(--container-padding);
+	margin-right: var(--container-padding);
+
+	padding: var(--container-padding);
 }

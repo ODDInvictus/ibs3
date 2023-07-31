@@ -10,8 +10,8 @@
 
 	--color-primary-transparant: rgba(85, 27, 138, 0.1);
 
-	--color-danger: red;
-	--color-warning: yellow;
+	--color-danger: #830000;
+	--color-warning: #f7e733;
 	--color-success: var(--color-primary);
 	--color-info: var(--color-tertiary);
 
@@ -19,13 +19,18 @@
 	--color-text-light: #f0f0f0;
 	--color-text-muted: #5d656b;
 
-	--color-bg: #f4eeff;
+	--color-bg-base: #f4eeff;
+	--color-bg: #ffffff;
+
 	--color-hr: #e0e0e0;
+	--color-hr-light: #ffffff;
 	--color-card: #ffffff;
 	--color-box-shadow: rgba(0, 0, 0, 0.1);
 
 	--color-form-border: var(--color-hr);
 	--color-form-focus: var(--color-primary);
+
+	--color-scrollbar: var(--color-primary);
 
 	/*
 		Font
@@ -42,7 +47,19 @@
 	--form-box-shadow: 0 0 0 1px var(--color-primary-transparant);
 
 	/*
+		Layout
+	*/
+	--navbar-width: 200px;
+	--navbar-padding: 1rem;
+	--navbar-margin: 1rem;
+	--topbar-height: 50px;
+	--container-padding: 1rem;
+	--layout-gap: 2rem;
+	--stripe-height: 350px;
+
+	/*
 		Rest
 	*/
-	--border-radius: 20px;
+	--border-radius-button: 20px;
+	--border-radius: 10px;
 }
