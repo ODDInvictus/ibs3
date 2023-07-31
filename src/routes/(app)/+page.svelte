@@ -2,57 +2,8 @@
 	import { page } from '$app/stores';
 	import { env } from '$env/dynamic/public';
 	import knoppers from '$lib/assets/knoppers.png';
+	import { toast } from '$lib/notification';
 	import type { Snapshot } from './$types';
-
-	function getGreeting() {
-		const hour = new Date().getHours();
-		if (hour < 6) {
-			return 'Goedenacht';
-		} else if (hour < 12) {
-			return 'Goedemorgen';
-		} else if (hour < 18) {
-			return 'Goedemiddag';
-		} else {
-			return 'Goedenavond';
-		}
-	}
-
-	const words = [
-		'Weezer',
-		'CaptainSparklez',
-		'Minecraft',
-		'Maarten Marcusse',
-		'Diederik',
-		'Naut',
-		'Bier',
-		'Invictus',
-		'Coldplay',
-		'JoyRadio',
-		'Kerst',
-		'Abstracte Algebra',
-		'KB45',
-		'http://localhost:5173',
-		'marktplaats.nl',
-		'kaas.nl',
-		'de ultieme kaasbeleving',
-		'discord',
-		'docker',
-		'phpMyAdmin',
-		'een emmer van de trap tyfen',
-		'de frituurpan',
-		'zijn fiets',
-		'de vestingbar',
-		'kunnen fietsen',
-		'een koe',
-		'de SmartXP',
-		'130 rijden op de vluchtstrook',
-		'de mac',
-		'de mek'
-	];
-
-	function getRandomWord() {
-		return words[Math.floor(Math.random() * words.length)];
-	}
 
 	/* Cookie clicker */
 	let isClicking = false;
@@ -123,7 +74,7 @@
 	<title>Invictus Bier Systeem</title>
 </svelte:head>
 
-<h1>{getGreeting()}, {$page.data.user.firstName}!</h1>
+<h1>{$page.data.greeting}</h1>
 
 <p>Welkom bij Invictus Bier Systeem</p>
 
@@ -132,7 +83,7 @@
 <div id="quote">
 	<blockquote>
 		"Ik ben toch wel zat ... ik zag dit toch wel aan voor Weezer" - Naut <i
-			>over {getRandomWord()}</i
+			>over {$page.data.nautWord}</i
 		>
 	</blockquote>
 </div>

@@ -3,6 +3,38 @@ import { getUser } from '$lib/server/userCache'
 import { fail } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types';
 
+const words = [
+  'Weezer',
+  'CaptainSparklez',
+  'Minecraft',
+  'Diederik',
+  'Naut',
+  'Bier',
+  'Invictus',
+  'Coldplay',
+  'JoyRadio',
+  'Kerst',
+  'Abstracte Algebra',
+  'KB45',
+  'http://localhost:5173',
+  'marktplaats.nl',
+  'kaas.nl',
+  'de ultieme kaasbeleving',
+  'discord',
+  'docker',
+  'phpMyAdmin',
+  'een emmer van de trap tyfen',
+  'de frituurpan',
+  'zijn fiets',
+  'de vestingbar',
+  'kunnen fietsen',
+  'een koe',
+  'de SmartXP',
+  '130 rijden op de vluchtstrook',
+  'de mac',
+  'de mek'
+];
+
 export const load = (async ({ locals }) => {
   const dayInt = new Date().getDay();
 
@@ -61,9 +93,30 @@ export const load = (async ({ locals }) => {
     }
   }
 
+  const getGreeting = () => {
+    let word = 'Goedenavond';
+
+    const hour = new Date().getHours();
+    if (hour < 6) {
+      word = 'Goedenacht';
+    } else if (hour < 12) {
+      word = 'Goedemorgen';
+    } else if (hour < 18) {
+      word = 'Goedemiddag';
+    }
+
+    return `${word}, ${locals.user.firstName}!`;
+  }
+
+  const nautWord = () => {
+    return words[Math.floor(Math.random() * words.length)];
+  }
+
   return {
     member: getMemberOfTheDay(),
     clicks: getTotalClicks(),
     topclicker: getTopClicker(),
+    nautWord: nautWord(),
+    greeting: getGreeting()
   }
 }) satisfies PageServerLoad;
