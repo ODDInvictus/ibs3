@@ -9,7 +9,7 @@
 	import UsersGroup from '~icons/tabler/users-group';
 	import ExternalLink from '~icons/tabler/external-link';
 	import AccessibleOff from '~icons/tabler/accessible-off';
-	import UserCard from './UserCard.svelte';
+	import UserCard from './_user-card.svelte';
 	import { generateICal, stripMarkdown } from '$lib/utils';
 	import { toast } from '$lib/notification';
 	import { markdown } from '$lib/utils';
@@ -235,7 +235,7 @@
 			</p>
 
 			<p class="ibs-card--content">
-				{@html activity.description}
+				{@html markdown(activity.description)}
 			</p>
 		</div>
 
