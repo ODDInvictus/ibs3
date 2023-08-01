@@ -1,13 +1,47 @@
 table {
 	width: 100%;
-	display: table;
 	border-collapse: collapse;
+
+	&.equal-width {
+		table-layout: fixed;
+	}
+
+	&.striped {
+		tr:nth-child(even) {
+			background-color: var(--color-table-stripe);
+		}
+	}
+
+	&.small {
+		td,
+		th {
+			padding: 4px;
+		}
+	}
+}
+
+tr {
+	&.highlight {
+		background-color: var(--color-table-highlight);
+		color: var(--color-text-light);
+	}
+
+	&.highlight:hover {
+		background-color: var(--color-table-highlight-focus);
+	}
+}
+
+tbody {
+	tr {
+		&:hover {
+			background-color: var(--color-table-focus);
+		}
+	}
 }
 
 th,
 td {
 	padding: 8px;
-	text-align: left;
 	border-bottom: 1px solid #ddd;
 	text-align: center;
 }

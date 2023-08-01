@@ -76,7 +76,7 @@
 			<slot />
 		</div>
 
-		<table>
+		<table class="equal-width">
 			<thead>
 				<tr>
 					<th>Code</th>

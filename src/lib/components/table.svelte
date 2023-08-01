@@ -34,7 +34,7 @@
 				{#if actions && actions.length > 0}
 					<td class="actions">
 						{#each actions as action}
-							<button on:click={() => action.action(row[0])}>
+							<button class="btn-a" on:click={() => action.action(row[0])}>
 								{#if action.type === 'edit'}
 									<div title={action.title ?? 'Bewerken'}>
 										<Edit />

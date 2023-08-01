@@ -8,6 +8,7 @@
 	import InformationCircle from '~icons/tabler/info-circle';
 	import { promptCheckbox } from '$lib/promptCheckbox';
 	import { onMount } from 'svelte';
+	import Table from '$lib/components/table.svelte';
 
 	function testToast(toastType: 'success' | 'danger' | 'warning' | 'info') {
 		toast({
@@ -30,12 +31,132 @@
 	});
 </script>
 
-<Title title="IBS UI toolkit" />
+<Title
+	title="IBS UI toolkit"
+	underTitle="Gegenereerde documentatie voor onze UI components. Deze pagina zal niet zo best werken op mobiel"
+/>
 
 <div class="table-of-contents">
 	<p>Spring gelijk naar:</p>
 	{@html contents}
 </div>
+
+<Section title="Tables">
+	<table class="small">
+		<thead>
+			<tr>
+				<th>Naam</th>
+				<th>Strafbakken</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Niels</td>
+				<td>38</td>
+			</tr>
+			<tr class="highlight">
+				<td>Naut</td>
+				<td>50</td>
+			</tr>
+			<tr>
+				<td>Daniel</td>
+				<td>12</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table class="equal-width striped">
+		<thead>
+			<tr>
+				<th>Lorem</th>
+				<th>Ipsum</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td
+					>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur rem sit harum
+					veritatis illum provident molestiae, quia earum inventore alias dicta corporis officiis
+					consectetur ratione sapiente eos temporibus adipisci quis?</td
+				>
+				<td>38</td>
+			</tr>
+			<tr>
+				<td>nog een cel</td>
+				<td>38</td>
+			</tr>
+			<tr>
+				<td>nog een cel</td>
+				<td>38</td>
+			</tr>
+		</tbody>
+	</table>
+</Section>
+
+<Section title="Table (extras)" noGeneration>
+	<h2>Table opties</h2>
+	<p>Op de tabel kan je een aantal dingen doen</p>
+	<table class="equal-width striped">
+		<thead>
+			<tr>
+				<th>Class</th>
+				<th>Element</th>
+				<th>Functie</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th><code>.equal-width</code></th>
+				<td>table</td>
+				<td>Maakt alle kolommen even breed</td>
+			</tr>
+
+			<tr>
+				<th><code>.striped</code></th>
+				<td>table</td>
+				<td>Maakt de rijen om en om een beetje donkerder</td>
+			</tr>
+
+			<tr>
+				<th><code>.small</code></th>
+				<td>table</td>
+				<td>Halveert de cel hoogte</td>
+			</tr>
+
+			<tr>
+				<th><code>.highlight</code></th>
+				<td>tr</td>
+				<td>Laat een rij eruit springen</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2>Table component</h2>
+	<p>Hiermee kan je een standaard tabel genereren, inclusief actie icoontjes</p>
+
+	Kijk even in<code>$lib/components/Table.svelte</code> hoe je dit moet gebruiken
+	<Table
+		tableId="huts"
+		rows={[
+			['1', 'Niels', '38'],
+			['2', 'Naut', '50'],
+			['3', 'Daniel', '12']
+		]}
+		actions={[
+			{
+				type: 'edit',
+				action: () => {},
+				title: 'Bewerken'
+			},
+			{
+				type: 'delete',
+				action: () => {},
+				title: 'Verwijderen'
+			}
+		]}
+		columns={['Naam', 'Strafbakken', 'Acties']}
+	/>
+</Section>
 
 <Section title="Cards">
 	<div class="ibs-card"><p class="ibs-card--content">Meest simpele card</p></div>
