@@ -10,25 +10,31 @@
 
 		items.forEach((item) => {
 			removeClasses(item);
-
 			// if the item has children, add newlines to all children
 			if (item.children.length > 0) {
 				item.innerHTML = item.innerHTML.replace(/</g, '\n<');
 
-				// also remove classes for children
 				item.querySelectorAll('*').forEach((child) => {
 					removeClasses(child);
 				});
 			}
 
 			const html = item.outerHTML;
+			const svgRegex = new RegExp(/<svg.*<\/svg>/gms);
+			const commentRegex = new RegExp(/\<\!\-\-.*\-\-\>/gms);
+			const svelteRegex1 = new RegExp(/data-svelte.*\"/gm);
+
+			let text = html;
+			text = text.replaceAll(svelteRegex1, '');
+			text = text.replaceAll(svgRegex, '"icon"');
+			text = text.replaceAll(commentRegex, '');
 
 			const tr = document.createElement('tr');
 			const tdCode = document.createElement('td');
 			const tdElement = document.createElement('td');
 			const code = document.createElement('code');
 
-			code.innerText = html;
+			code.innerText = text;
 			tdCode.appendChild(code);
 
 			tdElement.innerHTML = html;
@@ -42,9 +48,8 @@
 
 	function removeClasses(element: Element) {
 		element.classList.forEach((c) => {
-			// Remove all classes that begin with s- or svelte- or data-svelte
 			console.log(c);
-			if (c.startsWith('s-') || c.includes('svelte')) {
+			if (c.startsWith('s-')) {
 				element.classList.remove(c);
 			}
 		});
@@ -59,7 +64,7 @@
 	export let noGeneration = false;
 </script>
 
-<section>
+<section id={title}>
 	<h1>{title}</h1>
 
 	{#if noGeneration}
@@ -81,11 +86,17 @@
 			<tbody class="items-{title}" />
 		</table>
 	{/if}
+	<td style="display: none;" />
 </section>
 
 <style>
 	section {
 		margin: 1rem;
+	}
+
+	th,
+	td {
+		width: 50%;
 	}
 
 	.no-generation {
