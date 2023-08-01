@@ -50,6 +50,7 @@
 					<button>Login</button>
 				{:else if selection === 'register'}
 					<h1>Registreer</h1>
+					<p>Gebruik de code die je hebt gekregen</p>
 					<input name="username" type="text" placeholder="gebruikersnaam" />
 					<input name="code" type="text" placeholder="code" />
 					<button>Registreer</button>
