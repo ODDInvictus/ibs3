@@ -5,7 +5,9 @@
 	import { confirm } from '$lib/confirm';
 	import Section from './_section.svelte';
 	import { promptSelect } from '$lib/promptSelect';
+	import InformationCircle from '~icons/tabler/info-circle';
 	import { promptCheckbox } from '$lib/promptCheckbox';
+	import { onMount } from 'svelte';
 
 	function testToast(toastType: 'success' | 'danger' | 'warning' | 'info') {
 		toast({
@@ -14,9 +16,77 @@
 			type: toastType
 		});
 	}
+
+	let contents = '';
+
+	onMount(() => {
+		const sections = document.querySelectorAll('section');
+
+		sections.forEach((section) => {
+			contents += `
+				<a href="#${section.id}">${section.id}</a>
+			`;
+		});
+	});
 </script>
 
 <Title title="IBS UI toolkit" />
+
+<div class="table-of-contents">
+	<p>Spring gelijk naar:</p>
+	{@html contents}
+</div>
+
+<Section title="Cards">
+	<div class="ibs-card"><p class="ibs-card--content">Meest simpele card</p></div>
+
+	<div class="ibs-card outline"><p class="ibs-card--content">Card met outline</p></div>
+
+	<div class="ibs-card">
+		<img class="ibs-card--image" src="https://picsum.photos/500/200" alt="plaatje" />
+		<h2 class="ibs-card--title">Card met plaatje en tekst</h2>
+		<p class="ibs-card--content">
+			Het is het best als je plaatje 5:2 is, anders wordt er een stuk afgeknipt. Lorem ipsum dolor
+			sit amet consectetur adipisicing elit. Rem fugit quis, officiis perferendis voluptates saepe
+			sapiente voluptas ea dolores cumque omnis vel quibusdam,
+		</p>
+	</div>
+
+	<div class="ibs-card outline">
+		<h2 class="ibs-card--title">Card met tekst en knopjes!</h2>
+		<div class="ibs-card--content">
+			<p>Iets wat handig is om te onthouden is dat deze subclasses niet verplicht zijn.</p>
+			<br />
+			<p>
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem fugit quis, officiis
+				perferendis voluptates saepe sapiente voluptas ea dolores cumque omnis vel quibusdam,
+			</p>
+		</div>
+
+		<div class="ibs-card--buttons">
+			<button> Actie 1 </button>
+			<button class="btn-secondary">Actie 2</button>
+		</div>
+	</div>
+
+	<div class="ibs-card outline">
+		<img class="ibs-card--image" src="https://picsum.photos/500/200" alt="plaatje" />
+		<h2 class="ibs-card--title">Card met een tabel</h2>
+
+		<p class="ibs-card--row">
+			<i>
+				<InformationCircle />
+			</i>
+			Met icon
+		</p>
+		<p class="ibs-card--row">Zonder icon</p>
+		<p class="ibs-card--row">Zonder icon</p>
+
+		<p class="ibs-card--content">
+			Gebruik ook altijd content als je rows gebruikt! Daarnaast, row komt eerst
+		</p>
+	</div>
+</Section>
 
 <Section title="Buttons">
 	<button> Button </button>
@@ -25,6 +95,7 @@
 	<button class="btn-danger"> Danger button </button>
 	<button class="btn-success"> Success button </button>
 	<button class="btn-secondary"> Secondary button </button>
+	<button class="btn-a"> Button dat eruit ziet als een anchor tag </button>
 </Section>
 
 <hr />
@@ -143,3 +214,10 @@
 </Section>
 
 <hr />
+
+<style>
+	.table-of-contents {
+		display: flex;
+		flex-direction: column;
+	}
+</style>
