@@ -17,7 +17,7 @@
 	export let tableId = 'custom-table';
 </script>
 
-<table id={tableId}>
+<table id={tableId} class={$$props.class}>
 	<thead>
 		<tr>
 			{#each columns as column}
