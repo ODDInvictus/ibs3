@@ -70,10 +70,6 @@ export const getRoles = async (user: User | null, committees: Committee[] | null
 		return UserRolesEmpty
 	}
 
-	if (!committees) {
-		return UserRolesEmpty
-	}
-
 	const token = user.ldapId + '_roles'
 
 	if (cache.has(token)) {
