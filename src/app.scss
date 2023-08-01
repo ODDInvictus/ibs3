@@ -1,6 +1,6 @@
 @use './style/variables';
-@use './style/typography';
 @use './style/layout';
+@use './style/components/typography';
 @use './style/components/button';
 @use './style/components/table';
 @use './style/components/form';
