@@ -10,7 +10,7 @@
 	import ExternalLink from '~icons/tabler/external-link';
 	import AccessibleOff from '~icons/tabler/accessible-off';
 	import UserCard from './UserCard.svelte';
-	import { generateICal } from '$lib/utils';
+	import { generateICal, stripMarkdown } from '$lib/utils';
 	import { toast } from '$lib/notification';
 	import { markdown } from '$lib/utils';
 	import Title from '$lib/components/title.svelte';
@@ -37,6 +37,8 @@
 	$: notBij = attending
 		.map((a: any) => a.user)
 		.filter((u: any) => !bij.includes(u) && !unsure.includes(u));
+
+	const nameWithoutMarkdown = stripMarkdown(activity.name);
 
 	function formatTime(time: string) {
 		const date = new Date(time);
@@ -150,10 +152,10 @@
 
 		const uri = new URL('https://calendar.google.com/calendar/render');
 		const search = new URLSearchParams({
-			text: activity.name,
+			text: nameWithoutMarkdown,
 			action: 'TEMPLATE',
 			ctz: 'Europe/Amsterdam',
-			details,
+			details: stripMarkdown(details),
 			location: activity.location?.name ?? 'Locatie nog onbekend',
 			sprop: `name:{{Invictus Bier Systeem}},website:${activityUrl}`,
 			add: bij.map((a: any) => a.email).join(','),
@@ -167,18 +169,16 @@
 </script>
 
 <div>
-	<div id="title">
-		<Title shortTitle={activity.name}>
-			<h1>{@html markdown(activity.name)}</h1>
-		</Title>
+	<div class="title">
+		<Title markdown title={markdown(activity.name) ?? activity.name} shortTitle={activity.name} />
 	</div>
 
 	<div class="cols">
 		<div class="ibs-card outline">
 			<img
 				class="ibs-card--image"
-				alt={activity.name}
-				src={env.PUBLIC_UPLOAD_URL + 'activities/' + activity.image ?? 'activiteit-0-logo.png'}
+				alt={nameWithoutMarkdown}
+				src={env.PUBLIC_UPLOAD_URL + 'activities/' + (activity.image ?? 'activiteit-0-logo.png')}
 			/>
 
 			<h2 class="ibs-card--title">{@html markdown(activity.name)}</h2>
@@ -239,24 +239,15 @@
 			</p>
 		</div>
 
-		<div id="right" class="ibs-card outline col">
-			<h2>Wie komen er allemaal?</h2>
+		<div class="ibs-card outline" id="right">
+			<h2 class="ibs-card--title">Wie komen er allemaal?</h2>
 
-			<hr />
-
-			<div id="buttons">
-				<button on:click={async () => await setAttending(true)} id="bij-button">Ik ben 🐝!</button>
-
-				<hr />
-
-				<button on:click={async () => await setAttending(false)} id="nietbij-button"
-					>Ik ben niet 🐝</button
-				>
+			<div class="ibs-card--buttons top">
+				<button on:click={async () => await setAttending(true)}>Ik ben 🐝</button>
+				<button on:click={async () => await setAttending(false)}>Ik ben niet 🐝</button>
 			</div>
 
-			<hr />
-
-			<div id="users">
+			<div class="ibs-card--content users">
 				{#each bij as user}
 					<UserCard status="positive" {user} />
 				{/each}
@@ -276,8 +267,8 @@
 	$gap: 0.5rem;
 	$gap-side: 2rem;
 
-	@media (max-width: 640px) {
-		#title {
+	@media (max-width: 600px) {
+		.title {
 			display: none;
 		}
 	}
@@ -288,6 +279,18 @@
 		grid-auto-rows: auto;
 		margin: 0 $gap-side;
 
+		& > .ibs-card {
+			display: flex;
+			flex-direction: column;
+
+			margin: 0 $gap;
+			@media (max-width: 640px) {
+				margin: 0;
+				margin-bottom: $gap;
+				width: 90vw;
+			}
+		}
+
 		@media (max-width: 640px) {
 			grid-template-columns: 1fr;
 			margin: 0;
@@ -295,110 +298,18 @@
 		}
 	}
 
-	.col {
-		display: flex;
-		flex-direction: column;
-
-		margin: $gap;
-
-		@media (max-width: 640px) {
-			margin: 0;
-			margin-bottom: $gap;
-			width: 90vw;
-		}
-	}
-
-	#left {
-		justify-content: flex-start;
-
-		h2,
-		p,
-		.row,
-		button {
-			padding-left: 1rem;
-		}
-
-		a,
-		button {
-			color: var(--link-color);
-		}
-
-		h2 {
-			padding-top: 0.5rem;
-			padding-bottom: 0.5rem;
-		}
-
-		.row {
-			display: flex;
-			align-items: center;
-			padding-bottom: 0.25rem;
-			padding-top: 0.25rem;
-		}
-
-		#description {
-			margin: 0.5rem 1rem;
-		}
-
-		img {
-			width: 100%;
-			object-fit: cover;
-			max-height: 200px;
-			border-top-left-radius: $border-radius;
-			border-top-right-radius: $border-radius;
-		}
-
-		hr {
-			width: 100%;
-			margin: 0.2rem;
-		}
-	}
-
 	#right {
 		align-items: center;
 
-		h2 {
-			padding-bottom: 0.5rem;
-		}
-
-		hr {
-			width: 100%;
-			padding: 0;
-			margin: 0;
-		}
-
-		#users {
+		.users {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
-			width: 90%;
 			margin: $gap auto;
 
-			@media (max-width: 640px) {
+			@media (max-width: 600px) {
 				grid-template-columns: 1fr;
 				width: 90%;
 			}
 		}
-
-		#buttons {
-			display: grid;
-			grid-template-columns: 1fr 1px 1fr;
-			width: 100%;
-
-			hr {
-				z-index: 1;
-				width: 1px;
-				padding: 20px 0;
-				margin: 0;
-				height: 100%;
-				background-color: var(--seperator-color);
-			}
-		}
-	}
-
-	h1 {
-		text-align: center;
-	}
-
-	hr {
-		margin: var(--hr-margin);
 	}
 </style>
