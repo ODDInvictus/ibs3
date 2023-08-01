@@ -10,8 +10,8 @@ import markdownItIns from 'markdown-it-ins';
 import markdownItEmojis from 'markdown-it-emoji';
 // @ts-expect-error Geen types
 import markdownItArrow from 'markdown-it-smartarrows'
-// @ts-expect-error Geen types
 import markdownItKbd from 'markdown-it-kbd';
+import markdownItPlainText from 'markdown-it-plain-text'
 
 const md = new markdownIt({
   linkify: true,
@@ -23,6 +23,7 @@ const md = new markdownIt({
   .use(markdownItEmojis)
   .use(markdownItArrow)
   .use(markdownItKbd)
+  .use(markdownItPlainText)
   .disable(['image']);
 
 export function markdown(text: string | null | undefined): string | null {
@@ -31,6 +32,12 @@ export function markdown(text: string | null | undefined): string | null {
     disallowedTagsMode: 'escape',
     allowedTags: ['em', 'strong', 's', 'br', 'pre', 'code', 'a', 'sup', 'sub', 'ins', 'span', 'kbd']
   });
+}
+
+export function stripMarkdown(text: string | undefined) {
+  if (text === null || text === undefined) return null;
+  md.render(text)
+  return (md as any).plainText
 }
 
 // Currently in dark mode?
