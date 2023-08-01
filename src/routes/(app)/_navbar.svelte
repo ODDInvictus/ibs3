@@ -15,9 +15,9 @@
 </script>
 
 <nav class="layout--navbar">
-	<div class="logo">
+	<a href="/" class="logo">
 		<Logo />
-	</div>
+	</a>
 
 	<hr />
 
