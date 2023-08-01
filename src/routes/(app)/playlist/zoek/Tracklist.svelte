@@ -1,9 +1,14 @@
 <script lang="ts">
   import Pause from "~icons/tabler/pause";
   import Play from "~icons/tabler/play";
+  import Heart from "~icons/tabler/heart";
+  import HeartFilled from "~icons/tabler/heart-filled";
+	import { toast } from "$lib/notification";
+
 
   export let search: string;
   export let tracks: SpotifyApi.TrackObjectFull[];
+  export let liked: string[];
 
   const getSmallestImage = (images: SpotifyApi.ImageObject[]) => {
     return images.reduce((smallest, image) => {
@@ -34,6 +39,35 @@
     if (audioPlayer) audioPlayer.pause();
     previewSrc = "";
   };
+
+  const toggleLike = async (track: SpotifyApi.TrackObjectFull) => {
+    let isLiked = false;
+    if (liked.includes(track.id)) {
+      liked = liked.filter((id) => id !== track.id);
+    } else {
+      liked = [...liked, track.id];
+      isLiked = true;
+    }
+
+    try {
+      await fetch("/playlist", {
+        method: "POST",
+        body: JSON.stringify({
+          trackId: track.id,
+          liked: isLiked,
+        }),
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        message: error,
+        type: "error",
+      });
+    }
+  };
+
+  $: console.log(liked);
+  $: console.log(tracks[0])
 </script>
 
 <audio src={previewSrc} bind:this={audioPlayer} />
@@ -43,6 +77,17 @@
   {/if}
   {#each tracks as track}
     <li>
+      <!-- svelte-ignore a11y-click-events-have-key-events -->
+      <!-- svelte-ignore a11y-no-static-element-interactions -->
+      <div on:click={ async () => {
+        await toggleLike(track);
+      }} class="like">
+        {#if liked.includes(track.id)}
+          <HeartFilled color="#1db954" />
+        {:else}
+          <Heart />
+        {/if}
+      </div>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
       <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -68,16 +113,16 @@
         {#if track.preview_url}
           {#if (hovering === track.preview_url && (previewSrc !== track.preview_url || audioPlayer.paused)) || (previewSrc === track.preview_url && audioPlayer.paused)}
             <Play
-              style={"position: absolute; top: 19px; left: 19px; height: 26px; width: 26px;"}
+              style="position: absolute; top: 19px; left: 19px; height: 26px; width: 26px;"
             />
           {:else if previewSrc === track.preview_url && !audioPlayer.paused}
             <Pause
-              style={"position: absolute; top: 19px; left: 19px; height: 26px; width: 26px;"}
+              style="position: absolute; top: 19px; left: 19px; height: 26px; width: 26px;"
             />
           {/if}
         {/if}
       </div>
-      <div class="right">
+      <div>
         <p>{track.name}</p>
         <p class="artists">{formatArtists(track.artists)}</p>
       </div>
@@ -91,8 +136,27 @@
   ul {
     li {
       display: flex;
+      align-items: center;
+      gap: 20px;
 
+      .like {
+        $user-select: none;
+        -webkit-user-select: $user-select;
+        -khtml-user-select: $user-select;
+        -moz-user-select: $user-select;
+        -o-user-select: $user-select;
+        user-select: $user-select;
+        
+        transform-origin: center;
+
+        &:active {
+          transform: scale(1.15);
+        }
+      }
+
+      
       img {
+        -webkit-tap-highlight-color: none;
         height: 64px;
         width: 64px;
       }
@@ -111,13 +175,9 @@
         }
       }
 
-      .right {
-        margin-left: 10px;
-
-        .artists {
-          font-size: 0.8rem;
-          color: #888;
-        }
+      .artists {
+        font-size: 0.8rem;
+        color: #888;
       }
 
       &:not(:last-child) {
