@@ -73,6 +73,7 @@
 <Title title="Instellingen" underTitle="Op deze pagina kan je je ibs voorkeuren veranderen." />
 
 <Table
+	class="striped"
 	tableId="settings-table"
 	columns={['Voorkeur', 'Waarde', 'Acties']}
 	rows={preferences.map((p) => {

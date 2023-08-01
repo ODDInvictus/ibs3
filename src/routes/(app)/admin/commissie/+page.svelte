@@ -15,7 +15,7 @@
 
 <a href="/admin/commissie/nieuw">Commissie aanmaken</a>
 
-<table>
+<table class="striped">
 	<thead>
 		<tr>
 			<td class="name">Naam</td>

@@ -76,7 +76,7 @@
 </p>
 
 <div class="table-wrapper">
-	<table>
+	<table class="small">
 		<thead>
 			<tr>
 				<th>Naam</th>

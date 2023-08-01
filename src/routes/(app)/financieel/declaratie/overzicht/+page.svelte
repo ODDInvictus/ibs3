@@ -59,7 +59,7 @@
 	</p>
 
 	<div class="table-wrapper">
-		<table>
+		<table class="striped small">
 			<thead>
 				<tr>
 					<th>Id</th>

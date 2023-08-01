@@ -41,6 +41,47 @@
 	{@html contents}
 </div>
 
+<Section title="Helpers" noGeneration>
+	<p>Er zijn nog een paar veel gebruikte classes hieronder beschreven</p>
+	<table class="equal-width striped">
+		<thead>
+			<tr>
+				<th>Class</th>
+				<th>Functie</th>
+				<th>Uitleg</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th><code>.center</code></th>
+				<td><code>display: flex; justify-content: center; align-items: center;</code></td>
+				<td>Centreer die div's!</td>
+			</tr>
+
+			<tr>
+				<th><code>.column</code></th>
+				<td><code>flex-direction: column;</code></td>
+				<td>Ja gewoon column</td>
+			</tr>
+
+			<tr>
+				<th><code>.mt-[1-20]</code></th>
+				<td><code>margin-top: [i * 0.25]rem;</code></td>
+				<td>
+					Net zoals in tailwind, bestaan er een boel margin helpers. <code>.mt-4</code> staat voor margin-top:
+					1rem; Je kan ipv mt ook [mb|ml|mr|mx|my|m] gebruiken
+				</td>
+			</tr>
+
+			<tr>
+				<th><code>.pt=[1-20]</code></th>
+				<td><code>padding-top: [i * 0.25]rem;</code></td>
+				<td>Idem dito, maar dan met padding-*</td>
+			</tr>
+		</tbody>
+	</table>
+</Section>
+
 <Section title="Tables">
 	<table class="small">
 		<thead>
@@ -121,6 +162,12 @@
 				<th><code>.small</code></th>
 				<td>table</td>
 				<td>Halveert de cel hoogte</td>
+			</tr>
+
+			<tr>
+				<th><code>.not-full-width</code></th>
+				<td>table</td>
+				<td>Forceert geen <code>width: 100%;</code></td>
 			</tr>
 
 			<tr>

@@ -18,7 +18,9 @@
 		'becameMember',
 		'lastLoggedin',
 		'picture',
-		'id'
+		'id',
+		'isActive',
+		'personalEmail'
 	];
 
 	const fields = Object.keys(member).filter((key) => !usedFields.includes(key));
@@ -77,6 +79,8 @@
 		<p>{toDate(member.birthDate)}</p>
 		<p>Leeftijd</p>
 		<p>{getAge(new Date(member.birthDate))}</p>
+		<p>Persoonlijke email</p>
+		<p>{member.personalEmail}</p>
 	</div>
 </div>
 
@@ -103,6 +107,8 @@
 	<div>
 		<p>ID</p>
 		<p>{member.id}</p>
+		<p>Actief lid</p>
+		<p>{member.isActive}</p>
 		<p>Bijnaam</p>
 		<p>{member.nickname}</p>
 		<p>Eerste meeborrel</p>
@@ -132,6 +138,19 @@
 		</div>
 	</div>
 {/if}
+
+<div id="committees" class="info">
+	<h2>Commissies</h2>
+
+	<hr />
+
+	<div>
+		{#each $page.data.committees as committee}
+			<p>{committee.name}</p>
+			<a href="/leden/commissie/{committee.ldapId}">{committee.ldapId}</a>
+		{/each}
+	</div>
+</div>
 
 <style lang="scss">
 	$size: 250px;
@@ -199,9 +218,5 @@
 		height: $size;
 		object-fit: cover;
 		margin-left: $margin;
-	}
-
-	hr {
-		margin: var(--hr-margin);
 	}
 </style>

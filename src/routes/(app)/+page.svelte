@@ -171,10 +171,6 @@
 
 		#cookieStats {
 			text-align: center;
-
-			a {
-				color: var(--primary-color);
-			}
 		}
 	}
 </style>

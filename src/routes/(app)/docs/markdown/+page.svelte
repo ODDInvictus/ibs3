@@ -21,7 +21,7 @@
 
 <Title title="Markdown" />
 
-<table>
+<table class="equal-width small">
 	<thead>
 		<th>Markdown</th>
 		<th>Resultaat</th>

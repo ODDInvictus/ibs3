@@ -6,6 +6,10 @@ table {
 		table-layout: fixed;
 	}
 
+	&.not-full-width {
+		width: auto;
+	}
+
 	&.striped {
 		tr:nth-child(even) {
 			background-color: var(--color-table-stripe);

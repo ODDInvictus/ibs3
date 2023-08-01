@@ -16,11 +16,29 @@ export const load = (async ({ params, locals }) => {
     }
   })
 
+
+  const committees = await db.committee.findMany({
+    where: {
+      CommitteeMember: {
+        some: {
+          member: {
+            ldapId: id
+          }
+        }
+      }
+    },
+    select: {
+      ldapId: true,
+      name: true,
+    }
+  })
+
   const isCurrentUser = locals.user.ldapId === member.ldapId
 
   return {
     member,
-    isCurrentUser
+    isCurrentUser,
+    committees
   }
 })
 
