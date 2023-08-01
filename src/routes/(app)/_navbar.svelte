@@ -71,12 +71,12 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-	}
 
-	.logo :global(svg) {
-		width: 100%;
-		height: 100%;
-		margin: 0 1rem;
+		& :global(svg) {
+			width: 100%;
+			height: 100%;
+			margin: 0 1rem;
+		}
 	}
 
 	.version {

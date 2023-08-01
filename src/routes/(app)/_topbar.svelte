@@ -40,7 +40,7 @@
 	.name {
 		grid-area: name;
 
-		font-weight: 500;
+		font-weight: 600;
 
 		margin-top: 0.4rem;
 		margin-bottom: -0.25rem;
