@@ -56,9 +56,18 @@
 	--navbar-margin: 1rem;
 	--navbar-gap: 1rem;
 	--topbar-height: 50px;
+	--topbar-avatar-size: 50px;
 	--container-padding: 1rem;
 	--layout-gap: 2rem;
 	--stripe-height: 350px;
+
+	@media (max-width: 600px) {
+		--topbar-height: 70px;
+		--topbar-logo-height: 40px;
+		--topbar-logo-width: 150px;
+		--navbar-height: 80px;
+		--topbar-avatar-size: 45px;
+	}
 
 	/*
 		Rest

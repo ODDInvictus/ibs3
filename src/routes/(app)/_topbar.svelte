@@ -2,10 +2,19 @@
 	import { page } from '$app/stores';
 	import { env } from '$env/dynamic/public';
 	import Breadcrumps from '$lib/components/breadcrumps.svelte';
+	import Logo from '$lib/components/logo-v2-small-white.svelte';
 </script>
 
 <div class="layout--topbar">
-	<Breadcrumps />
+	<div class="breadcrumps">
+		<Breadcrumps />
+	</div>
+
+	<div class="logo">
+		<a href="/">
+			<Logo />
+		</a>
+	</div>
 
 	<div class="user">
 		<div class="avatar">
@@ -26,10 +35,13 @@
 </div>
 
 <style lang="scss">
-	.layout--topbar {
+	.breadcrumps {
 		display: flex;
-		justify-content: space-between;
-		margin: 0.5rem;
+		align-items: center;
+	}
+
+	.logo {
+		display: none;
 	}
 
 	.user {
@@ -57,17 +69,45 @@
 
 	.avatar {
 		grid-area: avatar;
-		width: var(--topbar-height);
-		height: var(--topbar-height);
+		width: var(--topbar-avatar-size);
+		height: var(--topbar-avatar-size);
 		border-radius: 50%;
 		overflow: hidden;
 		margin-right: 10px;
 
 		img {
-			width: var(--topbar-height);
-			height: var(--topbar-height);
+			width: var(--topbar-avatar-size);
+			height: var(--topbar-avatar-size);
 			object-fit: cover;
 			border-radius: 50%;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.breadcrumps {
+			display: none;
+		}
+
+		.name {
+			grid-area: name;
+
+			font-weight: 600;
+
+			margin-top: 0rem;
+		}
+
+		.logo {
+			display: block;
+			a {
+				display: flex;
+				align-items: flex-start;
+				justify-content: flex-start;
+
+				& :global(svg) {
+					width: var(--topbar-logo-width);
+					height: var(--topbar-logo-height);
+				}
+			}
 		}
 	}
 </style>

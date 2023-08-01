@@ -23,50 +23,44 @@
 
 	<a class="layout--navbar--item" href="/kalender">
 		<i><Calendar /></i>
-		Kalender
+		<span>Kalender</span>
 	</a>
 	<a class="layout--navbar--item" href="/strafbakken">
 		<i><Beer /></i>
-		Strafbakken
+		<span>Strafbakken</span>
 	</a>
 	<a class="layout--navbar--item" href="/financieel">
 		<i><PigMoney /></i>
-		Financieel
+		<span>Financieel</span>
 	</a>
 	{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
 		<a class="layout--navbar--item" href="/maluspunten">
 			<i><AccessibleOff /></i>
-			Maluspunten
+			<span>Maluspunten</span>
 		</a>
 	{/if}
 	<a class="layout--navbar--item" href="/leden">
 		<i><Users /></i>
-		Leden
+		<span>Leden</span>
 	</a>
 	<a class="layout--navbar--item" href="/instellingen">
 		<i><Settings /></i>
-		Instellingen
+		<span>Instellingen</span>
 	</a>
 	{#if $page.data.roles[LDAP_IDS.ADMINS] || $page.data.roles[LDAP_IDS.SENAAT]}
 		<a class="layout--navbar--item" href="/admin">
 			<i><ShieldCheck /></i>
-			Admin
+			<span>Admin</span>
 		</a>
 	{/if}
 
 	<a class="layout--navbar--item version" href="/over">
 		<i><InformationCircle /></i>
-		IBS v{env.PUBLIC_VERSION}
+		<span>IBS v{env.PUBLIC_VERSION}</span>
 	</a>
 </nav>
 
 <style lang="scss">
-	.layout--navbar {
-		display: flex;
-		flex-direction: column;
-		text-align: start;
-	}
-
 	.logo {
 		display: flex;
 		justify-content: center;
@@ -81,5 +75,21 @@
 
 	.version {
 		margin-top: auto;
+	}
+
+	@media (max-width: 600px) {
+		.logo {
+			display: none;
+		}
+
+		.layout--navbar--item {
+			& > span {
+				display: none;
+			}
+		}
+
+		hr {
+			display: none;
+		}
 	}
 </style>
