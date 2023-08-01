@@ -6,5 +6,5 @@ export const accesstokenStore = writable(
 );
 
 accesstokenStore.subscribe((value) => {
-  if (browser) sessionStorage.setItem("spotifyAccesstoken", value);
+  if (browser && value) sessionStorage.setItem("spotifyAccesstoken", value);
 });

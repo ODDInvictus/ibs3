@@ -28,7 +28,7 @@
   const error = searchParams.get("error");
 
   accesstokenStore.subscribe((value) => {
-    spotify.setAccessToken(value);
+    if (value) spotify.setAccessToken(value);
   });
 
   let mounted = false;
