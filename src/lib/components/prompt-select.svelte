@@ -62,6 +62,7 @@
 		background: var(--color-primary);
 		color: var(--color-text-light);
 		border-radius: var(--border-radius);
+		border: none;
 		padding: 2rem;
 
 		z-index: 1000;
