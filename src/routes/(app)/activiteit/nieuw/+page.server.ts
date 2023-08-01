@@ -172,6 +172,33 @@ export const actions = {
         }
 
         id = activity.id
+        let shortLink = `activiteit-${id}-info`
+
+        if (url) {
+          await tx.link.upsert({
+            where: {
+              shortLink
+            },
+            update: {
+              link: url,
+              userId: event.locals.user.id
+            },
+            create: {
+              shortLink,
+              link: url,
+              userId: event.locals.user.id
+            }
+          })
+
+          await tx.activity.update({
+            where: {
+              id,
+            },
+            data: {
+              url: `${env.IBS_URL}/s/${shortLink}`
+            }
+          })
+        }
 
 
         if (image.size > 0) {

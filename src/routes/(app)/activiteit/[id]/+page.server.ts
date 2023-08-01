@@ -1,3 +1,4 @@
+import { env } from '$env/dynamic/private'
 import db from '$lib/server/db'
 import { randomSortDay } from '$lib/utils.js'
 
@@ -21,6 +22,7 @@ export const load = (async ({ params }) => {
 
   return {
     activity,
-    attending
+    attending,
+    domain: env.IBS_URL
   }
 })
