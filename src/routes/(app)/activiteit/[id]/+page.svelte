@@ -228,10 +228,10 @@
 
 			<p class="ibs-card--row">
 				<i><CalendarPlus /></i>
-				Opslaan in
-				<button class="btn-a" on:click={generateIcal}>agenda</button>
+				Opslaan als
+				<button class="btn-a" on:click={generateIcal}>ical</button>
 				of in
-				<button class="btn-a" on:click={generateGCal}>google calendar</button>
+				<button class="btn-a" on:click={generateGCal}>google agenda</button>
 			</p>
 
 			<p class="ibs-card--content">
