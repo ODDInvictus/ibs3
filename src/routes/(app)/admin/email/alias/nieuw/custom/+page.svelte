@@ -29,7 +29,7 @@
 					toast({
 						title: 'Oei!',
 						message: res.message,
-						type: 'error'
+						type: 'danger'
 					});
 				}
 			});

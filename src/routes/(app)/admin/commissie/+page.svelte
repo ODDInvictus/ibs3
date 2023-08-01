@@ -33,6 +33,7 @@
 					{#each committee.CommitteeMember as member}
 						<div class="member-name">
 							<button
+								class="btn-a"
 								title="Lid verwijderen"
 								on:click={() => removeMember(member.id, member.member.firstName, committee.name)}
 							>
@@ -51,19 +52,25 @@
 				<td class="actions">
 					<div class="buttons">
 						<button
+							class="btn-a"
 							title="Naam wijzigen"
 							on:click={() => renameCommittee(committee.id, committee.name)}
 						>
 							<FilePencil />
 						</button>
 						<button
+							class="btn-a"
 							title="Lid toevoegen"
 							on:click={() => addMember($page.data.users, committee.id, committee.name)}
 						>
 							<CirclePlus />
 						</button>
 
-						<button title="Commissie verwijderen" on:click={() => deleteCommittee(committee.id)}>
+						<button
+							class="btn-a"
+							title="Commissie verwijderen"
+							on:click={() => deleteCommittee(committee.id)}
+						>
 							<CircleX />
 						</button>
 					</div>
