@@ -132,6 +132,12 @@
 			grid-template-rows: 1fr 4fr 1fr 1fr;
 			height: $card-height;
 
+			.activity-title {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
 			.activity-description {
 				overflow-x: hidden;
 				overflow-y: scroll;
