@@ -105,12 +105,7 @@
 	<label for="receipt">Bon</label>
 	<input type="file" name="receipt" id="receipt" accept="image/*" bind:files />
 
-	<button
-		type="submit"
-		class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center transition"
-	>
-		Verstuur
-	</button>
+	<button type="submit"> Verstuur </button>
 </form>
 
 <img src="" id="receipt-image" alt="Hier komt je bonnetje te staan" />
