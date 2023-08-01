@@ -20,6 +20,16 @@ button {
 	background-color: var(--color-primary);
 }
 
+button.btn-a {
+	all: unset;
+	color: var(--color-primary);
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
 button.btn-primary {
 	background-color: var(--color-primary);
 }
