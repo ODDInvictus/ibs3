@@ -143,21 +143,26 @@
 		details += `<br/><br/>Ben jij ook bij? <a href="${activityUrl}">Klik dan hier!</a>`;
 		if (activity.url) details += `<br /><br/> Meer informatie <a href="${activity.url}">hier</a>`;
 
-		console.log(activity.url);
+		const start = new Date(activity.startTime).toISOString().replace(/-|:|\.\d\d\d/g, '');
+		const end = new Date(activity.endTime).toISOString().replace(/-|:|\.\d\d\d/g, '');
 
-		const dates = new Date(activity.startTime).toISOString().replace(/[-:.]/g, '') + '/';
+		const dates = `${start}/${end}`;
 
-		window.open(`https://calendar.google.com/calendar/render
-		?action=TEMPLATE
-		&text=${activity.name}
-		&ctz=Europe/Amsterdam
-		&details=${details}
-		&location=${activity.location?.name ?? 'Locatie nog onbekend'}
-		&sprop=name:{{Invictus Bier Systeem}}
-		&sprop=website:${activityUrl}
-		&add=${bij.map((a: any) => a.email).join(',')}
-		&dates=${dates}
-		`);
+		const uri = new URL('https://calendar.google.com/calendar/render');
+		const search = new URLSearchParams({
+			text: activity.name,
+			action: 'TEMPLATE',
+			ctz: 'Europe/Amsterdam',
+			details,
+			location: activity.location?.name ?? 'Locatie nog onbekend',
+			sprop: `name:{{Invictus Bier Systeem}},website:${activityUrl}`,
+			add: bij.map((a: any) => a.email).join(','),
+			dates
+		});
+
+		uri.search = search.toString();
+
+		window.open(uri.toString());
 	}
 </script>
 
