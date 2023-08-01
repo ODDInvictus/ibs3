@@ -52,7 +52,7 @@
 </div>
 
 <style lang="scss">
-	$border-radius: 10px;
+	$border-radius: var(--border-radius);
 	$card-height: 250px;
 	$card-height-sm: 100px;
 
@@ -63,7 +63,7 @@
 		align-items: center;
 		margin: 0 40px;
 
-		@media screen and (max-width: 640px) {
+		@media screen and (max-width: 600px) {
 			margin: 0 10px !important;
 		}
 	}
@@ -74,7 +74,7 @@
 		height: $card-height;
 		width: 100%;
 
-		@media screen and (max-width: 640px) {
+		@media screen and (max-width: 600px) {
 			height: $card-height-sm;
 		}
 
@@ -84,7 +84,7 @@
 		.image {
 			position: relative;
 
-			@media screen and (max-width: 640px) {
+			@media screen and (max-width: 600px) {
 				.date-tag {
 					display: none !important;
 				}
@@ -93,7 +93,7 @@
 			img {
 				height: $card-height;
 
-				@media screen and (max-width: 640px) {
+				@media screen and (max-width: 600px) {
 					height: $card-height-sm;
 				}
 
@@ -151,7 +151,7 @@
 				display: none;
 			}
 
-			@media screen and (max-width: 640px) {
+			@media screen and (max-width: 600px) {
 				grid-template-rows: 1fr 1fr 1fr;
 				height: $card-height-sm;
 
@@ -180,6 +180,6 @@
 	}
 
 	hr {
-		margin: var(--hr-margin);
+		margin: 0.5rem;
 	}
 </style>
