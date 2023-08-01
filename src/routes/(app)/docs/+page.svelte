@@ -5,12 +5,7 @@
 <Title title="IBS Documentatie" />
 
 <a href="/docs/markdown">Markdown</a>
+<br />
 <a href="/docs/svelte">UI toolkit</a>
+<br />
 <a href="/docs/api">API</a>
-
-<style>
-	a {
-		display: block;
-		margin: 1rem;
-	}
-</style>
