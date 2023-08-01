@@ -28,7 +28,7 @@
 				toast({
 					title: 'Oeps',
 					message: result.data.message,
-					type: 'error'
+					type: 'danger'
 				});
 			}
 		};
