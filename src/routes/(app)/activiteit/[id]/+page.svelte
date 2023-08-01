@@ -105,7 +105,7 @@
 				toast({
 					title: 'Oei!',
 					message: 'Er ging iets mis bij het opslaan van je aanwezigheid',
-					type: 'error'
+					type: 'danger'
 				});
 				console.error(err);
 			});
@@ -136,6 +136,29 @@
 		downloadLink.click();
 		document.body.removeChild(downloadLink);
 	}
+
+	function generateGCal() {
+		const activityUrl = $page.data.domain + '/activiteit/' + activity.id;
+		let details = activity.description;
+		details += `<br/><br/>Ben jij ook bij? <a href="${activityUrl}">Klik dan hier!</a>`;
+		if (activity.url) details += `<br /><br/> Meer informatie <a href="${activity.url}">hier</a>`;
+
+		console.log(activity.url);
+
+		const dates = new Date(activity.startTime).toISOString().replace(/[-:.]/g, '') + '/';
+
+		window.open(`https://calendar.google.com/calendar/render
+		?action=TEMPLATE
+		&text=${activity.name}
+		&ctz=Europe/Amsterdam
+		&details=${details}
+		&location=${activity.location?.name ?? 'Locatie nog onbekend'}
+		&sprop=name:{{Invictus Bier Systeem}}
+		&sprop=website:${activityUrl}
+		&add=${bij.map((a: any) => a.email).join(',')}
+		&dates=${dates}
+		`);
+	}
 </script>
 
 <div>
@@ -146,100 +169,72 @@
 	</div>
 
 	<div class="cols">
-		<div id="left" class="col">
-			{#if activity.image == null}
-				<img
-					src={env.PUBLIC_UPLOAD_URL + 'activities/activiteit-0-logo.png'}
-					alt="Placeholder mist?"
-				/>
-			{:else}
-				<img
-					src={env.PUBLIC_UPLOAD_URL + 'activities/' + activity.image}
-					alt="Geen plaatje geupload :("
-				/>
-			{/if}
+		<div class="ibs-card outline">
+			<img
+				class="ibs-card--image"
+				alt={activity.name}
+				src={env.PUBLIC_UPLOAD_URL + 'activities/' + activity.image ?? 'activiteit-0-logo.png'}
+			/>
 
-			<h2>{@html markdown(activity.name)}</h2>
+			<h2 class="ibs-card--title">{@html markdown(activity.name)}</h2>
 
-			<hr />
+			<p class="ibs-card--row">
+				<i><UsersGroup /></i>
+				Georganiseerd door:
+				<a href="/leden/commissie/{activity.organisedBy.ldapId}">{activity.organisedBy.name}</a>
+			</p>
 
-			<div class="row">
-				<UsersGroup />
-				<p>
-					Georganiseerd door:
-					<a href="/leden/commissie/{activity.organisedBy.ldapId}">{activity.organisedBy.name}</a>
-				</p>
-			</div>
+			<p class="ibs-card--row">
+				<i><MapPin /></i>
+				{#if activity.location !== null}
+					<a href="/locatie/{activity.location.id}">{activity.location.name}</a>
+				{:else}
+					Nog geen locatie bekend
+				{/if}
+			</p>
 
-			<hr />
-
-			<div class="row">
-				<MapPin />
-				<p>
-					{#if activity.location !== null}
-						<a href="/locatie/{activity.location.id}">{activity.location.name}</a>
-					{:else}
-						Nog geen locatie bekend
-					{/if}
-				</p>
-			</div>
-
-			<hr />
-
-			<div class="row">
-				<Calendar />
-				<p>{formatDate(activity.startTime, activity.endTime)}</p>
-			</div>
-
-			<hr />
-
-			<div class="row">
-				<Clock />
-				<p>{formatTime(activity.startTime)} - {formatTime(activity.endTime)}</p>
-			</div>
+			<p class="ibs-card--row">
+				<i><Calendar /></i>
+				{formatDate(activity.startTime, activity.endTime)}
+			</p>
+			<p class="ibs-card--row">
+				<i><Clock /></i>
+				{formatTime(activity.startTime)} - {formatTime(activity.endTime)}
+			</p>
 
 			{#if activity.url}
-				<hr />
-
-				<div class="row">
-					<ExternalLink />
-					<p>
-						<a href={activity.url}>Meer informatie</a>
-					</p>
-				</div>
+				<p class="ibs-card--row">
+					<i><ExternalLink /></i>
+					<a href={activity.url} target="_blank">Meer informatie</a>
+				</p>
 			{/if}
 
 			{#if activity.membersOnly}
-				<hr />
-
-				<div class="row">
-					<AccessibleOff />
-					<p>Alleen voor leden</p>
-				</div>
+				<p class="ibs-card--row">
+					<i><AccessibleOff /></i>
+					Alleen voor leden
+				</p>
 			{/if}
 
-			<hr />
+			<p class="ibs-card--row">
+				<i><Edit /></i>
+				<a href="/activiteit/nieuw?edit=true&id={activity.id}">Activiteit bewerken</a>
+			</p>
 
-			<div class="row">
-				<Edit />
-				<p><a href="/activiteit/nieuw?edit=true&id={activity.id}">Activiteit bewerken</a></p>
-			</div>
+			<p class="ibs-card--row">
+				<i><CalendarPlus /></i>
+				Opslaan in
+				<button class="btn-a" on:click={generateIcal}>agenda</button>
+				of in
+				<button class="btn-a" on:click={generateGCal}>google calendar</button>
+			</p>
 
-			<hr />
-
-			<div class="row">
-				<CalendarPlus />
-				<button on:click={generateIcal}>Opslaan in agenda</button>
-			</div>
-
-			<hr />
-
-			<div id="description">
-				<span>{@html markdown(activity.description)}</span>
-			</div>
+			<p class="ibs-card--content">
+				{@html activity.description}
+			</p>
 		</div>
 
-		<div id="right" class="col">
+		<div id="right" class="ibs-card outline col">
 			<h2>Wie komen er allemaal?</h2>
 
 			<hr />
@@ -300,9 +295,6 @@
 		flex-direction: column;
 
 		margin: $gap;
-
-		border: 1px solid var(--seperator-color);
-		border-radius: $border-radius;
 
 		@media (max-width: 640px) {
 			margin: 0;
