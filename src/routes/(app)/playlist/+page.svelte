@@ -11,7 +11,7 @@
 
 	export let data: PageServerData;
 
-	const { MIN_LIKES, PLAYLIST_ID } = SPOTIFY_CONSTANTS;
+	const { MIN_LIKES } = SPOTIFY_CONSTANTS;
 
 	let current: SpotifyApi.SingleTrackResponse | undefined = undefined;
 	let tracks: SpotifyApi.SingleTrackResponse[] = [];

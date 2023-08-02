@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import Tracklist from './Tracklist.svelte';
 	import Title from '$lib/components/title.svelte';
 	import Loader from '$lib/components/Loader.svelte';
-	import Tracklist from './Tracklist.svelte';
+	import { toast } from '$lib/notification';
+	import SPOTIFY_CONSTANTS from '$lib/spotifyConstants';
+	import Playlist from '~icons/tabler/playlist';
 
 	import type { PageServerData } from './$types';
-	import { toast } from '$lib/notification';
 
 	export let data: PageServerData;
 
@@ -29,7 +31,15 @@
 <Title title="Playlist" />
 <main>
 	{#if mounted}
-		<input type="text" name="search" bind:value={search} placeholder="Zoeken..." />
+		<div class="top">
+			<input type="text" name="search" bind:value={search} placeholder="Zoeken..." />
+			<a
+				href={`https://open.spotify.com/playlist/${SPOTIFY_CONSTANTS.PLAYLIST_ID}`}
+				target="_blank"
+			>
+				<Playlist />
+			</a>
+		</div>
 
 		{#await tracks}
 			<div class="loader">
@@ -55,7 +65,7 @@
 	{/if}
 </main>
 
-<style>
+<style lang="scss">
 	input {
 		width: 100%;
 		padding: 0.5rem;
@@ -63,6 +73,7 @@
 		border: 1px solid #ccc;
 		border-radius: 0.5rem;
 		margin-bottom: 1rem;
+		max-width: 700px;
 	}
 
 	.loader {
@@ -71,5 +82,18 @@
 		justify-content: center;
 		width: 100%;
 		margin-top: 200px;
+	}
+
+	.top {
+		display: flex;
+		gap: 20px;
+
+		a {
+			font-size: 2.5rem;
+
+			&:hover {
+				opacity: 0.8;
+			}
+		}
 	}
 </style>
