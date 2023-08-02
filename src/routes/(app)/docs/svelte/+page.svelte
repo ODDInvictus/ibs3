@@ -277,7 +277,9 @@
 	<h6>Dit is een heading in h6</h6>
 	<p>Dit is een paragraph</p>
 
-	<a href="/docs/svelte">Dit is een anchor</a>
+	<a href="#Typography">Dit is een anchor</a>
+	<a class="button" href="#Typography">Deze anchor ziet eruit als een button</a>
+	<a class="button btn-secondary" href="#Buttons">Button styles werken zelfs!</a>
 </Section>
 
 <Section title="Form">
