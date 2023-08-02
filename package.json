@@ -17,6 +17,7 @@
 		"mailhog": "docker run --rm -it -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog"
 	},
 	"devDependencies": {
+		"@floating-ui/core": "^1.4.1",
 		"@iconify/json": "^2.2.47",
 		"@iconify/svelte": "^3.1.4",
 		"@sveltejs/adapter-auto": "^2.1.0",
@@ -44,6 +45,7 @@
 		"sass": "^1.58.0",
 		"svelte": "^4.1.1",
 		"svelte-check": "^3.4.6",
+		"svelte-floating-ui": "^1.5.3",
 		"svelte-preprocess": "^5.0.4",
 		"ts-node": "^10.9.1",
 		"tslib": "^2.4.1",
