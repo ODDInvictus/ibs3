@@ -110,9 +110,9 @@
 				/>
 				{#if track.preview_url}
 					{#if (hovering === track.preview_url && (previewSrc !== track.preview_url || audioPlayer.paused)) || (previewSrc === track.preview_url && audioPlayer.paused)}
-						<Play style="position: absolute; top: 19px; left: 19px; height: 26px; width: 26px;" />
+						<Play style="position: absolute; top: 16px; left: 16px; height: 26px; width: 26px;" />
 					{:else if previewSrc === track.preview_url && !audioPlayer.paused}
-						<Pause style="position: absolute; top: 19px; left: 19px; height: 26px; width: 26px;" />
+						<Pause style="position: absolute; top: 16px; left: 16px; height: 26px; width: 26px;" />
 					{/if}
 				{/if}
 			</div>

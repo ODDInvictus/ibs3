@@ -25,7 +25,8 @@ export const refreshToken = async () => {
 			}
 		})
 	)?.value;
-	if (!refreshToken) throw new Error('No refresh token found');
+	if (!refreshToken)
+		throw new Error('No refresh token found in database, the name should be SPOTIFY_REFRESH_TOKEN');
 
 	spotify.setRefreshToken(refreshToken);
 	const accessToken = (await spotify.refreshAccessToken()).body.access_token;

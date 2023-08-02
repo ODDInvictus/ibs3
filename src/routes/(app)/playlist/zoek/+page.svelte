@@ -32,7 +32,9 @@
 		<input type="text" name="search" bind:value={search} placeholder="Zoeken..." />
 
 		{#await tracks}
-			<Loader />
+			<div class="loader">
+				<Loader />
+			</div>
 		{:then tracks}
 			{#if tracks}
 				<Tracklist {tracks} {search} liked={data.liked} playlist={data.playlist} />
@@ -47,7 +49,9 @@
 			})}
 		{/await}
 	{:else}
-		<Loader />
+		<div class="loader">
+			<Loader />
+		</div>
 	{/if}
 </main>
 
@@ -59,5 +63,13 @@
 		border: 1px solid #ccc;
 		border-radius: 0.5rem;
 		margin-bottom: 1rem;
+	}
+
+	.loader {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		margin-top: 200px;
 	}
 </style>
