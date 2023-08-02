@@ -92,9 +92,6 @@ $steps: 20;
 
 	overflow: hidden;
 
-	// Disable reloading on overscroll
-	overscroll-behavior: contain;
-
 	background-color: var(--color-bg-base);
 
 	display: grid;
@@ -142,6 +139,8 @@ $steps: 20;
 	display: flex;
 	flex-direction: column;
 	text-align: start;
+
+	overflow: hidden;
 
 	z-index: 10;
 	grid-area: nav;
@@ -224,6 +223,8 @@ $steps: 20;
 		top: calc(100dvh - var(--navbar-height));
 		left: 0;
 
+		border-radius: 0px;
+
 		padding: 0;
 		margin: 0;
 
@@ -236,7 +237,6 @@ $steps: 20;
 		box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
 
 		& > .layout--navbar--item {
-			// border-radius: var(--border-radius);
 			border-bottom-left-radius: 0px;
 			border-bottom-right-radius: 0px;
 		}
