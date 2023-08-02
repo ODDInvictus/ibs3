@@ -26,3 +26,10 @@ export const LEDGER_IDS = {
   DECLARATION_BEER: 3101,
   DECLARATION_FOOD: 3102,
 }
+
+export const SPOTIFY_CONSTANTS = {
+  MIN_LIKES: 2,
+  PLAYLIST_ID: "2cJ7J5coZ9OPxPZ1qVgJ79", //"23M7WpQcjFNNHKJy07FHuo",
+  CLIENT_ID: "f6ee1ca223f040dab56032aa95f2c9f1",
+  REDIRECT_URI: "http://localhost:5173/playlist/callback",
+}

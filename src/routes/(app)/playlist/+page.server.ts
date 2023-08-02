@@ -13,11 +13,16 @@ export const load = (async ({locals}) => {
                     }
                 }
             },
-            orderBy: {
-                likes: {
-                    _count: 'desc',
+            orderBy: [
+                {
+                    likes: {
+                        _count: 'desc',
+                    }
                 },
-            },
+                {
+                    createdAt: 'desc',
+                },
+            ],
             select: {
                 id: true,
                 likes: {

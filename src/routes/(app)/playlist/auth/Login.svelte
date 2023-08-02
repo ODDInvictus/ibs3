@@ -1,6 +1,7 @@
 <script lang="ts">
-  const clientId = "f6ee1ca223f040dab56032aa95f2c9f1";
-  const redirectUri = "http://localhost:5173/playlist/callback";
+  import { SPOTIFY_CONSTANTS } from "$lib/constants";
+
+  const { CLIENT_ID, REDIRECT_URI } = SPOTIFY_CONSTANTS;
   const scopes = [
     "user-read-private",
     "user-read-email",
@@ -21,9 +22,9 @@
     return text;
   }
 
-  $: authorizeURL = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(
-    redirectUri
-  )}&scope=${encodeURIComponent(scopes.join(" "))}&state=${state}`;
+  $: authorizeURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
+    REDIRECT_URI
+  )}&scope=${encodeURIComponent(scopes.join(" "))}&state=${state}&show_dialog=true`;
 </script>
 
 <a id="login-btn" href={authorizeURL}> Login met Spotify </a>
@@ -31,11 +32,12 @@
 <style lang="scss">
   #login-btn {
     background-color: #1db954;
-    padding: 10px;
+    padding: 1rem;
     color: white;
-    border-radius: 25px;
+    border-radius: 2rem;
     text-decoration: none;
     margin-top: 20px;
+    font-size: 2rem;
 
     &:hover {
       background-color: #1ed760;

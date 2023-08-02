@@ -1,21 +1,21 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { PageServerData } from './$types';
-    import spotify from './Spotify';
     import Title from '$lib/components/title.svelte';
     import Heart from '$lib/components/icons/Heart.svelte'
     import Cross from '$lib/components/icons/Cross.svelte'
     import Arrow from '$lib/components/icons/Arrow.svelte'
-	import { goto } from '$app/navigation';
 	import Loader from '$lib/components/Loader.svelte';
 	import { toast } from '$lib/notification';
+    import { SPOTIFY_CONSTANTS } from '$lib/constants';
 
     export let data: PageServerData;
 
-    const MIN_LIKES = 2;
+    const { MIN_LIKES, PLAYLIST_ID } = SPOTIFY_CONSTANTS;
 
     let current: SpotifyApi.SingleTrackResponse | undefined = undefined;
     let tracks: SpotifyApi.SingleTrackResponse[] = [];
+    let skipped: SpotifyApi.SingleTrackResponse[] = [];
     let audioPlayer: HTMLAudioElement;
     let previewSrc = "";
 
@@ -23,8 +23,6 @@
 
     onMount( async () => {
         if (data.toReact.length == 0) return mounted = true;
-
-        console.log([...data.toReact])
 
         try {
             current = await fetchNextTrack();
@@ -34,8 +32,12 @@
             for (let i = 0; i < toLoad; i++) {
                 tracks = [...tracks, await fetchNextTrack()];
             }
-        } catch (error) {
-            goto("/playlist/auth");
+        } catch (error: any) {
+            toast({
+                title: "Error",
+                message: "Error tijdens het ophalen van de eerste track",
+                type: "error",
+            });
         }
 
         mounted = true;
@@ -43,7 +45,11 @@
 
     const fetchNextTrack = async () => {
         const next = data.toReact.shift();
-        const res = (await spotify.getTrack(next.id)).body;
+        if (!next) throw new Error("Geen tracks meer om te laden");
+
+        const res: SpotifyApi.SingleTrackResponse | undefined = await (await fetch(`/playlist?id=${next.id}`)).json();
+        if (!res) throw new Error("Error tijdens het ophalen van de volgende track");
+        
         // @ts-ignore
         res.likes = next.likes;
         return res;
@@ -57,7 +63,7 @@
         return smallestImage;
     }
 
-    $: if (audioPlayer) {
+    $: if (audioPlayer && mounted) {
         if (previewSrc == "") audioPlayer.pause()
         else {
             audioPlayer.src = previewSrc;
@@ -70,7 +76,13 @@
     };
 
     const next = async () => {
-        current = tracks.shift();
+        if (tracks.length > 0) current = tracks.shift();
+        else {
+            const nextSkipped = skipped.shift();
+            if (!nextSkipped || nextSkipped.id === current?.id) current = undefined;
+            else current = nextSkipped;
+        }
+
         audioPlayer.pause();
         previewSrc = "";
         if (current?.preview_url) previewSrc = current.preview_url;
@@ -86,7 +98,10 @@
                     liked,
                 }),
             });
-        } catch (error: any) {
+
+            skipped = [...skipped.filter((t) => t.id !== track.id)];
+        } catch (error) {
+            console.error(error);
             toast({
                 title: "Error",
                 message: "Er is iets fout gegaan, probeer het later opnieuw",
@@ -100,34 +115,6 @@
         
         if (!liked || likes.length !== MIN_LIKES - 1) return;
 
-        try {
-            await spotify.addTracksToPlaylist("23M7WpQcjFNNHKJy07FHuo?si=5c020c2ec8314933", [track.uri])
-        } catch (error) {
-            console.error(error);
-            toast({
-                title: "Error",
-                message: "Er is iets fout gegaan, probeer het later opnieuw",
-                type: "error",
-            });
-            return;
-        }
-
-        try {
-            await fetch("/playlist", {
-                method: "PUT",
-                body: JSON.stringify({
-                    trackId: track.id,
-                }),
-            });
-        } catch (error: any) {
-            toast({
-                title: "Error",
-                message: "Er is iets fout gegaan, probeer het later opnieuw",
-                type: "error",
-            });
-            return;
-        }
-
         toast({
             title: "Nieuw hitje",
             message: `${track.name} is toegevoegd aan de playlist dankzij ${
@@ -136,6 +123,8 @@
             type: "success",
         });
     }
+
+    $: console.log(skipped);
 </script>
 
 <audio src="" bind:this={audioPlayer}></audio>
@@ -156,8 +145,8 @@
             <img src={getSmallestImageAbove300(current.album.images).url} alt={`${current.name} album cover`} />
             <div class="info">
                 <div class="top">
-                    <p class={current.name.replace(" ", "").length > 21 ? "slide" : ""}>{current.name}</p>
-                    <p class={formatArtists(current.artists).length > 30 ? "slide artists" : "artists"}>{formatArtists(current.artists)}</p>
+                    <p class={current.name.replace(" ", "").length > 30 ? "slide" : ""}>{current.name}</p>
+                    <p class={formatArtists(current.artists).length > 35 ? "slide artists" : "artists"}>{formatArtists(current.artists)}</p>
                 </div>
             </div>
             <div class="links">
@@ -176,7 +165,11 @@
 
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-static-element-interactions -->
-                <i on:click={async () => await next()}>
+                <i on:click={async () => {
+                    await next();
+                    if (!current) return;
+                    skipped = [...skipped, current]
+                }}>
                     <svelte:component this={Arrow} width="50" height="50" />
                 </i>
 
@@ -236,10 +229,20 @@
             @keyframes slide {
                 from {
                     transform: translateX(50%);
+                    opacity: 0;
+                }
+
+                5% {
+                    opacity: 1;
+                }
+
+                95% {
+                    opacity: 1;
                 }
                 
                 to {
                     transform: translateX(-70%);
+                    opacity: 0;
                 }
             }
 

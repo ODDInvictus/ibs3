@@ -3,10 +3,9 @@
   import Title from "$lib/components/title.svelte";
   import Loader from "$lib/components/Loader.svelte";
   import Tracklist from "./Tracklist.svelte";
-  import spotify from "../Spotify";
-	import { goto } from "$app/navigation";
 
 	import type { PageServerData } from "./$types";
+	import { toast } from "$lib/notification";
 
   export let data: PageServerData;
 
@@ -17,8 +16,15 @@
   });
 
   let search = "";
-  $: tracks =
-    mounted && search ? spotify.searchTracks(search) : null;
+  let tracks: Promise<SpotifyApi.TrackObjectFull[] | null>;
+  $: tracks = (async () => {
+    return mounted && search ? await (await searchTracks(search)).json() ?? null : null;
+  })();
+
+  const searchTracks = async (search: string) => {
+    return await fetch(`/playlist/zoek?s=${encodeURIComponent(search)}`);
+  };
+
 </script>
 
 <Title title="Playlist" />
@@ -34,11 +40,17 @@
     {#await tracks}
       <Loader />
     {:then tracks}
-      {#if tracks?.body?.tracks?.items !== undefined}
-        <Tracklist tracks={tracks.body.tracks.items} {search} liked={data.liked} playlist={data.playlist} />
+      {#if tracks}
+        <Tracklist tracks={tracks} {search} liked={data.liked} playlist={data.playlist} />
+      {:else}
+        <p>Geen resultaten</p>
       {/if}
     {:catch error}
-      {goto("/playlist/auth")}
+      {toast({
+        title: "Error",
+        message: error,
+        type: "error",
+      })}
     {/await}
   {:else}
     <Loader />

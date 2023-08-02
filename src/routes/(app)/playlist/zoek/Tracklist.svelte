@@ -71,9 +71,6 @@
 
 <audio src={previewSrc} bind:this={audioPlayer} />
 <ul>
-  {#if tracks.length === 0}
-    <p>No tracks found</p>
-  {/if}
   {#each tracks as track}
     <li class={playlist.includes(track.id) ? "highlight": ""}>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
