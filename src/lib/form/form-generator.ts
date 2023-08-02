@@ -64,9 +64,14 @@ type LogicReturnErrorType = {
   status: number
 }
 
+type LogicDataType<T> = T & {
+  user: User
+}
+
 
 type FormType<T> = {
   title: string
+  shortTitle?: string
   description?: string
   formId: string
   fields: Field<FieldType>[]
@@ -75,7 +80,7 @@ type FormType<T> = {
   actionName?: string
   needsConfirmation?: boolean
   confirmText?: string
-  logic: (data: T) => Promise<LogicReturnType>
+  logic: (data: LogicDataType<T>) => Promise<LogicReturnType>
   extraValidators?: (data: T) => Promise<FormError[]>
 }
 
@@ -142,7 +147,7 @@ export class Form<T> {
           return value instanceof Date && !isNaN(value.getTime())
         }, { message: `${label} is verplicht` })
       } else if (field.type === 'url') {
-        obj = z.string().url({ message: `${label} is geen geldige URL` }).optional().or(z.literal(''))
+        obj = z.string().url({ message: `${label} is geen geldige URL` })
 
       } else {
         const min = field.minLength || 0
@@ -304,6 +309,8 @@ export class Form<T> {
 
         validated = validated as Awaited<T>
 
+        (validated as LogicDataType<T>).user = locals.user
+
         const ret = await this.f.logic(validated)
 
         if (ret.success) {
@@ -320,6 +327,7 @@ export class Form<T> {
 
     return {
       title: this.f.title,
+      shortTitle: this.f.shortTitle,
       description: this.f.description,
       fields: this.f.fields,
       needsConfirmation: this.f.needsConfirmation,
