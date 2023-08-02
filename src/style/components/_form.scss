@@ -1,3 +1,54 @@
+form.form-group {
+	color: black;
+}
+
+form .form-control {
+	display: grid;
+	grid-template-columns: 200px 1fr;
+	min-height: 3rem;
+	padding-top: 0.25rem;
+	padding-bottom: 0.25rem;
+
+	label {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+
+		font-family: var(--font-family);
+		font-weight: 500;
+
+		.optional {
+			margin-top: 0.125rem;
+			font-size: smaller;
+			color: var(--color-text-muted);
+		}
+
+		.description {
+			margin-top: 0.125rem;
+			color: var(--color-text-muted);
+			width: 100%;
+
+			display: flex;
+			justify-content: flex-end;
+			margin-right: 0.25rem;
+		}
+	}
+
+	.form-error {
+		color: var(--color-danger);
+		font-size: smaller;
+	}
+
+	.has-error {
+		border: 1px solid var(--color-danger);
+	}
+
+	.has-error:focus {
+		// Red shadow
+		box-shadow: 0 0 0 0.25rem rgba(239, 68, 68, 0.25);
+	}
+}
+
 textarea,
 input:not([type='file'], [type='checkbox'], [type='radio'], [type='color']),
 select {
@@ -19,6 +70,11 @@ select {
 	}
 }
 
+textarea {
+	resize: vertical;
+	white-space: pre-wrap;
+}
+
 input[type='checkbox'],
 input[type='radio'] {
 	all: unset;
@@ -33,5 +89,24 @@ input[type='radio'] {
 		background-color: var(--color-primary);
 		color: var(--color-text-light);
 		border-color: var(--color-primary);
+	}
+}
+
+@media (max-width: 600px) {
+	form.form-group {
+		button {
+			margin-top: 1rem;
+		}
+	}
+
+	form .form-control {
+		grid-template-columns: 1fr;
+		grid-template-rows: 1fr 1fr auto;
+
+		label {
+			.form-error {
+				margin-bottom: 0.25rem;
+			}
+		}
 	}
 }

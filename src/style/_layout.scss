@@ -114,14 +114,14 @@ $steps: 20;
 	background: var(--color-scrollbar);
 }
 
-.layout--overlay {
-	position: absolute;
-	z-index: 1000;
-}
-
 .layout--toast {
 	bottom: 2rem;
 	right: 2rem;
+}
+
+.layout--overlay {
+	position: absolute;
+	z-index: 1000;
 }
 
 .layout--stripe {
@@ -254,6 +254,11 @@ $steps: 20;
 		& > .layout--navbar--item:nth-child(n + 7) {
 			display: none;
 		}
+	}
+
+	.layout--toast {
+		position: fixed;
+		bottom: calc(var(--navbar-height) + 8px);
 	}
 
 	.layout--topbar {

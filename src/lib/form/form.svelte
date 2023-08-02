@@ -5,8 +5,11 @@
 	import { confirm } from '$lib/confirm';
 	import { toast } from '$lib/notification';
 	import Title from '$lib/components/title.svelte';
+	import { offset, flip, shift } from 'svelte-floating-ui/dom';
+	import { createFloatingActions } from 'svelte-floating-ui';
 
 	export let title: string;
+	export let shortTitle: string | undefined;
 	export let description: string;
 	export let fields: Field<FieldType>[];
 	export let submitStr = 'Verstuur';
@@ -15,10 +18,21 @@
 	export let needsConfirmation: boolean;
 	export let confirmText = 'Weet je zeker dat je deze actie wilt uitvoeren?';
 
+	let tooltips = {};
+	let show = false;
+
+	const [floatingRef, floatingContent] = createFloatingActions({
+		strategy: 'absolute',
+		placement: 'left',
+		middleware: [offset(6), flip(), shift()]
+	});
+
 	let form: HTMLFormElement;
 
 	function updateErrors(errors: { field: string; message: string }[]) {
-		const fields = form.querySelectorAll('.field');
+		const fields = form.querySelectorAll('.form-control');
+
+		console.log(fields);
 
 		// Loop over all fields
 		// data-name is the name of the field
@@ -46,13 +60,8 @@
 			}
 		});
 	}
-</script>
 
-<form
-	bind:this={form}
-	method="POST"
-	id={formId}
-	use:enhance={async ({ action, cancel }) => {
+	async function enhanceForm({ cancel }) {
 		// First check if needsConfirmation is true
 		let confirmed = false;
 
@@ -66,6 +75,8 @@
 					else confirmed = true;
 				}
 			});
+		} else {
+			confirmed = true;
 		}
 
 		while (!confirmed) {
@@ -73,7 +84,7 @@
 			await new Promise((resolve) => setTimeout(resolve, 50));
 		}
 
-		return async ({ result, update }) => {
+		return async ({ result }) => {
 			if (result.type === 'failure') {
 				// We know now that we have data.errors
 				const errors = result.data?.errors;
@@ -104,32 +115,42 @@
 				}, 1000);
 			}
 		};
-	}}
->
-	<Title {title} />
+	}
+</script>
 
-	{#if description}
-		<p>{description}</p>
-	{/if}
-	{#each fields as field}
-		<div class="field" data-name={field.name} data-type={field.type}>
-			<div class="field-label">
-				<label for={field.name} class="form-label">
+<div class="form-generator">
+	<Title {title} {shortTitle} underTitle={description} />
+
+	<form class="form-group" bind:this={form} method="POST" id={formId} use:enhance={enhanceForm}>
+		{#each fields as field}
+			<div class="form-control" data-name={field.name} data-type={field.type}>
+				<label for={field.name}>
 					{field.label}
 					{#if field.optional}
-						<span class="required"> (optioneel) </span>
+						<span class="optional"> (optioneel) </span>
+					{/if}
+					{#if field.description}
+						<i
+							role="tooltip"
+							class="description"
+							on:mouseenter={() => (show = true)}
+							on:mouseleave={() => (show = false)}
+						>
+							<span use:floatingRef>
+								<Help />
+							</span>
+						</i>
+						{#if show}
+							<div class="tooltip" use:floatingContent>
+								{field.description}
+							</div>
+						{/if}
+					{:else}
+						<div />
 					{/if}
 				</label>
-				<!-- DESCRIPTION -->
-				{#if field.description}
-					<div class="field-description" title={field.description}><Help /></div>
-				{:else}
-					<div />
-				{/if}
-			</div>
-			<div>
 				{#if field.type === 'select'}
-					<select name={field.name} class="form-select" id={field.name}>
+					<select name={field.name} id={field.name}>
 						{#if !field.options}
 							<option value="">Geen opties</option>
 						{:else}
@@ -139,17 +160,10 @@
 						{/if}
 					</select>
 				{:else if field.type === 'checkbox'}
-					<input
-						type="checkbox"
-						class="form-check-input"
-						name={field.name}
-						id={field.name}
-						checked={Boolean(field.value)}
-					/>
+					<input type="checkbox" name={field.name} id={field.name} checked={Boolean(field.value)} />
 				{:else if field.type === 'textarea'}
 					<textarea
 						name={field.name}
-						class="form-textarea"
 						id={field.name}
 						placeholder={field.placeholder}
 						value={field.value || ''}
@@ -158,7 +172,6 @@
 					<input
 						type={field.type}
 						name={field.name}
-						class="form-control"
 						id={field.name}
 						placeholder={field.placeholder}
 						value={field.value || ''}
@@ -166,106 +179,10 @@
 				{/if}
 				<p id="{field.name}-error" class="form-error" />
 			</div>
-		</div>
-	{/each}
+		{/each}
 
-	<button type="submit">
-		{submitStr}
-	</button>
-</form>
-<!-- Dit is hier omdat SvelteKit mijn classes aan het prunen was -->
-<div class="has-error placeholder" />
-
-<style lang="scss">
-	$border-radius: 0.25rem;
-	$row-height: 3rem;
-	$padding: 0.25rem;
-	$button-padding: 0.5rem;
-
-	p {
-		margin: 0.5rem 0;
-	}
-
-	.field {
-		display: grid;
-
-		grid-template-columns: 200px 1fr;
-		gap: 0.5rem;
-
-		min-height: $row-height;
-
-		padding-top: $padding;
-		padding-bottom: $padding;
-
-		.field-label {
-			display: grid;
-			grid-template-columns: 1fr auto;
-
-			.required {
-				font-size: smaller;
-				color: #666;
-			}
-
-			.form-label {
-				margin-right: 0.25rem;
-				font-weight: 600;
-				padding-top: 0.4rem;
-			}
-
-			.field-description {
-				cursor: help;
-				margin-right: 0.25rem;
-				margin-top: 0.5rem;
-			}
-		}
-
-		select,
-		textarea,
-		input:not([type='checkbox']) {
-			width: 100%;
-			border: 1px solid var(--border-color);
-			border-radius: $border-radius;
-
-			height: $row-height;
-		}
-
-		textarea {
-			resize: vertical;
-			height: calc(2 * $row-height);
-		}
-
-		input[type='checkbox'] {
-			// change color
-
-			border-radius: $border-radius;
-			margin-top: $button-padding;
-			margin-bottom: $padding;
-
-			&:checked {
-				background-color: var(--primary-color);
-			}
-		}
-	}
-
-	button[type='submit'] {
-		padding: 0.5rem 1rem;
-		padding-bottom: 2rem;
-	}
-
-	.placeholder.has-error {
-		display: none;
-	}
-
-	.form-error {
-		color: red;
-	}
-
-	.has-error {
-		border: 1px solid red !important;
-	}
-
-	.has-error:focus {
-		// Red shadow
-		box-shadow: 0 0 0 0.25rem rgba(239, 68, 68, 0.25) !important;
-	}
-</style>
+		<button type="submit">
+			{submitStr}
+		</button>
+	</form>
+</div>
