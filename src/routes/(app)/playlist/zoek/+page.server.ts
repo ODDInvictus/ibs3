@@ -12,5 +12,13 @@ export const load = (async ({ locals }) => {
                 trackId: true,
             },
         })).map((reaction) => reaction.trackId),
+        playlist: (await db.track.findMany({
+            where: {
+                inPlaylist: true
+            },
+            select: {
+                id: true
+            }
+        })).map((track) => track.id),
     };
 }) satisfies PageServerLoad;

@@ -13,6 +13,7 @@
 	import Admin from '~icons/tabler/shield-check';
 	import Cog6Tooth from '~icons/tabler/settings';
 	import FaceFrown from '~icons/tabler/accessible-off';
+	import Music from '~icons/tabler/music';
 	import PopupMenu from '$lib/components/PopupMenu.svelte';
 	import Breadcrumps from '$lib/components/breadcrumps.svelte';
 	import { LDAP_IDS } from '$lib/constants';
@@ -164,6 +165,13 @@
 			<a href="/financieel" class="sm:justify-left sm:items-start sm:w-full ">
 				<i><Folder font-size="1.3rem" /></i>
 				<span class="hidden sm:block">Financieel</span>
+			</a>
+		</section>
+
+		<section>
+			<a href="/playlist" class="sm:justify-left sm:items-start sm:w-full ">
+				<i><Music font-size="1.3rem" /></i>
+				<span class="hidden sm:block">Playlist</span>
 			</a>
 		</section>
 

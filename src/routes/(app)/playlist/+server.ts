@@ -33,6 +33,34 @@ export const POST: RequestHandler = async ({request, locals}) => {
             }
         });
 
+        const count = await db.reaction.count({
+            where: {
+                trackId
+            }
+        });
+
+        if (count >= 4) return new Response("", {status: 201});
+
+        return new Response();
+    } catch (error) {
+        console.error(error);
+        return new Response("Error", { status: 500 });
+    }
+};
+
+export const PUT: RequestHandler = async ({request}) => {
+    const {trackId} = await request.json();
+
+    try {
+        await db.track.update({
+            where: {
+                id: trackId,
+            },
+            data: {
+                inPlaylist: true,
+            },
+        });
+
         return new Response();
     } catch (error) {
         console.error(error);

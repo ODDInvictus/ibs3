@@ -1,14 +1,16 @@
 <script lang="ts">
-  import Pause from "~icons/tabler/pause";
-  import Play from "~icons/tabler/play";
+  import Pause from "~icons/tabler/playerPauseFilled";
+  import Play from "~icons/tabler/playerPlayFilled";
   import Heart from "~icons/tabler/heart";
   import HeartFilled from "~icons/tabler/heart-filled";
 	import { toast } from "$lib/notification";
+	import { goto } from "$app/navigation";
 
 
   export let search: string;
   export let tracks: SpotifyApi.TrackObjectFull[];
   export let liked: string[];
+  export let playlist: string[];
 
   const getSmallestImage = (images: SpotifyApi.ImageObject[]) => {
     return images.reduce((smallest, image) => {
@@ -65,9 +67,6 @@
       });
     }
   };
-
-  $: console.log(liked);
-  $: console.log(tracks[0])
 </script>
 
 <audio src={previewSrc} bind:this={audioPlayer} />
@@ -76,7 +75,7 @@
     <p>No tracks found</p>
   {/if}
   {#each tracks as track}
-    <li>
+    <li class={playlist.includes(track.id) ? "highlight": ""}>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div on:click={ async () => {
@@ -102,13 +101,14 @@
             if (track.preview_url) previewSrc = track.preview_url;
           }
         }}
-        class={`${track.preview_url ? "clickable" : ""} ${previewSrc === track.preview_url && !audioPlayer.paused ? "highlight" : ""}`}
+        class={`${track.preview_url ? "clickable" : ""}`}
         on:mouseenter={() => (hovering = track.preview_url ?? "")}
         on:mouseleave={() => (hovering = "")}
       >
         <img
           src={getSmallestImage(track.album.images).url}
           alt={"Album cover " + track.name}
+          class={`${previewSrc === track.preview_url && !audioPlayer.paused ? "highlight" : ""}`}
         />
         {#if track.preview_url}
           {#if (hovering === track.preview_url && (previewSrc !== track.preview_url || audioPlayer.paused)) || (previewSrc === track.preview_url && audioPlayer.paused)}
@@ -122,8 +122,8 @@
           {/if}
         {/if}
       </div>
-      <div>
-        <p>{track.name}</p>
+      <div class="info">
+        <a class="title" href={track.external_urls.spotify} target="_blank">{track.name}</a>
         <p class="artists">{formatArtists(track.artists)}</p>
       </div>
     </li>
@@ -135,9 +135,22 @@
 
   ul {
     li {
-      display: flex;
+      display: grid;
+      grid-template-columns: 20px 58px 1fr;
+      grid-template-rows: 58px;
       align-items: center;
       gap: 20px;
+
+      &.highlight {
+        $hightlight-color: var(--primary-light-color);
+
+        background-color: $hightlight-color;
+        box-shadow: $hightlight-color -20px 0px 0px 5px, $hightlight-color 20px 0px 0px 5px;
+        
+        a, p, * {
+          color: white !important;
+        };
+      }
 
       .like {
         $user-select: none;
@@ -157,8 +170,12 @@
       
       img {
         -webkit-tap-highlight-color: none;
-        height: 64px;
-        width: 64px;
+        height: 58px;
+        width: 58px;
+
+        &.highlight {
+          opacity: $highlight-opacity;
+        }
       }
 
       .clickable {
@@ -169,15 +186,29 @@
         &:hover:not(.highlight) img {
           opacity: $highlight-opacity;
         }
-
-        &.highlight {
-          opacity: $highlight-opacity;
-        }
       }
 
-      .artists {
-        font-size: 0.8rem;
-        color: #888;
+      .info {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        a {
+          color: var(--text-color);
+        }
+
+        .artists {
+          font-size: 0.8rem;
+          color: #888;
+          width: calc(100vw - 180px);
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .title:hover {
+          text-decoration: underline;
+          cursor: pointer;
+        }
       }
 
       &:not(:last-child) {
