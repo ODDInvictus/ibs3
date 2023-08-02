@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types';
 import spotify from '$lib/server/spotify';
 
-export const GET: any = ({ request }: { request: any }) => {
+export const GET: RequestHandler = ({ request }) => {
 	const REDIRECT_URL = '/playlist/auth';
 	const params = new URLSearchParams(new URL(request.url).search);
 	const code = params.get('code');
