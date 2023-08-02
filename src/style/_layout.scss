@@ -8,6 +8,14 @@
 	flex-direction: column;
 }
 
+.hidden {
+	visibility: hidden;
+}
+
+.none {
+	display: none;
+}
+
 $steps: 20;
 
 @mixin margin-padding-gen {
@@ -88,8 +96,6 @@ $steps: 20;
 	overscroll-behavior: contain;
 
 	background-color: var(--color-bg-base);
-	scrollbar-color: var(--color-scrollbar) var(--color-bg-base);
-	scrollbar-width: thin;
 
 	display: grid;
 	grid-template-areas: 'nav top' 'nav main';
@@ -97,14 +103,18 @@ $steps: 20;
 	grid-template-rows: var(--topbar-height) 1fr;
 
 	gap: 2rem;
+
+	scrollbar-color: var(--color-scrollbar) var(--color-bg-base);
+	scrollbar-width: thin;
 }
 
-.layout--main::-webkit-scrollbar {
-	width: 10px;
-	height: 10px;
+::-webkit-scrollbar {
+	width: 4px;
+	height: 4px;
 }
-.layout--main::-webkit-scrollbar-thumb {
-	background: var(--color-scrollbar) var(--color-bg-base);
+
+::-webkit-scrollbar-thumb {
+	background: var(--color-scrollbar);
 }
 
 .layout--overlay {
