@@ -1,0 +1,8 @@
+.tooltip {
+	position: absolute;
+	background-color: var(--color-primary);
+	color: var(--color-text-light);
+	border-radius: var(--border-radius);
+	padding: var(--container-padding);
+	width: var(--tooltip-width);
+}
