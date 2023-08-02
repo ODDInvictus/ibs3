@@ -12,6 +12,9 @@ import markdownItArrow from 'markdown-it-smartarrows'
 import markdownItKbd from 'markdown-it-kbd';
 import markdownItPlainText from 'markdown-it-plain-text'
 
+import xss from 'xss'
+
+
 const md = new markdownIt({
   linkify: true,
   breaks: true,
@@ -27,8 +30,7 @@ const md = new markdownIt({
 
 export function markdown(text: string | null | undefined): string | null {
   if (text === null || text === undefined) return null;
-  // Voor nu sanitize maar even weg gehaald, aangezien het niet werkt in de browser lmaoo
-  return md.renderInline(text)
+  return xss(md.renderInline(text))
 }
 
 export function stripMarkdown(text: string | undefined) {
