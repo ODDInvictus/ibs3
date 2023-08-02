@@ -1,5 +1,4 @@
 // Render markdown
-import sanitize from 'sanitize-html';
 import markdownIt from 'markdown-it';
 // @ts-expect-error Geen types
 import markdownItSub from 'markdown-it-sub';
@@ -28,10 +27,8 @@ const md = new markdownIt({
 
 export function markdown(text: string | null | undefined): string | null {
   if (text === null || text === undefined) return null;
-  return sanitize(md.renderInline(text), {
-    disallowedTagsMode: 'escape',
-    allowedTags: ['em', 'strong', 's', 'br', 'pre', 'code', 'a', 'sup', 'sub', 'ins', 'span', 'kbd']
-  });
+  // Voor nu sanitize maar even weg gehaald, aangezien het niet werkt in de browser lmaoo
+  return md.renderInline(text)
 }
 
 export function stripMarkdown(text: string | undefined) {
