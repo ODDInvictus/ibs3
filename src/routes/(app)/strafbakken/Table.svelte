@@ -25,7 +25,7 @@
 	};
 </script>
 
-<main>
+<table class="not-full-width">
 	<thead>
 		<th>Naam</th>
 		<th>Bakken</th>
@@ -42,6 +42,7 @@
 				</a>
 				<div class="actions cell">
 					<button
+						class="btn-a"
 						on:click={() =>
 							openModal(Modal, {
 								username: user.nickname || user.firstName,
@@ -50,14 +51,13 @@
 								index: i
 							})}
 					>
-						<Plus class="cursor-pointer hover:invert-[.35] z-0 focus:outline-0 duration-[400ms]" />
+						<i><Plus /></i>
 					</button>
-					<button on:click={user._count.StrafbakReceived ? () => trekBak(user.id, i) : null}>
-						<Minus
-							class={user._count.StrafbakReceived
-								? 'cursor-pointer hover:invert-[.35] z-0 focus:outline-0 -translate-x-1 duration-[400ms]'
-								: 'hidden'}
-						/>
+					<button
+						class="btn-a"
+						on:click={user._count.StrafbakReceived ? () => trekBak(user.id, i) : null}
+					>
+						<i class={user._count.StrafbakReceived ? '' : 'none'}><Minus /></i>
 					</button>
 				</div>
 			</row>
@@ -71,7 +71,7 @@
 			</row>
 		{/if}
 	</tbody>
-</main>
+</table>
 
 <style lang="scss">
 	$cell-padding: 0.75rem;
@@ -86,6 +86,10 @@
 		}
 	}
 
+	i:hover {
+		filter: invert(35%);
+	}
+
 	tbody {
 		display: grid;
 		grid-template-columns: 1fr;
@@ -96,10 +100,11 @@
 			transition: all 0.4s ease;
 
 			&:nth-child(odd) {
-				background-color: var(--primary-focus-color);
+				background-color: var(--color-table-highlight);
 				color: white;
-				a {
-					color: white !important;
+				a,
+				i {
+					color: white;
 				}
 			}
 

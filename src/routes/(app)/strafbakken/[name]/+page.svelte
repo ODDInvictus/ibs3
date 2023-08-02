@@ -21,8 +21,8 @@
 		title="{name} zijn {data.strafbakken.StrafbakReceived.length} strafbakken"
 		shortTitle="{name} :: Strafbakken"
 	/>
-	<table-container>
-		<table>
+	<div class="table-container">
+		<table class="striped">
 			<thead>
 				<th>Gever</th>
 				<th>Reden</th>
@@ -50,23 +50,11 @@
 				{/each}
 			</tbody>
 		</table>
-	</table-container>
+	</div>
 </main>
 
-<style lang="scss">
-	$tr-padding: 0.75rem;
-
-	table-container {
-		display: grid;
-		place-items: center;
-
-		tbody {
-			tr {
-				&:nth-child(odd) {
-					background-color: var(--primary-color);
-					color: white;
-				}
-			}
-		}
+<style>
+	.table-container {
+		overflow: scroll;
 	}
 </style>

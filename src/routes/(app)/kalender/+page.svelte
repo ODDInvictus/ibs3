@@ -140,7 +140,7 @@
 
 			.activity-description {
 				overflow-x: hidden;
-				overflow-y: scroll;
+				overflow-y: auto;
 			}
 
 			.activity-time {

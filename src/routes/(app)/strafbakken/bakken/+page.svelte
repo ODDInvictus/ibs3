@@ -41,26 +41,30 @@
 		{/if}
 	</table-container>
 	{#if data.week !== '0'}
+		<div class="link">
+			<a href="/strafbakken/bakken?week=0" class="button" data-sveltekit-preload-data="hover">
+				Wie is er deze week meesterbakker?
+			</a>
+		</div>
+	{/if}
+	<div class="link">
 		<a
-			href="/strafbakken/bakken?week=0"
-			class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center transition"
+			href={data.week === null ? '/strafbakken' : '/strafbakken/bakken'}
+			class="button"
 			data-sveltekit-preload-data="hover"
 		>
-			Wie is er deze week meesterbakker?
+			Terug
 		</a>
-	{/if}
-	<a
-		href={data.week === null ? '/strafbakken' : '/strafbakken/bakken'}
-		class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center transition"
-		data-sveltekit-preload-data="hover"
-	>
-		Terug
-	</a>
+	</div>
 </div>
 
 <style lang="scss">
 	$margin: 1rem;
 	$cell-padding: 0.75rem;
+
+	.link {
+		margin-top: 1rem;
+	}
 
 	.root {
 		display: flex;
