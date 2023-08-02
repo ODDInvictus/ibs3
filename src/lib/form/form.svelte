@@ -74,8 +74,6 @@
 		}
 
 		return async ({ result, update }) => {
-			console.log({ result, update });
-
 			if (result.type === 'failure') {
 				// We know now that we have data.errors
 				const errors = result.data?.errors;
@@ -87,7 +85,7 @@
 					toast({
 						title: 'Oei!',
 						message: msg,
-						type: 'error'
+						type: 'danger'
 					});
 				}
 			} else if (result.type === 'success') {

@@ -47,8 +47,6 @@ export const actions = {
     const toAlias = params.id
     const senderAlias = (body.sender as string).split('<')[1].split('@')[0]
 
-    console.log(body)
-
     if (!body.subject || !body.message || !body.toName) {
       return {
         status: 400,

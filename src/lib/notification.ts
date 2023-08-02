@@ -10,7 +10,6 @@ type Notification = {
 export const notifications = writable<Notification[]>([])
 
 export function toast(notification: Notification) {
-  console.log('Toast called')
   notifications.update((notifications) => [...notifications, notification])
   setTimeout(removeToast, notification.time ?? 5000)
 }

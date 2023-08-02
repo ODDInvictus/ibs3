@@ -14,7 +14,6 @@
 	method="POST"
 	use:enhance={() => {
 		return async ({ result }) => {
-			console.log(result);
 			if (result.data?.success) {
 				toast({
 					title: 'Email verstuurd',

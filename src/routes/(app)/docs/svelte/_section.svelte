@@ -48,7 +48,6 @@
 
 	function removeClasses(element: Element) {
 		element.classList.forEach((c) => {
-			console.log(c);
 			if (c.startsWith('s-')) {
 				element.classList.remove(c);
 			}

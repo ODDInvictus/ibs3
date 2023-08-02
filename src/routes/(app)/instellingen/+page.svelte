@@ -45,7 +45,6 @@
 		})
 			.then(async (res) => {
 				const body = await res.json();
-				console.log(body);
 
 				if (body.success) {
 					toast({
@@ -60,7 +59,7 @@
 					toast({
 						title: 'Voorkeur niet aangepast',
 						message: body.message,
-						type: 'error'
+						type: 'danger'
 					});
 				}
 			})
