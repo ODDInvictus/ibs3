@@ -5,4 +5,6 @@
 	border-radius: var(--border-radius);
 	padding: var(--container-padding);
 	width: var(--tooltip-width);
+
+	border: 0.5px solid var(--color-text-light);
 }
