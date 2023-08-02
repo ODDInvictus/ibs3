@@ -20,6 +20,12 @@ button {
 	background-color: var(--color-primary);
 }
 
+a.button {
+	@extend button;
+
+	text-decoration: none;
+}
+
 button.btn-a {
 	all: unset;
 	color: var(--color-primary);
@@ -28,6 +34,10 @@ button.btn-a {
 	&:hover {
 		text-decoration: underline;
 	}
+}
+
+button.btn-a.light {
+	color: var(--color-text-light);
 }
 
 button.btn-primary {
