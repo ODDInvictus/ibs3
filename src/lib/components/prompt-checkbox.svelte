@@ -21,7 +21,7 @@
 	}
 </script>
 
-<dialog id="prompt-checkbox-dialog">
+<dialog id="prompt-checkbox-dialog" class="checkbox">
 	<h1>{$promptCheckboxStore.title}</h1>
 
 	<p>{$promptCheckboxStore.message}</p>
@@ -42,60 +42,3 @@
 		<button on:click={() => action(false)}>Annuleren</button>
 	</div>
 </dialog>
-
-<style lang="scss">
-	$padding: 1rem;
-
-	dialog {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		min-width: 25rem;
-
-		background: var(--color-primary);
-		color: var(--color-text-light);
-		border-radius: var(--border-radius);
-		border: none;
-		padding: 2rem;
-
-		z-index: 1000;
-	}
-
-	#checkbox {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		width: 100%;
-	}
-
-	.ok {
-		padding: 0.5rem;
-		width: 8rem;
-	}
-
-	h1,
-	p {
-		padding-bottom: $padding;
-	}
-
-	.buttons {
-		padding-top: 1rem;
-		width: 100%;
-		display: flex;
-		justify-content: flex-end;
-		gap: $padding;
-	}
-
-	// media query for phones
-	@media (max-width: 600px) {
-		#prompt-checkbox-dialog {
-			width: 550px !important;
-			min-width: auto;
-		}
-
-		.ok {
-			width: 6rem;
-		}
-	}
-</style>
