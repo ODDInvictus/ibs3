@@ -7,7 +7,7 @@
 	import Arrow from '$lib/components/icons/Arrow.svelte';
 	import Loader from '$lib/components/Loader.svelte';
 	import { toast } from '$lib/notification';
-	import { SPOTIFY_CONSTANTS } from '$lib/constants';
+	import SPOTIFY_CONSTANTS from '$lib/spotifyConstants';
 
 	export let data: PageServerData;
 

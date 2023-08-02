@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { SPOTIFY_CONSTANTS } from '$lib/constants';
+	import SPOTIFY_CONSTANTS from '$lib/spotifyConstants';
 
 	const { CLIENT_ID, REDIRECT_URI } = SPOTIFY_CONSTANTS;
 	const scopes = [

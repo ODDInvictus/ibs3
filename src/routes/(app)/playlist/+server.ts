@@ -1,7 +1,7 @@
 import db from '$lib/server/db';
 import spotify, { refreshToken } from '$lib/server/spotify';
 import type { RequestHandler } from './$types';
-import { SPOTIFY_CONSTANTS } from '$lib/constants';
+import SPOTIFY_CONSTANTS from '$lib/spotifyConstants';
 
 export const GET: RequestHandler = async ({ request }) => {
 	const url = new URL(request.url);
