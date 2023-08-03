@@ -127,6 +127,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>IBS :: Playlist</title>
+</svelte:head>
+
 <audio src="" bind:this={audioPlayer} />
 {#if !mounted}
 	<div class="load">
