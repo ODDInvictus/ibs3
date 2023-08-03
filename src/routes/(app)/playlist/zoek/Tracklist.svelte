@@ -149,12 +149,7 @@
 			}
 
 			.like {
-				$user-select: none;
-				-webkit-user-select: $user-select;
-				-khtml-user-select: $user-select;
-				-moz-user-select: $user-select;
-				-o-user-select: $user-select;
-				user-select: $user-select;
+				user-select: none;
 
 				transform-origin: center;
 
