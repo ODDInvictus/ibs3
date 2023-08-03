@@ -71,11 +71,12 @@
 	{#each tracks as track}
 		<li class={playlist.includes(track.id) ? 'highlight' : ''}>
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
-			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<div
 				on:click={async () => {
 					await toggleLike(track);
 				}}
+				role="button"
+				tabindex="0"
 				class="like"
 			>
 				{#if liked.includes(track.id)}

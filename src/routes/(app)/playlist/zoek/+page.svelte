@@ -20,7 +20,10 @@
 	let search = '';
 	let tracks: Promise<SpotifyApi.TrackObjectFull[] | null>;
 	$: tracks = (async () => {
-		return mounted && search ? (await (await searchTracks(search)).json()) ?? null : null;
+		if (!mounted || !search) return null;
+		const res = await searchTracks(search);
+		if (res.ok) return res.json();
+		else throw new Error('Error tijdens het zoeken');
 	})();
 
 	const searchTracks = async (search: string) => {
