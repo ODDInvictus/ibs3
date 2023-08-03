@@ -63,12 +63,6 @@
 		margin-top: 1rem;
 	}
 
-	input {
-		width: 100%;
-		border: 1px solid var(--border-color);
-		border-radius: 5px;
-	}
-
 	.label {
 		font-weight: 600;
 	}

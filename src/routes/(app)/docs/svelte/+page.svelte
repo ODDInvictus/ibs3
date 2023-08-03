@@ -9,6 +9,7 @@
 	import { promptCheckbox } from '$lib/promptCheckbox';
 	import { onMount } from 'svelte';
 	import Table from '$lib/components/table.svelte';
+	import InputFile from '$lib/components/input-file.svelte';
 
 	function testToast(toastType: 'success' | 'danger' | 'warning' | 'info') {
 		toast({
@@ -305,21 +306,17 @@
 	<input type="checkbox" />
 	<input type="checkbox" disabled />
 
-	<div class="select">
-		<select>
-			<option>option 1</option>
-			<option>option 2</option>
-			<option>option 3</option>
-		</select>
-	</div>
+	<select>
+		<option>option 1</option>
+		<option>option 2</option>
+		<option>option 3</option>
+	</select>
 
 	<div>
 		<input name="x" type="radio" />
 		<input name="x" type="radio" />
 		<input name="x" type="radio" />
 	</div>
-
-	<input type="file" />
 
 	<input type="date" />
 
@@ -330,6 +327,11 @@
 	<input type="color" />
 
 	<input type="range" />
+</Section>
+
+<Section title="Form(extras)" noGeneration>
+	<p>Dit is een custom bestands selector, gebruik hem met <code>InputFile name="x"</code></p>
+	<InputFile name="bestand" id="bestand" />
 </Section>
 
 <Section title="HR">

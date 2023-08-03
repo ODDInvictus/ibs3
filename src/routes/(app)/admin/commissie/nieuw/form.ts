@@ -62,7 +62,7 @@ export const newCommitteeForm = new Form<{
       placeholder: 'Commissie naam'
     } as Field<'text'>,
     {
-      label: 'Ldap ID',
+      label: 'LdapID',
       name: 'ldapId',
       type: 'text',
       minLength: 1,
