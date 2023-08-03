@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { env } from '$env/dynamic/public';
+	import InputFile from '$lib/components/input-file.svelte';
 	import Title from '$lib/components/title.svelte';
 
 	let member = $page.data.member;
@@ -54,7 +55,7 @@
 	{#if $page.data.isCurrentUser}
 		<div>
 			<form method="POST" enctype="multipart/form-data">
-				<input type="file" name="image" accept="image/*" />
+				<InputFile name="image" id="image" accept="image/*" />
 				{#if form?.success !== undefined}
 					<p class="error">{form?.message}</p>
 				{:else}

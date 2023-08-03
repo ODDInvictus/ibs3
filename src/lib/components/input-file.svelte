@@ -3,6 +3,7 @@
 
 	export let name: string;
 	export let id: string;
+	export let accept: string = '*/*';
 	let files: FileList | null;
 </script>
 
@@ -17,5 +18,5 @@
 			<label for={name}>Selecteer een bestand...</label>
 		</div>
 	{/if}
-	<input bind:files type="file" {id} {name} />
+	<input bind:files type="file" {id} {name} {accept} />
 </div>
