@@ -93,7 +93,7 @@
 
 	const react = async (track: SpotifyApi.SingleTrackResponse, liked: boolean) => {
 		try {
-			await fetch('/playlist', {
+			await fetch('', {
 				method: 'POST',
 				body: JSON.stringify({
 					trackId: track.id,
