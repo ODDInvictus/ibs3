@@ -50,7 +50,7 @@ form .form-control {
 }
 
 textarea,
-input:not([type='file'], [type='checkbox'], [type='radio'], [type='color']),
+input:not([type='checkbox'], [type='radio'], [type='color']),
 select {
 	all: unset;
 
@@ -58,6 +58,9 @@ select {
 
 	border: 1px solid var(--color-form-border);
 	border-radius: var(--form-border-radius);
+
+	background-color: var(--color-form-bg);
+	color: var(--color-text);
 
 	&::placeholder {
 		text-transform: lowercase;
@@ -70,6 +73,18 @@ select {
 	}
 }
 
+select {
+	-moz-appearance: auto; /* Firefox */
+	-webkit-appearance: auto; /* Safari and Chrome */
+	appearance: auto;
+}
+
+optgroup {
+	all: unset;
+	font-style: normal;
+	font-weight: 400;
+}
+
 textarea {
 	resize: vertical;
 	white-space: pre-wrap;
@@ -77,19 +92,28 @@ textarea {
 
 input[type='checkbox'],
 input[type='radio'] {
-	all: unset;
-
 	height: 1rem;
 	width: 1rem;
 
-	border: 1px solid var(--color-form-border);
-	border-radius: var(--form-border-radius);
-
 	&:checked {
-		background-color: var(--color-primary);
-		color: var(--color-text-light);
-		border-color: var(--color-primary);
+		accent-color: var(--color-secondary);
 	}
+}
+
+input[type='file'] {
+	display: inline-block;
+	position: absolute;
+	z-index: 1;
+	width: 100%;
+	height: 50px;
+	top: 0;
+	left: 0;
+	opacity: 0;
+	cursor: pointer;
+}
+
+dialog {
+	max-width: none;
 }
 
 @media (max-width: 600px) {
