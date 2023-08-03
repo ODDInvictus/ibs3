@@ -48,8 +48,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				}
 			},
 			update: {
-				liked,
-				updatedAt: new Date()
+				liked
 			},
 			create: {
 				userId,
@@ -89,8 +88,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				id: trackId
 			},
 			data: {
-				inPlaylist: true,
-				updatedAt: new Date()
+				inPlaylist: true
 			}
 		});
 	} catch (error) {

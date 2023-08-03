@@ -611,16 +611,16 @@ model Track {
   inPlaylist Boolean    @default(false)
   likes      Reaction[]
   createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
 
 model Reaction {
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   trackId   String
-  track     Track    @relation(fields: [trackId], references: [id])
+  track     Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   liked     Boolean
 
   @@id([userId, trackId])
