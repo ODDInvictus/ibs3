@@ -86,9 +86,9 @@
 				{/if}
 			</div>
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
-			<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<div
+				role="button"
+				tabindex="0"
 				on:click={() => {
 					hovering = 'een trigger zodat svelte het weer snapt';
 					hovering = track.preview_url ?? '';
