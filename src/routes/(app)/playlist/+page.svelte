@@ -185,7 +185,7 @@
 						skipped = [...skipped, current];
 					}}
 				>
-					<svelte:component this={Arrow} width="50" height="50" />
+					<Arrow width="50" height="50" />
 				</i>
 
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -198,7 +198,7 @@
 						await Promise.all([react(current, true), next()]);
 					}}
 				>
-					<svelte:component this={Heart} width="70" height="70" />
+					<Heart width="70" height="70" />
 				</i>
 			</div>
 		</div>
