@@ -4,7 +4,6 @@
 	import Heart from '~icons/tabler/heart';
 	import HeartFilled from '~icons/tabler/heart-filled';
 	import { toast } from '$lib/notification';
-	import { goto } from '$app/navigation';
 
 	export let search: string;
 	export let tracks: SpotifyApi.TrackObjectFull[];

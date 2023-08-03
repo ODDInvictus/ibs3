@@ -4,7 +4,7 @@ import db from '$lib/server/db';
 export const load = (async ({ locals }) => {
 	return {
 		liked: (
-			await db.reaction.findMany({
+			await db.trackReaction.findMany({
 				where: {
 					userId: locals.user.id,
 					liked: true

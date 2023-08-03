@@ -79,7 +79,7 @@ model User {
   EmailAliasUser          EmailAliasUser[]
   ClickSession            ClickSession[]
   Preference              Preference[]
-  Reaction                Reaction[]
+  TrackReaction           TrackReaction[]
 }
 
 model Account {
@@ -607,14 +607,14 @@ model ClickSession {
 //
 
 model Track {
-  id         String     @id // Geen default want dit id komt van spotify
-  inPlaylist Boolean    @default(false)
-  likes      Reaction[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id         String          @id // Geen default want dit id komt van spotify
+  inPlaylist Boolean         @default(false)
+  likes      TrackReaction[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 }
 
-model Reaction {
+model TrackReaction {
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   trackId   String

@@ -4,8 +4,8 @@
 	import Title from '$lib/components/title.svelte';
 	import Loader from '$lib/components/Loader.svelte';
 	import { toast } from '$lib/notification';
-	import SPOTIFY_CONSTANTS from '$lib/spotifyConstants';
 	import Playlist from '~icons/tabler/playlist';
+	import { PUBLIC_PLAYLIST_ID } from '$env/static/public';
 
 	import type { PageServerData } from './$types';
 
@@ -33,10 +33,7 @@
 	{#if mounted}
 		<div class="top">
 			<input type="text" name="search" bind:value={search} placeholder="Zoeken..." />
-			<a
-				href={`https://open.spotify.com/playlist/${SPOTIFY_CONSTANTS.PLAYLIST_ID}`}
-				target="_blank"
-			>
+			<a href={`https://open.spotify.com/playlist/${PUBLIC_PLAYLIST_ID}`} target="_blank">
 				<Playlist />
 			</a>
 		</div>

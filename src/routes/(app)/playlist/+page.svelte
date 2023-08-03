@@ -7,11 +7,11 @@
 	import Arrow from '$lib/components/icons/Arrow.svelte';
 	import Loader from '$lib/components/Loader.svelte';
 	import { toast } from '$lib/notification';
-	import SPOTIFY_CONSTANTS from '$lib/spotifyConstants';
+	import { PUBLIC_MIN_LIKES } from '$env/static/public';
 
 	export let data: PageServerData;
 
-	const { MIN_LIKES } = SPOTIFY_CONSTANTS;
+	const MIN_LIKES = Number.isNaN(Number(PUBLIC_MIN_LIKES)) ? 4 : Number(PUBLIC_MIN_LIKES);
 
 	let current: SpotifyApi.SingleTrackResponse | undefined = undefined;
 	let tracks: SpotifyApi.SingleTrackResponse[] = [];

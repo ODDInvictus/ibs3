@@ -18,7 +18,7 @@
 
 	let mounted = false;
 
-	onMount(async () => {
+	onMount(() => {
 		if (error)
 			toast({
 				title: 'Error',

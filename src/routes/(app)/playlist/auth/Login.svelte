@@ -1,7 +1,6 @@
 <script lang="ts">
-	import SPOTIFY_CONSTANTS from '$lib/spotifyConstants';
+	import { PUBLIC_SPOTIFY_CLIENT_ID, PUBLIC_SPOTIFY_REDIRECT_URI } from '$env/static/public';
 
-	const { CLIENT_ID, REDIRECT_URI } = SPOTIFY_CONSTANTS;
 	const scopes = [
 		'user-read-private',
 		'user-read-email',
@@ -21,8 +20,8 @@
 		return text;
 	}
 
-	$: authorizeURL = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
-		REDIRECT_URI
+	$: authorizeURL = `https://accounts.spotify.com/authorize?client_id=${PUBLIC_SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
+		PUBLIC_SPOTIFY_REDIRECT_URI
 	)}&scope=${encodeURIComponent(scopes.join(' '))}&state=${state}&show_dialog=true`;
 </script>
 
