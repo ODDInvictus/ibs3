@@ -64,9 +64,13 @@
 		grid-template-columns: 100px 1fr;
 		gap: 1rem;
 
-		@media (max-width: 640px) {
+		@media (max-width: 600px) {
 			grid-template-columns: 1fr;
 			gap: 0.25rem;
+
+			button {
+				margin-top: 1rem;
+			}
 		}
 
 		label {

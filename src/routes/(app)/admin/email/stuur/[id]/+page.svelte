@@ -11,6 +11,8 @@
 />
 
 <form
+	class="form-group"
+	id="send-email-form"
 	method="POST"
 	use:enhance={() => {
 		return async ({ result }) => {
@@ -33,37 +35,34 @@
 		};
 	}}
 >
-	<label class="label" for="subject">Onderwerp</label>
-	<input type="text" name="subject" id="subject" required />
+	<div class="form-control">
+		<label class="label" for="subject">Onderwerp</label>
+		<input type="text" name="subject" id="subject" required />
+	</div>
 
-	<label class="label" for="message">Bericht</label>
-	<textarea name="message" id="message" required />
+	<div class="form-control">
+		<label class="label" for="message">Bericht</label>
+		<textarea name="message" id="message" required />
+	</div>
 
-	<label class="label" for="sender">Verstuur-adres</label>
-	<select name="sender" required>
-		{#each $page.data.aliases as alias}
-			<option value={alias}>{alias}</option>
-		{/each}
-	</select>
+	<div class="form-control">
+		<label class="label" for="sender">Verstuur-adres</label>
+		<select name="sender" required>
+			{#each $page.data.aliases as alias}
+				<option value={alias}>{alias}</option>
+			{/each}
+		</select>
+	</div>
 
-	<label class="label" for="toName">Naam ontvanger(s)</label>
-	<input type="text" name="toName" id="toName" required />
+	<div class="form-control">
+		<label class="label" for="toName">Naam ontvanger(s)</label>
+		<input type="text" name="toName" id="toName" required />
+	</div>
 
-	<p class="label">Aan</p>
-	<p>{$page.data.to}</p>
+	<!-- <div class="form-control">
+		<p class="label">Aan</p>
+		<p>{$page.data.to}</p>
+	</div> -->
 
 	<button type="submit">Verstuur</button>
 </form>
-
-<style lang="scss">
-	form {
-		display: grid;
-		grid-template-columns: 150px 1fr;
-		grid-gap: 1rem;
-		margin-top: 1rem;
-	}
-
-	.label {
-		font-weight: 600;
-	}
-</style>
