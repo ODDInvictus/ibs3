@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_SPOTIFY_CLIENT_ID, PUBLIC_SPOTIFY_REDIRECT_URI } from '$env/static/public';
+	import { generateRandomString } from '$lib/utils';
 
 	const scopes = [
 		'user-read-private',
@@ -8,17 +9,6 @@
 		'playlist-modify-private'
 	];
 	const state = generateRandomString(16);
-
-	function generateRandomString(length: number) {
-		let text = '';
-		const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-		for (let i = 0; i < length; i++) {
-			text += possible.charAt(Math.floor(Math.random() * possible.length));
-		}
-
-		return text;
-	}
 
 	$: authorizeURL = `https://accounts.spotify.com/authorize?client_id=${PUBLIC_SPOTIFY_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(
 		PUBLIC_SPOTIFY_REDIRECT_URI
