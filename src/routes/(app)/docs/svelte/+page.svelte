@@ -80,6 +80,18 @@
 			</tr>
 		</tbody>
 	</table>
+
+	<h3>Tooltips</h3>
+
+	<p>
+		Voor tooltips gebruiken we <a href="https://github.com/fedorovvvv/svelte-floating-ui"
+			>svelte-floating-ui</a
+		>
+	</p>
+	<p>
+		Je moet daarvoor een div hebben met de class <code>.tooltip</code>, zie
+		<code>$lib/form/Form.svelte</code> hoe dit werkt.
+	</p>
 </Section>
 
 <Section title="Tables">
@@ -291,15 +303,21 @@
 	<textarea placeholder="textarea" />
 
 	<input type="checkbox" />
-	<input type="checkbox" checked />
+	<input type="checkbox" disabled />
 
-	<select>
-		<option>option 1</option>
-		<option>option 2</option>
-		<option>option 3</option>
-	</select>
+	<div class="select">
+		<select>
+			<option>option 1</option>
+			<option>option 2</option>
+			<option>option 3</option>
+		</select>
+	</div>
 
-	<input type="radio" />
+	<div>
+		<input name="x" type="radio" />
+		<input name="x" type="radio" />
+		<input name="x" type="radio" />
+	</div>
 
 	<input type="file" />
 
