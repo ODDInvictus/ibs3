@@ -5,11 +5,13 @@
 	import Loader from '$lib/components/Loader.svelte';
 	import { toast } from '$lib/notification';
 	import Playlist from '~icons/tabler/playlist';
-	import { PUBLIC_PLAYLIST_ID } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 
 	import type { PageServerData } from './$types';
 
 	export let data: PageServerData;
+
+	const { PUBLIC_PLAYLIST_ID } = env;
 
 	let mounted = false;
 

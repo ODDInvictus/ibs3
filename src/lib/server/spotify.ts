@@ -1,7 +1,9 @@
 import SpotifyWebApi from 'spotify-web-api-node';
 import { SPOTIFY_CLIENT_SECRET } from '$env/static/private';
 import db from './db';
-import { PUBLIC_SPOTIFY_CLIENT_ID, PUBLIC_SPOTIFY_REDIRECT_URI } from '$env/static/public';
+import { env } from '$env/dynamic/public';
+
+const { PUBLIC_SPOTIFY_CLIENT_ID, PUBLIC_SPOTIFY_REDIRECT_URI } = env;
 
 const credentials = {
 	clientId: PUBLIC_SPOTIFY_CLIENT_ID,

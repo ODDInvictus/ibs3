@@ -1,7 +1,9 @@
 import db from '$lib/server/db';
 import spotify, { refreshToken } from '$lib/server/spotify';
 import type { RequestHandler } from './$types';
-import { PUBLIC_MIN_LIKES, PUBLIC_PLAYLIST_ID } from '$env/static/public';
+import { env } from '$env/dynamic/public';
+
+const { PUBLIC_MIN_LIKES, PUBLIC_PLAYLIST_ID } = env;
 
 const MIN_LIKES = Number.isNaN(Number(PUBLIC_MIN_LIKES)) ? 4 : Number(PUBLIC_MIN_LIKES);
 

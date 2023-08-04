@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { PUBLIC_SPOTIFY_CLIENT_ID, PUBLIC_SPOTIFY_REDIRECT_URI } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import { generateRandomString } from '$lib/utils';
+
+	const { PUBLIC_SPOTIFY_CLIENT_ID, PUBLIC_SPOTIFY_REDIRECT_URI } = env;
 
 	const scopes = [
 		'user-read-private',
