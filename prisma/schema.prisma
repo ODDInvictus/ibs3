@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -79,6 +79,7 @@ model User {
   EmailAliasUser          EmailAliasUser[]
   ClickSession            ClickSession[]
   Preference              Preference[]
+  TrackReaction           TrackReaction[]
 }
 
 model Account {
@@ -599,4 +600,28 @@ model ClickSession {
   amount    Int
   startTime DateTime
   endTime   DateTime @default(now())
+}
+
+//
+//  Playlist
+//
+
+model Track {
+  id         String          @id // Geen default want dit id komt van spotify
+  inPlaylist Boolean         @default(false)
+  likes      TrackReaction[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+}
+
+model TrackReaction {
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackId   String
+  track     Track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  liked     Boolean
+
+  @@id([userId, trackId])
 }
