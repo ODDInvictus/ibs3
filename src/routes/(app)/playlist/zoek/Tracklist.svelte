@@ -53,7 +53,8 @@
 				method: 'POST',
 				body: JSON.stringify({
 					trackId: track.id,
-					liked: isLiked
+					liked: isLiked,
+					trackUri: track.uri
 				})
 			});
 		} catch (error: any) {
