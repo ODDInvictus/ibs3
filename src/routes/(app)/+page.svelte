@@ -2,7 +2,8 @@
 	import { page } from '$app/stores';
 	import { env } from '$env/dynamic/public';
 	import knoppers from '$lib/assets/knoppers.png';
-	import type { Snapshot } from './$types';
+	import { onDestroy, onMount } from 'svelte';
+	import { browser } from '$app/environment';
 
 	function getGreeting() {
 		const hour = new Date().getHours();
@@ -55,6 +56,7 @@
 	}
 
 	/* Cookie clicker */
+	const localStorageKey = 'ibs::clicks';
 	let isClicking = false;
 
 	let totalClicks = $page.data.clicks?._sum?.amount ?? 0;
@@ -62,7 +64,7 @@
 
 	$: satuationStyle = `filter: saturate(${Math.min(9, Math.max(1, sessionClicks / 100))})`;
 
-	let timeouts: NodeJS.Timeout[] = [];
+	let timeout: NodeJS.Timeout | undefined = undefined;
 	let startTime: number;
 
 	let record = $page.data.topclicker?.amount;
@@ -76,7 +78,7 @@
 
 	async function cookieClick() {
 		if (isClicking) {
-			timeouts.forEach(clearTimeout);
+			if (timeout) clearTimeout(timeout);
 		} else {
 			isClicking = true;
 			startTime = Date.now();
@@ -85,14 +87,17 @@
 		sessionClicks++;
 		totalClicks++;
 
-		const timeout = setTimeout(async () => {
+		timeout = setTimeout(async () => {
 			await endSession(startTime, sessionClicks);
-		}, 5 * 1000);
-		timeouts.push(timeout);
+		}, 2 * 1000);
 	}
 
 	async function endSession(startTime: number, amount: number, endTime?: number) {
+		console.log('Posting ' + sessionClicks + ' clicks');
 		isClicking = false;
+		if (timeout) clearTimeout(timeout);
+		if (amount) return;
+
 		await fetch('/', {
 			method: 'POST',
 			headers: {
@@ -103,20 +108,26 @@
 		sessionClicks = 0;
 	}
 
-	export const snapshot: Snapshot = {
-		capture: () => {
-			return {
-				startTime,
-				sessionClicks,
-				endTime: Date.now()
-			};
-		},
-		restore: async ({ startTime, sessionClicks, endTime }) => {
-			if (!sessionClicks) return;
-			totalClicks += sessionClicks;
-			await endSession(startTime, sessionClicks, endTime);
-		}
-	};
+	onDestroy(() => {
+		if (!browser || !sessionClicks) return;
+		localStorage.setItem(
+			localStorageKey,
+			JSON.stringify({ startTime, sessionClicks, endTime: Date.now() })
+		);
+	});
+
+	onMount(async () => {
+		if (!browser) return;
+
+		const data = localStorage.getItem(localStorageKey);
+		if (!data) return;
+
+		const { startTime, sessionClicks, endTime } = JSON.parse(data);
+		if (sessionClicks == 0) return;
+		totalClicks += sessionClicks;
+		localStorage.removeItem(localStorageKey);
+		await endSession(startTime, sessionClicks, endTime);
+	});
 </script>
 
 <svelte:head>
@@ -150,6 +161,7 @@
 <div id="cookie-clicker">
 	<h1>Knoppers klikker</h1>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 	<img style={satuationStyle} id="cookie" src={knoppers} alt="knoppers" on:click={cookieClick} />
 	<div id="cookieStats">
 		<p>Totaal clicks: {totalClicks}</p>
