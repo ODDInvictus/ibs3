@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ request }) => {
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const userId = locals.user.id;
-	const { trackId, liked, trackUri }: { trackId: string; liked: boolean; uri: string } =
+	const { trackId, liked, trackUri }: { trackId: string; liked: boolean; trackUri: string } =
 		await request.json();
 
 	try {
