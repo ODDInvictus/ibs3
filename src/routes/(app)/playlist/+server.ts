@@ -31,7 +31,8 @@ export const GET: RequestHandler = async ({ request }) => {
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const userId = locals.user.id;
-	const { trackId, liked }: { trackId: string; liked: boolean } = await request.json();
+	const { trackId, liked, trackUri }: { trackId: string; liked: boolean; uri: string } =
+		await request.json();
 
 	try {
 		const track = await db.track.upsert({
@@ -75,11 +76,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	}
 
 	try {
-		await spotify.addTracksToPlaylist(PUBLIC_PLAYLIST_ID, [trackId]);
+		await spotify.addTracksToPlaylist(PUBLIC_PLAYLIST_ID, [trackUri]);
 	} catch (error) {
 		try {
 			await refreshToken();
-			await spotify.addTracksToPlaylist(PUBLIC_PLAYLIST_ID, [trackId]);
+			await spotify.addTracksToPlaylist(PUBLIC_PLAYLIST_ID, [trackUri]);
 		} catch (error) {
 			console.error(error);
 			return new Response('Error', { status: 500 });
