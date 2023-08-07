@@ -98,7 +98,8 @@
 				method: 'POST',
 				body: JSON.stringify({
 					trackId: track.id,
-					liked
+					liked,
+					trackUri: track.uri
 				})
 			});
 
