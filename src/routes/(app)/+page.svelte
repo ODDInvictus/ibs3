@@ -96,9 +96,9 @@
 		console.log('Posting ' + sessionClicks + ' clicks');
 		isClicking = false;
 		if (timeout) clearTimeout(timeout);
-		if (amount) return;
+		if (!amount) return;
 
-		await fetch('/', {
+		await fetch('', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
