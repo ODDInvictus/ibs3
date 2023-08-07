@@ -121,7 +121,7 @@ export const PUT: RequestHandler = async () => {
 		if (tracks.length === 0) return new Response();
 
 		const trackUris = tracks.map((track) => `spotify:track:${track.id}`);
-		await spotify.replaceTracksInPlaylist(PUBLIC_PLAYLIST_ID, trackUris);
+		await spotify.addTracksToPlaylist(PUBLIC_PLAYLIST_ID, trackUris);
 
 		const trackIds = tracks.map((track) => track.id);
 		await db.track.updateMany({
