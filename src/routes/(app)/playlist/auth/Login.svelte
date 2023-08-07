@@ -17,7 +17,7 @@
 	)}&scope=${encodeURIComponent(scopes.join(' '))}&state=${state}&show_dialog=true`;
 </script>
 
-<a id="login-btn" href={authorizeURL}> Login met Spotify </a>
+<a id="login-btn" href={authorizeURL}> Get refresh token </a>
 
 <style lang="scss">
 	#login-btn {
