@@ -32,6 +32,24 @@
 
 		mounted = true;
 	});
+
+	const syncPlaylist = async () => {
+		try {
+			const res = await fetch('/playlist', { method: 'PUT' });
+			if (!res.ok) throw new Error();
+			toast({
+				type: 'success',
+				message: 'De playlist is gesynchroniseerd',
+				title: 'Success'
+			});
+		} catch (error) {
+			toast({
+				type: 'error',
+				message: 'De playlist kon niet gesynchroniseerd worden',
+				title: 'Error'
+			});
+		}
+	};
 </script>
 
 <Title title="Playlist" />
@@ -61,12 +79,11 @@
 			<p>
 				Dit is alleen bestemd voor IBS admins.
 				<br /><br />
-				Login om de refresh token te verkrijgen.
-				<br />
 				Zorg ervoor dat je inlogt met het Invictus account
 			</p>
 			<Login />
 		{/if}
+		<button on:click={async () => await syncPlaylist()}> Sync playlist </button>
 	{:else}
 		<Loader />
 	{/if}
@@ -91,6 +108,20 @@
 			&:hover {
 				text-decoration: underline;
 			}
+		}
+	}
+
+	button {
+		background-color: #1db954;
+		padding: 1rem;
+		color: white;
+		border-radius: 2rem;
+		text-decoration: none;
+		margin-top: 20px;
+		font-size: 2rem;
+
+		&:hover {
+			background-color: #1ed760;
 		}
 	}
 </style>

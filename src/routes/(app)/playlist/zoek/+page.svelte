@@ -31,6 +31,8 @@
 	const searchTracks = async (search: string) => {
 		return await fetch(`/playlist/zoek?s=${encodeURIComponent(search)}`);
 	};
+
+	$: console.log(tracks);
 </script>
 
 <Title title="Playlist" />

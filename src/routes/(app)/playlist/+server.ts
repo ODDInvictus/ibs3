@@ -103,3 +103,41 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	return new Response();
 };
+
+export const PUT: RequestHandler = async () => {
+	try {
+		await refreshToken();
+
+		// Get all tracks that should be added to the playlist, but are not yet
+		const tracks: { id: string }[] = await db.$queryRaw`
+      SELECT t.id
+      FROM Track AS t, TrackReaction AS r
+      WHERE t.id = r.trackId
+      AND t.inPlaylist = 0
+      AND r.liked = 1
+      GROUP BY t.id
+      HAVING COUNT(r.trackId) >= ${MIN_LIKES}
+    `;
+		if (tracks.length === 0) return new Response();
+
+		const trackUris = tracks.map((track) => `spotify:track:${track.id}`);
+		await spotify.replaceTracksInPlaylist(PUBLIC_PLAYLIST_ID, trackUris);
+
+		const trackIds = tracks.map((track) => track.id);
+		await db.track.updateMany({
+			where: {
+				id: {
+					in: trackIds
+				}
+			},
+			data: {
+				inPlaylist: true
+			}
+		});
+
+		return new Response();
+	} catch (error) {
+		console.error(error);
+		return new Response('Error', { status: 500 });
+	}
+};
