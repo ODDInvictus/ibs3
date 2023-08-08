@@ -34,7 +34,6 @@ const authorization = (async ({ event, resolve }) => {
 	} else if (!url.startsWith('/auth')) {
 		// If the path is something other than /auth, check if the user is logged in
 
-
 		if (!user) {
 			throw redirect(303, '/auth');
 		}

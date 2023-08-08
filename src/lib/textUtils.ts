@@ -9,3 +9,7 @@ export function getSlug(id: number, title: string): string {
 export function prettySlug(slug: string): string {
   return slug.replace(/-/g, ' ')
 }
+
+export function formatDateHumanReadable(date: Date): string {
+  return date.toLocaleDateString('nl-NL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+}

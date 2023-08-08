@@ -2,7 +2,8 @@
 	import { page } from '$app/stores';
 	import { env } from '$env/dynamic/public';
 	import knoppers from '$lib/assets/knoppers.png';
-	import { toast } from '$lib/notification';
+	import { formatDateHumanReadable } from '$lib/textUtils';
+	import { formatDate, markdown } from '$lib/utils';
 	import type { Snapshot } from './$types';
 
 	/* Cookie clicker */
@@ -80,34 +81,42 @@
 
 <hr />
 
-<div id="quote">
-	<blockquote>
-		"Ik ben toch wel zat ... ik zag dit toch wel aan voor Weezer" - Naut <i
-			>over {$page.data.nautWord}</i
-		>
+<div class="ibs-card activity">
+	<img
+		class="ibs-card--image"
+		alt={$page.data.activity.name}
+		src={env.PUBLIC_UPLOAD_URL +
+			'activities/' +
+			($page.data.activity.image ?? 'activiteit-0-logo.png')}
+	/>
+	<h2 class="ibs-card--title">{@html markdown($page.data.activity.name)}</h2>
+	<div class="ibs-card--content">
+		<time datetime={$page.data.activity.startTime}>
+			{formatDateHumanReadable($page.data.activity.startTime)}
+		</time>
+		<a href="/activiteit/{$page.data.activity.id}">Meer informatie</a>
+	</div>
+</div>
+
+<div class="ibs-card quote">
+	<h2 class="ibs-card--title">Quote</h2>
+	<blockquote class="ibs-card--content">
+		<p>{@html markdown($page.data.quote?.message)}</p>
 	</blockquote>
 </div>
 
-<div id="lid">
-	<h1>Lid van de dag!</h1>
-
-	<img
-		src={env.PUBLIC_UPLOAD_URL + '/users/' + $page.data.member?.picture ?? 'diederik_cropped.jpg'}
-		alt="Diederik?"
-	/>
-	<h2>{$page.data.member?.firstName}</h2>
-</div>
-
-<div id="cookie-clicker">
-	<h1>Knoppers klikker</h1>
+<div class="ibs-card cookie-clicker">
+	<h2 class="ibs-card--title">Knoppers klikker</h2>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<img style={satuationStyle} id="cookie" src={knoppers} alt="knoppers" on:click={cookieClick} />
-	<div id="cookieStats">
-		<p>Totaal clicks: {totalClicks}</p>
-		{#if record && recordHolder}
-			<p>Highscore: {record} door {recordHolder}</p>
-		{/if}
-		<a href="/knoppers">Meer informatie</a>
+	<div class="ibs-card--content">
+		<img style={satuationStyle} id="cookie" src={knoppers} alt="knoppers" on:click={cookieClick} />
+		<div id="cookieStats">
+			<p>Totaal clicks: {totalClicks}</p>
+			{#if record && recordHolder}
+				<p>Highscore: {record} door {recordHolder}</p>
+			{/if}
+			<a href="/knoppers">Meer informatie</a>
+		</div>
 	</div>
 </div>
 
@@ -120,48 +129,35 @@
 		}
 	}
 
-	#quote {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		margin-top: 2rem;
+	.ibs-card {
+		border-radius: 0.5rem;
+		background-color: var(--color-card);
+		box-shadow: 0 0 0.5rem var(--color-box-shadow);
+	}
 
-		@media screen and (max-width: 768px) {
-			margin-top: 1rem;
+	.ibs-card.quote,
+	.ibs-card.cookie-clicker {
+		margin-top: 1rem;
+	}
+
+	.ibs-card.activity {
+		.ibs-card--content {
+			padding: 0 1rem;
+			padding-bottom: 1rem;
+		}
+
+		time {
+			display: block;
+			margin-bottom: 0.5rem;
 		}
 	}
 
-	#lid {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		justify-content: center;
-		align-items: center;
-		margin-top: 2rem;
-
-		@media screen and (max-width: 768px) {
-			margin-top: 0.5rem;
-			gap: 0.5rem;
+	.ibs-card.cookie-clicker {
+		.ibs-card--content {
+			display: flex;
+			align-items: center;
+			flex-direction: column;
 		}
-	}
-
-	#lid > img {
-		border: 2px solid var(--primary-color);
-		border-radius: 100%;
-		width: 100%;
-		max-width: 500px;
-
-		@media screen and (max-width: 768px) {
-			margin-top: 1rem;
-			max-width: 65vw;
-		}
-	}
-
-	#cookie-clicker {
-		display: flex;
-		margin: 3rem 0;
-		align-items: center;
-		flex-direction: column;
 
 		#cookie {
 			width: 20rem;
