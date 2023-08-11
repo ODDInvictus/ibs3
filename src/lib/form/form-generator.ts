@@ -96,7 +96,7 @@ export class Form<T> {
     this.f = form
   }
 
-  private generateZod() {
+  private async generateZod() {
     let zod = z.object({})
 
     for (const field of this.f.fields) {
@@ -107,7 +107,15 @@ export class Form<T> {
       // text, number, date, checkbox, time, select, url, textarea
 
       if (field.type === 'select') {
-        if (!field.options || field.options.length === 0) throw new Error(`Select field has no options`)
+        // Now check if there is a field.options with more than 0 items, or, if the field has a getOptions function
+        if (!field.options && !field.getOptions) {
+          console.log(field)
+          throw new Error(`Select field has no options or getOptions function`)
+        }
+
+        if (field.getOptions) {
+          await field.getOptions({} as User)
+        }
 
         const options = field.options.map(option => String(option.value))
 
@@ -223,7 +231,7 @@ export class Form<T> {
       }
     }
 
-    this.generateZod()
+    await this.generateZod()
     this.transformed = true
   }
 
