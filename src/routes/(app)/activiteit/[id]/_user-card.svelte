@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { env } from '$env/dynamic/public';
+	import ProfileIcon from '$lib/components/profile-icon.svelte';
 	import type { User } from '@prisma/client';
 
 	export let user: User;
@@ -8,12 +9,12 @@
 
 <div class="user-card">
 	<div class="user-card-picture">
-		{#if user.picture == null}
-			<img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
-			<!-- <img src={env.PUBLIC_UPLOAD_URL + 'users/miel.jpg'} alt={user.firstName} /> -->
-		{:else}
-			<img src={env.PUBLIC_UPLOAD_URL + 'users/' + user.picture} alt={user.firstName} />
-		{/if}
+		<ProfileIcon
+			height="50px"
+			width="50px"
+			src={env.PUBLIC_UPLOAD_URL + 'users/' + user.picture}
+			name={user.firstName + ' ' + user.lastName}
+		/>
 
 		<div class="status">
 			<div class="status-circle {status}" />
@@ -51,9 +52,6 @@
 		box-shadow: 0 0 5px $bg-color;
 
 		.user-card-picture {
-			display: flex;
-			align-items: center;
-			justify-content: center;
 			position: relative;
 		}
 
@@ -88,17 +86,10 @@
 			background-color: rgba(128, 128, 128, 0.842);
 		}
 
-		img {
-			width: var(--img-size);
-			height: var(--img-size);
-			object-fit: cover;
-			border-radius: 50%;
-			margin-right: 0.5rem;
-		}
-
 		.user-card-name {
 			display: flex;
 			align-items: center;
+			padding-left: 0.5rem;
 			justify-content: flex-start;
 		}
 	}

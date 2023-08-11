@@ -3,6 +3,7 @@
 	import { env } from '$env/dynamic/public';
 	import Breadcrumps from '$lib/components/breadcrumps.svelte';
 	import Logo from '$lib/components/logo-v2-small-white.svelte';
+	import ProfileIcon from '$lib/components/profile-icon.svelte';
 </script>
 
 <div class="layout--topbar">
@@ -18,11 +19,10 @@
 
 	<div class="user">
 		<div class="avatar">
-			{#if $page.data.user.picture == null}
-				<img src="https://avatars.githubusercontent.com/u/11670885?v=4" alt="user" />
-			{:else}
-				<img src={env.PUBLIC_UPLOAD_URL + 'users/' + $page.data.user.picture} alt="user" />
-			{/if}
+			<ProfileIcon
+				src={env.PUBLIC_UPLOAD_URL + 'users/' + $page.data.user.picture}
+				name={`${$page.data.user.firstName} ${$page.data.user.lastName}`}
+			/>
 		</div>
 		<div class="name">
 			{$page.data.user.firstName}

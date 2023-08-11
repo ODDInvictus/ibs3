@@ -13,3 +13,9 @@ export function prettySlug(slug: string): string {
 export function formatDateHumanReadable(date: Date): string {
   return date.toLocaleDateString('nl-NL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 }
+
+export function mergeClassNames(...classNames: string[]): string {
+  if (classNames.length === 0) return ''
+  if (classNames.length === 1) return classNames[0]
+  return classNames.join(' ')
+}
