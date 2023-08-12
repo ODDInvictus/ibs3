@@ -118,7 +118,7 @@
 				{/if}
 			</div>
 			<div class="info">
-				<a class="title" href={track.external_urls.spotify} target="_blank">{track.name}</a>
+				<a class="title" href={`/playlist/${track.id}`}>{track.name}</a>
 				<p class="artists">{formatArtists(track.artists)}</p>
 			</div>
 		</li>
