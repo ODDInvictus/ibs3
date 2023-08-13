@@ -81,8 +81,8 @@ export const maluspuntForm = new Form<{
       label: 'Hoeveel',
       name: 'amount',
       type: 'number',
-      minValue: 1,
-      maxValue: 100,
+      minValue: -1,
+      maxValue: 5,
       description: "Hoeveel maluspunten verdient deze feut?"
     } as Field<'number'>
   ]
