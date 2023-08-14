@@ -10,9 +10,9 @@
 <div class="user-card">
 	<div class="user-card-picture">
 		<ProfileIcon
-			height="50px"
-			width="50px"
-			src={env.PUBLIC_UPLOAD_URL + 'users/' + user.picture}
+			height="50"
+			width="50"
+			src={user.picture}
 			name={user.firstName + ' ' + user.lastName}
 		/>
 
