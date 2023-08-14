@@ -13,10 +13,6 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
   // @ts-ignore Niet zo piepen
   let filename = params.name;
 
-  if (!filename) {
-    return new Response('File not found', { status: 404 });
-  }
-
   // Does the query contain a size?
   let size = url.searchParams.get('size')
 
@@ -36,12 +32,17 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
     })
 
     const agent = request.headers.get('user-agent')
+    console.log(agent)
 
     // Edge ondersteund geen AVIF om een of andere kut reden, dus zij krijgen geen cache lmaoo
     if (agent && (agent.includes('Edg/') || agent.includes('Edge'))) {
       return new Response(await readJpeg(filename, size))
     }
+    console.log(`${UPLOAD_FOLDER}/${filename}`)
+
     const file = fs.readFileSync(`${UPLOAD_FOLDER}/${filename}`)
+
+    console.log(file)
 
     // First check if we have the file in the cache
     const cachedFile = await redis.get(`file::${filename}::${size}`)

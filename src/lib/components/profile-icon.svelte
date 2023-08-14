@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { mergeClassNames } from '$lib/textUtils';
-	import { onMount } from 'svelte';
+
+	let height = $$props.height ?? 64;
+	let width = $$props.width ?? 64;
 </script>
 
 <div class={mergeClassNames('ibs-profile-icon', $$props.class)}>
 	<img
-		height={$$props.height}
-		width={$$props.width}
-		src={$$props.src}
+		src={'/image/' + $$props.src + `?size=${height}x${width}`}
 		alt={$$props.name
 			.split(' ')
 			.map((w) => w[0])

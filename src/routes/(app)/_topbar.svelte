@@ -20,7 +20,7 @@
 	<div class="user">
 		<div class="avatar">
 			<ProfileIcon
-				src={env.PUBLIC_UPLOAD_URL + 'users/' + $page.data.user.picture}
+				src={$page.data.user.picture}
 				name={`${$page.data.user.firstName} ${$page.data.user.lastName}`}
 			/>
 		</div>
