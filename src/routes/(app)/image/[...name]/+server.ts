@@ -13,8 +13,6 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
   // @ts-ignore Niet zo piepen
   let filename = params.name;
 
-  console.log(params)
-
   // Does the query contain a size?
   let size = url.searchParams.get('size')
 
