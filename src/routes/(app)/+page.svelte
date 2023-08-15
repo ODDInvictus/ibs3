@@ -110,6 +110,7 @@
 		<blockquote class="ibs-card--content">
 			<p>{@html markdown($page.data.quote)}</p>
 		</blockquote>
+		<div class="mt-6" />
 		<div class="ibs-card--links">
 			<a href="/quotes">Meer quotes</a>
 		</div>
@@ -122,6 +123,7 @@
 			<h1>{$page.data.strafbakken}</h1>
 			<p>strafbakken!</p>
 		</div>
+		<div class="mt-6" />
 		<div class="ibs-card--links">
 			<a href="/strafbakken/{$page.data.user.ldapId}">Waarom?</a>
 		</div>
