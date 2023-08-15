@@ -225,8 +225,6 @@
 		}
 
 		textarea {
-			box-sizing: border-box;
-
 			padding: 0.5rem;
 			border: 1px solid #ccc;
 			border-radius: 5px;

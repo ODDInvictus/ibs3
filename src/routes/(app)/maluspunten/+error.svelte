@@ -22,9 +22,8 @@
 		flex-direction: column;
 		align-items: center;
 
-		@media (max-width: 640px) {
+		@media (max-width: 600px) {
 			img {
-				box-sizing: border-box;
 				width: 100%;
 			}
 		}

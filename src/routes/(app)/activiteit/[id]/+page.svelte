@@ -286,14 +286,14 @@
 			flex-direction: column;
 
 			margin: 0 $gap;
-			@media (max-width: 640px) {
+			@media (max-width: 600px) {
 				margin: 0;
 				margin-bottom: $gap;
 				width: 90vw;
 			}
 		}
 
-		@media (max-width: 640px) {
+		@media (max-width: 600px) {
 			grid-template-columns: 1fr;
 			margin: 0;
 			gap: $gap;

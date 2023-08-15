@@ -121,7 +121,7 @@
 		margin-bottom: 1rem;
 	}
 
-	@media (max-width: 640px) {
+	@media (max-width: 600px) {
 		#root {
 			overflow: hidden;
 		}

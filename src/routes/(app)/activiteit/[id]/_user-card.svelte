@@ -35,7 +35,7 @@
 		--status-x: -2px;
 		--status-y: 3px;
 
-		@media (max-width: 640px) {
+		@media (max-width: 600px) {
 			--img-size: 35px;
 			--status-size: 10px;
 			--status-x: -3px;
