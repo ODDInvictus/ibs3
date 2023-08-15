@@ -26,7 +26,6 @@
 			<thead>
 				<th>Gever</th>
 				<th>Reden</th>
-				<th>Locatie</th>
 				<th>Datum</th>
 				<th>Tijd</th>
 			</thead>
@@ -43,7 +42,6 @@
 							{/if}
 						</td>
 						<td>{@html markdown(strafbak.reason) ?? 'Geen reden gegeven'}</td>
-						<td>{strafbak.location ?? 'Onbekend'}</td>
 						<td>{strafbak.dateCreated.toLocaleDateString()}</td>
 						<td>{strafbak.dateCreated.toLocaleTimeString().slice(0, -3)}</td>
 					</tr>

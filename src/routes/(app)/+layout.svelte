@@ -7,6 +7,7 @@
 	import PromptSelect from '$lib/components/prompt-select.svelte';
 	import PromptCheckbox from '$lib/components/prompt-checkbox.svelte';
 	import { afterNavigate } from '$app/navigation';
+	import { Modals, closeModal } from 'svelte-modals';
 
 	afterNavigate(() => {
 		// Reset scroll position on layout--container-slot
@@ -18,8 +19,16 @@
 
 <main class="layout--main">
 	<Navbar />
+
+	<Modals>
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<div slot="backdrop" class="backdrop" role="button" tabindex="0" on:click={closeModal} />
+	</Modals>
+
 	<div class="layout--stripe" />
+
 	<Topbar />
+
 	<div class="layout--container">
 		<div class="layout--container-slot">
 			<slot />
@@ -46,3 +55,15 @@
 		<PromptCheckbox />
 	</div>
 </main>
+
+<style>
+	.backdrop {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		left: 0;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 99;
+	}
+</style>
