@@ -175,11 +175,13 @@
 
 	<div class="cols">
 		<div class="ibs-card outline">
-			<img
-				class="ibs-card--image"
-				alt={nameWithoutMarkdown}
-				src={env.PUBLIC_UPLOAD_URL + 'activities/' + (activity.image ?? 'activiteit-0-logo.png')}
-			/>
+			<div class="ibs-card--image">
+				<img
+					alt={nameWithoutMarkdown}
+					src="/image/activities/{activity.image}?size=700x300"
+					onerror="this.src='/image/activities/activiteit-0-logo.png?size=700x300'"
+				/>
+			</div>
 
 			<h2 class="ibs-card--title">{@html markdown(activity.name)}</h2>
 

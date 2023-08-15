@@ -13,14 +13,13 @@
 		<div class="row">
 			<div class="image">
 				{#if activity.image == null}
-					<img
-						src={env.PUBLIC_UPLOAD_URL + 'activities/activiteit-0-logo.png'}
-						alt="Placeholder mist?"
-					/>
+					<img src="/image/activities/activiteit-0-logo.png?size=500x250" alt="⏳" />
 				{:else}
 					<img
-						src={env.PUBLIC_UPLOAD_URL + 'activities/' + activity.image}
-						alt="Geen plaatje geupload :("
+						src="/image/activities/{activity.image}?size=750x375"
+						onerror="this.src='/image/activities/activiteit-0-logo.png?size=500x250'"
+						alt="⏳"
+						loading="lazy"
 					/>
 				{/if}
 

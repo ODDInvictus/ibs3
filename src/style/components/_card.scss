@@ -10,12 +10,15 @@
 	text-align: start;
 
 	& > .ibs-card--image {
-		// ignore padding for the image
-		width: 100%;
-		object-fit: cover;
-		aspect-ratio: 5/2;
-		border-top-left-radius: var(--border-radius);
-		border-top-right-radius: var(--border-radius);
+		img,
+		source {
+			// ignore padding for the image
+			width: 100%;
+			object-fit: cover;
+			aspect-ratio: 5/2;
+			border-top-left-radius: var(--border-radius);
+			border-top-right-radius: var(--border-radius);
+		}
 	}
 
 	& > .ibs-card--title {

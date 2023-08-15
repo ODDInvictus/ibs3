@@ -13,6 +13,8 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
   // @ts-ignore Niet zo piepen
   let filename = params.name;
 
+  console.log(params)
+
   // Does the query contain a size?
   let size = url.searchParams.get('size')
 
@@ -22,34 +24,30 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
 
   if (!size) size = 'regular'
 
-  console.log({ filename, size })
-
   // Then get the file from the server
   try {
-    setHeaders({
-      'Content-Type': 'image/jpeg',
-      'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
-    })
-
     const agent = request.headers.get('user-agent')
-    console.log(agent)
 
     // Edge ondersteund geen AVIF om een of andere kut reden, dus zij krijgen geen cache lmaoo
     if (agent && (agent.includes('Edg/') || agent.includes('Edge'))) {
+      setHeaders({
+        'Content-Type': 'image/jpeg',
+        'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
+      })
       return new Response(await readJpeg(filename, size))
     }
-    console.log(`${UPLOAD_FOLDER}/${filename}`)
 
     const file = fs.readFileSync(`${UPLOAD_FOLDER}/${filename}`)
-
-    console.log(file)
 
     // First check if we have the file in the cache
     const cachedFile = await redis.get(`file::${filename}::${size}`)
 
     if (cachedFile) {
       const buf = Buffer.from(cachedFile, 'binary')
-
+      setHeaders({
+        'Content-Type': 'image/jpeg',
+        'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
+      })
       return new Response(buf);
     }
 
@@ -60,16 +58,20 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
 
       buf = await sharp(file)
         .resize(parseInt(width), parseInt(height))
-        .avif({ quality: 80 })
+        .avif({ quality: 90 })
         .toBuffer()
     } else {
       buf = await sharp(file)
-        .avif({ quality: 80 })
+        .avif({ quality: 90 })
         .toBuffer()
     }
 
     redis.set(`file::${filename}::${size}`, buf.toString('binary'), 'EX', IMAGE_CACHE_TIME)
 
+    setHeaders({
+      'Content-Type': 'image/jpeg',
+      'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
+    })
     return new Response(buf);
   } catch (err) {
     return new Response('File not found', { status: 404 });

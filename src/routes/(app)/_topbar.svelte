@@ -74,13 +74,6 @@
 		border-radius: 50%;
 		overflow: hidden;
 		margin-right: 10px;
-
-		img {
-			width: var(--topbar-avatar-size);
-			height: var(--topbar-avatar-size);
-			object-fit: cover;
-			border-radius: 50%;
-		}
 	}
 
 	@media (max-width: 600px) {
