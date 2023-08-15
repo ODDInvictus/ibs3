@@ -66,8 +66,25 @@ export const load = (async ({ locals }) => {
     return `${word}, ${locals.user.firstName}!`;
   }
 
-  const getQuote = () => {
-    return fetch(env.QUOTE_API_URL).then((res) => res.json())
+  const getQuote = async () => {
+    const obj = await fetch(env.QUOTE_API_URL).then((res) => res.json())
+
+    let message = obj.message
+
+    // Replace all "{string}" with "*{string}*"
+    message = message.replace(/"([^"]*)"/g, '*“$1”*')
+
+    return message
+  }
+
+  const getStrafbakken = () => {
+    // Count the amount of strafbakken locals.user.id has
+    return db.strafbak.count({
+      where: {
+        receiverId: locals.user.id,
+        dateDeleted: null
+      }
+    })
   }
 
   const getFirstActivity = () => {
@@ -85,6 +102,7 @@ export const load = (async ({ locals }) => {
     topclicker: getTopClicker(),
     greeting: getGreeting(),
     quote: getQuote(),
-    activity: getFirstActivity()
+    activity: getFirstActivity(),
+    strafbakken: getStrafbakken(),
   }
 }) satisfies PageServerLoad;
