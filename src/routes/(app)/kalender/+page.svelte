@@ -17,7 +17,7 @@
 				{:else}
 					<img
 						src="/image/activities/{activity.image}?size=750x375"
-						onerror="this.src='/image/activities/activiteit-0-logo.png?size=500x250'"
+						onerror="this.src='/image/activities/activiteit-0-logo.png?size=500x250';this.onerror=null;"
 						alt="⏳"
 						loading="lazy"
 					/>

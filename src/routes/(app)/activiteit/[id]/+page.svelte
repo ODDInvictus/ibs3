@@ -179,7 +179,7 @@
 				<img
 					alt={nameWithoutMarkdown}
 					src="/image/activities/{activity.image}?size=700x300"
-					onerror="this.src='/image/activities/activiteit-0-logo.png?size=700x300'"
+					onerror="this.src='/image/activities/activiteit-0-logo.png?size=700x300';this.onerror=null;"
 				/>
 			</div>
 

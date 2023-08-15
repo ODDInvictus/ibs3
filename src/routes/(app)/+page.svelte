@@ -82,13 +82,14 @@
 <hr />
 
 <div class="ibs-card activity">
-	<img
-		class="ibs-card--image"
-		alt={$page.data.activity.name}
-		src={env.PUBLIC_UPLOAD_URL +
-			'activities/' +
-			($page.data.activity.image ?? 'activiteit-0-logo.png')}
-	/>
+	<div class="ibs-card--image">
+		<img
+			alt={$page.data.activity.name}
+			src={env.PUBLIC_UPLOAD_URL +
+				'activities/' +
+				($page.data.activity.image ?? 'activiteit-0-logo.png')}
+		/>
+	</div>
 	<h2 class="ibs-card--title">{@html markdown($page.data.activity.name)}</h2>
 	<div class="ibs-card--content">
 		<time datetime={$page.data.activity.startTime}>

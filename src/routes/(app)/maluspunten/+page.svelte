@@ -51,35 +51,6 @@
 </div>
 
 <style>
-	hr {
-		margin: var(--hr-margin);
-	}
-
-	form {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		grid-template-rows: 1fr 1fr;
-		grid-gap: 1rem;
-	}
-
-	label {
-		font-weight: 600;
-	}
-
-	input,
-	select {
-		margin-top: 0.2rem;
-		width: 100%;
-		border-radius: 5px;
-		border: 1px solid var(--border-color);
-	}
-
-	input:focus,
-	select:focus {
-		outline: none;
-		border: 1px solid var(--black-color);
-	}
-
 	#table-container {
 		overflow-y: auto;
 	}
