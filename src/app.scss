@@ -87,3 +87,7 @@ body {
 	// Disable reloading on overscroll
 	overscroll-behavior: contain;
 }
+
+* {
+	box-sizing: border-box;
+}
