@@ -96,7 +96,7 @@ $steps: 20;
 
 	display: grid;
 	grid-template-areas: 'nav top' 'nav main';
-	grid-template-columns: calc(var(--navbar-width) + 2 * var(--navbar-padding)) 1fr;
+	grid-template-columns: var(--navbar-width) 1fr;
 	grid-template-rows: var(--topbar-height) 1fr;
 
 	gap: 2rem;
@@ -144,7 +144,7 @@ $steps: 20;
 
 	z-index: 10;
 	grid-area: nav;
-	height: calc(100vh - 2 * var(--navbar-margin) - 2 * var(--navbar-padding));
+	height: calc(100vh - 1 * var(--navbar-margin) - 1 * var(--navbar-padding));
 	width: var(--navbar-width);
 	background-color: var(--color-bg);
 

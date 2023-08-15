@@ -2,6 +2,8 @@
 	width: auto;
 	height: auto;
 
+	position: relative;
+
 	background-color: var(--color-card);
 
 	border-radius: var(--border-radius);
@@ -23,6 +25,15 @@
 
 	& > .ibs-card--title {
 		padding: 1rem 0 0rem 1rem;
+	}
+
+	& > .ibs-card--links {
+		// stick to the bottom
+		position: absolute;
+		bottom: 0;
+		left: 0;
+
+		padding: 0 0 1rem 1rem;
 	}
 
 	& > .ibs-card--buttons {
