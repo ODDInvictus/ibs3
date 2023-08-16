@@ -59,8 +59,34 @@
 		});
 	}
 
-	function addTag(photo: number, tagId: number) {
-		//
+	function addTag(photoId: number) {
+		const tagId = parseInt(editFields[photoId].value);
+
+		console.log(editFields[photoId].value);
+
+		if (tagId == -1) {
+			alert('Oei! Dat kan nog niet');
+			return;
+		}
+
+		data.photos = data.photos.map((p) => {
+			if (p.id === photoId) {
+				const photoTag = data.tags.find((t) => t.id === tagId);
+
+				const tag = { photoTag };
+
+				console.log('Adding tag', tag);
+
+				const tags = p.tags;
+				tags.push(tag);
+
+				p.tags = tags;
+			}
+			return p;
+		});
+
+		editFields[photoId].field = '';
+		editFields[photoId].value = '';
 	}
 
 	function save(field: string, photo: number) {
@@ -227,7 +253,16 @@
 									(t) => photo.tags.find((pt) => pt.photoTag.id === t.id) === undefined
 								)}
 								<td>
-									<select>
+									<select
+										value={0}
+										on:change={(e) => {
+											if (e) {
+												// @ts-ignore
+												console.log(e.target.value);
+												editFields[photo.id].value = e.target?.value;
+											}
+										}}
+									>
 										{#each tags as tag}
 											<option value={tag.id}>{tag.name}</option>
 										{/each}
@@ -238,7 +273,7 @@
 									<button class="btn-a" on:click={() => edit('tags', photo.id)}>
 										<i><ArrowBackUp /></i>
 									</button>
-									<button class="btn-a" on:click={() => save('tags', photo.id)}>
+									<button class="btn-a" on:click={() => addTag(photo.id)}>
 										<i><CirclePlus /></i>
 									</button>
 								</td>

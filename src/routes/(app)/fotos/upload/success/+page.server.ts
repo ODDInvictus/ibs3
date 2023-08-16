@@ -18,8 +18,13 @@ export const load = (async ({ url, locals }) => {
     include: {
       creator: true,
       tags: {
-        include: {
-          photoTag: true
+        select: {
+          photoTag: {
+            select: {
+              name: true,
+              id: true
+            }
+          }
         }
       },
       ratings: true,
