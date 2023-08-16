@@ -30,7 +30,7 @@ export const load = (async ({ url, locals }) => {
               firstName: true,
             }
           }
-        }
+        },
       },
     },
   })

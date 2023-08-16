@@ -34,6 +34,35 @@
 		}
 	}
 
+	function removeTag(photoId: number, tagId: number) {
+		if (tagId == -1) {
+			alert('Oei! Dat kan nog niet');
+			return;
+		}
+
+		const p = data.photos.find((p) => p.id === photoId);
+
+		console.log(`Removing tag ${tagId} from photo ${photoId}!`);
+
+		p?.tags.splice(
+			p.tags.findIndex((t) => t.photoTag.id === tagId),
+			1
+		);
+
+		// @ts-expect-error Kan gewoon niet piepen
+		data.photos = data.photos.map((photo) => {
+			if (photo.id === photoId) {
+				return p;
+			} else {
+				return photo;
+			}
+		});
+	}
+
+	function addTag(photo: number, tagId: number) {
+		//
+	}
+
 	function save(field: string, photo: number) {
 		const value = editFields[photo].value;
 
@@ -53,8 +82,8 @@
 						p.date = new Date(value);
 						break;
 					case 'name':
-						// @ts-ignore kan gewoon
-						p.PhotoCreator = data.photoCreators.find((c) => c.id === parseInt(value));
+						// @ts-expect-error kan gewoon
+						p.creator = data.photoCreators.find((c) => c.id === parseInt(value));
 						break;
 					case 'description':
 						p.description = value;
@@ -216,7 +245,13 @@
 							{:else}
 								<td>
 									{#each photo.tags as tag}
-										<span class="ibs-chip removable">{tag.photoTag.name}</span>
+										<!-- svelte-ignore a11y-click-events-have-key-events -->
+										<span
+											role="button"
+											tabindex="0"
+											on:click={() => removeTag(photo.id, tag.photoTagId)}
+											class="ibs-chip removable">{tag.photoTag.name}</span
+										>
 									{/each}
 								</td>
 								<td>
@@ -256,7 +291,7 @@
 
 	.image {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: 1fr auto;
 
 		height: $img-height;
 	}
