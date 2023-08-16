@@ -82,6 +82,9 @@ model User {
   Photo                   Photo[]
   PhotoCreator            PhotoCreator[]
   PhotosWithTags          PhotosWithTags[]
+  PhotoRating             PhotoRating[]
+  PhotoTaggedIn           PhotoPersonTag[]          @relation("taggedInPhoto")
+  PhotoTaggedBy           PhotoPersonTag[]          @relation("photoTaggedBy")
 }
 
 model Account {
@@ -611,19 +614,23 @@ model Photo {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
 
+  // Date photo taken
+  date DateTime?
+
   // Photo
-  photo       String @unique
-  // Thumbnail
-  thumbnail   String @unique
+  photo String @unique
+
   // Description
-  description String
+  description String?
 
   tags PhotosWithTags[]
 
-  User           User?         @relation(fields: [userId], references: [id])
-  userId         Int?
-  PhotoCreator   PhotoCreator? @relation(fields: [photoCreatorId], references: [id])
-  photoCreatorId Int?
+  uploader     User?            @relation(fields: [uploaderId], references: [id])
+  uploaderId   Int?
+  creator      PhotoCreator     @relation(fields: [creatorId], references: [id])
+  creatorId    Int
+  ratings      PhotoRating[]
+  peopleTagged PhotoPersonTag[]
 }
 
 model PhotoCreator {
@@ -631,7 +638,7 @@ model PhotoCreator {
   createdAt DateTime @default(now())
   user      User?    @relation(fields: [userId], references: [id])
   userId    Int?
-  name      String?
+  name      String   @unique
 
   Photo Photo[]
 }
@@ -646,12 +653,42 @@ model PhotoTag {
 }
 
 model PhotosWithTags {
-  Photo        Photo    @relation(fields: [photoId], references: [id])
+  photo        Photo    @relation(fields: [photoId], references: [id])
   photoId      Int
-  PhotoTag     PhotoTag @relation(fields: [photoTagId], references: [id])
+  photoTag     PhotoTag @relation(fields: [photoTagId], references: [id])
   photoTagId   Int
   assignedBy   User     @relation(fields: [assignedById], references: [id])
   assignedById Int
 
   @@id([photoId, photoTagId])
+}
+
+// Persoon x is getagd in foto y door persoon z
+model PhotoPersonTag {
+  createdAt DateTime @default(now())
+
+  name String @unique
+
+  tagger   User @relation("photoTaggedBy", fields: [taggerId], references: [id])
+  taggerId Int
+
+  photo   Photo @relation(fields: [photoId], references: [id])
+  user    User  @relation("taggedInPhoto", fields: [userId], references: [id])
+  photoId Int
+  userId  Int
+
+  @@id([photoId, userId])
+}
+
+model PhotoRating {
+  createdAt DateTime @default(now())
+
+  rating Int @default(1)
+
+  Photo   Photo @relation(fields: [photoId], references: [id])
+  photoId Int
+  User    User  @relation(fields: [userId], references: [id])
+  userId  Int
+
+  @@id([photoId, userId])
 }
