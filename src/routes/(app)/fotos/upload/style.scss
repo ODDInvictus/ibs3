@@ -1,7 +1,30 @@
-form {
-	input {
-		margin-right: 1rem;
-		margin-bottom: 1rem;
+.image-upload--form {
+	input[type='file'] {
+		display: none;
+	}
+
+	.buttons {
+		display: flex;
+		align-items: center;
+
+		gap: 1rem;
+	}
+
+	.creator {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+
+		margin-top: 1rem;
+
+		gap: 1rem;
+
+		@media (max-width: 600px) {
+			input[type='text'] {
+				grid-column: span 2;
+			}
+
+			grid-template-columns: 1fr 1fr;
+		}
 	}
 }
 
@@ -9,7 +32,7 @@ p {
 	margin-top: 1rem;
 }
 
-.image-preview {
+.image-upload--preview {
 	// This is an div, with an button and an img inside
 	display: flex;
 	flex-direction: column;

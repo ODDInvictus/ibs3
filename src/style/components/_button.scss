@@ -26,6 +26,12 @@ a.button {
 	text-decoration: none;
 }
 
+label.button {
+	@extend button;
+
+	text-decoration: none;
+}
+
 button.btn-a {
 	all: unset;
 	color: var(--color-primary);
@@ -54,6 +60,10 @@ button.btn-danger {
 
 button.btn-secondary {
 	background-color: var(--color-secondary);
+}
+
+button.btn-disabled {
+	background-color: var(--color-disabled);
 }
 
 button.btn-warning {

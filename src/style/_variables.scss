@@ -10,10 +10,11 @@
 
 	--color-primary-transparant: rgba(85, 27, 138, 0.1);
 
-	--color-danger: #830000;
+	--color-danger: #be0000;
 	--color-warning: #f7e733;
 	--color-success: var(--color-primary);
 	--color-info: var(--color-tertiary);
+	--color-disabled: #707070;
 
 	--color-text: #0c0c0c;
 	--color-text-light: #f0f0f0;
@@ -27,6 +28,8 @@
 	--color-card: #ffffff;
 	--color-card-border: var(--color-hr);
 	--color-box-shadow: rgba(0, 0, 0, 0.1);
+
+	--color-chip-bg: #dfdfdf;
 
 	--color-table-highlight: var(--color-primary);
 	--color-table-highlight-focus: rgba(85, 27, 138, 0.9);
