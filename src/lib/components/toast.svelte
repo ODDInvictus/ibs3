@@ -62,6 +62,10 @@
 		grid-template-columns: 3rem 4fr;
 	}
 
+	.message {
+		margin: 0;
+	}
+
 	.notification:first-child {
 		border-top-left-radius: $radius;
 		border-top-right-radius: $radius;
