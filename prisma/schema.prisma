@@ -665,10 +665,6 @@ model PhotosWithTags {
 
 // Persoon x is getagd in foto y door persoon z
 model PhotoPersonTag {
-  createdAt DateTime @default(now())
-
-  name String @unique
-
   tagger   User @relation("photoTaggedBy", fields: [taggerId], references: [id])
   taggerId Int
 
@@ -681,8 +677,6 @@ model PhotoPersonTag {
 }
 
 model PhotoRating {
-  createdAt DateTime @default(now())
-
   rating Int @default(1)
 
   Photo   Photo @relation(fields: [photoId], references: [id])
