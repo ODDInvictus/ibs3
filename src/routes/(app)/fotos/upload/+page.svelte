@@ -1,86 +1,141 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+	import { page } from '$app/stores';
 	import Title from '$lib/components/title.svelte';
 	import { imagePreview } from '$lib/imagePreviewStore';
-	import type { PageData } from './$types';
 	import './style.scss';
+	import type { PageData } from './$types';
+	import { toast } from '$lib/notification';
+	import { string } from 'zod';
+
+	export let data: PageData;
+
+	let creator: string = data.user.ldapId;
 
 	let input: HTMLInputElement;
 	let previewContainer: HTMLDivElement;
-	let showImages = false;
+	let submit: HTMLButtonElement;
+
+	let images: FileList | null;
 
 	function onChange() {
-		const files = input.files;
-
-		if (files && files.length > 0) {
-			showImages = true;
-			for (const [idx, f] of Array.from(files).entries()) {
-				const reader = new FileReader();
-				reader.onload = (e) => {
-					const div = document.createElement('div');
-					div.classList.add('image-preview');
-
-					const btn = document.createElement('button');
-					btn.type = 'button';
-					btn.textContent = 'Verwijder';
-					btn.onclick = () => {
-						div.remove();
-						console.log(idx);
-						removeFileFromFileList(idx);
-					};
-
-					div.appendChild(btn);
-
-					const img = document.createElement('img');
-					img.src = e.target.result as string;
-
-					img.onclick = () => {
-						imagePreview({ image: e.target.result as string });
-						console.log('huts');
-					};
-
-					div.appendChild(img);
-					previewContainer.appendChild(div);
-				};
-				reader.readAsDataURL(f);
-			}
-			return;
-		}
-		showImages = false;
+		images = input.files;
 	}
 
 	function removeImages() {
 		previewContainer.innerHTML = '';
 	}
 
-	function removeFileFromFileList(index) {
-		const dt = new DataTransfer();
-		const files = input.files!;
+	function removeImage(name: string) {
+		if (!images) return;
 
-		if (files.length === 1) {
+		if (images && images.length === 1) {
 			input.value = '';
+			images = null;
 			return;
 		}
 
-		for (let i = 0; i < files.length; i++) {
-			const file = files[i];
-			if (index !== i) dt.items.add(file); // here you exclude the file. thus removing it.
-		}
+		let arr = Array.from(images);
 
-		input.files = dt.files; // Assign the updates list
+		for (const f of arr) {
+			console.log(f, name);
+			if (f.name === name) {
+				arr = arr.filter((file) => file.name !== name);
+				break;
+			}
+		}
+		const dt = new DataTransfer();
+
+		arr.forEach((f) => dt.items.add(f));
+
+		input.files = dt.files;
+		images = dt.files;
 	}
 </script>
 
 <Title title="Upload fotos" />
 
-<form method="POST">
-	<input bind:this={input} on:change={onChange} type="file" name="fotos" multiple />
-	<p>{input?.files?.length ?? 0}</p>
-	<button class="btn-secondary" type="reset" on:click={removeImages}>Reset</button>
-	<button type="submit">Upload</button>
+<form
+	method="POST"
+	class="image-upload--form"
+	enctype="multipart/form-data"
+	use:enhance={() => {
+		// Disable the button
+		submit.disabled = true;
+		submit.classList.add('btn-disabled');
+
+		return ({ result, update }) => {
+			console.log(result);
+			if (result.type === 'failure') {
+				const msg = result.data?.message ?? 'Er is iets misgegaan';
+
+				toast({
+					title: 'Fotos uploaden mislukt',
+					// @ts-ignore
+					message: msg,
+					type: 'danger'
+				});
+			} else {
+				update();
+			}
+		};
+	}}
+>
+	<div class="buttons">
+		<label class="button btn-info" for="fotos">Selecteer fotos</label>
+		<input
+			bind:this={input}
+			on:change={onChange}
+			accept="image/*"
+			type="file"
+			id="fotos"
+			name="fotos"
+			multiple
+			required
+		/>
+		<button class="btn-danger" type="reset" on:click={removeImages}>Reset</button>
+		<button class="btn-primary" type="submit" bind:this={submit}>Upload</button>
+		{#if submit && submit.disabled}
+			<p>Bezig met uploaden, je wordt doorgestuurd zodra dit klaar is.</p>
+		{/if}
+	</div>
+
+	<div class="creator">
+		<label for="creator">Wie heeft deze fotos gemaakt?</label>
+		<select id="creator" name="creator" bind:value={creator}>
+			{#each data.users as u}
+				<option value={u.ldapId}>{u.firstName}</option>
+			{/each}
+			<option value={'other'}>Anders, namelijk...</option>
+		</select>
+
+		{#if creator === 'other'}
+			<input
+				type="text"
+				id="creator"
+				name="creator-other"
+				placeholder="Voor- en achternaam"
+				required
+			/>
+		{/if}
+	</div>
 </form>
 
-{#if showImages}
-	<div bind:this={previewContainer} id="image-preview-container" />
-{:else}
-	<p>Hier komen je plaatjes te staan, zodat je kan zien welke je wil uploaden.</p>
-{/if}
+<div bind:this={previewContainer} id="image-preview-container">
+	{#if !images || images.length === 0}
+		<p>Geen fotos geselecteerd</p>
+	{:else}
+		<p>{images.length} {images.length === 1 ? 'foto' : 'fotos'} geselecteerd!</p>
+		<p>Verwijder foto's die je niet wil uploaden, zodra je klaar bent klik dan op upload!</p>
+		<small>(Je kan op een foto klikken om hem op ware grootte te bekijken)</small>
+		{#each images as file}
+			{@const url = URL.createObjectURL(file)}
+			<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+			<div class="image-upload--preview">
+				<button type="button" on:click={() => removeImage(file.name)}>Verwijder</button>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<img src={url} alt="plaatje" on:click={() => imagePreview({ image: url })} />
+			</div>
+		{/each}
+	{/if}
+</div>

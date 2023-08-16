@@ -15,3 +15,5 @@
 <a href="/short">Maak nieuwe short link</a>
 <br />
 <a href="/docs">Documentatie</a>
+<br />
+<a href="/fotos/upload">Upload fotos</a>
