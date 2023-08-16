@@ -78,6 +78,7 @@
 				console.log('Adding tag', tag);
 
 				const tags = p.tags;
+				// @ts-expect-error Ja ja
 				tags.push(tag);
 
 				p.tags = tags;
@@ -258,7 +259,6 @@
 										on:change={(e) => {
 											if (e) {
 												// @ts-ignore
-												console.log(e.target.value);
 												editFields[photo.id].value = e.target?.value;
 											}
 										}}
@@ -284,7 +284,7 @@
 										<span
 											role="button"
 											tabindex="0"
-											on:click={() => removeTag(photo.id, tag.photoTagId)}
+											on:click={() => removeTag(photo.id, tag.photoTag.id)}
 											class="ibs-chip removable">{tag.photoTag.name}</span
 										>
 									{/each}
