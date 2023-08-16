@@ -23,7 +23,15 @@ export const load = (async ({ url, locals }) => {
         }
       },
       ratings: true,
-      peopleTagged: true,
+      peopleTagged: {
+        select: {
+          user: {
+            select: {
+              firstName: true,
+            }
+          }
+        }
+      },
     },
   })
 

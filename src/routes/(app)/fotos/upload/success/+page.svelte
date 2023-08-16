@@ -228,7 +228,7 @@
 						</tr>
 						<tr>
 							<td>Mensen</td>
-							<td>{photo.peopleTagged}</td>
+							<td>{photo.peopleTagged.map((p) => p.user.firstName).join(', ')}</td>
 							<td><button class="btn-a"><i><EditIcon /></i></button></td>
 						</tr>
 					</tbody>
