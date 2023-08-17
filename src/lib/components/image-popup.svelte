@@ -27,25 +27,28 @@
 
 <style lang="scss">
 	.prompt {
-		padding: 1rem;
-
-		background-color: transparent;
-	}
-
-	.buttons {
 		margin: 0;
+		padding: 0;
+		background-color: transparent;
+		overflow: hidden;
 	}
 
-	// Mobile
-	@media (max-width: 600px) {
-		.buttons {
-			padding: 1rem;
+	.prompt[open] {
+		animation: show 1s ease normal;
+	}
+	@keyframes show {
+		from {
+			transform: translate(0%, -100%);
+		}
+		to {
+			transform: translateX(0%, 0%);
 		}
 	}
 
 	img {
 		max-width: calc(100vw - 2rem);
+		max-height: calc(100vh - 1rem);
 
-		object-fit: contain;
+		object-fit: cover;
 	}
 </style>
