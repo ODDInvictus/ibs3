@@ -26,14 +26,26 @@
 {/if}
 
 {#if underTitle}
-	<p>{underTitle}</p>
+	<div class="under-title"><p>{underTitle}</p></div>
 {/if}
 
 <hr />
 
-<style>
+<style lang="scss">
 	h1,
 	p {
 		text-align: center;
+	}
+
+	.under-title {
+		display: flex;
+		justify-content: center;
+		p {
+			max-width: 80%;
+
+			@media (max-width: 600px) {
+				max-width: 100%;
+			}
+		}
 	}
 </style>
