@@ -2,6 +2,7 @@ import type { Actions, PageServerLoad } from './$types';
 import db from '$lib/server/db'
 import { fail, redirect } from '@sveltejs/kit';
 import { writeFileSync } from 'fs';
+import { createRedisJob } from '$lib/server/cache';
 
 export const load = (async () => {
   return {
@@ -130,11 +131,25 @@ export const actions = {
         }
       })
 
+      const newFilename = `${filename}-${p.id}`
+
+      await db.photo.update({
+        where: {
+          id: p.id
+        },
+        data: {
+          filename: newFilename
+        }
+      })
+
       ids.push(p.id)
 
       // Now write to disk
-      writeFileSync(`${process.env.UPLOAD_FOLDER}/fotos/${filename}.${ext}`, Buffer.from(buf))
+      writeFileSync(`${process.env.UPLOAD_FOLDER}/fotos/${newFilename}.${ext}`, Buffer.from(buf))
     }
+
+    // Now, create a new job in redis
+    await createRedisJob('photo-processing')
 
     throw redirect(303, '/fotos/upload/success?ids=' + ids.join(','))
   }

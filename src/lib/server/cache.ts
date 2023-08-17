@@ -14,3 +14,10 @@ const redis = new Redis({
 })
 
 export default redis
+
+type RedisJobKeys = 'photo-processing' | 'unknown'
+
+export const createRedisJob = async (key: RedisJobKeys) => {
+  console.log('[REDIS] Creating job of type', key)
+  await redis.publish(key, '' + Date.now())
+}

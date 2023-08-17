@@ -64,7 +64,7 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
         .toBuffer()
     }
 
-    redis.set(`file::${filename}::${size}`, buf.toString('binary'), 'EX', IMAGE_CACHE_TIME)
+    redis.set(`file:${filename}:${size}`, buf.toString('binary'), 'EX', IMAGE_CACHE_TIME)
 
     setHeaders({
       'Content-Type': 'image/jpeg',
