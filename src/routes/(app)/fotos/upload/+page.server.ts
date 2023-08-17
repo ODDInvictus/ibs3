@@ -106,7 +106,7 @@ export const actions = {
 
       const ext = foto.name.split('.').pop()
       const n = name.split(' ').join('_')
-      const filename = `${n}-${date}-${idx}.${ext}`
+      const filename = `Invictus-${n}-${date}-${idx}.${ext}`
 
       const buf = await foto.arrayBuffer()
 
