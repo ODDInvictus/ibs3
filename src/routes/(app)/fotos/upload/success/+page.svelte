@@ -6,6 +6,13 @@
 	import SaveIcon from '~icons/tabler/device-floppy.svelte';
 	import TagIcon from '~icons/mdi/tag-add.svelte';
 	import CirclePlus from '~icons/tabler/circle-plus.svelte';
+	import UserPlus from '~icons/tabler/user-plus.svelte';
+	import CalenderPlus from '~icons/tabler/calendar-plus.svelte';
+	import { prompt } from '$lib/prompt';
+	import { toast } from '$lib/notification';
+	import { imagePreview } from '$lib/imagePreviewStore';
+	import { stripMarkdown } from '$lib/utils';
+	import { getDutchMonth } from '$lib/dateUtils';
 
 	export let data: PageData;
 
@@ -15,10 +22,6 @@
 	};
 
 	let editFields: Record<number, Field> = {};
-
-	console.log(data);
-
-	$: console.log(editFields);
 
 	function edit(field: string, photo: number) {
 		if (editFields[photo] && editFields[photo].field === field) {
@@ -42,8 +45,6 @@
 
 		const p = data.photos.find((p) => p.id === photoId);
 
-		console.log(`Removing tag ${tagId} from photo ${photoId}!`);
-
 		p?.tags.splice(
 			p.tags.findIndex((t) => t.photoTag.id === tagId),
 			1
@@ -59,13 +60,59 @@
 		});
 	}
 
+	async function createTag(newTag: string, photoId: number) {
+		const tag = await fetch('', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ type: 'new_tag', tag: newTag })
+		}).catch((err) => {
+			toast({
+				title: 'Oei!',
+				message: err.message,
+				type: 'danger'
+			});
+		});
+
+		if (tag) {
+			// Now add it to the local options
+			const res = await tag.json();
+			data.tags = [...data.tags, res.data];
+
+			// And add it to the photo
+			data.photos = data.photos.map((p) => {
+				if (p.id === photoId) {
+					const photoTag = data.tags.find((t) => t.id === res.data.id);
+
+					const tag = { photoTag };
+
+					const tags = p.tags;
+					// @ts-expect-error Ja ja
+					tags.push(tag);
+
+					p.tags = tags;
+				}
+				return p;
+			});
+
+			editFields[photoId].field = '';
+			editFields[photoId].value = '';
+
+			toast({
+				title: 'Gelukt!',
+				message: 'De tag is aangemaakt',
+				type: 'success'
+			});
+		}
+	}
+
 	function addTag(photoId: number) {
 		const tagId = parseInt(editFields[photoId].value);
 
-		console.log(editFields[photoId].value);
-
-		if (tagId == -1) {
-			alert('Oei! Dat kan nog niet');
+		if (isNaN(tagId) || tagId == -1 || tagId == -2) {
+			editFields[photoId].field = '';
+			editFields[photoId].value = '';
 			return;
 		}
 
@@ -74,8 +121,6 @@
 				const photoTag = data.tags.find((t) => t.id === tagId);
 
 				const tag = { photoTag };
-
-				console.log('Adding tag', tag);
 
 				const tags = p.tags;
 				// @ts-expect-error Ja ja
@@ -98,8 +143,6 @@
 			return;
 		}
 
-		console.log(`Field ${field} of photo ${photo} changed to ${value}!`);
-
 		// find the photo
 		for (const p of data.photos) {
 			if (p.id === photo) {
@@ -115,12 +158,41 @@
 					case 'description':
 						p.description = value;
 						break;
+					case 'people':
+						const newArr: any[] = [];
+
+						(value as unknown as string[]).forEach((personSelected) => {
+							const person = data.people.find((p) => p.ldapId === personSelected);
+
+							newArr.push({ user: person });
+							p.peopleTagged = newArr;
+						});
+						break;
+					case 'activity':
+						// @ts-expect-error kan gewoon
+						p.activity = data.activities.find((a) => a.id === parseInt(value));
+						break;
 				}
 			}
 		}
 
 		editFields[photo].field = '';
 		editFields[photo].value = '';
+	}
+
+	let linkAllPhotosToActivity = true;
+	let selectedActivityAll = data.activities[0].id;
+
+	function saveActivity() {
+		if (linkAllPhotosToActivity) {
+			const activity = data.activities.find((a) => a.id === selectedActivityAll);
+
+			if (!activity) return;
+			data.photos = data.photos.map((photo) => {
+				photo.activity = activity;
+				return photo;
+			});
+		}
 	}
 </script>
 
@@ -129,6 +201,28 @@
 	shortTitle="Tag foto's"
 	underTitle="De backend is nog bezig met het verwerken van alle foto's, maar in de tussentijd kan je wel alvast metadata specificeren."
 />
+
+<div class="top">
+	<div class="activity-options">
+		<label for="link-all-to-activity">Alle foto's zijn van dezelfde activiteit?</label>
+		<input type="checkbox" id="link-all-to-activity" bind:checked={linkAllPhotosToActivity} />
+		{#if linkAllPhotosToActivity}
+			<select bind:value={selectedActivityAll}>
+				{#each data.activities as activity}
+					<option value={activity.id}
+						>{`${stripMarkdown(activity.name)} (${getDutchMonth(
+							activity.endTime
+						)} ${activity.endTime.getFullYear()})`}</option
+					>
+				{/each}
+			</select>
+			<button class="btn-a" on:click={saveActivity}>
+				<i><SaveIcon /></i>
+			</button>
+		{/if}
+	</div>
+	<small class="tip">Tip: Klik op een plaatje om hem groter te maken.</small>
+</div>
 
 <div class="image-container">
 	{#each data.photos as photo}
@@ -146,7 +240,7 @@
 							{#if editFields[photo.id] && editFields[photo.id].field === 'name'}
 								<td>
 									<select
-										value={photo.creator.id}
+										value={photo.creator?.id}
 										on:change={(e) => {
 											if (e) {
 												// @ts-ignore
@@ -169,7 +263,7 @@
 								</td>
 							{:else}
 								<td>
-									{photo.creator.name}
+									{photo.creator?.name}
 								</td>
 								<td>
 									<button class="btn-a" on:click={() => edit('name', photo.id)}>
@@ -255,18 +349,30 @@
 								)}
 								<td>
 									<select
-										value={0}
+										value={-1}
 										on:change={(e) => {
 											if (e) {
+												// @ts-expect-error Bestaat gewoon
+												if (e.target?.value == -2) {
+													prompt({
+														title: 'Nieuwe tag',
+														message: 'Wat is de naam van de nieuwe tag?',
+														cb: async (newTag) => {
+															await createTag(newTag, photo.id);
+														}
+													});
+												}
+
 												// @ts-ignore
 												editFields[photo.id].value = e.target?.value;
 											}
 										}}
 									>
+										<option value={-1}>Selecteer een tag</option>
+										<option value={-2}>Nieuwe tag aanmaken</option>
 										{#each tags as tag}
 											<option value={tag.id}>{tag.name}</option>
 										{/each}
-										<option value="-1">Nieuwe tag aanmaken</option>
 									</select>
 								</td>
 								<td>
@@ -279,15 +385,19 @@
 								</td>
 							{:else}
 								<td>
-									{#each photo.tags as tag}
-										<!-- svelte-ignore a11y-click-events-have-key-events -->
-										<span
-											role="button"
-											tabindex="0"
-											on:click={() => removeTag(photo.id, tag.photoTag.id)}
-											class="ibs-chip removable">{tag.photoTag.name}</span
-										>
-									{/each}
+									{#if photo.tags && photo.tags.length > 0}
+										{#each photo.tags as tag}
+											<!-- svelte-ignore a11y-click-events-have-key-events -->
+											<span
+												role="button"
+												tabindex="0"
+												on:click={() => removeTag(photo.id, tag.photoTag.id)}
+												class="ibs-chip removable">{tag.photoTag.name}</span
+											>
+										{/each}
+									{:else}
+										Geen tags geselecteerd
+									{/if}
 								</td>
 								<td>
 									<button class="btn-a" on:click={() => edit('tags', photo.id)}>
@@ -298,14 +408,106 @@
 						</tr>
 						<tr>
 							<td>Mensen</td>
-							<td>{photo.peopleTagged.map((p) => p.user.firstName).join(', ')}</td>
-							<td><button class="btn-a"><i><EditIcon /></i></button></td>
+							{#if editFields[photo.id] && editFields[photo.id].field === 'people'}
+								<td>
+									<select
+										multiple
+										on:change={(e) => {
+											if (e) {
+												// @ts-expect-error Kijk heel grappig, maar SvelteKit ondersteund dus geen TS hiero, dus we doen het ermaar mee
+												const selectedElements = Array.from(e.target?.selectedOptions ?? []);
+
+												// @ts-expect-error Idem dito
+												const selection = selectedElements.map((el) => el.value);
+
+												// @ts-expect-error Idem dito
+												editFields[photo.id].value = selection;
+											}
+										}}
+									>
+										{#each data.people as person}
+											{@const selected =
+												photo.peopleTagged.find((pt) => pt.user.ldapId === person.ldapId) !==
+												undefined}
+											<option {selected} value={person.ldapId}>{person.firstName}</option>
+										{/each}
+									</select>
+								</td>
+								<td>
+									<button class="btn-a" on:click={() => edit('people', photo.id)}>
+										<i><ArrowBackUp /></i>
+									</button>
+									<button class="btn-a" on:click={() => save('people', photo.id)}>
+										<i><CirclePlus /></i>
+									</button>
+								</td>
+							{:else}
+								<td>
+									{photo.peopleTagged.length === 0
+										? 'Geen mensen getagd'
+										: photo.peopleTagged.map((p) => p.user.firstName).join(', ')}
+								</td>
+								<td>
+									<button class="btn-a" on:click={() => edit('people', photo.id)}>
+										<i><UserPlus /></i>
+									</button>
+								</td>
+							{/if}
 						</tr>
-					</tbody>
+						<tr>
+							<td>Activiteit</td>
+							{#if editFields[photo.id] && editFields[photo.id].field === 'activity'}
+								<td>
+									<select
+										value={photo.activity?.id ?? -1}
+										on:change={(e) => {
+											if (e) {
+												if (e.target?.value == -1) return;
+
+												// @ts-ignore
+												editFields[photo.id].value = e.target?.value;
+											}
+										}}
+									>
+										<option value={-1}>Selecteer een activiteit</option>
+										{#each data.activities as activity}
+											<option value={activity.id}
+												>{`${stripMarkdown(activity.name)} (${getDutchMonth(
+													activity.endTime
+												)} ${activity.endTime.getFullYear()})`}</option
+											>
+										{/each}
+									</select>
+								</td>
+								<td>
+									<button class="btn-a" on:click={() => edit('activity', photo.id)}>
+										<i><ArrowBackUp /></i>
+									</button>
+									<button class="btn-a" on:click={() => save('activity', photo.id)}>
+										<i><SaveIcon /></i>
+									</button>
+								</td>
+							{:else}
+								<td>{photo.activity?.name ?? 'Geen activiteit gelinkt'}</td>
+								<td>
+									<button class="btn-a" on:click={() => edit('activity', photo.id)}>
+										<i><CalenderPlus /></i>
+									</button>
+								</td>
+							{/if}
+						</tr></tbody
+					>
 				</table>
 			</div>
 			<div class="photo">
-				<img src="/upload/fotos/{photo.photo}" alt="Foto van {photo.creator.name}" />
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<div
+					role="button"
+					tabindex="0"
+					on:click={() => imagePreview({ image: '/upload/fotos/' + photo.photo })}
+				>
+					<img src="/upload/fotos/{photo.photo}" alt="Foto van {photo.creator?.name}" />
+				</div>
 			</div>
 		</div>
 
@@ -315,6 +517,7 @@
 
 <style lang="scss">
 	$img-height: 300px;
+	$img-width: 300px;
 
 	.image-container {
 		display: grid;
@@ -361,5 +564,24 @@
 
 	.options {
 		width: 50%;
+	}
+
+	.top {
+		display: flex;
+		width: 100%;
+		height: 2.5rem;
+		line-height: 2.5rem;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+
+		.activity-options {
+			display: flex;
+			align-items: center;
+
+			input[type='checkbox'],
+			button {
+				margin: 0 0.5rem 0 0.5rem;
+			}
+		}
 	}
 </style>

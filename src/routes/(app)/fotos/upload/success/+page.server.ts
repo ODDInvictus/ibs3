@@ -33,10 +33,18 @@ export const load = (async ({ url, locals }) => {
           user: {
             select: {
               firstName: true,
+              ldapId: true,
             }
           }
         },
       },
+      activity: {
+        select: {
+          name: true,
+          id: true,
+          endTime: true,
+        }
+      }
     },
   })
 
@@ -44,5 +52,29 @@ export const load = (async ({ url, locals }) => {
 
   const photoCreators = db.photoCreator.findMany()
 
-  return { photos, photoCreators, tags };
+  const people = db.user.findMany({
+    where: {
+      isActive: true,
+    },
+    select: {
+      ldapId: true,
+      firstName: true,
+    },
+    orderBy: {
+      firstName: 'asc',
+    }
+  })
+
+  const activities = db.activity.findMany({
+    select: {
+      id: true,
+      name: true,
+      endTime: true,
+    },
+    orderBy: {
+      endTime: 'desc',
+    }
+  })
+
+  return { photos, photoCreators, tags, people, activities };
 }) satisfies PageServerLoad;
