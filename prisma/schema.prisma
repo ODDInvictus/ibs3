@@ -619,7 +619,11 @@ model Photo {
   date DateTime?
 
   // Photo
-  photo String @unique
+  filename  String @unique
+  extension String
+
+  // Heeft de backend deze foto al verwerkt?
+  processed Boolean @default(false)
 
   // Description
   description String?
