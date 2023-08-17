@@ -14,6 +14,7 @@
 	import { imagePreview } from '$lib/imagePreviewStore';
 	import { stripMarkdown } from '$lib/utils';
 	import { getDutchMonth, toDateString } from '$lib/dateUtils';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData;
 
@@ -267,12 +268,14 @@
 
 			if (!activity) return;
 
+			const photos = data.photos.map((p) => p.id);
+
 			const body = await fetch('', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ type: 'multiple_activities', field: 'activity', value: activity.id })
+				body: JSON.stringify({ type: 'multiple_activities', photos, value: activity.id })
 			}).then((res) => res.json());
 
 			if (body.status !== 200) {
@@ -291,6 +294,10 @@
 			});
 		}
 	}
+
+	function back() {
+		goto('/fotos');
+	}
 </script>
 
 <Title
@@ -301,8 +308,10 @@
 
 <div class="top">
 	<div class="activity-options">
-		<label for="link-all-to-activity">Alle foto's zijn van dezelfde activiteit?</label>
-		<input type="checkbox" id="link-all-to-activity" bind:checked={linkAllPhotosToActivity} />
+		<div>
+			<label for="link-all-to-activity">Alle foto's zijn van dezelfde activiteit?</label>
+			<input type="checkbox" id="link-all-to-activity" bind:checked={linkAllPhotosToActivity} />
+		</div>
 		{#if linkAllPhotosToActivity}
 			<select bind:value={selectedActivityAll}>
 				{#each data.activities as activity}
@@ -322,6 +331,10 @@
 		{/if}
 	</div>
 	<small class="tip">Tip: Klik op een plaatje om hem groter te maken.</small>
+</div>
+
+<div class="button-row">
+	<button on:click={back}>Klaar!</button>
 </div>
 
 <div class="image-container">
@@ -562,6 +575,7 @@
 										value={photo.activity?.id ?? -1}
 										on:change={(e) => {
 											if (e) {
+												// @ts-expect-error Bestaat gewoon
 												if (e.target?.value == -1) return;
 
 												// @ts-ignore
@@ -615,57 +629,85 @@
 	{/each}
 </div>
 
+<div class="button-row">
+	<button on:click={back}>Klaar!</button>
+</div>
+
 <style lang="scss">
 	$img-height: 300px;
 	$img-width: 300px;
 
 	.image-container {
 		display: grid;
-
 		gap: 1rem;
-
 		grid-template-columns: 1fr;
-	}
 
-	.image {
-		display: grid;
-		grid-template-columns: 1fr $img-width;
-		grid-template-rows: auto;
-	}
+		.image {
+			display: grid;
+			grid-template-columns: 1fr $img-width;
+			grid-template-rows: auto;
 
-	.options {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
+			.options {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
 
-		min-width: 100%;
-		table {
-			table-layout: fixed;
+				width: 50%;
 
-			width: 100%;
+				min-width: 100%;
+				table {
+					table-layout: fixed;
 
-			textarea {
-				width: 100%;
-				text-align: start;
+					width: 100%;
+
+					textarea {
+						width: 100%;
+						text-align: start;
+					}
+				}
+			}
+
+			.photo {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
+				img {
+					max-height: $img-height;
+					max-width: $img-height;
+					object-fit: cover;
+				}
+			}
+		}
+
+		@media (max-width: 600px) {
+			.image {
+				grid-template-columns: 1fr;
+				grid-template-rows: auto auto;
+
+				.options {
+					width: 100%;
+					min-width: 100%;
+				}
+
+				.photo {
+					width: 100%;
+					min-width: 100%;
+				}
 			}
 		}
 	}
 
-	.photo {
+	.button-row {
 		display: flex;
-		justify-content: center;
+		width: 100%;
+		justify-content: flex-start;
 		align-items: center;
 
-		img {
-			max-height: $img-height;
-			max-width: $img-height;
-			object-fit: cover;
+		button {
+			margin: 0.5rem 0 0 0;
 		}
-	}
-
-	.options {
-		width: 50%;
 	}
 
 	.top {
@@ -683,6 +725,21 @@
 			input[type='checkbox'],
 			button {
 				margin: 0 0.5rem 0 0.5rem;
+			}
+		}
+
+		@media (max-width: 600px) {
+			flex-direction: column;
+			height: auto;
+
+			.activity-options {
+				flex-direction: column;
+				align-items: flex-start;
+
+				select {
+					width: 90%;
+					margin: 0.5rem 0 0 0;
+				}
 			}
 		}
 	}

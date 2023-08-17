@@ -9,13 +9,22 @@
 	margin: 0 8px 8px 0;
 }
 
-.ibs-chip.removable:hover {
-	padding: 0 8px;
-	cursor: pointer;
+@media (min-width: 600px) {
+	.ibs-chip.removable:hover {
+		padding: 0 8px;
+		cursor: pointer;
+	}
+
+	.ibs-chip.removable:hover::after {
+		content: ' x';
+	}
 }
 
-.ibs-chip.removable:hover::after {
-	content: ' x';
+@media (max-width: 600px) {
+	.ibs-chip.removable:hover {
+		background-color: var(--color-danger);
+		color: var(--color-text-light);
+	}
 }
 
 .ibs-chip.primary {

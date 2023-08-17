@@ -5,6 +5,8 @@ import type { User } from '@prisma/client';
 export const POST: RequestHandler = async ({ request, locals }) => {
   const body = await request.json();
 
+  console.log(body)
+
   switch (body.type) {
     case 'new_tag':
       return await newTag(body);
@@ -12,6 +14,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return await removeTag(body);
     case 'save_change':
       return await saveChange(body, locals.user);
+    case 'multiple_activities':
+      return await multipleActivities(body);
     default:
       return err(400, 'Request type is niet geldig')
   }
@@ -236,4 +240,50 @@ async function saveChange(body: SaveChangeBodyType, user: User) {
       return err(400, 'Veld niet gevonden')
 
   }
+}
+
+type MultipleActivitiesBodyType = {
+  type: 'multiple_activities'
+  photos: number
+  value: number
+}
+
+async function multipleActivities(body: MultipleActivitiesBodyType) {
+  // Check if body.photos is an array
+  if (!Array.isArray(body.photos)) return err(400, 'Geen geldige activiteiten')
+
+  const photos = await db.photo.findMany({
+    where: {
+      id: {
+        in: body.photos
+      }
+    }
+  })
+
+  if (photos.length === 0 || photos.length !== body.photos.length) {
+    return err(404, `Geen foto's gevonden`)
+  }
+
+  // Fetch the activity from the database
+  const activity = await db.activity.findFirst({
+    where: {
+      id: body.value
+    }
+  })
+
+  if (!activity) return err(404, 'Activiteit niet gevonden')
+
+  // Now update the `activity` and `date` field on photo
+  await db.photo.updateMany({
+    where: {
+      id: {
+        in: body.photos
+      }
+    },
+    data: {
+      activityId: activity.id,
+    }
+  })
+
+  return success({}, 'Wijziging opgeslagen')
 }
