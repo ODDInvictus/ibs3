@@ -42,6 +42,7 @@ export const load = (async ({ url, locals }) => {
         select: {
           name: true,
           id: true,
+          startTime: true,
           endTime: true,
         }
       }
@@ -70,6 +71,7 @@ export const load = (async ({ url, locals }) => {
       id: true,
       name: true,
       endTime: true,
+      startTime: true
     },
     orderBy: {
       endTime: 'desc',

@@ -4,10 +4,11 @@
 	import EditIcon from '~icons/tabler/edit.svelte';
 	import ArrowBackUp from '~icons/tabler/arrow-back-up.svelte';
 	import SaveIcon from '~icons/tabler/device-floppy.svelte';
-	import TagIcon from '~icons/mdi/tag-add.svelte';
+	import TagIcon from '~icons/tabler/bookmark-plus.svelte';
 	import CirclePlus from '~icons/tabler/circle-plus.svelte';
 	import UserPlus from '~icons/tabler/user-plus.svelte';
 	import CalenderPlus from '~icons/tabler/calendar-plus.svelte';
+	import WarningIcon from '~icons/tabler/alert-triangle.svelte';
 	import { prompt } from '$lib/prompt';
 	import { toast } from '$lib/notification';
 	import { imagePreview } from '$lib/imagePreviewStore';
@@ -37,7 +38,7 @@
 		}
 	}
 
-	function removeTag(photoId: number, tagId: number) {
+	async function removeTag(photoId: number, tagId: number) {
 		if (tagId == -1) {
 			alert('Oei! Dat kan nog niet');
 			return;
@@ -49,6 +50,23 @@
 			p.tags.findIndex((t) => t.photoTag.id === tagId),
 			1
 		);
+
+		const body = await fetch('', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ type: 'remove_tag', tag: tagId, photo: photoId })
+		}).then((res) => res.json());
+
+		if (body.status !== 200) {
+			toast({
+				title: 'Tag verwijderen mislukt!',
+				message: body.message,
+				type: 'danger'
+			});
+			return;
+		}
 
 		// @ts-expect-error Kan gewoon niet piepen
 		data.photos = data.photos.map((photo) => {
@@ -80,6 +98,28 @@
 			const res = await tag.json();
 			data.tags = [...data.tags, res.data];
 
+			const body = await fetch('', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					type: 'save_change',
+					value: res.data.id,
+					photo: photoId,
+					field: 'tags'
+				})
+			}).then((res) => res.json());
+
+			if (body.status !== 200) {
+				toast({
+					title: 'Tag toevoegen mislukt!',
+					message: body.message,
+					type: 'danger'
+				});
+				return;
+			}
+
 			// And add it to the photo
 			data.photos = data.photos.map((p) => {
 				if (p.id === photoId) {
@@ -107,12 +147,29 @@
 		}
 	}
 
-	function addTag(photoId: number) {
+	async function addTag(photoId: number) {
 		const tagId = parseInt(editFields[photoId].value);
 
 		if (isNaN(tagId) || tagId == -1 || tagId == -2) {
 			editFields[photoId].field = '';
 			editFields[photoId].value = '';
+			return;
+		}
+
+		const body = await fetch('', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ type: 'save_change', value: tagId, photo: photoId, field: 'tags' })
+		}).then((res) => res.json());
+
+		if (body.status !== 200) {
+			toast({
+				title: 'Tag toevoegen mislukt!',
+				message: body.message,
+				type: 'danger'
+			});
 			return;
 		}
 
@@ -135,11 +192,30 @@
 		editFields[photoId].value = '';
 	}
 
-	function save(field: string, photo: number) {
+	async function save(field: string, photo: number) {
 		const value = editFields[photo].value;
 
 		if (!value) {
 			editFields[photo].field = '';
+			return;
+		}
+
+		const res = await fetch('', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ type: 'save_change', field: field, value: value, photo: photo })
+		});
+
+		const body = await res.json();
+
+		if (body.status !== 200) {
+			toast({
+				title: 'Opslaan mislukt',
+				message: body.message,
+				type: 'danger'
+			});
 			return;
 		}
 
@@ -169,8 +245,10 @@
 						});
 						break;
 					case 'activity':
+						const a = data.activities.find((a) => a.id === parseInt(value));
 						// @ts-expect-error kan gewoon
-						p.activity = data.activities.find((a) => a.id === parseInt(value));
+						p.activity = a;
+						p.date = a?.startTime!;
 						break;
 				}
 			}
@@ -180,15 +258,34 @@
 		editFields[photo].value = '';
 	}
 
-	let linkAllPhotosToActivity = true;
+	let linkAllPhotosToActivity = false;
 	let selectedActivityAll = data.activities[0].id;
 
-	function saveActivity() {
+	async function saveActivity() {
 		if (linkAllPhotosToActivity) {
 			const activity = data.activities.find((a) => a.id === selectedActivityAll);
 
 			if (!activity) return;
+
+			const body = await fetch('', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ type: 'multiple_activities', field: 'activity', value: activity.id })
+			}).then((res) => res.json());
+
+			if (body.status !== 200) {
+				toast({
+					title: 'Opslaan mislukt',
+					message: body.message,
+					type: 'danger'
+				});
+				return;
+			}
+
 			data.photos = data.photos.map((photo) => {
+				photo.date = activity.startTime;
 				photo.activity = activity;
 				return photo;
 			});
@@ -199,7 +296,7 @@
 <Title
 	title="Success! Uploaden gelukt"
 	shortTitle="Tag foto's"
-	underTitle="De backend is nog bezig met het verwerken van alle foto's, maar in de tussentijd kan je wel alvast metadata specificeren."
+	underTitle="De backend is nog bezig met het verwerken van alle foto's, maar in de tussentijd kan je wel alvast metadata specificeren. Dit kan natuurlijk later ook nog worden gedaan, door iedereen, dus maak je geen zorgen als het niet helemaal klopt."
 />
 
 <div class="top">
@@ -219,6 +316,9 @@
 			<button class="btn-a" on:click={saveActivity}>
 				<i><SaveIcon /></i>
 			</button>
+			<small>
+				<i class="small"><WarningIcon /></i> Dit past bij elke foto de activiteit en datum aan
+			</small>
 		{/if}
 	</div>
 	<small class="tip">Tip: Klik op een plaatje om hem groter te maken.</small>
@@ -529,9 +629,8 @@
 
 	.image {
 		display: grid;
-		grid-template-columns: 1fr auto;
-
-		height: $img-height;
+		grid-template-columns: 1fr $img-width;
+		grid-template-rows: auto;
 	}
 
 	.options {
@@ -555,10 +654,13 @@
 
 	.photo {
 		display: flex;
-		justify-content: flex-start;
+		justify-content: center;
+		align-items: center;
 
 		img {
-			height: $img-height;
+			max-height: $img-height;
+			max-width: $img-height;
+			object-fit: cover;
 		}
 	}
 
@@ -572,7 +674,7 @@
 		height: 2.5rem;
 		line-height: 2.5rem;
 		justify-content: space-between;
-		margin-bottom: 1rem;
+		margin: 1rem 0;
 
 		.activity-options {
 			display: flex;
