@@ -65,3 +65,8 @@ i > svg {
 	width: var(--icon-size);
 	height: var(--icon-size);
 }
+
+i.small > svg {
+	width: calc(var(--icon-size) * 0.75);
+	height: calc(var(--icon-size) * 0.75);
+}
