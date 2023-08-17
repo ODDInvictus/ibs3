@@ -201,6 +201,7 @@ model Activity {
 
   // Foreign Keys
   FinancialPersonDataActivity FinancialPersonDataActivity[]
+  photos                      Photo[]
 }
 
 model ActivityLocation {
@@ -625,18 +626,20 @@ model Photo {
 
   tags PhotosWithTags[]
 
-  uploader     User?            @relation(fields: [uploaderId], references: [id])
+  uploader     User?            @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
   uploaderId   Int?
-  creator      PhotoCreator     @relation(fields: [creatorId], references: [id])
-  creatorId    Int
+  creator      PhotoCreator?    @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  creatorId    Int?
   ratings      PhotoRating[]
   peopleTagged PhotoPersonTag[]
+  activity     Activity?        @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  activityId   Int?
 }
 
 model PhotoCreator {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  user      User?    @relation(fields: [userId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int?
   name      String   @unique
 
@@ -653,24 +656,24 @@ model PhotoTag {
 }
 
 model PhotosWithTags {
-  photo        Photo    @relation(fields: [photoId], references: [id])
+  photo        Photo    @relation(fields: [photoId], references: [id], onDelete: Cascade)
   photoId      Int
-  photoTag     PhotoTag @relation(fields: [photoTagId], references: [id])
+  photoTag     PhotoTag @relation(fields: [photoTagId], references: [id], onDelete: Cascade)
   photoTagId   Int
-  assignedBy   User     @relation(fields: [assignedById], references: [id])
-  assignedById Int
+  assignedBy   User?    @relation(fields: [assignedById], references: [id], onDelete: SetNull)
+  assignedById Int?
 
   @@id([photoId, photoTagId])
 }
 
 // Persoon x is getagd in foto y door persoon z
 model PhotoPersonTag {
-  tagger   User @relation("photoTaggedBy", fields: [taggerId], references: [id])
-  taggerId Int
+  tagger   User? @relation("photoTaggedBy", fields: [taggerId], references: [id], onDelete: SetNull)
+  taggerId Int?
 
-  photo   Photo @relation(fields: [photoId], references: [id])
-  user    User  @relation("taggedInPhoto", fields: [userId], references: [id])
+  photo   Photo @relation(fields: [photoId], references: [id], onDelete: Cascade)
   photoId Int
+  user    User  @relation("taggedInPhoto", fields: [userId], references: [id], onDelete: Cascade)
   userId  Int
 
   @@id([photoId, userId])
@@ -679,9 +682,9 @@ model PhotoPersonTag {
 model PhotoRating {
   rating Int @default(1)
 
-  Photo   Photo @relation(fields: [photoId], references: [id])
+  Photo   Photo @relation(fields: [photoId], references: [id], onDelete: Cascade)
   photoId Int
-  User    User  @relation(fields: [userId], references: [id])
+  User    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  Int
 
   @@id([photoId, userId])
