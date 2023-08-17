@@ -53,7 +53,10 @@
 	}
 </script>
 
-<Title title="Upload fotos" />
+<Title
+	title="Upload fotos"
+	underTitle="Hier kan je foto's uploaden van Invictus. Doe dit alsjeblieft op desktop, of in ieder geval met goed internet, aangezien het echt een bakbeest van een proces is."
+/>
 
 <form
 	method="POST"
