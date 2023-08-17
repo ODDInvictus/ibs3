@@ -8,6 +8,8 @@ import { verdubbelStrafbakken } from './strafbakken';
 import { prisma } from './prisma';
 import { newActivitiyNotification } from './notifications';
 import { sendCustomEmail } from './email-utils';
+import { processPhotos } from './image-processing';
+import redis from './redis';
 
 const API_VERSION = '1.0.1'
 
@@ -64,6 +66,19 @@ app.post('/email/send', async (req, res) => {
 
 app.listen(port, async () => {
   console.log(`Job scheduler listening at http://localhost:${port}`)
+
+  console.log('Connecting to redis...')
+  await redis.connect()
+
+  console.log('[REDIS] Listening for jobs')
+  // Listen for photo processing
+  await redis.subscribe('photo-processing', async (msg) => {
+    if (!msg) return
+    console.log('[REDIS] Received photo-processing job', msg)
+    // New photo's have been uploaded, process them
+    await processPhotos()
+  })
+
 })
 
 /*
