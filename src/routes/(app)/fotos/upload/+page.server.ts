@@ -106,14 +106,16 @@ export const actions = {
 
       const ext = foto.name.split('.').pop()
       const n = name.split(' ').join('_')
-      const filename = `Invictus-${n}-${date}-${idx}.${ext}`
+      const filename = `Invictus-${n}-${date}-${idx}`
 
       const buf = await foto.arrayBuffer()
 
       // create photo object
       const p = await db.photo.create({
         data: {
-          photo: filename,
+          filename,
+          extension: ext ?? 'jpg',
+          processed: false,
           uploader: {
             connect: {
               ldapId: locals.user.ldapId
@@ -131,7 +133,7 @@ export const actions = {
       ids.push(p.id)
 
       // Now write to disk
-      writeFileSync(`${process.env.UPLOAD_FOLDER}/fotos/${filename}`, Buffer.from(buf))
+      writeFileSync(`${process.env.UPLOAD_FOLDER}/fotos/${filename}.${ext}`, Buffer.from(buf))
     }
 
     throw redirect(303, '/fotos/upload/success?ids=' + ids.join(','))
