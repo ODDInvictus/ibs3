@@ -13,7 +13,7 @@
 	import { toast } from '$lib/notification';
 	import { imagePreview } from '$lib/imagePreviewStore';
 	import { stripMarkdown } from '$lib/utils';
-	import { getDutchMonth } from '$lib/dateUtils';
+	import { getDutchMonth, toDateString } from '$lib/dateUtils';
 
 	export let data: PageData;
 
@@ -397,8 +397,8 @@
 								</td>
 							{:else}
 								<td>
-									<time datetime={photo.date?.toLocaleDateString('nl')}>
-										{photo.date?.toLocaleDateString('nl')}
+									<time datetime={toDateString(photo.date)}>
+										{toDateString(photo.date)}
 									</time>
 								</td>
 								<td>

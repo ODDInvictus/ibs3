@@ -29,6 +29,8 @@ export function getDutchMonth(date: Date) {
   }
 }
 
-function toDateString(date: Date) {
+export function toDateString(date: Date | null) {
+  if (!date) return 'datum onbekend'
+
   return date.toLocaleDateString('nl')
 }
