@@ -22,7 +22,7 @@
 					niemand
 				{:else}
 					{#each data.photo.peopleTagged as person}
-						<a href="/leden/{person.user.ldapId}">{person.user.firstName}</a>
+						<a href="/leden/{person.user.ldapId}">{person.user.firstName}</a>&nbsp;
 					{/each}
 				{/if}
 			</p>
