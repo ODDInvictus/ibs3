@@ -58,6 +58,8 @@
 	underTitle="Hier kan je foto's uploaden van Invictus. Doe dit alsjeblieft op desktop, of in ieder geval met goed internet, aangezien het echt een bakbeest van een proces is."
 />
 
+<small>Tip: Upload foto's per activiteit, dat maakt het taggen makkelijker!</small>
+
 <form
 	method="POST"
 	class="image-upload--form"

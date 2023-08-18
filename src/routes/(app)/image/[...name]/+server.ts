@@ -6,6 +6,7 @@ import sharp from 'sharp'
 
 const UPLOAD_FOLDER = env.UPLOAD_FOLDER;
 const STATIC_FOLDER = env.STATIC_FOLDER;
+const PHOTO_FOLDER = env.PHOTO_FOLDER;
 const IMAGE_CACHE_TIME = env.IMAGE_CACHE_TIME ?? 1;
 
 export const GET: RequestHandler = async ({ request, params, setHeaders, url }) => {
@@ -24,10 +25,13 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
   if (!size) size = 'regular'
 
   let isStatic = url.searchParams.get('static') === 'true'
+  let isPhoto = url.searchParams.get('photo') === 'true'
 
   // Then get the file from the server
   try {
     const agent = request.headers.get('user-agent')
+
+    const path = isStatic ? STATIC_FOLDER : (isPhoto ? PHOTO_FOLDER : UPLOAD_FOLDER)
 
     // Edge ondersteund geen AVIF om een of andere kut reden, dus zij krijgen geen cache lmaoo
     if (agent && (agent.includes('Edg/') || agent.includes('Edge'))) {
@@ -35,10 +39,8 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
         'Content-Type': 'image/jpeg',
         'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
       })
-      return new Response(await readJpeg(filename, size))
+      return new Response(await readJpeg(path, filename, size))
     }
-
-    const path = isStatic ? STATIC_FOLDER : UPLOAD_FOLDER
 
     const file = fs.readFileSync(`${path}/${filename}`)
 
@@ -56,7 +58,10 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
 
     let buf: Buffer
 
-    if (size !== 'regular') {
+    // These files are already in the right format, only need to be cached
+    if (isStatic || isPhoto) {
+      buf = await readImage(path, filename)
+    } else if (size !== 'regular') {
       const [width, height] = size.split('x')
 
       buf = await sharp(file)
@@ -81,8 +86,12 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
   }
 };
 
-async function readJpeg(name: string, size: string | undefined): Promise<Buffer> {
-  const file = fs.readFileSync(`${UPLOAD_FOLDER}/${name}`)
+async function readImage(path: string, name: string): Promise<Buffer> {
+  return fs.readFileSync(`${path}/${name}`)
+}
+
+async function readJpeg(path: string, name: string, size: string | undefined): Promise<Buffer> {
+  const file = fs.readFileSync(`${path}/${name}`)
 
   if (size) {
     const [width, height] = size.split('x')

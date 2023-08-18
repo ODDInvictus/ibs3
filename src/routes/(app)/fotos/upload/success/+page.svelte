@@ -614,7 +614,6 @@
 				</table>
 			</div>
 			<div class="photo">
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div
 					role="button"
 					tabindex="0"
