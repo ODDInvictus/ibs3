@@ -165,10 +165,7 @@
 
 	<div class="ibs-card birthdays">
 		<div class="ibs-card--image">
-			<img
-				src="/image/users/{data.nextBirthday?.picture}?size=750x375"
-				alt="Volgende verjaardag!"
-			/>
+			<img src="/image/users/{data.nextBirthday?.picture}?size=750x375" alt="⏳" />
 		</div>
 		{#if daysLeftTill(data.nextBirthday.birthDate) > 0}
 			{@const birthday = data.nextBirthday.birthDate}
