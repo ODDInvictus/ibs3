@@ -1,15 +1,18 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { env } from '$env/dynamic/public';
 	import knoppers from '$lib/assets/knoppers.png';
-	import { formatDateHumanReadable } from '$lib/textUtils';
-	import { formatDate, markdown } from '$lib/utils';
+	import { daysLeftTill, formatDateHumanReadable, toAge, toBirthday } from '$lib/dateUtils';
+	import { markdown } from '$lib/utils';
+	import type { PageData } from './$types';
 	import type { Snapshot } from './$types';
+
+	export let data: PageData;
+
+	console.log(data.huts);
 
 	/* Cookie clicker */
 	let isClicking = false;
 
-	let totalClicks = $page.data.clicks?._sum?.amount ?? 0;
+	let totalClicks = data.clicks?._sum?.amount ?? 0;
 	let sessionClicks = 0;
 
 	$: satuationStyle = `filter: saturate(${Math.min(9, Math.max(1, sessionClicks / 100))})`;
@@ -17,8 +20,8 @@
 	let timeouts: NodeJS.Timeout[] = [];
 	let startTime: number;
 
-	let record = $page.data.topclicker?.amount;
-	let recordHolder = $page.data.topclicker?.firstName;
+	let record = data.topclicker?.amount;
+	let recordHolder = data.topclicker?.firstName;
 	$: {
 		if (totalClicks > record) {
 			record = totalClicks;
@@ -75,7 +78,7 @@
 	<title>Invictus Bier Systeem</title>
 </svelte:head>
 
-<h1>{$page.data.greeting}</h1>
+<h1>{data.greeting}</h1>
 
 <p>Welkom bij Invictus Bier Systeem</p>
 
@@ -85,30 +88,39 @@
 	<div class="ibs-card activity">
 		<div class="ibs-card--image">
 			<img
-				alt={$page.data.activity.name}
-				src={env.PUBLIC_UPLOAD_URL +
-					'activities/' +
-					($page.data.activity.image ?? 'activiteit-0-logo.png')}
+				alt={data.activity?.name ?? 'Geen activiteit gepland'}
+				src={data.activity
+					? `/image/activities/${data.activity?.image}?size=750x375`
+					: '/image/no-activity.jpeg?size=750x375&static=true'}
 			/>
 		</div>
 		<h2 class="ibs-card--title">
-			{@html markdown($page.data.activity.name)}
+			{@html markdown(data.activity?.name ?? 'Niks!')}
 		</h2>
-		<div class="ibs-card--content">
-			<time datetime={$page.data.activity.startTime}>
-				{formatDateHumanReadable($page.data.activity.startTime)}
-			</time>
-		</div>
-		<div class="mt-4" />
-		<div class="ibs-card--links">
-			<a href="/activiteit/{$page.data.activity.id}">Meer informatie</a>
-		</div>
+		{#if data.activity}
+			<div class="ibs-card--content">
+				<time datetime={formatDateHumanReadable(data.activity.startTime ?? new Date())}>
+					{formatDateHumanReadable(data.activity.startTime)}
+				</time>
+			</div>
+			<div class="mt-4" />
+			<div class="ibs-card--links">
+				<a href="/activiteit/{data.activity.id}">Meer informatie</a>
+			</div>
+		{:else}
+			<div class="ibs-card--content">
+				<p>Er is geen activiteit gepland</p>
+			</div>
+			<div class="ibs-card--links">
+				<a href="/activiteit/nieuw">Plan er een!</a>
+			</div>
+		{/if}
 	</div>
 
 	<div class="ibs-card quote">
 		<h2 class="ibs-card--title">Quote</h2>
 		<blockquote class="ibs-card--content">
-			<p>{@html markdown($page.data.quote)}</p>
+			<p>{@html markdown(data.quote)}</p>
 		</blockquote>
 		<div class="mt-6" />
 		<div class="ibs-card--links">
@@ -120,18 +132,17 @@
 		<h2 class="ibs-card--title">Strafbakken</h2>
 		<div class="ibs-card--content">
 			<p>Jij hebt op dit moment</p>
-			<h1>{$page.data.strafbakken}</h1>
+			<h1>{data.strafbakken}</h1>
 			<p>strafbakken!</p>
 		</div>
 		<div class="mt-6" />
 		<div class="ibs-card--links">
-			<a href="/strafbakken/{$page.data.user.ldapId}">Waarom?</a>
+			<a href="/strafbakken/{data.user.ldapId}">Waarom?</a>
 		</div>
 	</div>
 
 	<div class="ibs-card cookie-clicker">
 		<h2 class="ibs-card--title">Knoppers klikker</h2>
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div class="ibs-card--content">
 			<img
 				style={satuationStyle}
@@ -149,6 +160,37 @@
 				{/if}
 				<a href="/knoppers">Meer informatie</a>
 			</div>
+		</div>
+	</div>
+
+	<div class="ibs-card birthdays">
+		<div class="ibs-card--image">
+			<img
+				src="/image/users/{data.nextBirthday?.picture}?size=750x375"
+				alt="Volgende verjaardag!"
+			/>
+		</div>
+		{#if daysLeftTill(data.nextBirthday.birthDate) > 0}
+			{@const birthday = data.nextBirthday.birthDate}
+			<h2 class="ibs-card--title">Volgende jarige: {data.nextBirthday?.firstName}</h2>
+			<div class="ibs-card--content">
+				<p>
+					Hij is jarig op {toBirthday(birthday)} en wordt dan {toAge(birthday) + 1} jaar!
+				</p>
+				<p>Dat is over {daysLeftTill(birthday)} dagen.</p>
+			</div>
+		{:else}
+			{@const birthday = data.nextBirthday.birthDate}
+			<h2 class="ibs-card--title">🎉 {data.nextBirthday.firstName} is jarig! 🎉</h2>
+			<div class="ibs-card--content">
+				<p>Gefeliciteerd {data.nextBirthday.firstName}!</p>
+				<p>
+					Hij is {toAge(birthday) + 1} jaar geworden
+				</p>
+			</div>
+		{/if}
+		<div class="ibs-card--links">
+			<a href="/verjaardag">Wie zijn er nog meer binnenkort jarig?</a>
 		</div>
 	</div>
 </div>
@@ -187,10 +229,15 @@
 			}
 		}
 
-		.ibs-card.activity {
+		.ibs-card.activity,
+		.ibs-card.birthdays {
 			.ibs-card--content {
 				padding: 0 1rem;
 				padding-bottom: 1rem;
+			}
+
+			& p:last-of-type {
+				margin-bottom: 1.5rem;
 			}
 
 			time {

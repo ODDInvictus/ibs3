@@ -1,54 +1,34 @@
 import db from '$lib/server/db'
-import { getUser } from '$lib/server/userCache'
-import { fail } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types';
 import { env } from '$env/dynamic/private';
+import { getBirthdaysInOrder, getNextBirthdayInLine } from '$lib/server/birthdays';
 
 export const load = (async ({ locals }) => {
 
+  // Deze methode faalt niet, ook als je 0 sessies hebt - NR
   const getTotalClicks = async () => {
-    // Probeer de user te vinden als dat niet lukt om de een of andere reden, dan is het onsuccesvol
-    let userId: number | undefined = locals.user?.id;
-    if (!userId) {
-      const session = await locals.getSession();
-      const user = await getUser(session);
-      userId = user?.id;
-    }
-    if (!userId) return fail(400);
-
-    try {
-      return await db.clickSession.aggregate({
-        _sum: {
-          amount: true
-        },
-        where: {
-          userId
-        }
-      });
-    } catch (error) {
-      console.error(error);
-      return fail(500);
-    }
+    return await db.clickSession.aggregate({
+      _sum: {
+        amount: true
+      },
+      where: {
+        userId: locals.user.id
+      }
+    });
   }
 
   const getTopClicker = async () => {
-    try {
-      let q = await db.$queryRaw`
-        SELECT u.firstName, SUM(c.amount) AS amount
-        FROM User AS u, ClickSession AS c
-        WHERE u.id = c.userId
-        GROUP BY c.userId
-        ORDER BY amount DESC
-        LIMIT 1` as { firstName: string, amount: number }[]
+    let q = await db.$queryRaw`
+      SELECT u.firstName, SUM(c.amount) AS amount
+      FROM User AS u, ClickSession AS c
+      WHERE u.id = c.userId
+      GROUP BY c.userId
+      ORDER BY amount DESC
+      LIMIT 1` as { firstName: string, amount: number }[]
 
-      q = q.map((e) => { return { ...e, amount: Number(e.amount) } });
+    q = q.map((e) => { return { ...e, amount: Number(e.amount) } });
 
-      return q[0];
-
-    } catch (error) {
-      console.error(error);
-      return fail(500);
-    }
+    return q[0];
   }
 
   const getGreeting = () => {
@@ -67,7 +47,15 @@ export const load = (async ({ locals }) => {
   }
 
   const getQuote = async () => {
-    const obj = await fetch(env.QUOTE_API_URL).then((res) => res.json())
+    let obj
+
+    try {
+      obj = await fetch('https://nierot.com').then((res) => res.json())
+    } catch (err) {
+      obj = {
+        message: '"De quote module is stukkie wukkie" - IBS'
+      }
+    }
 
     let message = obj.message
 
@@ -104,5 +92,6 @@ export const load = (async ({ locals }) => {
     quote: getQuote(),
     activity: getFirstActivity(),
     strafbakken: getStrafbakken(),
+    nextBirthday: getNextBirthdayInLine()
   }
 }) satisfies PageServerLoad;
