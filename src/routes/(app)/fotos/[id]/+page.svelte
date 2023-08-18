@@ -50,6 +50,11 @@
 			<div class="comment-container">
 				<h2>Comments</h2>
 
+				<form method="POST">
+					<input type="text" name="comment" placeholder="Typ een comment..." />
+					<button type="submit">Verstuur</button>
+				</form>
+
 				{#each data.photo.comments as comment}
 					<div class="ibs-comment">
 						<div class="ibs-comment--user">
@@ -90,6 +95,15 @@
 	.details-container {
 		p {
 			margin: 0.25rem 0;
+		}
+	}
+
+	.comment-container {
+		form {
+			display: grid;
+			grid-template-columns: 1fr auto;
+			grid-gap: 1rem;
+			margin: 0.5rem 0;
 		}
 	}
 
