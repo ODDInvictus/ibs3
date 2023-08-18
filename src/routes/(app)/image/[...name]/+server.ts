@@ -1,10 +1,11 @@
-import type { RequestHandler } from '../$types';
+import type { RequestHandler } from './$types';
 import { env } from '$env/dynamic/private'
 import fs from 'fs'
 import redis from '$lib/server/cache';
 import sharp from 'sharp'
 
 const UPLOAD_FOLDER = env.UPLOAD_FOLDER;
+const STATIC_FOLDER = env.STATIC_FOLDER;
 const IMAGE_CACHE_TIME = env.IMAGE_CACHE_TIME ?? 1;
 
 export const GET: RequestHandler = async ({ request, params, setHeaders, url }) => {
@@ -22,6 +23,8 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
 
   if (!size) size = 'regular'
 
+  let isStatic = url.searchParams.get('static') === 'true'
+
   // Then get the file from the server
   try {
     const agent = request.headers.get('user-agent')
@@ -35,7 +38,9 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
       return new Response(await readJpeg(filename, size))
     }
 
-    const file = fs.readFileSync(`${UPLOAD_FOLDER}/${filename}`)
+    const path = isStatic ? STATIC_FOLDER : UPLOAD_FOLDER
+
+    const file = fs.readFileSync(`${path}/${filename}`)
 
     // First check if we have the file in the cache
     const cachedFile = await redis.get(`file::${filename}::${size}`)
@@ -56,11 +61,11 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
 
       buf = await sharp(file)
         .resize(parseInt(width), parseInt(height))
-        .avif({ quality: 90 })
+        .avif({ quality: 70 })
         .toBuffer()
     } else {
       buf = await sharp(file)
-        .avif({ quality: 90 })
+        .avif({ quality: 70 })
         .toBuffer()
     }
 
