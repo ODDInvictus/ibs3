@@ -12,7 +12,7 @@
 	<Title title={data.photo.description ?? `Foto ${data.photo.id}`} />
 
 	<div class="root">
-		<div>
+		<div class="details-container">
 			<h2>Details</h2>
 			<p>Beschrijving: {data.photo.description}</p>
 			<p>Gemaakt door: {data.photo.creator?.name}</p>
@@ -49,6 +49,17 @@
 
 			<div class="comment-container">
 				<h2>Comments</h2>
+
+				{#each data.photo.comments as comment}
+					<div class="ibs-comment">
+						<div class="ibs-comment--user">
+							{comment.commenter.firstName}
+						</div>
+						<div class="ibs-comment--content">
+							{comment.comment}
+						</div>
+					</div>
+				{/each}
 			</div>
 		</div>
 
@@ -73,6 +84,12 @@
 
 		h2 {
 			margin-bottom: 0.25rem;
+		}
+	}
+
+	.details-container {
+		p {
+			margin: 0.25rem 0;
 		}
 	}
 

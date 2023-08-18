@@ -27,6 +27,11 @@ export const load = (async ({ params, url }) => {
             }
           }
         }
+      },
+      comments: {
+        include: {
+          commenter: true,
+        }
       }
     }
   })
