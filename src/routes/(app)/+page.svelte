@@ -7,8 +7,6 @@
 
 	export let data: PageData;
 
-	console.log(data.huts);
-
 	/* Cookie clicker */
 	let isClicking = false;
 
