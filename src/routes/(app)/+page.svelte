@@ -190,7 +190,7 @@
 			</div>
 		{/if}
 		<div class="ibs-card--links">
-			<a href="/verjaardag">Wie zijn er nog meer binnenkort jarig?</a>
+			<a href="/verjaardagen">Wie zijn er nog meer binnenkort jarig?</a>
 		</div>
 	</div>
 </div>
