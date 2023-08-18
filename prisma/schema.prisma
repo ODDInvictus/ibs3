@@ -85,6 +85,7 @@ model User {
   PhotoRating             PhotoRating[]
   PhotoTaggedIn           PhotoPersonTag[]          @relation("taggedInPhoto")
   PhotoTaggedBy           PhotoPersonTag[]          @relation("photoTaggedBy")
+  Comment                 Comment[]
 }
 
 model Account {
@@ -202,6 +203,7 @@ model Activity {
   // Foreign Keys
   FinancialPersonDataActivity FinancialPersonDataActivity[]
   photos                      Photo[]
+  Comment                     Comment[]
 }
 
 model ActivityLocation {
@@ -638,6 +640,7 @@ model Photo {
   peopleTagged PhotoPersonTag[]
   activity     Activity?        @relation(fields: [activityId], references: [id], onDelete: SetNull)
   activityId   Int?
+  Comment      Comment[]
 }
 
 model PhotoCreator {
@@ -692,4 +695,27 @@ model PhotoRating {
   userId  Int
 
   @@id([photoId, userId])
+}
+
+//
+// Comments 
+//
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Comment
+  comment String @db.LongText
+
+  // Who made the comment?
+  commenter   User @relation(fields: [commenterId], references: [id], onDelete: Cascade)
+  commenterId Int
+
+  // FKs
+  photo      Photo?    @relation(fields: [photoId], references: [id], onDelete: SetNull)
+  photoId    Int?
+  activity   Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  activityId Int?
 }
