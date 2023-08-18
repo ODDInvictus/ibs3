@@ -85,7 +85,7 @@ model User {
   PhotoRating             PhotoRating[]
   PhotoTaggedIn           PhotoPersonTag[]          @relation("taggedInPhoto")
   PhotoTaggedBy           PhotoPersonTag[]          @relation("photoTaggedBy")
-  Comment                 Comment[]
+  CommentsMade            Comment[]
 }
 
 model Account {
@@ -203,7 +203,7 @@ model Activity {
   // Foreign Keys
   FinancialPersonDataActivity FinancialPersonDataActivity[]
   photos                      Photo[]
-  Comment                     Comment[]
+  comments                    Comment[]
 }
 
 model ActivityLocation {
@@ -640,7 +640,7 @@ model Photo {
   peopleTagged PhotoPersonTag[]
   activity     Activity?        @relation(fields: [activityId], references: [id], onDelete: SetNull)
   activityId   Int?
-  Comment      Comment[]
+  comments     Comment[]
 }
 
 model PhotoCreator {
