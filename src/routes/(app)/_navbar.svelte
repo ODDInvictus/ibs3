@@ -12,6 +12,7 @@
 	import ShieldCheck from '~icons/tabler/shield-check';
 	import Settings from '~icons/tabler/settings';
 	import AccessibleOff from '~icons/tabler/accessible-off';
+	import Photo from '~icons/tabler/photo';
 </script>
 
 <nav class="layout--navbar">
@@ -29,9 +30,9 @@
 		<i><Beer /></i>
 		<span>Strafbakken</span>
 	</a>
-	<a class="layout--navbar--item" href="/financieel">
-		<i><PigMoney /></i>
-		<span>Financieel</span>
+	<a class="layout--navbar--item" href="/fotos">
+		<i><Photo /></i>
+		<span>Foto's</span>
 	</a>
 	{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
 		<a class="layout--navbar--item" href="/maluspunten">
@@ -39,6 +40,10 @@
 			<span>Maluspunten</span>
 		</a>
 	{/if}
+	<a class="layout--navbar--item" href="/financieel">
+		<i><PigMoney /></i>
+		<span>Financieel</span>
+	</a>
 	<a class="layout--navbar--item" href="/leden">
 		<i><Users /></i>
 		<span>Leden</span>
