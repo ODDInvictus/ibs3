@@ -1,0 +1,9 @@
+{
+	"svelte.plugin.css.globals": "src/style/_variables.scss",
+	"svelte.plugin.svelte.compilerWarnings": {
+		"a11y-click-events-have-key-events": "ignore",
+		"a11y-no-noninteractive-element-to-interactive-role": "ignore"
+	},
+	"svelte.plugin.svelte.defaultScriptLanguage": "ts",
+	"svelte.enable-ts-plugin": true
+}
