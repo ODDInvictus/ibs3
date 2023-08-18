@@ -54,15 +54,7 @@ export const actions = {
   default: async (event) => {
     const { request, locals } = event;
 
-    // Probeer de user te vinden als dat niet lukt om de een of andere reden, dan is het onsuccesvol
-    let giverId: number | undefined = locals.user?.id;
-    if (!giverId) {
-      const session = await locals.getSession();
-      const user = await getUser(session);
-      giverId = user?.id;
-    }
-    if (!giverId) return fail(400);
-
+    const giverId = locals.user.id;
     const data = await request.formData();
     const reason = data.get("reason")?.toString() || undefined;
     const receiverId = Number(data.get("receiver"));

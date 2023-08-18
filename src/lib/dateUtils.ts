@@ -29,8 +29,56 @@ export function getDutchMonth(date: Date) {
   }
 }
 
+export function formatDateHumanReadable(date: Date): string {
+  return date.toLocaleDateString('nl-NL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+}
+
 export function toDateString(date: Date | null) {
   if (!date) return 'datum onbekend'
 
   return date.toLocaleDateString('nl')
+}
+
+export function toBirthday(date: Date | null) {
+  if (!date) return 'datum onbekend'
+
+  const month = getDutchMonth(date)
+  const day = date.getDate()
+
+  return `${day} ${month}`
+}
+
+export function daysLeftTill(date: Date | null) {
+  if (!date) return -1
+
+  const today = new Date()
+  const dateCopy = new Date(date)
+
+  // Set both times to 00:00:00
+  dateCopy.setHours(0, 0, 0, 0)
+  today.setHours(0, 0, 0, 0)
+  dateCopy.setFullYear(today.getFullYear())
+
+  // If the date is in the past, add a year
+  if (dateCopy.getTime() < today.getTime()) {
+    dateCopy.setFullYear(dateCopy.getFullYear() + 1)
+  }
+
+  const days = Math.floor((dateCopy.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+  return days
+}
+
+export function toAge(birthDate: Date | null) {
+  if (!birthDate) return -1
+
+  const today = new Date();
+  const age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    return age - 1;
+  }
+
+  return age;
 }
