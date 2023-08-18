@@ -2,26 +2,28 @@ import type { PageServerLoad } from './$types';
 import db from '$lib/server/db'
 import type { Photo } from '@prisma/client';
 
-type PhotoOfTheDay = {
+type PhotoHighlight = {
   name: string
   filename: string
+  pid: number
 }
 
 export const load = (async () => {
-  const rand = (new Date()).getDay()
+  const rand = Date.now()
 
-  const getPhotoOfTheDay = async () => {
+  const getHighlight = async () => {
     const query: Photo[] = await db.$queryRaw`
-      SELECT * FROM Photo
+      SELECT Photo.id as pid, name, filename FROM Photo
       LEFT JOIN PhotoCreator ON PhotoCreator.id = Photo.creatorId
       ORDER BY RAND(${rand})
       LIMIT 1;
     `
+    console.log(query)
 
-    return query[0] as unknown as PhotoOfTheDay
+    return query[0] as unknown as PhotoHighlight
   }
 
   return {
-    photoOfTheDay: getPhotoOfTheDay()
+    highlight: getHighlight()
   };
 }) satisfies PageServerLoad;

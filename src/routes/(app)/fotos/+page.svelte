@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte';
+	import { imagePreview } from '$lib/imagePreviewStore';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -10,17 +11,24 @@
 <Title title="Foto's" />
 
 <div class="buttons">
-	<a href="./upload">Foto's uploaden</a>
-	<a href="./slideshow">Slideshow</a>
+	<a href="/fotos/upload">Foto's uploaden</a>
+	<a href="/fotos/slideshow">Slideshow</a>
 </div>
 
 <div class="main">
-	<div class="ibs-card photo-of-the-day">
-		<h2 class="ibs-card--title">Foto van de dag!</h2>
+	<div class="ibs-card tags" />
+
+	<div class="ibs-card photo-highlight">
+		<h2 class="ibs-card--title">Foto highlight!</h2>
 
 		<div class="ibs-card--content">
-			<img src="/fotos/{data.photoOfTheDay.filename}-large.avif" alt="Foto van de Dag" />
-			<p>Gemaakt door {data.photoOfTheDay.name}</p>
+			<div on:click={() => imagePreview({ image: `/fotos/${data.highlight.filename}-large.avif` })}>
+				<img src="/fotos/{data.highlight.filename}-large.avif" alt="Foto van de Dag" />
+			</div>
+			<p>Gemaakt door {data.highlight.name}</p>
+		</div>
+		<div class="ibs-card--buttons">
+			<a href="/fotos/{data.highlight.pid}">Meer informatie</a>
 		</div>
 	</div>
 </div>
@@ -41,7 +49,7 @@
 		grid-template-columns: 1fr 1fr 1fr;
 	}
 
-	.ibs-card.photo-of-the-day {
+	.ibs-card.photo-highlight {
 		grid-column: 2;
 
 		& .ibs-card--content {
