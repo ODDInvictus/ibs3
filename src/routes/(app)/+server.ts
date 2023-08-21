@@ -4,21 +4,8 @@ import { error } from '@sveltejs/kit'
 
 import type { RequestHandler } from './$types.js';
 
-export const POST: RequestHandler = async (event) => {
-  const { request, locals } = event;
-
-  // Probeer de user te vinden als dat niet lukt om de een of andere reden, dan is het onsuccesvol
-  let userId: number | undefined = locals.user?.id;
-  if (!userId) {
-    const session = await locals.getSession();
-    const user = await getUser(session);
-    userId = user?.id;
-  }
-  if (!userId) throw error(400, {
-    message: "User ID not found"
-  });
-
-  const { startTime, amount, endTime }: { 
+export const POST: RequestHandler = async ({ request, locals }) => {
+  const { startTime, amount, endTime }: {
     startTime: number,
     amount: number,
     endTime?: number
@@ -42,7 +29,7 @@ export const POST: RequestHandler = async (event) => {
   try {
     await db.clickSession.create({
       data: {
-        userId,
+        userId: locals.user.id,
         amount,
         startTime: startTimeDate,
         endTime: endTimeDate

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import knoppers from '$lib/assets/knoppers.png';
 	import { daysLeftTill, formatDateHumanReadable, toAge, toBirthday } from '$lib/dateUtils';
+	import { imagePreview } from '$lib/imagePreviewStore';
 	import { markdown } from '$lib/utils';
 	import type { PageData } from './$types';
 	import type { Snapshot } from './$types';
@@ -70,6 +71,26 @@
 			await endSession(startTime, sessionClicks, endTime);
 		}
 	};
+
+	function activityImage(resize: boolean) {
+		let link = '';
+
+		if (data.activity) {
+			if (data.activity.image) {
+				link = `/image/activities/${data.activity.image}?static=false`;
+			} else {
+				link = `/image/logo${resize ? '' : '@2'}.png?static=true`;
+			}
+		} else {
+			link = `/image/no-activity.jpeg?static=true`;
+		}
+
+		if (resize) {
+			link += '&size=750x375';
+		}
+
+		return link;
+	}
 </script>
 
 <svelte:head>
@@ -87,9 +108,11 @@
 		<div class="ibs-card--image">
 			<img
 				alt={data.activity?.name ?? 'Geen activiteit gepland'}
-				src={data.activity
-					? `/image/activities/${data.activity?.image}?size=750x375`
-					: '/image/no-activity.jpeg?size=750x375&static=true'}
+				on:click={() =>
+					imagePreview({
+						image: activityImage(false)
+					})}
+				src={activityImage(true)}
 			/>
 		</div>
 		<h2 class="ibs-card--title">
