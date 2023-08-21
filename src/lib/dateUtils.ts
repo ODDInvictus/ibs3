@@ -37,6 +37,12 @@ export function formatDateTimeHumanReadable(date: Date): string {
   return date.toLocaleDateString('nl-NL', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' })
 }
 
+export function formatDateMonthYear(date: Date | null) {
+  if (!date) return 'datum onbekend'
+
+  return date.toLocaleDateString('nl-NL', { year: 'numeric', month: 'long' })
+}
+
 export function toDateString(date: Date | null) {
   if (!date) return 'datum onbekend'
 
