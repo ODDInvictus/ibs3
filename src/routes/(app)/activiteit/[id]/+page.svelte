@@ -14,6 +14,7 @@
 	import { toast } from '$lib/notification';
 	import { markdown } from '$lib/utils';
 	import Title from '$lib/components/title.svelte';
+	import { imagePreview } from '$lib/imagePreviewStore';
 
 	const activity = $page.data.activity;
 	let attending = $page.data.attending;
@@ -177,6 +178,13 @@
 		<div class="ibs-card outline">
 			<div class="ibs-card--image">
 				<img
+					on:click={() => {
+						if (activity.image) {
+							imagePreview({
+								image: `/image/activities/${activity.image}`
+							});
+						}
+					}}
 					alt={nameWithoutMarkdown}
 					src="/image/activities/{activity.image}?size=700x300"
 					onerror="this.src='/image/activities/activiteit-0-logo.png?size=700x300';this.onerror=null;"
