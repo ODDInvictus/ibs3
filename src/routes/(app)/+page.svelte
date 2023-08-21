@@ -270,12 +270,13 @@
 
 				&.quote,
 				&.strafbakken,
-				&.cookie-clicker {
+				&.cookie-clicker,
+				&.birthdays {
 					margin-top: 1rem;
 				}
 
 				&.cookie-clicker {
-					grid-column: span 1;
+					grid-column: unset;
 				}
 
 				&.activity {

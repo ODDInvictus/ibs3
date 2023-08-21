@@ -18,7 +18,6 @@ export const load = (async () => {
       ORDER BY RAND(${rand})
       LIMIT 1;
     `
-    console.log(query)
 
     return query[0] as unknown as PhotoHighlight
   }

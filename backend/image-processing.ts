@@ -96,6 +96,7 @@ export async function processPhotos() {
 
       processing = processing.splice(processing.indexOf(photo.id), 1)
     } catch (err) {
+      processing = processing.splice(processing.indexOf(photo.id), 1)
       error(`Error processing photo ${photo.id}`)
       error(err)
     }

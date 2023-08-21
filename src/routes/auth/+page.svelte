@@ -193,6 +193,10 @@
 
 				.ibs-card {
 					width: calc(100% - 2 * #{$padding});
+
+					button {
+						padding: 0.5rem 0rem;
+					}
 				}
 
 				.ibs-card :global(svg) {
@@ -209,6 +213,10 @@
 
 			.login-card {
 				grid-row: 2;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+
 				.ibs-card {
 					width: calc(100% - 2 * #{$padding});
 				}
