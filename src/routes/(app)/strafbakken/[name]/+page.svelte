@@ -53,6 +53,6 @@
 
 <style>
 	.table-container {
-		overflow: scroll;
+		overflow: auto;
 	}
 </style>
