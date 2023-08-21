@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import ProfileIcon from '$lib/components/profile-icon.svelte';
 	import Title from '$lib/components/title.svelte';
-	import { formatDateHumanReadable } from '$lib/dateUtils';
+	import { formatDateHumanReadable, formatDateTimeHumanReadable } from '$lib/dateUtils';
 	import { imagePreview } from '$lib/imagePreviewStore';
 	import { toast } from '$lib/notification';
 	import type { PageData } from './$types';
@@ -154,7 +154,7 @@
 								>{u.firstName} {u.lastName}</a
 							>
 							<p class="ibs-comment--content--date">
-								{formatDateHumanReadable(comment.updatedAt)}
+								{formatDateTimeHumanReadable(comment.updatedAt)}
 							</p>
 							<div class="ibs-comment--content--comment">{comment.comment}</div>
 						</div>
@@ -225,6 +225,37 @@
 					fill: var(--color-primary);
 				}
 			}
+		}
+	}
+
+	@media (max-width: 600px) {
+		$mw: calc(100vw - 2rem);
+
+		.root {
+			grid-template-columns: 1fr;
+
+			& > div {
+				max-width: $mw;
+			}
+		}
+
+		.details-container {
+			grid-row: 2;
+			grid-column: span 1;
+		}
+
+		.comment-container {
+			form {
+				grid-template-columns: minmax(0, 1fr);
+				margin-bottom: 1rem;
+			}
+		}
+
+		.image-container {
+			grid-row: 1;
+			grid-column: span 1;
+
+			max-width: $mw;
 		}
 	}
 </style>

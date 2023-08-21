@@ -10,7 +10,7 @@
 	}
 
 	&--content {
-		background-color: var(--color-bg-base);
+		background-color: var(--color-comment-bg);
 		padding: 0.25rem 0.5rem;
 		border-radius: var(--border-radius);
 		border-top-left-radius: 0;
@@ -28,7 +28,7 @@
 			width: 0;
 			height: 0;
 			border-bottom: 1rem solid transparent;
-			border-right: 1rem solid var(--color-bg-base);
+			border-right: 1rem solid var(--color-comment-bg);
 		}
 
 		&--name {
@@ -42,6 +42,22 @@
 
 		&--comment {
 			grid-column: span 2;
+		}
+	}
+
+	@media (max-width: 600px) {
+		&--content {
+			grid-template-columns: 1fr;
+			grid-template-rows: 1fr;
+			gap: 0;
+
+			&--name {
+				margin-bottom: -0.5rem;
+			}
+
+			&--comment {
+				grid-column: span 1;
+			}
 		}
 	}
 }
