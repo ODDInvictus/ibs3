@@ -171,7 +171,7 @@
 
 <div>
 	<div class="title">
-		<Title markdown title={markdown(activity.name) ?? activity.name} shortTitle={activity.name} />
+		<Title markdown title={activity.name} shortTitle={activity.name} />
 	</div>
 
 	<div class="cols">
