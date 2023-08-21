@@ -26,7 +26,7 @@
 
 <svelte:window bind:innerWidth={width} />
 
-<Title title={msg} shortTitle="Strafbakken :: Leaderboard" />
+<Title title={msg} shortTitle="Leaderboard - Strafbakken" />
 
 <div class="root">
 	<table-container>

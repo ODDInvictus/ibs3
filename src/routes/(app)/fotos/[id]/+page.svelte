@@ -47,7 +47,10 @@
 {#if !data.photo}
 	<Title title="Foto niet gevonden" />
 {:else}
-	<Title title={data.photo.description ?? `Foto ${data.photo.id}`} />
+	<Title
+		shortTitle={`${data.photo.description} - Foto` ?? `Foto ${data.photo.id}`}
+		title={`${data.photo.description}` ?? `Foto ${data.photo.id}`}
+	/>
 
 	<div class="root">
 		<div class="details-container">

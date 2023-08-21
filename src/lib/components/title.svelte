@@ -1,24 +1,26 @@
 <script lang="ts">
-	import { stripMarkdown } from '$lib/utils';
+	import { stripMarkdown, markdown as md } from '$lib/utils';
 
 	export let title: string | undefined = '';
 	export let shortTitle: string | undefined = '';
 	export let underTitle: string | undefined = '';
 	export let markdown = false;
+
+	console.log(markdown);
 </script>
 
 <svelte:head>
 	{#if markdown}
-		<title>IBS :: {stripMarkdown(shortTitle || title)}</title>
+		<title>{stripMarkdown(shortTitle || title)} - IBS</title>
 	{:else if title || shortTitle}
-		<title>IBS :: {shortTitle || title}</title>
+		<title>{shortTitle || title} - IBS</title>
 	{:else}
 		<title>Invictus Bier Systeem</title>
 	{/if}
 </svelte:head>
 
 {#if markdown}
-	<h1>{@html title}</h1>
+	<h1>{@html md(title)}</h1>
 {:else if title}
 	<h1>{title}</h1>
 {:else}

@@ -4,7 +4,7 @@
 	let location = $page.data.location;
 </script>
 
-<Title title={location.name} shortTitle="Locatie :: {location.name}" />
+<Title title={location.name} shortTitle={location.name} />
 
 <div class="center">
 	<table class="striped equal-width small">

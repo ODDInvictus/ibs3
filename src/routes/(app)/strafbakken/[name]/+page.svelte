@@ -19,7 +19,7 @@
 <main>
 	<Title
 		title="{name} zijn {data.strafbakken.StrafbakReceived.length} strafbakken"
-		shortTitle="{name} :: Strafbakken"
+		shortTitle="{name} - Strafbakken"
 	/>
 	<div class="table-container">
 		<table class="striped">
