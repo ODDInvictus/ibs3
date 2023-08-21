@@ -12,6 +12,9 @@ export const load = (async () => {
           }
         }
       }
+    },
+    orderBy: {
+      firstName: 'asc'
     }
   })
 
@@ -26,6 +29,9 @@ export const load = (async () => {
         }
       }
     },
+    orderBy: {
+      firstName: 'asc'
+    }
   })
 
   return {
