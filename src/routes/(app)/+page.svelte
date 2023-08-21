@@ -91,6 +91,23 @@
 
 		return link;
 	}
+
+	function birthdayImage(resize: boolean) {
+		let link = '';
+		// 			<img src="/image/users/{data.nextBirthday?.picture}?size=750x375" alt="⏳" />
+
+		if (data.nextBirthday.picture) {
+			link = `/image/users/${data.nextBirthday.picture}?static=false`;
+		} else {
+			link = `/image/no-user.jpeg?static=true`;
+		}
+
+		if (resize) {
+			link += '&size=750x375';
+		}
+
+		return link;
+	}
 </script>
 
 <svelte:head>
@@ -186,7 +203,11 @@
 
 	<div class="ibs-card birthdays">
 		<div class="ibs-card--image">
-			<img src="/image/users/{data.nextBirthday?.picture}?size=750x375" alt="⏳" />
+			<img
+				on:click={() => imagePreview({ image: birthdayImage(false) })}
+				src={birthdayImage(true)}
+				alt="⏳"
+			/>
 		</div>
 		{#if daysLeftTill(data.nextBirthday.birthDate) > 0}
 			{@const birthday = data.nextBirthday.birthDate}
