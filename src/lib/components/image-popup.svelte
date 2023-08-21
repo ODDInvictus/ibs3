@@ -14,13 +14,14 @@
 	}
 </script>
 
+<!-- svelte-ignore a11y-positive-tabindex -->
 <dialog
 	id="image-preview-dialog"
 	class="prompt"
 	bind:this={dialog}
 	on:click={close}
 	role="button"
-	tabindex="0"
+	tabindex="1"
 >
 	<div class="img"><img src={$imagePreviewStore.image} alt="img-preview" /></div>
 </dialog>
@@ -35,6 +36,8 @@
 		max-width: 100vw;
 
 		overflow: hidden;
+
+		outline: none;
 	}
 
 	.img {
