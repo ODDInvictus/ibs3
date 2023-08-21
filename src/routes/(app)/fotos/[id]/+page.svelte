@@ -89,7 +89,13 @@
 						>
 					{/each}
 				</div>
-				<small>Gemiddelde mening: {data.avgRating}</small>
+				<small>
+					{#if isNaN(data.avgRating)}
+						Nog geen stemmen. Wees de eerste!
+					{:else}
+						Gemiddelde mening: {data.avgRating}
+					{/if}
+				</small>
 			</div>
 
 			<hr />
