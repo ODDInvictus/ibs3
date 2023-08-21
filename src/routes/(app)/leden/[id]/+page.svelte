@@ -47,10 +47,7 @@
 <Title title="{member.firstName} {member.lastName}" />
 
 <div id="img">
-	<img
-		src={env.PUBLIC_UPLOAD_URL + '/users/' + member?.picture ?? 'miel.jpg'}
-		alt={member.firstName}
-	/>
+	<img src="/image/users/{member.picture}?static=false" alt={member.firstName} />
 
 	{#if $page.data.isCurrentUser}
 		<div>
