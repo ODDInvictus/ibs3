@@ -14,7 +14,15 @@
 </div>
 
 <div class="main">
-	<div class="ibs-card tags" />
+	<div class="ibs-card nav">
+		<h2 class="ibs-card--title">Navigatie</h2>
+
+		<div class="ibs-card--content">
+			<a href="/fotos/activiteit">Per activiteit</a>
+			<br />
+			<a href="/fotos/alles">Tags</a>
+		</div>
+	</div>
 
 	<div class="ibs-card photo-highlight">
 		<h2 class="ibs-card--title">Foto highlight!</h2>
@@ -65,6 +73,29 @@
 
 		img {
 			height: 300px;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.main {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+
+		.ibs-card.photo-highlight {
+			grid-row: 1;
+			grid-column: 1;
+			max-width: calc(100vw - 2rem);
+
+			img {
+				max-width: 100%;
+				max-height: 40vh;
+				height: auto;
+			}
+		}
+
+		.ibs-card.nav {
+			grid-row: 2;
 		}
 	}
 </style>
