@@ -13,6 +13,12 @@
 	import Settings from '~icons/tabler/settings';
 	import AccessibleOff from '~icons/tabler/accessible-off';
 	import Photo from '~icons/tabler/photo';
+	import Music from '~icons/tabler/music';
+	import Menu from '~icons/tabler/menu-2';
+	import X from '~icons/tabler/x';
+
+	export let openMenu: () => void;
+	export let open: boolean;
 </script>
 
 <nav class="layout--navbar">
@@ -34,12 +40,27 @@
 		<i><Photo /></i>
 		<span>Foto's</span>
 	</a>
+	<a class="layout--navbar--item" href="/playlist">
+		<i><Music /></i>
+		<span>Playlist</span>
+	</a>
+
+	<button class="layout--navbar--item btn-a" on:click={openMenu}>
+		{#if open}
+			<i><X /></i>
+		{:else}
+			<i><Menu /></i>
+		{/if}
+		<span>Menu</span>
+	</button>
+
 	{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
-		<a class="layout--navbar--item" href="/maluspunten">
+		<a class="layout--navbar--item" href="/admin">
 			<i><AccessibleOff /></i>
 			<span>Maluspunten</span>
 		</a>
 	{/if}
+
 	<a class="layout--navbar--item" href="/financieel">
 		<i><PigMoney /></i>
 		<span>Financieel</span>

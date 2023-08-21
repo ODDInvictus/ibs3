@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Navbar from './_navbar.svelte';
 	import Topbar from './_topbar.svelte';
 	import Toast from '$lib/components/toast.svelte';
@@ -9,32 +9,46 @@
 	import ImagePreview from '$lib/components/image-popup.svelte';
 	import { afterNavigate } from '$app/navigation';
 	import { Modals, closeModal } from 'svelte-modals';
+	import MobileMenu from './_mobile-menu.svelte';
 
 	afterNavigate(() => {
 		// Reset scroll position on layout--container-slot
 		const slot = document.querySelector('.layout--container');
 
 		if (slot) slot.scrollTop = 0;
+
+		open = false;
 	});
+
+	let open = true;
+	const openMenu = () => (open = !open);
 </script>
 
 <main class="layout--main">
-	<Navbar />
+	<Navbar {openMenu} {open} />
+
+	{#if open}
+		<div class="layout--mobimenu">
+			<MobileMenu />
+		</div>
+	{/if}
 
 	<Modals>
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div slot="backdrop" class="backdrop" role="button" tabindex="0" on:click={closeModal} />
 	</Modals>
 
-	<div class="layout--stripe" />
+	<div class="layout--stripe" data-open={open} />
 
 	<Topbar />
 
-	<div class="layout--container">
-		<div class="layout--container-slot">
-			<slot />
+	{#if !open}
+		<div class="layout--container">
+			<div class="layout--container-slot">
+				<slot />
+			</div>
 		</div>
-	</div>
+	{/if}
 
 	<div class="layout--overlay layout--toast">
 		<Toast />
