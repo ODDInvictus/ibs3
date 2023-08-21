@@ -23,7 +23,7 @@
 	}
 
 	function removeImages() {
-		previewContainer.innerHTML = '';
+		window.location.reload();
 	}
 
 	function removeImage(name: string) {
@@ -62,7 +62,7 @@
 
 <form
 	method="POST"
-	class="image-upload--form"
+	class="mt-2 image-upload--form"
 	enctype="multipart/form-data"
 	use:enhance={() => {
 		// Disable the button
@@ -70,7 +70,6 @@
 		submit.classList.add('btn-disabled');
 
 		return ({ result, update }) => {
-			console.log(result);
 			if (result.type === 'failure') {
 				const msg = result.data?.message ?? 'Er is iets misgegaan';
 
@@ -110,6 +109,9 @@
 		<select id="creator" name="creator" bind:value={creator}>
 			{#each data.users as u}
 				<option value={u.ldapId}>{u.firstName}</option>
+			{/each}
+			{#each data.creators as c}
+				<option value={'other-' + c.id}>{c.name}</option>
 			{/each}
 			<option value={'other'}>Anders, namelijk...</option>
 		</select>
