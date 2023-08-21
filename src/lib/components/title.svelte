@@ -5,8 +5,6 @@
 	export let shortTitle: string | undefined = '';
 	export let underTitle: string | undefined = '';
 	export let markdown = false;
-
-	console.log(markdown);
 </script>
 
 <svelte:head>
