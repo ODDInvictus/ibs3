@@ -13,8 +13,6 @@
 	let rating = data.avgRating ?? 0;
 	let starHovered = rating;
 
-	console.log(rating);
-
 	async function rate() {
 		let newRating = starHovered;
 
@@ -30,55 +28,62 @@
 		})
 			.then((res) => res.json())
 			.then((res) => {
-				toast({
-					title: res.success ? 'Gelukt!' : 'Opslaan mislukt',
-					message: res.message,
-					type: res.success ? 'info' : 'danger'
-				});
 				if (res.success) {
 					rating = newRating;
 					starHovered = newRating;
 					data.avgRating = res.data;
+				} else {
+					toast({
+						title: 'Opslaan mislukt',
+						message: res.message,
+						type: 'danger'
+					});
 				}
 			});
 	}
+
+	let input: HTMLInputElement;
 </script>
 
 {#if !data.photo}
 	<Title title="Foto niet gevonden" />
 {:else}
 	<Title
-		shortTitle={`${data.photo.description} - Foto` ?? `Foto ${data.photo.id}`}
-		title={`${data.photo.description}` ?? `Foto ${data.photo.id}`}
+		shortTitle={!data.photo.description
+			? `Foto ${data.photo.id}`
+			: `${data.photo.description} - Foto`}
+		title={data.photo.description ? `${data.photo.description}` : `Foto ${data.photo.id}`}
 	/>
 
 	<div class="root">
 		<div class="details-container">
-			<h2>Details</h2>
-			<p>Beschrijving: {data.photo.description}</p>
-			<p>Gemaakt door: {data.photo.creator?.name}</p>
-			{#if data.photo.date}
-				<p>Datum: {formatDateHumanReadable(data.photo.date)}</p>
-			{/if}
-			<p>
-				Invicti in deze foto:
-				{#if data.photo.peopleTagged.length === 0}
-					niemand
-				{:else}
-					{#each data.photo.peopleTagged as person}
-						<a href="/leden/{person.user.ldapId}">{person.user.firstName}</a>&nbsp;
-					{/each}
-				{/if}
-			</p>
-
-			<p class="mb-1">Tags:</p>
-			{#each data.photo.tags as tag}
-				<span class="ibs-chip">{tag.photoTag.name}</span>
-			{/each}
-
 			<hr />
 
+			<div>
+				<h2>Details</h2>
+				<p>Beschrijving: {data.photo.description}</p>
+				<p>Gemaakt door: {data.photo.creator?.name}</p>
+				{#if data.photo.date}
+					<p>Datum: {formatDateHumanReadable(data.photo.date)}</p>
+				{/if}
+				<p>
+					Invicti in deze foto:
+					{#if data.photo.peopleTagged.length === 0}
+						niemand
+					{:else}
+						{#each data.photo.peopleTagged as person}
+							<a href="/leden/{person.user.ldapId}">{person.user.firstName}</a>&nbsp;
+						{/each}
+					{/if}
+				</p>
+				<p class="mb-1">Tags:</p>
+				{#each data.photo.tags as tag}
+					<span class="ibs-chip">{tag.photoTag.name}</span>
+				{/each}
+			</div>
+
 			<div class="rating-container">
+				<hr />
 				<h2>Wat vind je van deze foto?</h2>
 				<div class="stars" data-hovered={starHovered}>
 					{#each Array.from(Array(5).keys()) as idx}
@@ -101,9 +106,9 @@
 				</small>
 			</div>
 
-			<hr />
-
 			<div class="quality-container">
+				<hr />
+
 				<h2>Kwaliteit</h2>
 				<a href="?quality=klein" class="btn-a">SD</a>
 				<a href="?quality=normaal" class="btn-a">HD</a>
@@ -114,9 +119,9 @@
 				Met rechtermuisknop -> opslaan kan je deze downloaden in de geselecteerde kwaliteit
 			</small>
 
-			<hr />
-
 			<div class="comment-container">
+				<hr />
+
 				<h2>Reacties</h2>
 
 				<form
@@ -143,7 +148,7 @@
 						};
 					}}
 				>
-					<input type="text" name="comment" placeholder="Typ een reactie..." />
+					<input bind:this={input} type="text" name="comment" placeholder="Typ een reactie..." />
 					<button type="submit">Plaats</button>
 				</form>
 
@@ -200,11 +205,14 @@
 		p {
 			margin: 0.25rem 0;
 		}
+
+		& > hr:first-child {
+			display: none;
+		}
 	}
 
 	.comment-container {
 		max-width: 100%;
-
 		form {
 			display: grid;
 			grid-template-columns: 1fr auto;
@@ -251,9 +259,19 @@
 		.details-container {
 			grid-row: 2;
 			grid-column: span 1;
+
+			display: grid;
+			grid-template-columns: 1fr;
+
+			margin-bottom: 20vh;
+
+			& > hr:first-child {
+				display: block;
+			}
 		}
 
 		.comment-container {
+			grid-row: 4;
 			form {
 				grid-template-columns: minmax(0, 1fr);
 				margin-bottom: 1rem;

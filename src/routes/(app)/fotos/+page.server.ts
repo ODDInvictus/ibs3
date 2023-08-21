@@ -22,7 +22,25 @@ export const load = (async () => {
     return query[0] as unknown as PhotoHighlight
   }
 
+  const activities = (await db.activity.findMany({
+    select: {
+      id: true,
+      name: true,
+      _count: {
+        select: {
+          photos: true
+        }
+      }
+    },
+    orderBy: {
+      startTime: 'desc'
+    }
+  }))
+    .filter(a => a._count.photos > 0)
+    .slice(0, 5)
+
   return {
-    highlight: getHighlight()
+    highlight: getHighlight(),
+    activities
   };
 }) satisfies PageServerLoad;

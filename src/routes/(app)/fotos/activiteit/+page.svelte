@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte';
+	import { formatDateMonthYear } from '$lib/dateUtils';
 	import { activitySlug } from '$lib/textUtils';
 	import { markdown, stripMarkdown } from '$lib/utils';
 	import type { PageData } from './$types';
@@ -12,7 +13,7 @@
 {#each data.activities as ac}
 	{#if ac._count.photos > 0}
 		<a href="/fotos/album/{activitySlug(stripMarkdown(ac.name))}/{ac.id}">
-			{@html markdown(ac.name)} ({ac._count.photos})
+			{@html markdown(ac.name)} ({ac._count.photos}) ({formatDateMonthYear(ac.startTime)})
 		</a>
 		<br />
 	{/if}
