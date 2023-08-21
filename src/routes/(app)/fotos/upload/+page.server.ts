@@ -13,6 +13,14 @@ export const load = (async () => {
       orderBy: {
         firstName: 'asc'
       }
+    }),
+    creators: db.photoCreator.findMany({
+      orderBy: {
+        name: 'asc'
+      },
+      where: {
+        userId: null
+      }
     })
   };
 }) satisfies PageServerLoad;
@@ -39,6 +47,8 @@ export const actions = {
     const creator = formData.get('creator') as string
     let name = ''
 
+    let other = false
+
     if (creator === 'other') {
       name = formData.get('creator-other') as string
 
@@ -48,6 +58,22 @@ export const actions = {
 
     } else if (creator === locals.user.ldapId) {
       name = locals.user.firstName + ' ' + locals.user.lastName
+    } else if (creator.startsWith('other-')) {
+
+      // A non-user, existing creator has been selected
+      let cid = creator.split('-')[1]
+
+      const c = await db.photoCreator.findFirst({
+        where: {
+          id: parseInt(cid)
+        }
+      })
+
+      if (!c) return f({ status: 400, message: 'Geen creator gevonden' })
+
+      name = c.name
+
+      other = true
     } else {
       // We know that creator is an user
       const u = await db.user.findFirst({
@@ -71,7 +97,7 @@ export const actions = {
     let c
 
     // Creator
-    if (creator === 'other') {
+    if (creator === 'other' || other) {
       c = await db.photoCreator.upsert({
         update: {},
         create: {
@@ -131,7 +157,7 @@ export const actions = {
         }
       })
 
-      const newFilename = `${filename}-${p.id}`
+      const newFilename = `Invictus-${n}-${date}-${p.id}`
 
       await db.photo.update({
         where: {
