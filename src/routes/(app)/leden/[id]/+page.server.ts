@@ -38,7 +38,8 @@ export const load = (async ({ params, locals }) => {
   return {
     member,
     isCurrentUser,
-    committees
+    committees,
+    title: member.firstName + ' ' + member.lastName,
   }
 })
 

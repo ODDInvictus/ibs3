@@ -23,6 +23,7 @@ export const load = (async ({ params }) => {
   return {
     activity,
     attending,
+    title: activity.name,
     domain: env.IBS_URL
   }
 })
