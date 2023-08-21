@@ -4,8 +4,6 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-
-	console.log(data);
 </script>
 
 <Title title="Foto's" />
@@ -22,13 +20,19 @@
 		<h2 class="ibs-card--title">Foto highlight!</h2>
 
 		<div class="ibs-card--content">
-			<div on:click={() => imagePreview({ image: `/fotos/${data.highlight.filename}-large.avif` })}>
-				<img src="/fotos/{data.highlight.filename}-large.avif" alt="Foto van de Dag" />
-			</div>
-			<p>Gemaakt door {data.highlight.name}</p>
-		</div>
-		<div class="ibs-card--buttons">
-			<a href="/fotos/{data.highlight.pid}">Meer informatie</a>
+			{#if data.highlight}
+				<div
+					on:click={() => imagePreview({ image: `/fotos/${data.highlight.filename}-large.avif` })}
+				>
+					<img src="/fotos/{data.highlight.filename}-large.avif" alt="Foto van de Dag" />
+				</div>
+				<p>Gemaakt door {data.highlight.name}</p>
+				<div class="ibs-card--buttons">
+					<a href="/fotos/{data.highlight.pid}">Meer informatie</a>
+				</div>
+			{:else}
+				<p>Er is nog geen foto van de dag</p>
+			{/if}
 		</div>
 	</div>
 </div>
