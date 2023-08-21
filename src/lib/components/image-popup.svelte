@@ -49,16 +49,16 @@
 	}
 
 	.prompt[open] {
-		animation: show 1s ease normal;
+		animation: show 0.5s ease normal;
 		// Dit zorgt ervoor, samen met de translate(-50%, -50%) dat hij draait om zijn as.
 		transform-origin: top left;
 	}
 	@keyframes show {
 		from {
-			transform: scale(0.1, 0.1) rotate(180deg) translate(-50%, -50%);
+			transform: scale(0.1, 0.1) translate(-50%, -50%);
 		}
 		to {
-			transform: scale(1, 1) rotate(0deg) translate(-50%, -50%);
+			transform: scale(1, 1) translate(-50%, -50%);
 		}
 	}
 
