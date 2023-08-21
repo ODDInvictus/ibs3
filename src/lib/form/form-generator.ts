@@ -39,7 +39,7 @@ export type Field<T extends FieldType> = {
   maxLength?: number
   minLength?: number
   options?: T extends SelectField ? OptionField<InputType>[] : never
-  getOptions?: (user: User) => Promise<OptionField<InputType>[]>
+  getOptions?: (user: User | null) => Promise<OptionField<InputType>[]>
   description?: string
   placeholder?: string
 }
@@ -178,7 +178,7 @@ export class Form<T> {
     this.zodSchema = zod
   }
 
-  async transform(user: User) {
+  async transform(user: User | null) {
     for (const field of this.f.fields) {
       if (field.type === 'user') {
         const users = await db.user.findMany({
