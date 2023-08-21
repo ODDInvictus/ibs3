@@ -16,7 +16,7 @@
 		border-top-left-radius: 0;
 
 		display: grid;
-		grid-template-columns: 1fr auto;
+		grid-template-columns: auto 1fr;
 		position: relative;
 
 		// Add a halftrianlge to the left of the comment
@@ -38,6 +38,10 @@
 		&--date {
 			font-size: small;
 			color: var(--color-text-muted);
+			text-align: right;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 
 		&--comment {
@@ -53,6 +57,10 @@
 
 			&--name {
 				margin-bottom: -0.5rem;
+			}
+
+			&--date {
+				text-align: left;
 			}
 
 			&--comment {
