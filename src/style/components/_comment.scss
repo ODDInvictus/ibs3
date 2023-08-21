@@ -1,11 +1,47 @@
 .ibs-comment {
-	color: red;
+	margin: 0.5rem 0;
 
-	&--user {
-		color: blue;
+	display: grid;
+	grid-template-columns: 4rem 1fr;
+
+	&--icon {
+		width: 50px;
+		height: 50px;
 	}
 
 	&--content {
-		color: green;
+		background-color: var(--color-bg-base);
+		padding: 0.25rem 0.5rem;
+		border-radius: var(--border-radius);
+		border-top-left-radius: 0;
+
+		display: grid;
+		grid-template-columns: 1fr auto;
+		position: relative;
+
+		// Add a halftrianlge to the left of the comment
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -0.5rem;
+			width: 0;
+			height: 0;
+			border-bottom: 1rem solid transparent;
+			border-right: 1rem solid var(--color-bg-base);
+		}
+
+		&--name {
+			color: var(--color-primary);
+		}
+
+		&--date {
+			font-size: small;
+			color: var(--color-text-muted);
+		}
+
+		&--comment {
+			grid-column: span 2;
+		}
 	}
 }
