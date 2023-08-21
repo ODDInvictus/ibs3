@@ -22,7 +22,7 @@
 	role="button"
 	tabindex="0"
 >
-	<img src={$imagePreviewStore.image} alt="img-preview" />
+	<div class="img"><img src={$imagePreviewStore.image} alt="img-preview" /></div>
 </dialog>
 
 <style lang="scss">
@@ -30,18 +30,32 @@
 		margin: 0;
 		padding: 0;
 		background-color: transparent;
+
+		max-height: 100vh;
+		max-width: 100vw;
+
 		overflow: hidden;
+	}
+
+	.img {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+		width: 100%;
 	}
 
 	.prompt[open] {
 		animation: show 1s ease normal;
+		// Dit zorgt ervoor, samen met de translate(-50%, -50%) dat hij draait om zijn as.
+		transform-origin: top left;
 	}
 	@keyframes show {
 		from {
-			transform: translate(0%, -100%);
+			transform: scale(0.1, 0.1) rotate(180deg) translate(-50%, -50%);
 		}
 		to {
-			transform: translateX(0%, 0%);
+			transform: scale(1, 1) rotate(0deg) translate(-50%, -50%);
 		}
 	}
 
