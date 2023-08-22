@@ -15,9 +15,13 @@ const redis = new Redis({
 
 export default redis
 
-type RedisJobKeys = 'photo-processing' | 'unknown'
+type RedisJobKeys = 'photo-processing' | 'new-activity' | 'unknown'
 
-export const createRedisJob = async (key: RedisJobKeys) => {
+export const createRedisJob = async (key: RedisJobKeys, data?: string) => {
   console.log('[REDIS] Creating job of type', key)
-  await redis.publish(key, '' + Date.now())
+  await redis.publish(key, JSON.stringify({
+    data: data ?? '',
+    date: Date.now(),
+    type: key
+  }))
 }

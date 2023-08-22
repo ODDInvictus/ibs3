@@ -89,7 +89,10 @@ export async function sendEmailNotification(template: string, locals: Record<str
 export async function sendEmailNotificationFrontend(template: string, receiver: User, locals: Record<string, unknown>) {
   const logo = process.env.EMAIL_IBS_LOGO
 
-  if (!logo) throw new Error('Missing EMAIL_IBS_LOGO in env')
+  if (!logo) {
+    log('Missing EMAIL_IBS_LOGO in env, skipping...')
+    return
+  }
 
   const l = Object.assign(locals, {
     url: process.env.IBS_URL,

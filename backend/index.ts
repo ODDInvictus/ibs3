@@ -26,27 +26,6 @@ app.use(express.json())
 
 app.get('/version', (req, res) => res.json({ version: API_VERSION }))
 
-app.post('/notify/activity/:id', async (req, res) => {
-  const id = req.params.id
-
-  const activity = await prisma.activity.findUnique({
-    where: {
-      id: Number(id)
-    }
-  })
-
-  if (!activity) {
-    res.sendStatus(404)
-    return
-  }
-
-  // Now return to the client
-  res.sendStatus(200)
-
-  // Send notifications
-  await newActivitiyNotification(activity)
-})
-
 app.post('/email/send', async (req, res) => {
   const b = req.body
 
@@ -79,6 +58,31 @@ app.listen(port, async () => {
     await processPhotos()
   })
 
+  await redis.subscribe('new-activity', async (msg) => {
+    if (!msg) return
+
+    const body = JSON.parse(msg)
+
+    console.log('[REDIS] Received new-activity job', body.data)
+
+    const aid = Number.parseInt(body.data)
+
+    const activity = await prisma.activity.findUnique({
+      where: {
+        id: aid
+      }
+    })
+
+    if (!activity) {
+      console.log('[REDIS] Invalid activity id')
+      return
+    }
+
+    // Now send out the discord notification and emails
+    await newActivitiyNotification(activity)
+  })
+
+  await verdubbelStrafbakken()
 })
 
 /*

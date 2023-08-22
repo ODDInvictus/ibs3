@@ -7,6 +7,8 @@ import type { CommitteeMember } from '@prisma/client'
 import { z } from 'zod'
 import { pad } from '$lib/utils.js'
 import { authUser } from '$lib/server/authorizationMiddleware'
+import type { PageServerLoad } from './$types.js'
+import { createRedisJob } from '$lib/server/cache.js'
 
 export const load = (async ({ url, locals }) => {
   const locations = db.activityLocation.findMany({
@@ -59,7 +61,7 @@ export const load = (async ({ url, locals }) => {
     locations,
     committees: locals.committees
   }
-})
+}) satisfies PageServerLoad
 
 const validateDate = (date: string) => {
   const d = new Date(date)
@@ -202,10 +204,54 @@ export const actions = {
 
 
         if (image.size > 0) {
-          const filename = `activiteit-${activity.id}-${image.name}`
+          const u = event.locals.user
+          const n = (u.firstName + ' ' + u.lastName).replace(' ', '_')
+          const d = new Date()
+          const filename = `Invictus-activiteit_${activity.id}-${n}-${d.getTime()}`
+          const ext = image.name.split('.').pop()
+
+          const c = await tx.photoCreator.upsert({
+            update: {},
+            create: {
+              name,
+              userId: u.id
+            },
+            where: {
+              name,
+              userId: u.id
+            }
+          })
+
+          const p = await tx.photo.create({
+            data: {
+              filename,
+              extension: ext ?? 'jpg',
+              processed: false,
+              uploader: {
+                connect: {
+                  ldapId: u.ldapId
+                }
+              },
+              creator: {
+                connect: {
+                  id: c.id
+                }
+              },
+              activityImage: {
+                connect: {
+                  id: activity.id
+                }
+              },
+              date: new Date(),
+            }
+          })
+
+          console.log(p)
+
+          const newFilename = `Invictus-activiteit_${activity.id}-${n}-${d.getTime()}-${p.id}.${ext}`
 
           // save the image
-          fs.writeFileSync(`${env.UPLOAD_FOLDER}/activities/${filename}`, Buffer.from(await image.arrayBuffer()), { encoding: 'binary' })
+          fs.writeFileSync(`${env.UPLOAD_FOLDER}/fotos/${newFilename}`, Buffer.from(await image.arrayBuffer()), { encoding: 'binary' })
 
           // update the activity with the image
           await tx.activity.update({
@@ -213,9 +259,16 @@ export const actions = {
               id: activity.id
             },
             data: {
-              image: filename
+              photo: {
+                connect: {
+                  id: p.id
+                }
+              }
             }
           })
+
+          // Process the image
+          await createRedisJob('photo-processing')
 
         }
 
@@ -266,9 +319,7 @@ export const actions = {
       if (!edit) {
         // Now, we notify everyone
         console.log('[Activity/new] Notifying everyone')
-        await fetch(`${env.BACKEND_URL}/notify/activity/${id}`, {
-          method: 'POST'
-        })
+        await createRedisJob('new-activity', '' + id)
       }
     } catch (e) {
       console.error(e)

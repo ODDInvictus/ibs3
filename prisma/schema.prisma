@@ -192,7 +192,9 @@ model Activity {
   attending   Attending[]
 
   // Plaatje
-  image String?
+  photo  Photo?  @relation("activityImage")
+  // Foto's genomen van deze activiteit
+  photos Photo[] @relation("activityPhotos")
 
   // URL naar meer informatie
   url String? @db.Text
@@ -202,7 +204,6 @@ model Activity {
 
   // Foreign Keys
   FinancialPersonDataActivity FinancialPersonDataActivity[]
-  photos                      Photo[]
   comments                    Comment[]
 }
 
@@ -619,6 +620,9 @@ model Photo {
 
   // Date photo taken
   date DateTime?
+  
+  // visible
+  visible Boolean @default(true)
 
   // Photo
   filename  String @unique
@@ -638,9 +642,12 @@ model Photo {
   creatorId    Int?
   ratings      PhotoRating[]
   peopleTagged PhotoPersonTag[]
-  activity     Activity?        @relation(fields: [activityId], references: [id], onDelete: SetNull)
-  activityId   Int?
   comments     Comment[]
+
+  activityImage   Activity? @relation("activityImage", fields: [activityImageId], references: [id])
+  activityImageId Int?      @unique
+  activityPhotos  Activity? @relation("activityPhotos", fields: [activityPhotoId], references: [id], onDelete: SetNull)
+  activityPhotoId Int?
 }
 
 model PhotoCreator {

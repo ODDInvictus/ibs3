@@ -230,7 +230,7 @@ async function saveChange(body: SaveChangeBodyType, user: User) {
           id: body.photo
         },
         data: {
-          activityId: activity.id,
+          activityPhotoId: activity.id,
           date: activity.startTime
         }
       })
@@ -281,7 +281,7 @@ async function multipleActivities(body: MultipleActivitiesBodyType) {
       }
     },
     data: {
-      activityId: activity.id,
+      activityPhotoId: activity.id,
     }
   })
 

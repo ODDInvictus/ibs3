@@ -33,7 +33,8 @@ export async function verdubbelStrafbakken() {
   const month = MONTH_NAMES[new Date().getMonth()]
   const year = new Date().getFullYear()
 
-  count.forEach(async (bakken: number, user: number) => {
+
+  for (const [user, bakken] of count) {
     const limit = Number(process.env.STRAFBAKKEN_DOUBLE_LIMIT) || 50
     const doubled = Math.min(bakken * 2, limit)
 
@@ -54,7 +55,7 @@ export async function verdubbelStrafbakken() {
     await prisma.strafbak.createMany({
       data: array
     })
-  })
+  }
 
   // Now we end with a notification
 
