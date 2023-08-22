@@ -20,7 +20,7 @@
 		open = false;
 	});
 
-	let open = true;
+	let open = false;
 	const openMenu = () => (open = !open);
 </script>
 

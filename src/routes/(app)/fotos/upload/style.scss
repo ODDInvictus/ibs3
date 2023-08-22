@@ -4,10 +4,19 @@
 	}
 
 	.buttons {
-		display: flex;
+		display: grid;
 		align-items: center;
+		grid-template-columns: 1fr 1fr 1fr;
 
 		gap: 1rem;
+
+		label {
+			text-align: center;
+		}
+
+		@media (max-width: 600px) {
+			grid-template-columns: 1fr;
+		}
 	}
 
 	.creator {
@@ -63,5 +72,11 @@ p {
 
 	button {
 		margin-bottom: 1rem;
+	}
+
+	@media (max-width: 600px) {
+		img {
+			width: 100%;
+		}
 	}
 }
