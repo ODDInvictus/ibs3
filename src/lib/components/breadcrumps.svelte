@@ -9,13 +9,15 @@
 
 <nav>
 	{#each $breadcrumbStore as c, i}
-		{#if i == $breadcrumbStore.length - 1}
-			<span>{@html markdown(c.label)}</span>
-		{:else}
-			<a href={c.href}>
+		{#if c !== null}
+			{#if i == $breadcrumbStore.length - 1}
 				<span>{@html markdown(c.label)}</span>
-			</a>
-			<i><ChevronRight width="1.2em" height="1.2em" /></i>
+			{:else}
+				<a href={c.href}>
+					<span>{@html markdown(c.label)}</span>
+				</a>
+				<i><ChevronRight width="1.2em" height="1.2em" /></i>
+			{/if}
 		{/if}
 	{/each}
 </nav>

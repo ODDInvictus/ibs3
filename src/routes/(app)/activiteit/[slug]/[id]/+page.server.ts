@@ -1,6 +1,7 @@
 import { env } from '$env/dynamic/private'
 import db from '$lib/server/db'
 import { randomSortDay } from '$lib/utils.js'
+import type { PageServerLoad } from './$types'
 
 export const load = (async ({ params }) => {
   const activity = await db.activity.findFirstOrThrow({
@@ -26,4 +27,4 @@ export const load = (async ({ params }) => {
     title: activity.name,
     domain: env.IBS_URL
   }
-})
+}) satisfies PageServerLoad

@@ -81,8 +81,6 @@ app.listen(port, async () => {
     // Now send out the discord notification and emails
     await newActivitiyNotification(activity)
   })
-
-  await verdubbelStrafbakken()
 })
 
 /*
