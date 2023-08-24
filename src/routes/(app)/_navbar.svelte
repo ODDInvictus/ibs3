@@ -55,7 +55,7 @@
 	</button>
 
 	{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
-		<a class="layout--navbar--item" href="/admin">
+		<a class="layout--navbar--item" href="/maluspunten">
 			<i><AccessibleOff /></i>
 			<span>Maluspunten</span>
 		</a>
