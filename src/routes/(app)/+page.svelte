@@ -156,13 +156,13 @@
 	</div>
 
 	<div class="ibs-card quote">
-		<h2 class="ibs-card--title">Quote</h2>
+		<h2 class="ibs-card--title">Citaat</h2>
 		<blockquote class="ibs-card--content">
 			<p>{@html markdown(data.quote)}</p>
 		</blockquote>
 		<div class="mt-6" />
 		<div class="ibs-card--links">
-			<a href="/quotes">Meer quotes</a>
+			<a href="/citaten">Meer citaten</a>
 		</div>
 	</div>
 

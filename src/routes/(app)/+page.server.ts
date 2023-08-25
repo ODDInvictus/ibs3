@@ -49,8 +49,15 @@ export const load = (async ({ locals }) => {
   const getQuote = async () => {
     let obj
 
+    // 1 in 2000 chance to get a quote from IBS
+    if (Math.floor(Math.random() * 2000) === 321) {
+      obj = {
+        message: '"Wie dit leest trekt een bak" - IBS (1 op 2000 kans)'
+      }
+    }
+
     try {
-      obj = await fetch('https://nierot.com').then((res) => res.json())
+      obj = await fetch(process.env.QUOTE_API_URL!).then((res) => res.json())
     } catch (err) {
       obj = {
         message: '"De quote module is stukkie wukkie" - IBS'
