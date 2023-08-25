@@ -38,7 +38,7 @@ export const load = (async ({ url, locals }) => {
           }
         },
       },
-      activity: {
+      activityImage: {
         select: {
           name: true,
           id: true,

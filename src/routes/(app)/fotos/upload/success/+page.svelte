@@ -617,13 +617,9 @@
 				<div
 					role="button"
 					tabindex="0"
-					on:click={() =>
-						imagePreview({ image: '/upload/fotos/' + `${photo.filename}.${photo.extension}` })}
+					on:click={() => imagePreview({ image: `/image/id/${photo.id}?size=original` })}
 				>
-					<img
-						src="/upload/fotos/{photo.filename}.{photo.extension}"
-						alt="Foto van {photo.creator?.name}"
-					/>
+					<img src="/image/id/{photo.id}?size=original" alt="Foto van {photo.creator?.name}" />
 				</div>
 			</div>
 		</div>

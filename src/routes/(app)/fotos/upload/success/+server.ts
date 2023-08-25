@@ -5,8 +5,6 @@ import type { User } from '@prisma/client';
 export const POST: RequestHandler = async ({ request, locals }) => {
   const body = await request.json();
 
-  console.log(body)
-
   switch (body.type) {
     case 'new_tag':
       return await newTag(body);

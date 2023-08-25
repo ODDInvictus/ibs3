@@ -2,8 +2,7 @@ import { prisma } from './prisma';
 import sharp from 'sharp';
 import fs from 'fs'
 
-const PROCESSED_PHOTO_PATH = process.env.PROCESSED_PHOTO_PATH || './static/fotos'
-const UPLOAD_DIR = process.env.UPLOAD_DIR || './static/upload/fotos'
+const PHOTO_DIR = process.env.UPLOAD_FOLDER || './static/upload'
 
 const quality = 70
 
@@ -28,8 +27,8 @@ export async function processPhotos() {
   log(`Found ${photos.length} photo(s) to process with id(s) ${photos.map(p => p.id).join(', ')}`)
 
   for (const photo of photos) {
-    const originalPath = `${UPLOAD_DIR}/${photo.filename}.${photo.extension}`
-    const outPath = (quality: string, ext?: string) => `${PROCESSED_PHOTO_PATH}/${photo.filename}-${quality}.${ext || 'avif'}`
+    const originalPath = `${PHOTO_DIR}/${photo.filename}.${photo.extension}`
+    const outPath = (quality: string, ext?: string) => `${PHOTO_DIR}/${photo.filename}-${quality}.${ext || 'avif'}`
 
     const buf = await fs.readFileSync(originalPath)
 

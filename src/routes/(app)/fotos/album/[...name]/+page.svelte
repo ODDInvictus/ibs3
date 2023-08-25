@@ -24,9 +24,9 @@
 			{#each photos as photo}
 				<figure class="photo">
 					<img
-						src="/fotos/{photo.filename}-small.avif"
+						src="/image/{photo.filename}?size=small"
 						alt={photo.description}
-						on:click={() => imagePreview({ image: `/fotos/${photo.filename}-large.avif` })}
+						on:click={() => imagePreview({ image: `/image/${photo.filename}?size=large` })}
 					/>
 					<figcaption>
 						<a href="/fotos/{photo.id}">{photo.description ?? 'Info'}</a>

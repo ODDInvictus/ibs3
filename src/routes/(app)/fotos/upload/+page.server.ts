@@ -1,8 +1,8 @@
 import type { Actions, PageServerLoad } from './$types';
 import db from '$lib/server/db'
 import { fail, redirect } from '@sveltejs/kit';
-import { writeFileSync } from 'fs';
 import { createRedisJob } from '$lib/server/cache';
+import { uploadPhoto } from '$lib/server/images';
 
 export const load = (async () => {
   return {
@@ -129,52 +129,21 @@ export const actions = {
 
     let ids = []
 
-    for (const [idx, foto] of Object.entries(fotos)) {
+    for (const foto of fotos) {
 
-      const ext = foto.name.split('.').pop()
-      const n = name.split(' ').join('_')
-      const filename = `Invictus-${n}-${date}-${idx}`
-
-      const buf = await foto.arrayBuffer()
-
-      // create photo object
-      const p = await db.photo.create({
-        data: {
-          filename,
-          extension: ext ?? 'jpg',
-          processed: false,
-          uploader: {
-            connect: {
-              ldapId: locals.user.ldapId
-            }
-          },
-          creator: {
-            connect: {
-              id: c.id
-            }
-          },
-          date: new Date(foto.lastModified)
-        }
-      })
-
-      const newFilename = `Invictus-${n}-${date}-${p.id}`
-
-      await db.photo.update({
-        where: {
-          id: p.id
+      const p = await uploadPhoto({
+        upload: {
+          filename: foto.name,
+          buf: Buffer.from(await foto.arrayBuffer())
         },
-        data: {
-          filename: newFilename
-        }
+        creator: c,
+        uploader: locals.user,
+        runProcessingJob: false,
       })
 
       ids.push(p.id)
-
-      // Now write to disk
-      writeFileSync(`${process.env.UPLOAD_FOLDER}/fotos/${newFilename}.${ext}`, Buffer.from(buf))
     }
 
-    // Now, create a new job in redis
     await createRedisJob('photo-processing')
 
     throw redirect(303, '/fotos/upload/success?ids=' + ids.join(','))

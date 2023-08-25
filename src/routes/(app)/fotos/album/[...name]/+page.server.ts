@@ -57,7 +57,7 @@ export const load = (async ({ params }) => {
             }
           },
           {
-            activity: {
+            activityImage: {
               is: null
             }
           }
