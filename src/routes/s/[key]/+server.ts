@@ -12,17 +12,18 @@ export async function GET({ params, locals }) {
   })
 
   if (!link) {
-    throw redirect(302 , '/s/error')
+    throw redirect(302, '/s/error')
   }
 
   // Now create a link click
-
-  await db.linkClick.create({
-    data: {
-      linkId: link.id,
-      userId: locals.user.id ?? null,
-    }
-  })
+  if (locals.user) {
+    await db.linkClick.create({
+      data: {
+        linkId: link.id,
+        userId: locals.user.id,
+      }
+    })
+  }
 
   // Redirect the user
   throw redirect(302, link.link)
