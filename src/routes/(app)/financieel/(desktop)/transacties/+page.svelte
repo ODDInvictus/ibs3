@@ -1,12 +1,11 @@
 <script>
 	import { page } from '$app/stores';
+	import Title from '$lib/components/title.svelte';
 </script>
 
 <div id="root">
 	<div id="sales">
-		<h1>Laatste 20 transacties</h1>
-
-		<hr />
+		<Title title="Laatste 20 transacties" shortTitle="Transacties" />
 
 		<div class="buttons">
 			<a href="/financieel/transacties/nieuw">Nieuwe transactie</a>
@@ -21,7 +20,7 @@
 			</div>
 		{/if}
 
-		<table>
+		<table class="striped small">
 			<thead>
 				<tr>
 					<th>ID</th>

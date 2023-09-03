@@ -1,45 +1,29 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { breadcrumbStore, generateBreadcrumbs } from '$lib/breadcrumbStore';
+	import { markdown } from '$lib/utils';
 	import ChevronRight from '~icons/tabler/chevron-right';
 
-	let crumbs: any[] = [];
-
-	$: {
-		let path = $page.url.pathname;
-		// Remove zero-length tokens.
-		const tokens = path.split('/').filter((t) => t !== '');
-
-		// Create { label, href } pairs for each token.
-		let tokenPath = '';
-		crumbs = tokens.map((t) => {
-			tokenPath += '/' + t;
-			return {
-				label: t,
-				href: tokenPath
-			};
-		});
-
-		// Add a way to get home too.
-		crumbs.unshift({ label: 'home', href: '/' });
-	}
+	$: generateBreadcrumbs($page.route.id ?? $page.url.pathname, $page.url.pathname);
 </script>
 
 <nav>
-	{#each crumbs as c, i}
-		{#if i == crumbs.length - 1}
-			<span>{c.label}</span>
-		{:else}
-			<a href={c.href}>
-				<span>{c.label}</span>
-			</a>
-			<i><ChevronRight width="1.2em" height="1.2em" /></i>
+	{#each $breadcrumbStore as c, i}
+		{#if c !== null}
+			{#if i == $breadcrumbStore.length - 1}
+				<span>{@html markdown(c.label)}</span>
+			{:else}
+				<a href={c.href}>
+					<span>{@html markdown(c.label)}</span>
+				</a>
+				<i><ChevronRight width="1.2em" height="1.2em" /></i>
+			{/if}
 		{/if}
 	{/each}
 </nav>
 
 <style>
 	nav {
-		color: white;
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
@@ -47,13 +31,13 @@
 		gap: 0.3rem;
 	}
 
-	a {
-		color: white;
-	}
-
 	span,
 	i {
 		display: inline-block;
+	}
+
+	a {
+		color: var(--color-text-light);
 	}
 
 	i {

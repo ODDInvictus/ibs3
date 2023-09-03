@@ -18,7 +18,7 @@
 						<CircleCheck />
 					{:else if notification.type === 'warning'}
 						<AlertCirlce />
-					{:else if notification.type === 'error'}
+					{:else if notification.type === 'danger'}
 						<ExclamationCircle />
 					{/if}
 				</div>
@@ -40,7 +40,12 @@
 	$icon-size: 2rem;
 
 	.notifications {
-		color: white;
+		color: var(--color-text-light);
+	}
+
+	h3,
+	p {
+		color: var(--color-text-light);
 	}
 
 	.icon {
@@ -60,6 +65,12 @@
 
 		display: grid;
 		grid-template-columns: 3rem 4fr;
+
+		max-width: calc(100vw - 1rem);
+	}
+
+	.message {
+		margin: 0;
 	}
 
 	.notification:first-child {
@@ -73,18 +84,19 @@
 	}
 
 	.success {
-		background-color: var(--primary-color);
+		background-color: var(--color-primary);
 	}
 
-	.error {
-		background-color: var(--error-color);
+	.danger {
+		background-color: var(--color-danger);
 	}
 
 	.warning {
-		background-color: var(--secondary-color);
+		background-color: var(--color-warning);
+		color: var(--color-text);
 	}
 
 	.info {
-		background-color: var(--tertiary-color);
+		background-color: var(--color-info);
 	}
 </style>

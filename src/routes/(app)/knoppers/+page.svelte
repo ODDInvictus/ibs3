@@ -10,7 +10,7 @@
 
 <Title title="Knoppers klikker" />
 
-<table>
+<table class="striped">
 	<col /><col /><col id="clicks" /><col />
 	<thead>
 		<th>Positie</th>

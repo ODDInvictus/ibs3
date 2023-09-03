@@ -13,3 +13,7 @@
 <a href="/admin/commissie">Beheer commissies</a>
 <br />
 <a href="/short">Maak nieuwe short link</a>
+<br />
+<a href="/docs">Documentatie</a>
+<br />
+<a href="/fotos/upload">Upload fotos</a>

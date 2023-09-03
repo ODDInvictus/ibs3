@@ -8,6 +8,7 @@ export const load = (async ({ params }) => {
   })
 
   return {
-    location
+    location,
+    title: location.name,
   }
 })

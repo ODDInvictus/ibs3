@@ -32,7 +32,7 @@
 		<p title="Betaalmethode"><Banknotes /> {d.methodOfPayment}</p>
 		<p title="Status acceptatie"><Check /> {accepted(d.accepted, d.denied)}</p>
 
-		Accepteren? Ga dan naar het<a href="/financieel/declaratie/overzicht">overzicht</a>
+		Accepteren? Ga dan naar het&nbsp;<a href="/financieel/declaratie/overzicht">overzicht</a>
 	</div>
 
 	<div id="receipt">
@@ -44,10 +44,6 @@
 </div>
 
 <style lang="scss">
-	h1 {
-		font-size: 4rem;
-	}
-
 	a {
 		color: purple;
 	}
@@ -78,6 +74,20 @@
 			cursor: help;
 			gap: 0.5rem;
 			margin: 0.5rem 0;
+		}
+	}
+
+	@media (max-width: 600px) {
+		#root {
+			grid-template-columns: 1fr;
+		}
+
+		#receipt {
+			margin-top: 1rem;
+		}
+
+		img {
+			max-width: 80lvw;
 		}
 	}
 </style>

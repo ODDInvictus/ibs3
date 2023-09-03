@@ -22,12 +22,7 @@
 <Title title="Strafbakken" />
 
 <main>
-	<Modals>
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<div slot="backdrop" class="backdrop" on:click={closeModal} />
-	</Modals>
-
-	<table-container>
+	<div class="table-container">
 		{#if width < 900}
 			<Table data={data.strafbakken} longestName={null} />
 		{:else}
@@ -37,14 +32,12 @@
 				{longestName}
 			/>
 		{/if}
-	</table-container>
-	<a
-		href="/strafbakken/bakken"
-		class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center transition"
-		data-sveltekit-preload-data="hover"
-	>
-		Hoeveel heeft iedereen al getrokken?
-	</a>
+	</div>
+	<div class="link">
+		<a href="/strafbakken/bakken" class="button" data-sveltekit-preload-data="hover">
+			Hoeveel heeft iedereen al getrokken?
+		</a>
+	</div>
 </main>
 
 <style lang="scss">
@@ -56,25 +49,15 @@
 		flex-direction: column;
 		gap: $margin;
 
-		table-container {
+		.table-container {
 			width: 100%;
 			display: flex;
 			justify-content: center;
 			gap: $margin;
 		}
-
-		a {
-			width: fit-content;
-		}
 	}
 
-	.backdrop {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		right: 0;
-		left: 0;
-		background: rgba(0, 0, 0, 0.5);
-		z-index: 1;
+	.link {
+		margin-top: 1rem;
 	}
 </style>

@@ -1,5 +1,4 @@
 // Render markdown
-import sanitize from 'sanitize-html';
 import markdownIt from 'markdown-it';
 // @ts-expect-error Geen types
 import markdownItSub from 'markdown-it-sub';
@@ -9,27 +8,35 @@ import markdownItSup from 'markdown-it-sup';
 import markdownItIns from 'markdown-it-ins';
 import markdownItEmojis from 'markdown-it-emoji';
 // @ts-expect-error Geen types
-import markdownItArrow from 'markdown-it-smartarrows';
+import markdownItArrow from 'markdown-it-smartarrows'
 import markdownItKbd from 'markdown-it-kbd';
+import markdownItPlainText from 'markdown-it-plain-text'
+
+import xss from 'xss'
+
 
 const md = new markdownIt({
 	linkify: true,
 	breaks: true
 })
-	.use(markdownItSub)
-	.use(markdownItSup)
-	.use(markdownItIns)
-	.use(markdownItEmojis)
-	.use(markdownItArrow)
-	.use(markdownItKbd)
-	.disable(['image']);
+  .use(markdownItSub)
+  .use(markdownItSup)
+  .use(markdownItIns)
+  .use(markdownItEmojis)
+  .use(markdownItArrow)
+  .use(markdownItKbd)
+  .use(markdownItPlainText)
+  .disable(['image']);
 
 export function markdown(text: string | null | undefined): string | null {
-	if (text === null || text === undefined) return null;
-	return sanitize(md.renderInline(text), {
-		disallowedTagsMode: 'escape',
-		allowedTags: ['em', 'strong', 's', 'br', 'pre', 'code', 'a', 'sup', 'sub', 'ins', 'span', 'kbd']
-	});
+  if (text === null || text === undefined) return null;
+  return xss(md.renderInline(text))
+}
+
+export function stripMarkdown(text: string | undefined) {
+  if (text === null || text === undefined) return null;
+  md.render(text)
+  return (md as any).plainText
 }
 
 // Currently in dark mode?

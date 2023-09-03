@@ -23,7 +23,7 @@ async function cb(body: object, method: string, onSuccess: string) {
       toast({
         title: 'Oei!',
         message: json.message,
-        type: 'error'
+        type: 'danger'
       });
     }
   });

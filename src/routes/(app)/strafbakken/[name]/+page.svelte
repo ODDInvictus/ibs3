@@ -19,14 +19,13 @@
 <main>
 	<Title
 		title="{name} zijn {data.strafbakken.StrafbakReceived.length} strafbakken"
-		shortTitle="{name} :: Strafbakken"
+		shortTitle="{name} - Strafbakken"
 	/>
-	<table-container>
-		<table>
+	<div class="table-container">
+		<table class="striped">
 			<thead>
 				<th>Gever</th>
 				<th>Reden</th>
-				<th>Locatie</th>
 				<th>Datum</th>
 				<th>Tijd</th>
 			</thead>
@@ -43,30 +42,17 @@
 							{/if}
 						</td>
 						<td>{@html markdown(strafbak.reason) ?? 'Geen reden gegeven'}</td>
-						<td>{strafbak.location ?? 'Onbekend'}</td>
 						<td>{strafbak.dateCreated.toLocaleDateString()}</td>
 						<td>{strafbak.dateCreated.toLocaleTimeString().slice(0, -3)}</td>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
-	</table-container>
+	</div>
 </main>
 
-<style lang="scss">
-	$tr-padding: 0.75rem;
-
-	table-container {
-		display: grid;
-		place-items: center;
-
-		tbody {
-			tr {
-				&:nth-child(odd) {
-					background-color: var(--primary-color);
-					color: white;
-				}
-			}
-		}
+<style>
+	.table-container {
+		overflow: auto;
 	}
 </style>

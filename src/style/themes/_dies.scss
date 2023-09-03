@@ -1,0 +1,30 @@
+.ibs-theme--dies {
+	--color-main: #dbac10;
+
+	--color-primary: #dbac10;
+	--color-secondary: #ff9100;
+
+	--color-scrollbar: #dbac10;
+
+	--color-text-light: black;
+
+	// Gold/beer yellow
+	--color-stripe: var(--color-main);
+
+	.layout--navbar {
+		.logo {
+			svg {
+				path,
+				rect {
+					fill: var(--color-main);
+				}
+			}
+		}
+	}
+
+	.layout--container {
+		background-image: url('/vlaggen.svg');
+		background-repeat: repeat-x;
+		background-size: 200px;
+	}
+}

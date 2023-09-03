@@ -7,7 +7,8 @@ declare global {
     interface Locals {
       user: User
       committees: Committee[]
-      settings: Settings[]
+      roles: UserRoles
+      theme: string
     }
   }
 }

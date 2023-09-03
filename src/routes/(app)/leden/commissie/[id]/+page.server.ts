@@ -15,6 +15,7 @@ export const load = (async ({ params }) => {
   })
 
   return {
-    committee
+    committee,
+    title: committee.name,
   }
 })
