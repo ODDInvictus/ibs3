@@ -10,6 +10,6 @@
 	{@html webManifestLink}
 </svelte:head>
 
-<div class="ibs-theme--{$page.data.theme}">
+<div class="body ibs-theme--{$page.data.theme}">
 	<slot />
 </div>
