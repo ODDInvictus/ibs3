@@ -108,6 +108,8 @@
 <Title title="Instellingen" underTitle="Op deze pagina kan je je ibs voorkeuren veranderen." />
 
 <h2>Thema</h2>
+<small>Let op: Tijdelijke thema's kunnen niet gewijzigd worden!</small>
+<br />
 
 <input
 	type="radio"
