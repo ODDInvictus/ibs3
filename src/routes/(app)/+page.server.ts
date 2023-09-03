@@ -87,28 +87,35 @@ export const load = (async ({ locals }) => {
 
     const member = locals.committees.filter((c) => c.ldapId === LDAP_IDS.MEMBERS)[0]
 
-    const q = {
-      orderBy: [{
-        endTime: 'asc'
-      }],
-      where: {
-        endTime: {
-          gte: today
-        },
-      },
-      include: {
-        photo: true
-      }
-    } as any
-
-    if (!member) {
-      return db.activity.findFirst(q)
-    } else {
-      return db.activity.findFirst(Object.assign(q, {
+    if (member) {
+      return db.activity.findFirst({
+        orderBy: [{
+          endTime: 'asc'
+        }],
         where: {
-          membersOnly: false
+          endTime: {
+            gte: today
+          },
+        },
+        include: {
+          photo: true
         }
-      }))
+      })
+    } else {
+      return db.activity.findFirst({
+        orderBy: [{
+          endTime: 'asc'
+        }],
+        where: {
+          endTime: {
+            gte: today
+          },
+          membersOnly: false
+        },
+        include: {
+          photo: true
+        }
+      })
     }
   }
 
