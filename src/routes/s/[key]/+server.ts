@@ -15,8 +15,10 @@ export async function GET({ params, locals }) {
     throw redirect(302, '/s/error')
   }
 
-  // Now create a link click
+  // We have to check locals.user here, since it CAN be null here.
+  // This is because this route is situated outside of /(app), thus circumventing the auth middleware.
   if (locals.user) {
+    // Now create a link click
     await db.linkClick.create({
       data: {
         linkId: link.id,
