@@ -38,8 +38,12 @@ export default function IBSAdapter(client: PrismaClient) {
       })
     },
     async linkAccount(data: any) {
-      const account = await client.account.create({ data })
-      return account
+      data.expires_in = data.expires_at
+      delete data['expires_at']
+
+      console.log(data)
+
+      return await client.account.create({ data })
     },
     unlinkAccount: (provider_providerAccountId) => client.account.delete({ where: { provider_providerAccountId } }) as any,
     async getSessionAndUser(sessionToken) {

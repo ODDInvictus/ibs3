@@ -23,7 +23,7 @@ function getTopRole(committees: Committee[]) {
     }
   }
 
-  switch (topCommittee.ldapId) {
+  switch (topCommittee?.ldapId) {
     case LDAP_IDS.FEUTEN:
       return 'Feut'
     case LDAP_IDS.SENAAT:
