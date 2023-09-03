@@ -10,6 +10,7 @@ h5,
 h6 {
 	font-weight: 400;
 	font-family: var(--font-family);
+	color: var(--color-text);
 }
 
 h1 {
@@ -22,11 +23,6 @@ h2 {
 
 h3 {
 	font-size: 1.125rem;
-}
-
-p,
-a {
-	font-family: var(--font-family-text);
 }
 
 a {

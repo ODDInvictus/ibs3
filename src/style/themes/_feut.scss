@@ -1,0 +1,98 @@
+.ibs-theme--feut {
+	// Override the default color for text
+	color: var(--color-text);
+
+	--stripe-height: 100vh;
+
+	--color-stripe: linear-gradient(
+		60deg,
+		#ff0000,
+		#ff7f00,
+		#ffff00,
+		#00ff00,
+		#0000ff,
+		#4b0082,
+		#8f00ff
+	);
+
+	--color-bg: rgba(0, 255, 0, 0.2);
+
+	--color-navbar: linear-gradient(
+		95deg,
+		#ff0000,
+		#ff7f00,
+		#ffff00,
+		#00ff00,
+		#0000ff,
+		#4b0082,
+		#8f00ff
+	);
+
+	--color-card: rgba(0, 0, 255, 0.2);
+
+	--color-primary: #be0000;
+	--color-secondary: #ff7f00;
+	--color-tertiary: #ffff00;
+	--color-danger: #8f00ff;
+	--color-info: #ffff00;
+	--color-success: #00ff00;
+
+	.notification.info {
+		color: red;
+
+		h3,
+		p {
+			color: red;
+		}
+	}
+
+	.layout--navbar {
+		.logo {
+			svg {
+				path,
+				rect {
+					fill: #0a0;
+				}
+			}
+		}
+
+		.layout--navbar--item:hover {
+			background-color: #0a0;
+		}
+
+		.layout--navbar--item:nth-child(3),
+		.layout--navbar--item:nth-child(10) {
+			color: red;
+		}
+
+		.layout--navbar--item:nth-child(4),
+		.layout--navbar--item:nth-child(11) {
+			color: #ff7f00;
+		}
+
+		.layout--navbar--item:nth-child(5),
+		.layout--navbar--item:nth-child(12) {
+			color: #ffff00;
+		}
+
+		.layout--navbar--item:nth-child(6),
+		.layout--navbar--item:nth-child(13) {
+			color: #00ff00;
+		}
+
+		.layout--navbar--item:nth-child(7),
+		.layout--navbar--item:nth-child(14) {
+			color: #0000ff;
+		}
+
+		.layout--navbar--item:nth-child(8),
+		.layout--navbar--item:nth-child(15) {
+			color: #4b0082;
+		}
+
+		.layout--navbar--item:nth-child(9),
+		.layout--navbar--item:nth-child(16) {
+			color: #8f00ff;
+		}
+	}
+}

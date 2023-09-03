@@ -33,7 +33,7 @@
 
 	--color-comment-bg: #efdeff;
 
-	--color-table-highlight: var(--color-primary);
+	--color-table-highlight: #551b8a;
 	--color-table-highlight-focus: rgba(85, 27, 138, 0.9);
 	--color-table-stripe: rgba(85, 27, 138, 0.2);
 	--color-table-focus: rgba(0, 0, 0, 0.05);
@@ -43,6 +43,8 @@
 	--color-form-bg: #ffffff;
 
 	--color-scrollbar: var(--color-primary);
+
+	--color-stripe: var(--color-primary);
 
 	/*
 		Font

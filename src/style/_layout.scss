@@ -140,7 +140,7 @@ $steps: 20;
 	top: 0;
 	left: 0;
 
-	background-color: var(--color-primary);
+	background: var(--color-stripe);
 	height: var(--stripe-height);
 	width: 100vw;
 
@@ -160,7 +160,7 @@ $steps: 20;
 	grid-area: nav;
 	height: calc(100vh - 1 * var(--navbar-margin) - 1 * var(--navbar-padding));
 	width: var(--navbar-width);
-	background-color: var(--color-bg);
+	background: var(--color-navbar, var(--color-bg, #fff));
 
 	border-radius: var(--border-radius);
 	margin: var(--navbar-margin);

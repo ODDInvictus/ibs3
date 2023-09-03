@@ -19,6 +19,7 @@ dialog {
 	h1,
 	p {
 		padding-bottom: $text-padding;
+		color: var(--color-text-light);
 	}
 
 	& .ok {
