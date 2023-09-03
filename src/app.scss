@@ -12,6 +12,9 @@
 @use './style/components/chip';
 @use './style/components/comment';
 
+@use './style/themes/dark';
+@use './style/themes/feut';
+
 @font-face {
 	font-family: SegoeUI;
 	src: local('Segoe UI'),
@@ -87,6 +90,7 @@ body,
 	width: 100%;
 	height: 100%;
 	font-family: var(--font-family-text);
+	color: var(--color-text);
 
 	// Disable reloading on overscroll
 	overscroll-behavior: contain;

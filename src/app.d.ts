@@ -8,6 +8,7 @@ declare global {
       user: User
       committees: Committee[]
       roles: UserRoles
+      theme: string
     }
   }
 }
