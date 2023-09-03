@@ -10,6 +10,10 @@ export const POST: RequestHandler = async ({ request, params, locals }) => {
   switch (body.type) {
     case 'rating':
       return await rate(body, pid, uid);
+    case 'tag':
+      return await tag(body, pid, uid);
+    case 'remove-tag':
+      return await removeTag(body, pid);
     default:
       return err(400, 'Request type onbekend')
   }
@@ -72,4 +76,62 @@ async function rate(body: RatingBodyType, pid: number, uid: number) {
   })
 
   return success('Rating opgeslagen', avgRating._avg.rating)
+}
+
+type TagBodyType = {
+  type: 'tag',
+  tag: string,
+}
+
+async function tag(body: TagBodyType, pid: number, uid: number) {
+  const tid = Number(body.tag);
+
+  if (!body.tag || isNaN(tid)) {
+    return err(400, 'tag is niet geldig')
+  }
+
+  // Now create a photowithtags object
+  const t = await db.photosWithTags.create({
+    data: {
+      photoId: pid,
+      photoTagId: tid,
+      assignedById: uid
+    },
+    select: {
+      photoTag: true
+    }
+  })
+
+  return success('Tag opgeslagen', t)
+}
+
+type RemoveTagBodyType = {
+  type: 'remove-tag',
+  tag: string,
+}
+
+async function removeTag(body: RemoveTagBodyType, pid: number) {
+  const tid = Number(body.tag);
+
+  if (!body.tag || isNaN(tid)) {
+    return err(400, 'tag is niet geldig')
+  }
+
+  // Remove the photosWithTags objecty
+  await db.photosWithTags.delete({
+    where: {
+      photoId_photoTagId: {
+        photoId: pid,
+        photoTagId: tid
+      },
+    }
+  })
+
+  const tag = await db.photoTag.findUnique({
+    where: {
+      id: tid
+    }
+  })
+
+  return success('Tag verwijderd', tag)
 }

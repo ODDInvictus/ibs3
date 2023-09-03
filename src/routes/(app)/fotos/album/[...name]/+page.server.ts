@@ -38,6 +38,9 @@ export const load = (async ({ params }) => {
     const photos = await db.photo.findMany({
       orderBy: {
         createdAt: 'desc'
+      },
+      where: {
+        visible: true
       }
     })
 
@@ -60,6 +63,9 @@ export const load = (async ({ params }) => {
             activityImage: {
               is: null
             }
+          },
+          {
+            visible: true
           }
         ]
       },

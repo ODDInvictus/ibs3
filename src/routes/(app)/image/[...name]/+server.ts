@@ -27,38 +27,45 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
 
   if (!size) size = 'large'
 
-  if (filename.startsWith('id/')) {
-    const id = parseInt(filename.split('/')[1])
-
-    let sizeToLoad = size
-
-    if (size.includes('x')) sizeToLoad = getBestImageSizeToLoad(size)
-
-    const photo = await loadPhotoById(id, sizeToLoad as PhotoSize)
-
-    if (!photo) {
-      return new Response('File not found', { status: 404 });
-    }
-
-    if (size.includes('x')) {
-      photo.buffer = await resizeImage(photo.buffer, size)
-    }
-
-    setHeaders({
-      'Content-Type': photo.contentType,
-      'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
-    })
-
-    return new Response(photo.buffer)
-  }
-
-  let isStatic = url.searchParams.get('static') === 'true'
-
-  // Then get the file from the server
   try {
+
+    if (filename.startsWith('id/')) {
+      const id = parseInt(filename.split('/')[1])
+
+      if (!id) {
+        return new Response('File not found', { status: 404 });
+      }
+
+      let sizeToLoad = size
+
+      if (size.includes('x')) sizeToLoad = getBestImageSizeToLoad(size)
+
+      const photo = await loadPhotoById(id, sizeToLoad as PhotoSize)
+
+      if (!photo) {
+        return new Response('File not found', { status: 404 });
+      }
+
+      if (size.includes('x')) {
+        photo.buffer = await resizeImage(photo.buffer, size)
+      }
+
+      setHeaders({
+        'Content-Type': photo.contentType,
+        'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
+      })
+
+      return new Response(photo.buffer)
+    }
+
+    let isStatic = url.searchParams.get('static') === 'true'
+
+    // Then get the file from the server
+
     const agent = request.headers.get('user-agent')
 
     const path = isStatic ? STATIC_FOLDER : UPLOAD_FOLDER
+
 
     // Edge ondersteund geen AVIF om een of andere kut reden, dus zij krijgen JPEG
     if (agent && (agent.includes('Edg/') || agent.includes('Edge'))) {
@@ -107,13 +114,21 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
         return new Response('Can not use size=original with this endpoint, use /image/id/{photo_id} or size=large instead', { status: 405 });
       }
 
-      buf = await readImage(path, `${filename}-${size}.avif`)
-
+      if (isStatic) {
+        buf = await readImage(path, filename)
+      } else {
+        buf = await readImage(path, `${filename}-${size}.avif`)
+      }
     } else if (size.includes('x')) {
       // These are done dynamically, so we need to read whatever size is closest and resize it
       const sizeToLoad = getBestImageSizeToLoad(size)
 
-      const photo = await readImage(path, `${filename}-${sizeToLoad}.avif`)
+      let photo: Buffer
+      if (isStatic) {
+        photo = await readImage(path, filename)
+      } else {
+        photo = await readImage(path, `${filename}-${sizeToLoad}.avif`)
+      }
 
       buf = await resizeImage(photo, size)
     }

@@ -5,6 +5,8 @@
 	import { formatDateHumanReadable, formatDateTimeHumanReadable } from '$lib/dateUtils';
 	import { imagePreview } from '$lib/imagePreviewStore';
 	import { toast } from '$lib/notification';
+	import { promptSelect } from '$lib/promptSelect';
+	import { confirm } from '$lib/confirm';
 	import type { PageData } from './$types';
 	import Star from '~icons/tabler/star';
 
@@ -42,7 +44,82 @@
 			});
 	}
 
-	let input: HTMLInputElement;
+	async function tag() {
+		await promptSelect({
+			title: 'Tag toevoegen',
+			message: 'Selecteer een tag',
+			options: (data.tags || []).map((tag) => ({
+				key: tag.name,
+				value: String(tag.id)
+			})),
+			cb: async (val) => {
+				if (!val) return;
+
+				console.log(val);
+
+				await fetch('', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						type: 'tag',
+						tag: val
+					})
+				})
+					.then((res) => res.json())
+					.then((res) => {
+						if (res.success) {
+							if (data.photo && data.photo.tags) data.photo.tags = [res.data, ...data.photo?.tags];
+							data.tags = data.tags?.filter((t) => {
+								return t.id !== res.data.photoTag.id;
+							});
+						} else {
+							toast({
+								title: 'Opslaan mislukt',
+								message: res.message,
+								type: 'danger'
+							});
+						}
+					});
+			}
+		});
+	}
+
+	async function removeTag(tid: number) {
+		await confirm({
+			title: 'Tag verwijderen',
+			message: 'Weet je zeker dat je deze tag wilt verwijderen?',
+			cb: async (val) => {
+				if (val) {
+					fetch('', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							type: 'remove-tag',
+							tag: tid
+						})
+					})
+						.then((res) => res.json())
+						.then((res) => {
+							if (res.success) {
+								if (data.photo && data.photo.tags)
+									data.photo.tags = data.photo?.tags.filter((t) => t.photoTag.id !== tid) ?? [];
+								if (data.tags) data.tags = [...data.tags, res.data];
+							} else {
+								toast({
+									title: 'Opslaan mislukt',
+									message: res.message,
+									type: 'danger'
+								});
+							}
+						});
+				}
+			}
+		});
+	}
 </script>
 
 {#if !data.photo}
@@ -78,8 +155,14 @@
 				</p>
 				<p class="mb-1">Tags:</p>
 				{#each data.photo.tags as tag}
-					<span class="ibs-chip">{tag.photoTag.name}</span>
+					<span on:click={() => removeTag(tag.photoTag.id)} class="ibs-chip removable">
+						{tag.photoTag.name}
+					</span>
 				{/each}
+				{#if data.photo.tags && data.photo.tags.length > 0}
+					<br />
+				{/if}
+				<button on:click={tag} class="btn-a">Toevoegen</button>
 			</div>
 
 			<div class="rating-container">
@@ -148,7 +231,7 @@
 						};
 					}}
 				>
-					<input bind:this={input} type="text" name="comment" placeholder="Typ een reactie..." />
+					<input type="text" name="comment" placeholder="Typ een reactie..." />
 					<button type="submit">Plaats</button>
 				</form>
 
@@ -157,7 +240,7 @@
 					<div class="ibs-comment">
 						<div class="ibs-comment--icon">
 							<ProfileIcon
-								src={u.picture}
+								uid={u.profilePictureId}
 								name={u.firstName + ' ' + u.lastName}
 								height={50}
 								width={50}

@@ -53,12 +53,20 @@ type UploadPhotoArgs = {
     filename: string
     buf: Buffer
   },
+  additionalName?: string,
   runProcessingJob?: boolean
   creator: PhotoCreator
   uploader: User
+  invisible?: boolean
 }
 
-export async function uploadPhoto(args: UploadPhotoArgs): Promise<Photo> {
+/**
+ * Upload een foto
+ * @param args Argumenten enzo
+ * @param tx PrismaClient
+ * @returns 
+ */
+export async function uploadPhoto(args: UploadPhotoArgs, transactionClient?: any): Promise<Photo> {
   const date = Date.now()
   // Take filename, buf, creator from args
   const { filename, buf } = args.upload
@@ -68,48 +76,78 @@ export async function uploadPhoto(args: UploadPhotoArgs): Promise<Photo> {
   const extension = filename.split('.').pop() || 'jpeg'
   const creatorName = creator.name.split(' ').join('_')
 
-  let filenameOnDisk = `Invictus-${creatorName}-${date}`
+  let filenameOnDisk = `Invictus${args.additionalName ? `-${args.additionalName}` : ''}-${creatorName}-${date}`
 
-  let photo
+  const invisible = args.invisible || false
 
-  await db.$transaction(async (tx) => {
-    photo = await tx.photo.create({
-      data: {
-        filename: filenameOnDisk,
-        extension,
-        processed: false,
-        uploaderId: args.uploader.id,
-        creatorId: creator.id,
-        date: new Date()
-      }
-    })
+  let response
 
-    filenameOnDisk = `Invictus-${creatorName}-${date}-${photo.id}`
-
-    await tx.photo.update({
-      where: {
-        id: photo.id
-      },
-      data: {
-        filename: filenameOnDisk
-      }
-    })
-
-    // Write the file to disk
-    // This happens inside the transaction, since if this fails I do not want it to be in the database
-    await fs.writeFile(`${uploadFolder}/${filenameOnDisk}.${extension}`, buf)
-
-  }).catch(err => {
+  try {
+    if (transactionClient) {
+      response = await transaction(transactionClient, filenameOnDisk, extension, creatorName, date, args, creator, invisible)
+    } else {
+      await db.$transaction(async (tx) => {
+        response = await transaction(tx, filenameOnDisk, extension, creatorName, date, args, creator, invisible)
+      })
+    }
+  } catch (err) {
     console.error(err)
     throw err
-  })
-  await createRedisJob('photo-processing')
+  }
+
+  let photo = response?.photo
+  filenameOnDisk = response?.filenameOnDisk || ''
+
+  // Write the file to disk
+  await fs.writeFile(`${uploadFolder}/${filenameOnDisk}.${extension}`, buf)
+    .catch(err => {
+      console.error('------------------------------')
+      console.error(err)
+      console.error('------------------------------')
+    })
+
 
   if (!photo) {
     throw new Error('Photo saving failed')
   }
 
+  if (args.runProcessingJob) {
+    await createRedisJob('photo-processing')
+  }
+
   return photo
+}
+
+type TransactionReturnType = {
+  photo: Photo,
+  filenameOnDisk: string
+}
+
+async function transaction(tx: any, filenameOnDisk: string, extension: string, creatorName: string, date: number, args: UploadPhotoArgs, creator: PhotoCreator, invisible: boolean): Promise<TransactionReturnType> {
+  let photo = await tx.photo.create({
+    data: {
+      filename: filenameOnDisk,
+      extension,
+      processed: false,
+      uploaderId: args.uploader.id,
+      creatorId: creator.id,
+      date: new Date(),
+      visible: !invisible
+    }
+  })
+
+  filenameOnDisk = `Invictus${args.additionalName ? `-${args.additionalName}` : ''}-${creatorName}-${date}-${photo.id}`
+
+  await tx.photo.update({
+    where: {
+      id: photo.id
+    },
+    data: {
+      filename: filenameOnDisk
+    }
+  })
+
+  return { photo, filenameOnDisk }
 }
 
 export async function loadPhotoById(id: number, size: PhotoSize = 'large'): Promise<LoadPhotoType | null> {

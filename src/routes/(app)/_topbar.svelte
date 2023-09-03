@@ -20,7 +20,7 @@
 	<div class="user">
 		<div class="avatar">
 			<ProfileIcon
-				src={$page.data.user.picture}
+				uid={$page.data.user.profilePictureId}
 				name={`${$page.data.user.firstName} ${$page.data.user.lastName}`}
 			/>
 		</div>

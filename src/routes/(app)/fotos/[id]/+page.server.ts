@@ -28,7 +28,8 @@ export const load = (async ({ params, locals, url }) => {
         select: {
           photoTag: {
             select: {
-              name: true
+              name: true,
+              id: true
             }
           }
         }
@@ -40,7 +41,7 @@ export const load = (async ({ params, locals, url }) => {
               id: true,
               firstName: true,
               lastName: true,
-              picture: true,
+              profilePictureId: true,
               ldapId: true,
             }
           },
@@ -59,6 +60,19 @@ export const load = (async ({ params, locals, url }) => {
     return {}
   }
 
+  const tags = await db.photoTag.findMany({
+    where: {
+      photos: {
+        none: {
+          photoId: photo.id
+        }
+      }
+    },
+    orderBy: {
+      name: 'asc'
+    }
+  })
+
   let avgRating = 0
 
   for (const rating of photo.ratings) {
@@ -72,7 +86,7 @@ export const load = (async ({ params, locals, url }) => {
   const quality = url.searchParams.get('quality')
 
   if (quality === 'origineel') {
-    photoUrl = `/upload/fotos/${photo.filename}.${photo.extension}`
+    photoUrl = `/image/id/${photo.id}`
   } else {
     let qualityParam = 'large'
     if (quality === 'klein') {
@@ -82,13 +96,14 @@ export const load = (async ({ params, locals, url }) => {
     } else if (quality === 'groot') {
       qualityParam = 'large'
     }
-    photoUrl = `/image/${photo.filename}-${qualityParam}.avif?photo=true`
+    photoUrl = `/image/${photo.filename}?size=${qualityParam}`
   }
 
   return {
     photo,
     photoUrl,
     avgRating,
+    tags
   };
 }) satisfies PageServerLoad;
 
@@ -119,7 +134,7 @@ export const actions = {
           select: {
             id: true,
             firstName: true,
-            picture: true,
+            profilePictureId: true,
             lastName: true,
             ldapId: true,
           }
