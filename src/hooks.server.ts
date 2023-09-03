@@ -22,6 +22,8 @@ const authorization = (async ({ event, resolve }) => {
 	event.locals.committees = committees
 	event.locals.roles = roles
 
+	event.locals.theme = env.THEME_OVERRIDE ?? user?.preferredTheme ?? 'light'
+
 	// If the url starts with /jobs, we don't need to check if the user is logged in
 	// This route is used by the jobs server to execute jobs
 	// This route has to be whitelisted to only allow the jobs server to execute jobs
