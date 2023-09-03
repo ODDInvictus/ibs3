@@ -15,8 +15,15 @@
 	import { markdown } from '$lib/utils';
 	import Title from '$lib/components/title.svelte';
 	import { imagePreview } from '$lib/imagePreviewStore';
+	import type { PageData } from './$types';
+	import { enhance } from '$app/forms';
+	import ProfileIcon from '$lib/components/profile-icon.svelte';
+	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
 
-	const activity = $page.data.activity;
+	export let data: PageData;
+
+	const activity = data.activity;
+
 	let attending = $page.data.attending;
 	$: bij = attending.filter((a: any) => a.isAttending).map((a: any) => a.user);
 	$: unsure = attending
@@ -123,7 +130,7 @@
 		const endTime = new Date(activity.endTime);
 		const ical = generateICal({
 			title: activity.name,
-			eventId: activity.id,
+			eventId: activity.id.toString(),
 			description: activity.description,
 			location: activity.location?.name,
 			startTime,
@@ -179,15 +186,17 @@
 			<div class="ibs-card--image">
 				<img
 					on:click={() => {
-						if (activity.image) {
+						if (activity.photo) {
 							imagePreview({
-								image: `/image/activities/${activity.image}`
+								image: `/image/${activity.photo.filename}`
 							});
 						}
 					}}
 					alt={nameWithoutMarkdown}
-					src="/image/activities/{activity.image}?size=700x300"
-					onerror="this.src='/image/activities/activiteit-0-logo.png?size=700x300';this.onerror=null;"
+					src={activity.photo
+						? `/image/${activity.photo.filename}?size=500x250`
+						: `/image/favicon-512.png?static=true`}
+					onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
 				/>
 			</div>
 
@@ -269,6 +278,63 @@
 				{/each}
 			</div>
 		</div>
+
+		<div class="ibs-card comments outline">
+			<h2 class="ibs-card--title">Reaguursels</h2>
+
+			<div class="ibs-card--content">
+				<form
+					method="POST"
+					use:enhance={() => {
+						return ({ result, update }) => {
+							let title = 'Reactie plaatsen mislukt';
+							let type = 'danger';
+
+							if (result.status === 200) {
+								title = 'Succes';
+								type = 'success';
+
+								// @ts-expect-error Ja weet je, ik snap dat je dit niet leuk vind, maar je doet het er maar mee typescript
+								data.activity.comments = [...data.activity.comments, result.data.comment];
+							}
+
+							toast({
+								title,
+								message: result.data.message,
+								type
+							});
+							update();
+						};
+					}}
+				>
+					<input type="text" name="comment" placeholder="Typ een reactie..." />
+					<button class="btn-a" type="submit">Plaats</button>
+				</form>
+
+				{#each data.activity.comments as comment}
+					{@const u = comment.commenter}
+					<div class="ibs-comment">
+						<div class="ibs-comment--icon">
+							<ProfileIcon
+								uid={u.profilePictureId}
+								name={u.firstName + ' ' + u.lastName}
+								height={50}
+								width={50}
+							/>
+						</div>
+						<div class="ibs-comment--content">
+							<a href="/leden/{u.ldapId}" class="ibs-comment--content--name"
+								>{u.firstName} {u.lastName}</a
+							>
+							<p class="ibs-comment--content--date">
+								{formatDateTimeHumanReadable(comment.updatedAt)}
+							</p>
+							<div class="ibs-comment--content--comment">{comment.comment}</div>
+						</div>
+					</div>
+				{/each}
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -286,14 +352,14 @@
 	.cols {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		grid-auto-rows: auto;
-		margin: 0 $gap-side;
+		grid-template-rows: repeat(1fr, 10);
+
+		gap: 1rem;
 
 		& > .ibs-card {
 			display: flex;
 			flex-direction: column;
 
-			margin: 0 $gap;
 			@media (max-width: 600px) {
 				margin: 0;
 				margin-bottom: $gap;
@@ -309,17 +375,34 @@
 	}
 
 	#right {
+		grid-row: span 2;
+
 		align-items: center;
 
 		.users {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
-			margin: $gap auto;
 
 			@media (max-width: 600px) {
 				grid-template-columns: 1fr;
 				width: 90%;
 			}
 		}
+	}
+
+	.comments {
+		grid-row: span 3;
+		@media (max-width: 600px) {
+			.ibs-comment--content--date {
+				display: none;
+			}
+		}
+	}
+
+	form {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		grid-gap: 1rem;
+		margin: 0.5rem 0;
 	}
 </style>

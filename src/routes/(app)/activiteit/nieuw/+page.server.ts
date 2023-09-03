@@ -9,6 +9,7 @@ import { pad } from '$lib/utils.js'
 import { authUser } from '$lib/server/authorizationMiddleware'
 import type { PageServerLoad } from './$types.js'
 import { createRedisJob } from '$lib/server/cache.js'
+import { getPhotoCreator, uploadPhoto } from '$lib/server/images.js'
 
 export const load = (async ({ url, locals }) => {
   const locations = db.activityLocation.findMany({
@@ -204,56 +205,21 @@ export const actions = {
 
 
         if (image.size > 0) {
-          const u = event.locals.user
-          const n = (u.firstName + ' ' + u.lastName).replace(' ', '_')
-          const d = new Date()
-          const filename = `Invictus-activiteit_${activity.id}-${n}-${d.getTime()}`
-          const ext = image.name.split('.').pop()
+          const creator = await getPhotoCreator(event.locals.user, false)
 
-          const c = await tx.photoCreator.upsert({
-            update: {},
-            create: {
-              name,
-              userId: u.id
-            },
-            where: {
-              name,
-              userId: u.id
+          const buf = Buffer.from(await image.arrayBuffer())
+
+          const photo = await uploadPhoto({
+            creator,
+            uploader: event.locals.user,
+            runProcessingJob: false,
+            additionalName: 'Activiteit',
+            upload: {
+              buf,
+              filename: image.name
             }
-          })
+          }, tx)
 
-          const p = await tx.photo.create({
-            data: {
-              filename,
-              extension: ext ?? 'jpg',
-              processed: false,
-              uploader: {
-                connect: {
-                  ldapId: u.ldapId
-                }
-              },
-              creator: {
-                connect: {
-                  id: c.id
-                }
-              },
-              activityImage: {
-                connect: {
-                  id: activity.id
-                }
-              },
-              date: new Date(),
-            }
-          })
-
-          console.log(p)
-
-          const newFilename = `Invictus-activiteit_${activity.id}-${n}-${d.getTime()}-${p.id}.${ext}`
-
-          // save the image
-          fs.writeFileSync(`${env.UPLOAD_FOLDER}/fotos/${newFilename}`, Buffer.from(await image.arrayBuffer()), { encoding: 'binary' })
-
-          // update the activity with the image
           await tx.activity.update({
             where: {
               id: activity.id
@@ -261,15 +227,11 @@ export const actions = {
             data: {
               photo: {
                 connect: {
-                  id: p.id
+                  id: photo.id
                 }
               }
             }
           })
-
-          // Process the image
-          await createRedisJob('photo-processing')
-
         }
 
         // Create all attending objects
@@ -315,6 +277,11 @@ export const actions = {
           })
         }
       })
+
+      // If the image has been updated, process them.
+      if (image.size > 0) {
+        await createRedisJob('photo-processing')
+      }
 
       if (!edit) {
         // Now, we notify everyone

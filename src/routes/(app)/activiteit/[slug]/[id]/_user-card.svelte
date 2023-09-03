@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
 	import ProfileIcon from '$lib/components/profile-icon.svelte';
 	import type { User } from '@prisma/client';
 
@@ -12,7 +11,7 @@
 		<ProfileIcon
 			height="50"
 			width="50"
-			src={user.picture}
+			uid={user.profilePictureId}
 			name={user.firstName + ' ' + user.lastName}
 		/>
 
