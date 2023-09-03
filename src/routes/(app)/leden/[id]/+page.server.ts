@@ -3,6 +3,7 @@ import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types.js'
 import { getPhotoCreator, uploadPhoto } from '$lib/server/images.js'
 import { createRedisJob } from '$lib/server/cache.js'
+import { invalidateUser } from '$lib/server/userCache.js'
 
 export const load = (async ({ params, locals }) => {
   let id = params.id
@@ -56,6 +57,12 @@ export const actions = {
 
     const data = Object.fromEntries(await request.formData())
 
+    const abuf = await data.image.arrayBuffer()
+
+    if (abuf.byteLength === 0) {
+      return fail(400, { success: false, message: 'Geen foto geupload' })
+    }
+
     db.$transaction(async tx => {
 
       const img = data.image as any
@@ -63,7 +70,7 @@ export const actions = {
       const p = await uploadPhoto({
         upload: {
           filename: img.name,
-          buf: Buffer.from(await img.arrayBuffer())
+          buf: Buffer.from(abuf)
         },
         additionalName: 'profiel',
         runProcessingJob: false,
@@ -82,5 +89,6 @@ export const actions = {
         }
       })
     }).then(async () => await createRedisJob('photo-processing'))
+      .then(() => invalidateUser(locals.user.email))
   }
 } satisfies Actions
