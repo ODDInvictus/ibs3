@@ -51,19 +51,22 @@ model User {
   id       Int     @id @default(autoincrement())
   isActive Boolean @default(true)
 
-  firstName         String
-  lastName          String
-  ldapId            String            @unique
-  email             String            @unique
-  personalEmail     String?
-  nickname          String?           @unique
-  picture           String?
-  birthDate         DateTime?         @db.Date
-  phone             String?
-  firstDrink        DateTime?         @db.Date
-  becameFeut        DateTime?         @db.Date
-  becameMember      DateTime?         @db.Date
-  lastLoggedin      DateTime          @default(now())
+  firstName        String
+  lastName         String
+  ldapId           String    @unique
+  email            String    @unique
+  personalEmail    String?
+  nickname         String?   @unique
+  profilePicture   Photo?    @relation("profilePicture", fields: [profilePictureId], references: [id], onDelete: SetNull)
+  profilePictureId Int?
+  birthDate        DateTime? @db.Date
+  phone            String?
+  firstDrink       DateTime? @db.Date
+  becameFeut       DateTime? @db.Date
+  becameMember     DateTime? @db.Date
+  lastLoggedin     DateTime  @default(now())
+  preferredTheme   String    @default("light")
+
   StrafbakGiven     Strafbak[]        @relation("strafbakGiver")
   StrafbakReceived  Strafbak[]        @relation("strafbakReceiver")
   MaluspuntGiven    Maluspunt[]       @relation("maluspuntGiver")
@@ -620,7 +623,7 @@ model Photo {
 
   // Date photo taken
   date DateTime?
-  
+
   // visible
   visible Boolean @default(true)
 
@@ -648,6 +651,8 @@ model Photo {
   activityImageId Int?      @unique
   activityPhotos  Activity? @relation("activityPhotos", fields: [activityPhotoId], references: [id], onDelete: SetNull)
   activityPhotoId Int?
+
+  profilePicture User[] @relation("profilePicture")
 }
 
 model PhotoCreator {
