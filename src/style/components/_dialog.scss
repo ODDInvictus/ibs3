@@ -1,0 +1,77 @@
+$gap: 1rem;
+$text-padding: 0.5rem;
+
+dialog {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	min-width: 25rem;
+
+	background: var(--color-primary);
+	color: var(--color-text-light);
+	border-radius: var(--border-radius);
+
+	padding: 2rem;
+
+	border: none;
+
+	h1,
+	p {
+		padding-bottom: $text-padding;
+		color: var(--color-text-light);
+	}
+
+	& .ok {
+		padding: 0.5rem;
+		width: 8rem;
+	}
+
+	& .buttons {
+		padding-top: $gap;
+		width: 100%;
+		display: flex;
+		justify-content: flex-end;
+		gap: 0.5rem;
+	}
+
+	&.prompt {
+		input {
+			margin-top: $gap;
+			box-sizing: border-box;
+			width: 100%;
+		}
+	}
+
+	&.checkbox {
+		#checkbox {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+		}
+	}
+
+	&.select {
+		select {
+			box-sizing: border-box;
+			width: 100%;
+		}
+	}
+}
+
+@media (max-width: 600px) {
+	dialog {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+
+		min-width: auto;
+		max-width: 100svw;
+
+		& .ok {
+			width: 6rem;
+		}
+	}
+}

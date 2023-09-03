@@ -1,0 +1,9 @@
+hr {
+	margin: 0.5rem;
+	border: none;
+	border-top: 1px solid var(--color-hr);
+}
+
+hr.hr-light {
+	border-top: 1px solid var(--color-hr-light);
+}

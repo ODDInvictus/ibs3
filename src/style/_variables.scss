@@ -1,0 +1,94 @@
+// Alle variablen hiero
+
+:root {
+	/*
+		Kleurtjes
+	*/
+	--color-primary: #551b8a;
+	--color-secondary: #ff007f;
+	--color-tertiary: #470ff4;
+
+	--color-primary-transparant: rgba(85, 27, 138, 0.1);
+
+	--color-danger: #be0000;
+	--color-warning: #f7e733;
+	--color-success: var(--color-primary);
+	--color-info: var(--color-tertiary);
+	--color-disabled: #707070;
+
+	--color-text: #0c0c0c;
+	--color-text-light: #f0f0f0;
+	--color-text-muted: #5d656b;
+
+	--color-bg-base: #f4eeff;
+	--color-bg: #ffffff;
+
+	--color-hr: #e0e0e0;
+	--color-hr-light: #ffffff;
+	--color-card: #ffffff;
+	--color-card-border: var(--color-hr);
+	--color-box-shadow: rgba(0, 0, 0, 0.1);
+
+	--color-chip-bg: #dfdfdf;
+
+	--color-comment-bg: #efdeff;
+
+	--color-table-highlight: #551b8a;
+	--color-table-highlight-focus: rgba(85, 27, 138, 0.9);
+	--color-table-stripe: rgba(85, 27, 138, 0.2);
+	--color-table-focus: rgba(0, 0, 0, 0.05);
+
+	--color-form-border: var(--color-hr);
+	--color-form-focus: var(--color-primary);
+	--color-form-bg: #ffffff;
+
+	--color-scrollbar: var(--color-primary);
+
+	--color-stripe: var(--color-primary);
+
+	/*
+		Font
+	*/
+	--font-family: Ubuntu, sans-serif;
+	--font-family-text: SegoeUI, 'Open Sans', sans-serif;
+	--icon-vertical-align: -0.25em;
+	--icon-size: 20px;
+
+	/*
+		Forms	
+	*/
+	--form-padding: 0.5rem 0.8rem;
+	--form-border-radius: 5px;
+	--form-box-shadow: 0 0 0 1px var(--color-primary-transparant);
+
+	/*
+		Layout
+	*/
+	--navbar-width: 300px;
+	--navbar-padding: 1rem;
+	--navbar-margin: 1rem;
+	--navbar-gap: 1rem;
+	--topbar-height: 50px;
+	--topbar-avatar-size: 50px;
+	--container-padding: 1rem;
+	--layout-gap: 2rem;
+	--stripe-height: 350px;
+
+	--tooltip-width: 300px;
+
+	@media (max-width: 600px) {
+		--topbar-height: 70px;
+		--topbar-logo-height: 40px;
+		--topbar-logo-width: 150px;
+		--navbar-height: 80px;
+		--topbar-avatar-size: 45px;
+
+		--tooltip-width: 65%;
+	}
+
+	/*
+		Rest
+	*/
+	--border-radius-button: 20px;
+	--border-radius: 10px;
+}

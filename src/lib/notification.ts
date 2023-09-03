@@ -3,7 +3,7 @@ import { writable } from 'svelte/store'
 type Notification = {
   title: string
   message: string
-  type: 'success' | 'error' | 'warning' | 'info'
+  type: 'success' | 'danger' | 'warning' | 'info'
   time?: number
 }
 

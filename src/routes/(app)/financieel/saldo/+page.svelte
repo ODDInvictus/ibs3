@@ -8,7 +8,7 @@
 
 <Title title="Saldo overzicht" />
 
-<table>
+<table class="small">
 	<thead>
 		<tr>
 			<th>Naam</th>
@@ -16,7 +16,7 @@
 		</tr>
 	</thead>
 	{#each $page.data.persons as person}
-		<tr class={personId === person.personId ? 'person-self' : 'person-other'}>
+		<tr class={personId === person.personId ? 'highlight' : null}>
 			<td>{person.person.name}</td>
 			<td class="euro">{formatPrice(person.person.balance)}</td>
 		</tr>
@@ -24,8 +24,4 @@
 </table>
 
 <style lang="scss">
-	.person-self {
-		background-color: purple;
-		color: white;
-	}
 </style>

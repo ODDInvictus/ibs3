@@ -6,6 +6,21 @@
 
 <Title title="Locaties" />
 
-{#each locations as location}
-	<div><a href="/locatie/{location.id}">{location.name}</a></div>
-{/each}
+<div class="center">
+	<table class="striped small not-full-width">
+		<thead>
+			<tr>
+				<th>Locatie</th>
+				<th>ID</th>
+			</tr>
+		</thead>
+		<tbody>
+			{#each locations as l}
+				<tr>
+					<td><a href="/locatie/{l.id}">{l.name}</a></td>
+					<td>{l.id}</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+</div>

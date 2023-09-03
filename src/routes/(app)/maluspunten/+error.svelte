@@ -11,7 +11,7 @@
 
 <div><img src={knoppers} alt="Knopper" /></div>
 
-<style>
+<style lang="scss">
 	p {
 		text-align: center;
 	}
@@ -21,5 +21,11 @@
 		width: 100%;
 		flex-direction: column;
 		align-items: center;
+
+		@media (max-width: 600px) {
+			img {
+				width: 100%;
+			}
+		}
 	}
 </style>

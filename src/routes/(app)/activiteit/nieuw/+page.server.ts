@@ -1,12 +1,14 @@
 import db from '$lib/server/db'
 import { error, fail, redirect } from '@sveltejs/kit'
-import fs from 'fs'
 import { env } from '$env/dynamic/private'
 import { LDAP_IDS } from '$lib/constants.js'
 import type { CommitteeMember } from '@prisma/client'
 import { z } from 'zod'
 import { pad } from '$lib/utils.js'
 import { authUser } from '$lib/server/authorizationMiddleware'
+import type { PageServerLoad } from './$types.js'
+import { createRedisJob } from '$lib/server/cache.js'
+import { getPhotoCreator, uploadPhoto } from '$lib/server/images.js'
 
 export const load = (async ({ url, locals }) => {
   const locations = db.activityLocation.findMany({
@@ -59,7 +61,7 @@ export const load = (async ({ url, locals }) => {
     locations,
     committees: locals.committees
   }
-})
+}) satisfies PageServerLoad
 
 const validateDate = (date: string) => {
   const d = new Date(date)
@@ -172,24 +174,63 @@ export const actions = {
         }
 
         id = activity.id
+        let shortLink = `activiteit-${id}-info`
+
+        if (url) {
+          await tx.link.upsert({
+            where: {
+              shortLink
+            },
+            update: {
+              link: url,
+              userId: event.locals.user.id
+            },
+            create: {
+              shortLink,
+              link: url,
+              userId: event.locals.user.id
+            }
+          })
+
+          await tx.activity.update({
+            where: {
+              id,
+            },
+            data: {
+              url: `${env.IBS_URL}/s/${shortLink}`
+            }
+          })
+        }
 
 
         if (image.size > 0) {
-          const filename = `activiteit-${activity.id}-${image.name}`
+          const creator = await getPhotoCreator(event.locals.user, false)
 
-          // save the image
-          fs.writeFileSync(`${env.UPLOAD_FOLDER}/activities/${filename}`, Buffer.from(await image.arrayBuffer()), { encoding: 'binary' })
+          const buf = Buffer.from(await image.arrayBuffer())
 
-          // update the activity with the image
+          const photo = await uploadPhoto({
+            creator,
+            uploader: event.locals.user,
+            runProcessingJob: false,
+            additionalName: 'Activiteit',
+            upload: {
+              buf,
+              filename: image.name
+            }
+          }, tx)
+
           await tx.activity.update({
             where: {
               id: activity.id
             },
             data: {
-              image: filename
+              photo: {
+                connect: {
+                  id: photo.id
+                }
+              }
             }
           })
-
         }
 
         // Create all attending objects
@@ -236,12 +277,15 @@ export const actions = {
         }
       })
 
+      // If the image has been updated, process them.
+      if (image.size > 0) {
+        await createRedisJob('photo-processing')
+      }
+
       if (!edit) {
         // Now, we notify everyone
         console.log('[Activity/new] Notifying everyone')
-        await fetch(`${env.BACKEND_URL}/notify/activity/${id}`, {
-          method: 'POST'
-        })
+        await createRedisJob('new-activity', '' + id)
       }
     } catch (e) {
       console.error(e)

@@ -51,19 +51,22 @@ model User {
   id       Int     @id @default(autoincrement())
   isActive Boolean @default(true)
 
-  firstName         String
-  lastName          String
-  ldapId            String            @unique
-  email             String            @unique
-  personalEmail     String?
-  nickname          String?           @unique
-  picture           String?
-  birthDate         DateTime?         @db.Date
-  phone             String?
-  firstDrink        DateTime?         @db.Date
-  becameFeut        DateTime?         @db.Date
-  becameMember      DateTime?         @db.Date
-  lastLoggedin      DateTime          @default(now())
+  firstName        String
+  lastName         String
+  ldapId           String    @unique
+  email            String    @unique
+  personalEmail    String?
+  nickname         String?   @unique
+  profilePicture   Photo?    @relation("profilePicture", fields: [profilePictureId], references: [id], onDelete: SetNull)
+  profilePictureId Int?
+  birthDate        DateTime? @db.Date
+  phone            String?
+  firstDrink       DateTime? @db.Date
+  becameFeut       DateTime? @db.Date
+  becameMember     DateTime? @db.Date
+  lastLoggedin     DateTime  @default(now())
+  preferredTheme   String    @default("light")
+
   StrafbakGiven     Strafbak[]        @relation("strafbakGiver")
   StrafbakReceived  Strafbak[]        @relation("strafbakReceiver")
   MaluspuntGiven    Maluspunt[]       @relation("maluspuntGiver")
@@ -80,6 +83,13 @@ model User {
   ClickSession            ClickSession[]
   Preference              Preference[]
   TrackReaction           TrackReaction[]
+  Photo                   Photo[]
+  PhotoCreator            PhotoCreator[]
+  PhotosWithTags          PhotosWithTags[]
+  PhotoRating             PhotoRating[]
+  PhotoTaggedIn           PhotoPersonTag[]          @relation("taggedInPhoto")
+  PhotoTaggedBy           PhotoPersonTag[]          @relation("photoTaggedBy")
+  CommentsMade            Comment[]
 }
 
 model Account {
@@ -186,7 +196,9 @@ model Activity {
   attending   Attending[]
 
   // Plaatje
-  image String?
+  photo  Photo?  @relation("activityImage")
+  // Foto's genomen van deze activiteit
+  photos Photo[] @relation("activityPhotos")
 
   // URL naar meer informatie
   url String? @db.Text
@@ -196,6 +208,7 @@ model Activity {
 
   // Foreign Keys
   FinancialPersonDataActivity FinancialPersonDataActivity[]
+  comments                    Comment[]
 }
 
 model ActivityLocation {
@@ -590,7 +603,7 @@ model EmailContact {
 }
 
 //
-// Coockie clicker
+// COOKIE CLICKER
 //
 
 model ClickSession {
@@ -624,4 +637,123 @@ model TrackReaction {
   liked     Boolean
 
   @@id([userId, trackId])
+}
+
+//
+// PHOTO GALLERY
+//
+
+model Photo {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  // Date photo taken
+  date DateTime?
+
+  // visible
+  visible Boolean @default(true)
+
+  // Photo
+  filename  String @unique
+  extension String
+
+  // Heeft de backend deze foto al verwerkt?
+  processed Boolean @default(false)
+
+  // Description
+  description String?
+
+  tags PhotosWithTags[]
+
+  uploader     User?            @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  uploaderId   Int?
+  creator      PhotoCreator?    @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  creatorId    Int?
+  ratings      PhotoRating[]
+  peopleTagged PhotoPersonTag[]
+  comments     Comment[]
+
+  activityImage   Activity? @relation("activityImage", fields: [activityImageId], references: [id])
+  activityImageId Int?      @unique
+  activityPhotos  Activity? @relation("activityPhotos", fields: [activityPhotoId], references: [id], onDelete: SetNull)
+  activityPhotoId Int?
+
+  profilePicture User[] @relation("profilePicture")
+}
+
+model PhotoCreator {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int?
+  name      String   @unique
+
+  Photo Photo[]
+}
+
+model PhotoTag {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  name String @unique
+
+  photos PhotosWithTags[]
+}
+
+model PhotosWithTags {
+  photo        Photo    @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  photoId      Int
+  photoTag     PhotoTag @relation(fields: [photoTagId], references: [id], onDelete: Cascade)
+  photoTagId   Int
+  assignedBy   User?    @relation(fields: [assignedById], references: [id], onDelete: SetNull)
+  assignedById Int?
+
+  @@id([photoId, photoTagId])
+}
+
+// Persoon x is getagd in foto y door persoon z
+model PhotoPersonTag {
+  tagger   User? @relation("photoTaggedBy", fields: [taggerId], references: [id], onDelete: SetNull)
+  taggerId Int?
+
+  photo   Photo @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  photoId Int
+  user    User  @relation("taggedInPhoto", fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int
+
+  @@id([photoId, userId])
+}
+
+model PhotoRating {
+  rating Int @default(1)
+
+  Photo   Photo @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  photoId Int
+  User    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int
+
+  @@id([photoId, userId])
+}
+
+//
+// Comments 
+//
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Comment
+  comment String @db.LongText
+
+  // Who made the comment?
+  commenter   User @relation(fields: [commenterId], references: [id], onDelete: Cascade)
+  commenterId Int
+
+  // FKs
+  photo      Photo?    @relation(fields: [photoId], references: [id], onDelete: SetNull)
+  photoId    Int?
+  activity   Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  activityId Int?
 }

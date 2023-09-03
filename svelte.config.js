@@ -19,6 +19,14 @@ const config = {
 		}),
 		csrf: {
 			checkOrigin: false
+		},
+	},
+	vitePlugin: {
+		onwarn: (warning, handler) => {
+			if (warning.code.includes('a11y-')) {
+				return;
+			}
+			handler(warning);
 		}
 	}
 };

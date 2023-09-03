@@ -4,7 +4,7 @@
 	let committee = $page.data.committee;
 </script>
 
-<Title title={committee.name} shortTitle="Commissie :: {committee.name}" />
+<Title title={committee.name} shortTitle="{committee.name} - Commissies" />
 
 {#each committee.CommitteeMember as member}
 	<div class="user-card">

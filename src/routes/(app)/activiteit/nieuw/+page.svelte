@@ -6,6 +6,7 @@
 	import { markdown } from '$lib/utils';
 	import Markdown from '$lib/components/Markdown.svelte';
 	import Title from '$lib/components/title.svelte';
+	import InputFile from '$lib/components/input-file.svelte';
 
 	const activity = $page.data.activity;
 	const activityTime = $page.data.times;
@@ -126,7 +127,9 @@
 	<input type="url" name="url" id="url" placeholder="URL" value={activity?.url ?? ''} />
 
 	<label for="image">Afbeelding <span>(optioneel)</span></label>
-	<input type="file" name="image" id="image" />
+	<div class="file-input">
+		<InputFile name="image" id="image" class="file" />
+	</div>
 
 	<label for="membersOnly">Alleen voor leden</label>
 	<input
@@ -217,17 +220,15 @@
 			}
 		}
 
-		input:not([type='file']),
+		.file-input :global(.file) {
+			width: 80%;
+		}
+
 		textarea {
 			padding: 0.5rem;
 			border: 1px solid #ccc;
 			border-radius: 5px;
 			outline: none;
-		}
-
-		input[type='file'] {
-			outline: none;
-			cursor: pointer;
 		}
 	}
 </style>

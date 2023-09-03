@@ -1,0 +1,57 @@
+.ibs-chip {
+	display: inline-block;
+	padding: 0 14px;
+	line-height: 28px;
+	border-radius: 16px;
+	background-color: var(--color-chip-bg);
+	font-size: 14px;
+	color: var(--color-text-muted);
+	margin: 0 8px 8px 0;
+}
+
+@media (min-width: 600px) {
+	.ibs-chip.removable:hover {
+		padding: 0 8px;
+		cursor: pointer;
+	}
+
+	.ibs-chip.removable:hover::after {
+		content: ' x';
+	}
+}
+
+@media (max-width: 600px) {
+	.ibs-chip.removable:hover {
+		background-color: var(--color-danger);
+		color: var(--color-text-light);
+	}
+}
+
+.ibs-chip.primary {
+	background-color: var(--color-primary);
+	color: var(--color-text-light);
+}
+
+.ibs-chip.secondary {
+	background-color: var(--color-secondary);
+	color: var(--color-text-light);
+}
+
+.ibs-chip.info {
+	background-color: var(--color-info);
+	color: var(--color-text-light);
+}
+
+.ibs-chip.success {
+	background-color: var(--color-success);
+	color: var(--color-text-light);
+}
+
+.ibs-chip.warning {
+	background-color: var(--color-warning);
+}
+
+.ibs-chip.danger {
+	background-color: var(--color-danger);
+	color: var(--color-text-light);
+}

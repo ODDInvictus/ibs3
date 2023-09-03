@@ -4,19 +4,15 @@
 
 	const slug = $page.url.searchParams.get('slug');
 
-	const origin = $page.url.hostname;
+	const origin = $page.url.origin;
 </script>
 
 <Title title="Shortlink aangemaakt" />
 
-<p>Je kan de link vinden op <a href={`https://${origin}/s/${slug}`}>{origin}/s/{slug}</a></p>
+<p>Je kan de link vinden op <a href={`${origin}/s/${slug}`}>{origin}/s/{slug}</a></p>
 
 <style lang="scss">
 	p {
 		text-align: center;
-	}
-
-	a {
-		color: var(--primary-color);
 	}
 </style>
