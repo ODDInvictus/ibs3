@@ -52,19 +52,21 @@ export const load = (async ({ locals }) => {
     // 1 in 2000 chance to get a quote from IBS
     if (Math.floor(Math.random() * 2000) === 1234) {
       obj = {
-        message: '"Wie dit leest trekt een bak" - IBS (1 op 2000 kans)'
+        quote: '"Wie dit leest trekt een bak" - IBS (1 op 2000 kans)'
       }
     } else {
       try {
-        obj = await fetch(process.env.QUOTE_API_URL!).then((res) => res.json())
+        obj = await fetch(process.env.QUOTE_API_URL!, { headers: {
+          'Authorization': `${process.env.QUOTE_API_TOKEN}`
+        }}).then((res) => res.json())
       } catch (err) {
         obj = {
-          message: '"De quote module is stukkie wukkie" - IBS'
+          quote: '"De quote module is stukkie wukkie" - IBS'
         }
       }
     }
 
-    let message = obj.message
+    let message = obj.quote
 
     // Replace all "{string}" with "*{string}*"
     message = message.replace(/"([^"]*)"/g, '*“$1”*')
