@@ -1,6 +1,5 @@
 import type { RequestHandler } from "./$types";
 import db from "$lib/server/db";
-import { activitySlug } from '$lib/textUtils';
 
 type RequestType = {
   status: boolean

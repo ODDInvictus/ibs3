@@ -2,6 +2,7 @@
 	import knoppers from '$lib/assets/knoppers.png';
 	import { daysLeftTill, formatDateHumanReadable, toAge, toBirthday } from '$lib/dateUtils';
 	import { imagePreview } from '$lib/imagePreviewStore';
+	import { toast } from '$lib/notification';
 	import { markdown } from '$lib/utils';
 	import type { PageData } from './$types';
 	import type { Snapshot } from './$types';
@@ -107,6 +108,24 @@
 
 		return link;
 	}
+
+	async function bij() {
+		fetch(`/activiteit/${data.activity?.id}/bij`, { method: 'POST' }).then((res) => {
+			if (res.status !== 200) {
+				toast({
+					title: 'Oeps!',
+					message: 'Er ging iets mis bij het aanmelden voor de activiteit',
+					type: 'danger'
+				});
+			} else {
+				toast({
+					title: 'Gezellig!',
+					message: 'Je bent aangemeld voor de activiteit',
+					type: 'success'
+				});
+			}
+		});
+	}
 </script>
 
 <svelte:head>
@@ -143,6 +162,7 @@
 			<div class="mt-4" />
 			<div class="ibs-card--links">
 				<a href="/activiteit/{data.activity.id}">Meer informatie</a>
+				<button class="btn-a" on:click={bij}>Ik ben 🐝</button>
 			</div>
 		{:else}
 			<div class="ibs-card--content">
@@ -264,6 +284,18 @@
 			h1 {
 				font-size: 5rem;
 				margin: 0;
+			}
+		}
+
+		.ibs-card.ibs-card.activity {
+			.ibs-card--links {
+				width: 100%;
+
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+
+				padding-right: 1rem;
 			}
 		}
 
