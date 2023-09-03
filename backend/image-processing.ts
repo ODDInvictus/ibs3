@@ -30,7 +30,20 @@ export async function processPhotos() {
     const originalPath = `${PHOTO_DIR}/${photo.filename}.${photo.extension}`
     const outPath = (quality: string, ext?: string) => `${PHOTO_DIR}/${photo.filename}-${quality}.${ext || 'avif'}`
 
-    const buf = await fs.readFileSync(originalPath)
+    let buf: Buffer
+    try {
+      buf = await fs.readFileSync(originalPath)
+    } catch (err) {
+      error(`Error reading file ${originalPath}`)
+      error('Removing photo from database')
+      error(err)
+      await prisma.photo.delete({
+        where: {
+          id: photo.id
+        }
+      })
+      continue
+    }
 
     log('Processing photo', photo.id)
 
