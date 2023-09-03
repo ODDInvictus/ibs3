@@ -2,6 +2,14 @@
 	// Override the default color for text
 	color: var(--color-text);
 
+	/*
+		Font
+	*/
+	--font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+	--font-family-text: 'Comic Sans MS', 'Comic Sans', cursive;
+	--icon-vertical-align: -0.25em;
+	--icon-size: 20px;
+
 	--stripe-height: 100vh;
 
 	--color-stripe: linear-gradient(

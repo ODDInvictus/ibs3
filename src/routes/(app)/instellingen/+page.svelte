@@ -138,6 +138,16 @@
 	checked={data.currentTheme === 'feut'}
 />
 <label for="feut">Feuten thema</label>
+<br />
+<input
+	type="radio"
+	id="dies"
+	name="theme"
+	value="dies"
+	on:click={() => setTheme('dies')}
+	checked={data.currentTheme === 'dies'}
+/>
+<label for="dies">Dies thema</label>
 
 <hr />
 
