@@ -637,8 +637,12 @@ model TrackReaction {
   liked     Boolean
 
   @@id([userId, trackId])
+}
+
+//
 // PHOTO GALLERY
 //
+
 model Photo {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
