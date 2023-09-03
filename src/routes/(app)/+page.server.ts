@@ -1,7 +1,7 @@
 import db from '$lib/server/db'
 import type { PageServerLoad } from './$types';
-import { env } from '$env/dynamic/private';
-import { getBirthdaysInOrder, getNextBirthdayInLine } from '$lib/server/birthdays';
+import { getNextBirthdayInLine } from '$lib/server/birthdays';
+import { LDAP_IDS } from '$lib/constants';
 
 export const load = (async ({ locals }) => {
 
@@ -50,7 +50,7 @@ export const load = (async ({ locals }) => {
     let obj
 
     // 1 in 2000 chance to get a quote from IBS
-    if (Math.floor(Math.random() * 2000) === 321) {
+    if (Math.floor(Math.random() * 2000) === 1234) {
       obj = {
         message: '"Wie dit leest trekt een bak" - IBS (1 op 2000 kans)'
       }
@@ -83,13 +83,33 @@ export const load = (async ({ locals }) => {
   }
 
   const getFirstActivity = () => {
-    return db.activity.findFirst({
+    const today = new Date()
+
+    const member = locals.committees.filter((c) => c.ldapId === LDAP_IDS.MEMBERS)[0]
+
+    const q = {
+      orderBy: [{
+        endTime: 'asc'
+      }],
       where: {
-        startTime: {
-          gte: new Date()
-        }
+        endTime: {
+          gte: today
+        },
+      },
+      include: {
+        photo: true
       }
-    })
+    } as any
+
+    if (!member) {
+      return db.activity.findFirst(q)
+    } else {
+      return db.activity.findFirst(Object.assign(q, {
+        where: {
+          membersOnly: false
+        }
+      }))
+    }
   }
 
   return {
