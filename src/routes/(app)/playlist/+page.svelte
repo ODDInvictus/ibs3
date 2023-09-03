@@ -37,7 +37,7 @@
 			toast({
 				title: 'Error',
 				message: 'Error tijdens het ophalen van de eerste track',
-				type: 'error'
+				type: 'danger'
 			});
 		}
 
