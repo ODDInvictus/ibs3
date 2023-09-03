@@ -43,6 +43,11 @@
 		color: var(--color-text-light);
 	}
 
+	h3,
+	p {
+		color: var(--color-text-light);
+	}
+
 	.icon {
 		height: 100%;
 		width: calc(#{$icon-size} + 1rem);

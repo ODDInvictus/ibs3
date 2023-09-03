@@ -1,23 +1,24 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { env } from '$env/dynamic/public';
 	import Title from '$lib/components/title.svelte';
 	import { markdown } from '$lib/utils';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 </script>
 
 <Title title="Kalender" />
 <a id="new-activity-link" href="/activiteit/nieuw">Activiteit aanmaken</a>
 
 <div id="activities">
-	{#each $page.data.activities as activity}
+	{#each data.activities as activity}
 		<div class="row">
 			<div class="image">
-				{#if activity.image == null}
-					<img src="/image/activities/activiteit-0-logo.png?size=500x250" alt="⏳" />
+				{#if !activity.photo}
+					<img src="/image/favicon-512.png?static=true" alt="⏳" />
 				{:else}
 					<img
-						src="/image/activities/{activity.image}?size=750x375"
-						onerror="this.src='/image/activities/activiteit-0-logo.png?size=500x250';this.onerror=null;"
+						src="/image/id/{activity.photo.id}?size=750x375"
+						onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
 						alt="⏳"
 						loading="lazy"
 					/>

@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 </script>
 
-<div id="main">
+<div class="ibs-error-page">
 	<h1><code>{$page?.error?.message}</code></h1>
 	<p>
 		Daar is toch echt wel iets flink mis gegaan. Ik zou je een strafbak hiervoor geven maar helaas
@@ -11,9 +11,9 @@
 </div>
 
 <style>
-	#main {
-		height: 100%;
-		width: 100%;
+	.ibs-error-page {
+		height: 100vh;
+		width: 100vw;
 
 		display: flex;
 		flex-direction: column;

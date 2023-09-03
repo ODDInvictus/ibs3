@@ -7,7 +7,7 @@
 
 <div class={mergeClassNames('ibs-profile-icon', $$props.class)}>
 	<img
-		src={`/image/users/${$$props.src}?size=${height}x${width}`}
+		src={`/image/id/${$$props.uid}?size=${height}x${width}`}
 		alt={$$props.name
 			.split(' ')
 			.map((w) => w[0])
