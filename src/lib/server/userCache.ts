@@ -30,6 +30,10 @@ export const getUser = async (session: Session | null): Promise<User | null> => 
 	return user
 };
 
+export const invalidateUser = (email: string) => {
+	cache.del(email)
+}
+
 export const getCommittees = async (user: User | null): Promise<Committee[] | null> => {
 	if (!user) {
 		return null
