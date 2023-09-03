@@ -55,8 +55,8 @@ export async function processPhotos() {
     if (!height) height = 1080
 
     try {
-      let rw: number | null = width
-      let rh: number | null = height
+      let rw: number | null
+      let rh: number | null
 
       if (width > height) {
         rw = 1920

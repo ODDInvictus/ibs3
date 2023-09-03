@@ -201,8 +201,6 @@ function getBestImageSizeToLoad(size: string): string {
     sizeToLoad = 'small'
   } else if (largestSide < 1600) {
     sizeToLoad = 'medium'
-  } else {
-    sizeToLoad = 'large'
   }
 
   return sizeToLoad

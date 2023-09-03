@@ -92,8 +92,6 @@ export const actions = {
       return f({ status: 400, message: 'Geen fotos gevonden' })
     }
 
-    const date = Date.now()
-
     let c
 
     // Creator

@@ -1,6 +1,5 @@
 import { LDAP_IDS } from '$lib/constants.js'
 import db from '$lib/server/db'
-import type { Prisma } from '@prisma/client'
 import type { PageServerLoad } from './$types'
 
 export const load = (async ({ locals }) => {

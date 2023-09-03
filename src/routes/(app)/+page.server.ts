@@ -54,13 +54,13 @@ export const load = (async ({ locals }) => {
       obj = {
         message: '"Wie dit leest trekt een bak" - IBS (1 op 2000 kans)'
       }
-    }
-
-    try {
-      obj = await fetch(process.env.QUOTE_API_URL!).then((res) => res.json())
-    } catch (err) {
-      obj = {
-        message: '"De quote module is stukkie wukkie" - IBS'
+    } else {
+      try {
+        obj = await fetch(process.env.QUOTE_API_URL!).then((res) => res.json())
+      } catch (err) {
+        obj = {
+          message: '"De quote module is stukkie wukkie" - IBS'
+        }
       }
     }
 

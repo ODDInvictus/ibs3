@@ -1,6 +1,5 @@
 import type { Actions, PageServerLoad } from "./$types";
 import db from "$lib/server/db";
-import { getUser } from "$lib/server/userCache";
 import { fail } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
 

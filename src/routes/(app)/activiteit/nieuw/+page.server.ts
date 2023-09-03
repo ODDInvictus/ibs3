@@ -1,6 +1,5 @@
 import db from '$lib/server/db'
 import { error, fail, redirect } from '@sveltejs/kit'
-import fs from 'fs'
 import { env } from '$env/dynamic/private'
 import { LDAP_IDS } from '$lib/constants.js'
 import type { CommitteeMember } from '@prisma/client'
