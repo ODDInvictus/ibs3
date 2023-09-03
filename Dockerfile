@@ -6,7 +6,7 @@ COPY . .
 
 RUN npm install && \
     npx prisma generate && \
-    bash /app/build.sh
+    npm run build
 
 FROM node:18.14.0 as runtime
 
