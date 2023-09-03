@@ -76,8 +76,8 @@
 		let link = '';
 
 		if (data.activity) {
-			if (data.activity.image) {
-				link = `/image/activities/${data.activity.image}?static=false`;
+			if (data.activity.photo) {
+				link = `/image/id/${data.activity.photo.id}&static=false`;
 			} else {
 				link = `/image/logo${resize ? '' : '@2'}.png?static=true`;
 			}
@@ -94,12 +94,11 @@
 
 	function birthdayImage(resize: boolean) {
 		let link = '';
-		// 			<img src="/image/users/{data.nextBirthday?.picture}?size=750x375" alt="⏳" />
 
-		if (data.nextBirthday.picture) {
-			link = `/image/users/${data.nextBirthday.picture}?static=false`;
+		if (data.nextBirthday.profilePictureId) {
+			link = `/image/id/${data.nextBirthday.profilePictureId}?static=false`;
 		} else {
-			link = `/image/no-user.jpeg?static=true`;
+			link = `/image/no-birthday.jpeg?static=true`;
 		}
 
 		if (resize) {

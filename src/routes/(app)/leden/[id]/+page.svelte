@@ -3,6 +3,7 @@
 	import { env } from '$env/dynamic/public';
 	import InputFile from '$lib/components/input-file.svelte';
 	import Title from '$lib/components/title.svelte';
+	import type { PageData } from './$types.js';
 
 	let member = $page.data.member;
 
@@ -42,12 +43,18 @@
 	}
 
 	export let form;
+
+	export let data: PageData;
 </script>
 
 <Title title="{member.firstName} {member.lastName}" />
 
 <div id="img">
-	<img src="/image/users/{member.picture}?static=false" alt={member.firstName} />
+	{#if !member.profilePictureId}
+		<img src="/image/logo.png?static=true" alt={member.firstName} />
+	{:else}
+		<img src="/image/id/{data.member.profilePictureId}" alt={member.firstName} />
+	{/if}
 
 	{#if $page.data.isCurrentUser}
 		<div>

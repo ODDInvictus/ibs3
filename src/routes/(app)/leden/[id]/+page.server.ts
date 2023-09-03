@@ -1,7 +1,8 @@
 import db from '$lib/server/db'
 import { fail } from '@sveltejs/kit'
-import fs from 'fs'
-import { env } from '$env/dynamic/private'
+import type { Actions, PageServerLoad } from './$types.js'
+import { getPhotoCreator, uploadPhoto } from '$lib/server/images.js'
+import { createRedisJob } from '$lib/server/cache.js'
 
 export const load = (async ({ params, locals }) => {
   let id = params.id
@@ -41,7 +42,7 @@ export const load = (async ({ params, locals }) => {
     committees,
     title: member.firstName + ' ' + member.lastName,
   }
-})
+}) satisfies PageServerLoad
 
 export const actions = {
   default: async ({ request, params, locals }) => {
@@ -57,14 +58,19 @@ export const actions = {
 
     db.$transaction(async tx => {
 
-      const d = new Date()
-      const date = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
-      const filename = `profiel-${locals.user.ldapId}-${date}-${data.image.name}`
+      const img = data.image as any
 
-      const image = await data.image.arrayBuffer()
-
-      // save the image
-      fs.writeFileSync(`${env.UPLOAD_FOLDER}/users/${filename}`, Buffer.from(image), { encoding: 'binary' })
+      const p = await uploadPhoto({
+        upload: {
+          filename: img.name,
+          buf: Buffer.from(await img.arrayBuffer())
+        },
+        additionalName: 'profiel',
+        runProcessingJob: false,
+        uploader: locals.user,
+        creator: await getPhotoCreator(locals.user, false),
+        invisible: true
+      }, tx)
 
       // update the user
       await tx.user.update({
@@ -72,9 +78,9 @@ export const actions = {
           ldapId: locals.user.ldapId
         },
         data: {
-          picture: filename
+          profilePictureId: p.id
         }
       })
-    })
+    }).then(async () => await createRedisJob('photo-processing'))
   }
-}
+} satisfies Actions

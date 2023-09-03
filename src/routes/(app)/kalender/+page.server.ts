@@ -1,6 +1,7 @@
 import { LDAP_IDS } from '$lib/constants.js'
 import db from '$lib/server/db'
 import type { Prisma } from '@prisma/client'
+import type { PageServerLoad } from './$types'
 
 export const load = (async ({ locals }) => {
   const today = new Date()
@@ -9,33 +10,48 @@ export const load = (async ({ locals }) => {
 
   let activities = []
 
-  const query: Prisma.ActivityFindManyArgs = {
-    orderBy: [{
-      endTime: 'asc'
-    }],
-    where: {
-      endTime: {
-        gte: today
-      },
-    },
-    include: {
-      location: {
-        select: {
-          name: true
-        }
-      }
-    }
-  }
-
   if (!isMember) {
-    // @ts-expect-error Add membersOnly to query
-    query.where['membersOnly'] = false
-    activities = await db.activity.findMany(query)
+    activities = await db.activity.findMany({
+      orderBy: [{
+        endTime: 'asc'
+      }],
+      where: {
+        endTime: {
+          gte: today
+        },
+        membersOnly: false
+      },
+      include: {
+        location: {
+          select: {
+            name: true
+          }
+        },
+        photo: true
+      }
+    })
   } else {
-    activities = await db.activity.findMany(query)
+    activities = await db.activity.findMany({
+      orderBy: [{
+        endTime: 'asc'
+      }],
+      where: {
+        endTime: {
+          gte: today
+        },
+      },
+      include: {
+        location: {
+          select: {
+            name: true
+          }
+        },
+        photo: true
+      }
+    })
   }
 
   return {
     activities
   }
-})
+}) satisfies PageServerLoad
