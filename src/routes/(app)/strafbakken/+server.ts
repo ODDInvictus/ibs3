@@ -11,7 +11,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       dateDeleted: null,
     },
     orderBy: {
-      dateCreated: "desc",
+      dateCreated: "asc",
     },
   });
 

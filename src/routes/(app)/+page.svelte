@@ -1,15 +1,17 @@
 <script lang="ts">
 	import knoppers from '$lib/assets/knoppers.png';
+	import { onDestroy, onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import { daysLeftTill, formatDateHumanReadable, toAge, toBirthday } from '$lib/dateUtils';
 	import { imagePreview } from '$lib/imagePreviewStore';
 	import { toast } from '$lib/notification';
 	import { markdown } from '$lib/utils';
 	import type { PageData } from './$types';
-	import type { Snapshot } from './$types';
 
 	export let data: PageData;
 
 	/* Cookie clicker */
+	const localStorageKey = 'ibs::clicks';
 	let isClicking = false;
 
 	let totalClicks = data.clicks?._sum?.amount ?? 0;
@@ -17,7 +19,7 @@
 
 	$: satuationStyle = `filter: saturate(${Math.min(9, Math.max(1, sessionClicks / 100))})`;
 
-	let timeouts: NodeJS.Timeout[] = [];
+	let timeout: NodeJS.Timeout | undefined = undefined;
 	let startTime: number;
 
 	let record = data.topclicker?.amount;
@@ -31,7 +33,7 @@
 
 	async function cookieClick() {
 		if (isClicking) {
-			timeouts.forEach(clearTimeout);
+			if (timeout) clearTimeout(timeout);
 		} else {
 			isClicking = true;
 			startTime = Date.now();
@@ -40,15 +42,18 @@
 		sessionClicks++;
 		totalClicks++;
 
-		const timeout = setTimeout(async () => {
+		timeout = setTimeout(async () => {
 			await endSession(startTime, sessionClicks);
-		}, 5 * 1000);
-		timeouts.push(timeout);
+		}, 2 * 1000);
 	}
 
 	async function endSession(startTime: number, amount: number, endTime?: number) {
+		console.log('Posting ' + sessionClicks + ' clicks');
 		isClicking = false;
-		await fetch('/', {
+		if (timeout) clearTimeout(timeout);
+		if (!amount) return;
+
+		await fetch('', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -58,20 +63,26 @@
 		sessionClicks = 0;
 	}
 
-	export const snapshot: Snapshot = {
-		capture: () => {
-			return {
-				startTime,
-				sessionClicks,
-				endTime: Date.now()
-			};
-		},
-		restore: async ({ startTime, sessionClicks, endTime }) => {
-			if (!sessionClicks) return;
-			totalClicks += sessionClicks;
-			await endSession(startTime, sessionClicks, endTime);
-		}
-	};
+	onDestroy(() => {
+		if (!browser || !sessionClicks) return;
+		localStorage.setItem(
+			localStorageKey,
+			JSON.stringify({ startTime, sessionClicks, endTime: Date.now() })
+		);
+	});
+
+	onMount(async () => {
+		if (!browser) return;
+
+		const data = localStorage.getItem(localStorageKey);
+		if (!data) return;
+
+		const { startTime, sessionClicks, endTime } = JSON.parse(data);
+		if (sessionClicks == 0) return;
+		totalClicks += sessionClicks;
+		localStorage.removeItem(localStorageKey);
+		await endSession(startTime, sessionClicks, endTime);
+	});
 
 	function activityImage(resize: boolean) {
 		let link = '';
