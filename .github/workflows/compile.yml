@@ -1,6 +1,7 @@
-name: Compile IBS3 en publish naar ghcr.io
+name: Build
 
 on:
+  workflow_dispatch:
   release:
     types: [published]
 
