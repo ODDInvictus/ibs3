@@ -32,4 +32,31 @@ export const refreshToken = async () => {
 	spotify.setAccessToken(accessToken);
 };
 
+export const getLikedTracks = async (locals: App.Locals) => {
+	return (
+		await db.trackReaction.findMany({
+			where: {
+				userId: locals.user.id,
+				liked: true
+			},
+			select: {
+				trackId: true
+			}
+		})
+	).map((r) => r.trackId);
+};
+
+export const getPlaylist = async () => {
+	return (
+		await db.track.findMany({
+			where: {
+				inPlaylist: true
+			},
+			select: {
+				id: true
+			}
+		})
+	).map((track) => track.id);
+};
+
 export default spotify;

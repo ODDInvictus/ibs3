@@ -757,3 +757,14 @@ model Comment {
   activity   Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
   activityId Int?
 }
+
+//
+// Paaseiren
+//
+
+model Egg {
+  id    String @id @default(uuid())
+  found Bytes
+  name  String @unique
+  img   String @default("egg1.png")
+}

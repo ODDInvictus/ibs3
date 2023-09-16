@@ -1,28 +1,9 @@
 import type { PageServerLoad } from './$types';
-import db from '$lib/server/db';
+import { getLikedTracks, getPlaylist } from '$lib/server/spotify';
 
 export const load = (async ({ locals }) => {
 	return {
-		liked: (
-			await db.trackReaction.findMany({
-				where: {
-					userId: locals.user.id,
-					liked: true
-				},
-				select: {
-					trackId: true
-				}
-			})
-		).map((reaction) => reaction.trackId),
-		playlist: (
-			await db.track.findMany({
-				where: {
-					inPlaylist: true
-				},
-				select: {
-					id: true
-				}
-			})
-		).map((track) => track.id)
+		liked: getLikedTracks(locals),
+		playlist: getPlaylist()
 	};
 }) satisfies PageServerLoad;
