@@ -56,9 +56,11 @@ export const load = (async ({ locals }) => {
       }
     } else {
       try {
-        obj = await fetch(process.env.QUOTE_API_URL!, { headers: {
-          'Authorization': `${process.env.QUOTE_API_TOKEN}`
-        }}).then((res) => res.json())
+        obj = await fetch(process.env.QUOTE_API_URL!, {
+          headers: {
+            'Authorization': `${process.env.QUOTE_API_TOKEN}`
+          }
+        }).then((res) => res.json())
       } catch (err) {
         obj = {
           quote: '"De quote module is stukkie wukkie" - IBS'
@@ -67,6 +69,10 @@ export const load = (async ({ locals }) => {
     }
 
     let message = obj.quote
+
+    if (!message) {
+      message = '"De quote module is stukkie wukkie" - IBS'
+    }
 
     // Replace all "{string}" with "*{string}*"
     message = message.replace(/"([^"]*)"/g, '*“$1”*')
