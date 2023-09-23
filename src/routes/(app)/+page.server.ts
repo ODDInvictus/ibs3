@@ -71,6 +71,7 @@ export const load = (async ({ locals }) => {
     let message = obj.quote
 
     if (!message) {
+      console.error('[QUOTE] Quote API returned invalid response, using fallback quote', obj)
       message = '"De quote module is stukkie wukkie" - IBS'
     }
 
