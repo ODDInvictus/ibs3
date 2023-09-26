@@ -11,10 +11,10 @@
 	{#each $breadcrumbStore as c, i}
 		{#if c !== null}
 			{#if i == $breadcrumbStore.length - 1}
-				<span>{@html markdown(c.label)}</span>
+				<span>{@html markdown(c.label, true)}</span>
 			{:else}
 				<a href={c.href}>
-					<span>{@html markdown(c.label)}</span>
+					<span>{@html markdown(c.label, true)}</span>
 				</a>
 				<i><ChevronRight width="1.2em" height="1.2em" /></i>
 			{/if}

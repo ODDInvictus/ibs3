@@ -9,7 +9,7 @@
 	import UsersGroup from '~icons/tabler/users-group';
 	import ExternalLink from '~icons/tabler/external-link';
 	import AccessibleOff from '~icons/tabler/accessible-off';
-	import UserCard from './_user-card.svelte';
+	import UserCard from '$lib/components/user-card.svelte';
 	import { generateICal, stripMarkdown } from '$lib/utils';
 	import { toast } from '$lib/notification';
 	import { markdown } from '$lib/utils';

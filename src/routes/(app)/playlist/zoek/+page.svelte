@@ -43,6 +43,13 @@
 			</a>
 		</div>
 
+		{#if data.egg.show && search.toLowerCase() === 'paasei'}
+			<div id="egg">
+				<a href={`/pasen/gevonden/${data.egg.id}`}>
+					<img src={`image/eggs/${data.egg.img}?static=true`} alt="paasei" />
+				</a>
+			</div>
+		{/if}
 		{#await tracks}
 			<div class="loader">
 				<Loader />
@@ -68,6 +75,11 @@
 </main>
 
 <style lang="scss">
+	main {
+		display: flex;
+		flex-direction: column;
+	}
+
 	input {
 		width: 100%;
 		padding: 0.5rem;
@@ -97,5 +109,10 @@
 				opacity: 0.8;
 			}
 		}
+	}
+
+	#egg {
+		display: flex;
+		justify-content: center;
 	}
 </style>

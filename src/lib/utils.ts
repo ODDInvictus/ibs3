@@ -8,35 +8,40 @@ import markdownItSup from 'markdown-it-sup';
 import markdownItIns from 'markdown-it-ins';
 import markdownItEmojis from 'markdown-it-emoji';
 // @ts-expect-error Geen types
-import markdownItArrow from 'markdown-it-smartarrows'
+import markdownItArrow from 'markdown-it-smartarrows';
 import markdownItKbd from 'markdown-it-kbd';
-import markdownItPlainText from 'markdown-it-plain-text'
+import markdownItPlainText from 'markdown-it-plain-text';
 
-import xss from 'xss'
-
+import xss from 'xss';
 
 const md = new markdownIt({
 	linkify: true,
 	breaks: true
 })
-  .use(markdownItSub)
-  .use(markdownItSup)
-  .use(markdownItIns)
-  .use(markdownItEmojis)
-  .use(markdownItArrow)
-  .use(markdownItKbd)
-  .use(markdownItPlainText)
-  .disable(['image']);
+	.use(markdownItSub)
+	.use(markdownItSup)
+	.use(markdownItIns)
+	.use(markdownItEmojis)
+	.use(markdownItArrow)
+	.use(markdownItKbd)
+	.use(markdownItPlainText)
+	.disable(['image']);
 
-export function markdown(text: string | null | undefined): string | null {
-  if (text === null || text === undefined) return null;
-  return xss(md.renderInline(text))
+export function markdown(text: string | null | undefined, disableEgg = false): string | null {
+	if (text === null || text === undefined) return null;
+	let html = md.renderInline(text);
+	if (!disableEgg)
+		html = html.replace(
+			/paasei/gi,
+			'<a href="/pasen/gevonden/xkzR2iH1Ut4kwoT8G53vlxFoRQqfZLrKESLO7lFygpSMiPfDk7"><img src="/image/eggs/egg1.png?static=true" alt="paasei" /></a>'
+		);
+	return xss(html);
 }
 
 export function stripMarkdown(text: string | undefined) {
-  if (text === null || text === undefined) return null;
-  md.render(text)
-  return (md as any).plainText
+	if (text === null || text === undefined) return null;
+	md.render(text);
+	return (md as any).plainText;
 }
 
 // Currently in dark mode?

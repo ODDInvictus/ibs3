@@ -175,3 +175,9 @@
 		}
 	]}
 />
+
+{#if data.egg.show}
+	<a href={`/pasen/gevonden/${data.egg.id}`}>
+		<img src={`/image/eggs/${data.egg.img}?static=true`} alt="Paasei" />
+	</a>
+{/if}

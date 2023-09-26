@@ -1,9 +1,13 @@
 <script lang="ts">
 	import ProfileIcon from '$lib/components/profile-icon.svelte';
-	import type { User } from '@prisma/client';
 
-	export let user: User;
-	export let status: 'positive' | 'negative' | 'unsure';
+	export let user: {
+		firstName: string;
+		lastName: string;
+		profilePictureId: number | null;
+		ldapId: string;
+	};
+	export let status: 'positive' | 'negative' | 'unsure' | null = null;
 </script>
 
 <div class="user-card">
@@ -15,9 +19,11 @@
 			name={user.firstName + ' ' + user.lastName}
 		/>
 
-		<div class="status">
-			<div class="status-circle {status}" />
-		</div>
+		{#if status}
+			<div class="status">
+				<div class="status-circle {status}" />
+			</div>
+		{/if}
 	</div>
 
 	<div class="user-card-name">

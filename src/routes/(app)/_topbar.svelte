@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { env } from '$env/dynamic/public';
 	import Breadcrumps from '$lib/components/breadcrumps.svelte';
 	import Logo from '$lib/components/logo-v2-small-white.svelte';
 	import ProfileIcon from '$lib/components/profile-icon.svelte';
+	import type { Egg } from '$lib/server/egghunt';
+
+	export let egg: Egg;
 </script>
 
 <div class="layout--topbar">
@@ -19,10 +21,18 @@
 
 	<div class="user">
 		<div class="avatar">
-			<ProfileIcon
-				uid={$page.data.user.profilePictureId}
-				name={`${$page.data.user.firstName} ${$page.data.user.lastName}`}
-			/>
+			{#if egg.show}
+				<div class="eggContainer">
+					<a href={`/pasen/gevonden/${egg.id}`}>
+						<img class="egg" src={`/image/eggs/${egg.img}?static=true`} alt="Paasei" />
+					</a>
+				</div>
+			{:else}
+				<ProfileIcon
+					uid={$page.data.user.profilePictureId}
+					name={`${$page.data.user.firstName} ${$page.data.user.lastName}`}
+				/>
+			{/if}
 		</div>
 		<div class="name">
 			{$page.data.user.firstName}
@@ -74,6 +84,17 @@
 		border-radius: 50%;
 		overflow: hidden;
 		margin-right: 10px;
+	}
+
+	.eggContainer {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		.egg {
+			height: var(--topbar-avatar-size);
+			place-self: center;
+		}
 	}
 
 	@media (max-width: 600px) {

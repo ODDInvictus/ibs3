@@ -49,6 +49,12 @@
 
 <Title title="{member.firstName} {member.lastName}" />
 
+{#if data.member.firstName.toLowerCase() === 'wander' && data.egg.show}
+	<a href={`/pasen/gevonden/${data.egg.id}`}>
+		<img src={`/image/eggs/${data.egg.img}?static=true`} alt="paasei" />
+	</a>
+{/if}
+
 <div id="img">
 	{#if !member.profilePictureId}
 		<img src="/image/logo.png?static=true" alt={member.firstName} />

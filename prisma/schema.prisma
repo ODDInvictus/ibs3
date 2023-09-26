@@ -758,13 +758,9 @@ model Comment {
   activityId Int?
 }
 
-//
-// Paaseiren
-//
-
 model Egg {
-  id    String @id @default(uuid())
-  found Bytes
-  name  String @unique
+  id    String @id
   img   String @default("egg1.png")
+  name  String @unique @default("Egg")
+  found Bytes  @db.TinyBlob
 }

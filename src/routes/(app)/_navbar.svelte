@@ -17,8 +17,11 @@
 	import Menu from '~icons/tabler/menu-2';
 	import X from '~icons/tabler/x';
 
+	import type { Egg } from '$lib/server/egghunt';
+
 	export let openMenu: () => void;
 	export let open: boolean;
+	export let egg: Egg;
 </script>
 
 <nav class="layout--navbar">
@@ -98,6 +101,15 @@
 		</a>
 	{/if}
 
+	{#if egg.show}
+		<div id="egg">
+			<a href={`/pasen/gevonden/${egg.id}`}>
+				<img src={`/image/eggs/${egg.img}?static=true`} alt="paasei" />
+				<!-- <img src={`image/eggs/${egg.img}?static=true`} alt="paasei" /> -->
+			</a>
+		</div>
+	{/if}
+
 	<a class="layout--navbar--item version" href="/over">
 		<i><InformationCircle /></i>
 		<span>IBS v{env.PUBLIC_VERSION}</span>
@@ -134,6 +146,27 @@
 
 		hr {
 			display: none;
+		}
+	}
+
+	@media (max-width: 600px) {
+		#egg {
+			display: none;
+		}
+	}
+
+	#egg {
+		margin-left: 42px;
+
+		img {
+			height: 100px;
+			transition: opacity 0.5s ease-in-out;
+			transform: rotate(90deg);
+			opacity: 0;
+
+			&:hover {
+				opacity: 1;
+			}
 		}
 	}
 </style>

@@ -84,6 +84,11 @@
 		await endSession(startTime, sessionClicks, endTime);
 	});
 
+	let hasHit100 = false;
+	$: if (sessionClicks >= 100) hasHit100 = true;
+
+	/* Other */
+
 	function activityImage(resize: boolean) {
 		let link = '';
 
@@ -228,6 +233,12 @@
 				{/if}
 				<a href="/knoppers">Meer informatie</a>
 			</div>
+
+			{#if data.knoppersEgg.show && hasHit100}
+				<a href={`/pasen/gevonden/${data.knoppersEgg.id}`} class="knoppersEgg">
+					<img src={`/image/eggs/${data.knoppersEgg.img}?static=true`} alt="Paasei" />
+				</a>
+			{/if}
 		</div>
 	</div>
 
@@ -263,6 +274,12 @@
 		</div>
 	</div>
 </div>
+
+{#if data.tutorialEgg.show}
+	<a href={`/pasen/gevonden/${data.tutorialEgg.id}`} id="egg">
+		<img src={`image/eggs/${data.tutorialEgg.img}?static=true`} alt="paasei" />
+	</a>
+{/if}
 
 <style lang="scss">
 	hr {
@@ -329,6 +346,7 @@
 
 		.ibs-card.cookie-clicker {
 			grid-column: span 2;
+			position: relative;
 
 			.ibs-card--content {
 				display: flex;
@@ -344,6 +362,13 @@
 
 			#cookieStats {
 				text-align: center;
+			}
+
+			@media (min-width: 1200px) {
+				.knoppersEgg {
+					position: absolute;
+					right: 10px;
+				}
 			}
 		}
 
@@ -379,6 +404,33 @@
 					content: 'Volgende activiteit: ';
 				}
 			}
+		}
+	}
+
+	@keyframes blob {
+		0% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.1);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	#egg {
+		position: absolute;
+		bottom: 20px;
+		right: 60px;
+		animation: blob 2s infinite;
+		filter: drop-shadow(0px 0px 16px rgba(0, 0, 0, 0.25));
+	}
+
+	@media (min-width: 600px) {
+		#egg {
+			bottom: -60px;
+			right: 100px;
 		}
 	}
 </style>

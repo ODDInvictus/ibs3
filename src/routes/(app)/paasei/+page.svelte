@@ -1,7 +1,13 @@
-<script lang="ts">
-	import egg1 from '$lib/assets/eggs/egg1.png';
-</script>
+<div>
+	<a href="/pasen/gevonden/HX1aAqX25B4lo1FQgNUeKjPEGH53r5byWc0Id6gmwkPeevvG7N">
+		<img src="/eggs/egg1.png" alt="paasei" />
+	</a>
+</div>
 
-<a href="/pasen/gevonden/123">
-	<img src={egg1} alt="egg" />
-</a>
+<style>
+	div {
+		display: flex;
+		justify-content: center;
+		padding-top: 100px;
+	}
+</style>

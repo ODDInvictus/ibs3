@@ -10,9 +10,9 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 	});
 	if (!egg) throw redirect(303, '/pasen');
 
-	console.log('kaas');
-
-	const uid = 40; // locals.user.id;
+	// Update the `found` field which is a byte array where each bit represent a user
+	// User ID 1 is the the least significant bit of the first byte
+	const uid = locals.user.id;
 	const idx = Math.floor((uid - 1) / 8);
 	const mask = 1 << (uid - 1) % 8;
 	const result = [...egg.found];
@@ -27,5 +27,5 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 		}
 	});
 
-	throw redirect(303, `/pasen/${egg.id}`);
+	throw redirect(303, `/pasen/${egg.name}`);
 };

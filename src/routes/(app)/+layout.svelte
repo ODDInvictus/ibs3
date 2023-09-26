@@ -10,6 +10,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { Modals, closeModal } from 'svelte-modals';
 	import MobileMenu from './_mobile-menu.svelte';
+	import type { LayoutData } from './$types';
 
 	afterNavigate(() => {
 		// Reset scroll position on layout--container-slot
@@ -22,10 +23,12 @@
 
 	let open = false;
 	const openMenu = () => (open = !open);
+
+	export let data: LayoutData;
 </script>
 
 <main class="layout--main">
-	<Navbar {openMenu} {open} />
+	<Navbar {openMenu} {open} egg={data.menuEgg} />
 
 	{#if open}
 		<div class="layout--mobimenu">
@@ -40,7 +43,7 @@
 
 	<div class="layout--stripe" data-open={open} />
 
-	<Topbar />
+	<Topbar egg={data.profileEgg} />
 
 	{#if !open}
 		<div class="layout--container">
