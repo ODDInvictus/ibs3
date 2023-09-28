@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { env } from '$env/dynamic/public';
 
-	export let users: { firstName: string; picture: string | null; nickname: string | null }[];
+	export let users: {
+		firstName: string;
+		picture: string | null;
+		nickname: string | null;
+		id: number;
+	}[];
 	export let mode: 'likes' | 'dislikes';
 </script>
 
@@ -11,13 +16,15 @@
 	<ul>
 		{#each users as user}
 			<li>
-				<img
-					src={user.picture
-						? env.PUBLIC_UPLOAD_URL + 'users/' + user.picture
-						: 'https://avatars.githubusercontent.com/u/11670885?v=4'}
-					alt={user.firstName}
-				/>
-				<p>{user.nickname ?? user.firstName}</p>
+				<a href={`/playlist/create/${user.id}`}>
+					<img
+						src={user.picture
+							? env.PUBLIC_UPLOAD_URL + 'users/' + user.picture
+							: 'https://avatars.githubusercontent.com/u/11670885?v=4'}
+						alt={user.firstName}
+					/>
+					<p>{user.nickname ?? user.firstName}</p>
+				</a>
 			</li>
 		{/each}
 	</ul>

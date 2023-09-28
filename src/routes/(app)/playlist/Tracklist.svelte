@@ -5,7 +5,7 @@
 	import HeartFilled from '~icons/tabler/heart-filled';
 	import { toast } from '$lib/notification';
 
-	export let search: string;
+	export let search = '';
 	export let tracks: SpotifyApi.TrackObjectFull[];
 	export let liked: string[];
 	export let playlist: string[];

@@ -185,8 +185,8 @@
 			</a>
 		</div>
 		<div class="users">
-			<UserList users={dislikes} mode="dislikes" />
 			<UserList users={likes} mode="likes" />
+			<UserList users={dislikes} mode="dislikes" />
 		</div>
 	</main>
 {/if}
@@ -216,7 +216,6 @@
 
 		img {
 			grid-area: img;
-			place-self: center;
 			max-width: 110px;
 
 			@media (max-width: 300px) {
@@ -280,7 +279,7 @@
 
 		.link {
 			display: flex;
-			padding: 7px;
+			padding: 9px;
 			gap: 7px;
 			border-radius: 1rem;
 			background-color: var(--primary-light-color);

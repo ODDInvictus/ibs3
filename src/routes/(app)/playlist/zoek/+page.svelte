@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Tracklist from './Tracklist.svelte';
+	import Tracklist from '../Tracklist.svelte';
 	import Title from '$lib/components/title.svelte';
 	import Loader from '$lib/components/Loader.svelte';
 	import { toast } from '$lib/notification';
