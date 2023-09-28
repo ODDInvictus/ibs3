@@ -6,15 +6,21 @@
 	export let data: PageData;
 </script>
 
-<Title title={`${data.user?.firstName} zijn playlist`} />
-<Tracklist tracks={data.tracks.body.tracks} liked={data.liked} playlist={data.playlist} />
-<div class="pagination">
-	{#if data.page > 0}
-		<a href={`/playlist/create/${data.user.id}?p=${data.page}`}>{data.page}</a>
-	{/if}
-	<p>{data.page + 1}</p>
-	<a href={`/playlist/create/${data.user.id}?p=${data.page + 2}`}>{data.page + 2}</a>
-</div>
+{#if !data.user}
+	<h1>Gebruiker niet gevonden</h1>
+{:else}
+	<Title title={`${data.user?.firstName} zijn playlist`} />
+	<Tracklist tracks={data.tracks} liked={data.liked} playlist={data.playlist} />
+	<div class="pagination">
+		{#if data.page > 1}
+			<a href={`/playlist/create/${data.user.id}?p=${data.page - 1}`}>{data.page - 1}</a>
+		{/if}
+		<p>{data.page}</p>
+		{#if data.page < data.maxPage}
+			<a href={`/playlist/create/${data.user.id}?p=${data.page + 1}`}>{data.page + 1}</a>
+		{/if}
+	</div>
+{/if}
 
 <style>
 	.pagination {

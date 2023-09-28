@@ -1,6 +1,6 @@
 import db from '$lib/server/db';
-import spotify from '$lib/server/spotify';
-import { redirect } from '@sveltejs/kit';
+import spotify, { refreshToken } from '$lib/server/spotify';
+import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ params, url, locals }) => {
@@ -8,23 +8,47 @@ export const load = (async ({ params, url, locals }) => {
 	if (Number.isNaN(uid)) throw redirect(300, '/playlist');
 
 	let page = Number(new URLSearchParams(url.search).get('p'));
-	if (Number.isNaN(page)) page = 0;
+	if (Number.isNaN(page)) page = 1;
 
 	const PAGE_SIZE = 25;
 
-	const tracks = await db.trackReaction.findMany({
+	const trackCountReq = db.trackReaction.count({
+		where: {
+			liked: true,
+			userId: uid
+		}
+	});
+
+	const tracksReq = db.trackReaction.findMany({
 		where: {
 			liked: true,
 			userId: uid
 		},
-		skip: PAGE_SIZE * page,
+		skip: PAGE_SIZE * (page + 1),
 		take: PAGE_SIZE
 	});
-	if (tracks.length === 0) throw redirect(300, `/playlist/create/${uid}?p=${page - 1}`);
+
+	const [tracks, trackCount] = await Promise.all([tracksReq, trackCountReq]);
+
+	if (tracks.length === 0)
+		throw redirect(300, `/playlist/create/${uid}?p=${Math.floor(trackCount / PAGE_SIZE) - 1}`);
 	const trackIds = tracks.map((track) => track.trackId);
 
+	let res: SpotifyApi.TrackObjectFull[] = [];
+	try {
+		res = (await spotify.getTracks(trackIds)).body.tracks;
+	} catch (e) {
+		await refreshToken();
+		try {
+			res = (await spotify.getTracks(trackIds)).body.tracks;
+		} catch (e) {
+			console.error(e);
+			throw error(500, 'Failed to get tracks from Spotify');
+		}
+	}
+
 	return {
-		tracks: spotify.getTracks(trackIds),
+		tracks: res,
 		user: db.user.findUnique({
 			where: {
 				id: uid
@@ -51,6 +75,7 @@ export const load = (async ({ params, url, locals }) => {
 				}
 			})
 		).map((track) => track.id),
-		page
+		page,
+		maxPage: Math.floor(trackCount / PAGE_SIZE) - 1
 	};
 }) satisfies PageServerLoad;
