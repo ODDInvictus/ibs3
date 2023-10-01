@@ -28,11 +28,10 @@
 	});
 
 	let form: HTMLFormElement;
+	let generalError = '';
 
-	function updateErrors(errors: { field: string; message: string }[]) {
+	function updateErrors(errors: { field?: string; message: string }[]) {
 		const fields = form.querySelectorAll('.form-control');
-
-		console.log(fields);
 
 		// Loop over all fields
 		// data-name is the name of the field
@@ -59,9 +58,17 @@
 				errorElement.textContent = '';
 			}
 		});
+
+		// If there is a general error, show it
+		const general = errors.find((e) => !e.field);
+		if (general) {
+			generalError = general.message;
+		} else {
+			generalError = '';
+		}
 	}
 
-	async function enhanceForm({ cancel }) {
+	async function enhanceForm({ cancel }: { cancel: () => void }) {
 		// First check if needsConfirmation is true
 		let confirmed = false;
 
@@ -84,7 +91,7 @@
 			await new Promise((resolve) => setTimeout(resolve, 50));
 		}
 
-		return async ({ result }) => {
+		return async ({ result }: any) => {
 			if (result.type === 'failure') {
 				// We know now that we have data.errors
 				const errors = result.data?.errors;
@@ -124,33 +131,35 @@
 	<form class="form-group" bind:this={form} method="POST" id={formId} use:enhance={enhanceForm}>
 		{#each fields as field}
 			<div class="form-control" data-name={field.name} data-type={field.type}>
-				<label for={field.name}>
-					{field.label}
-					{#if field.optional}
-						<span class="optional"> (optioneel) </span>
-					{/if}
-					{#if field.description}
-						<i
-							role="tooltip"
-							class="description"
-							on:mouseenter={() => (show = true)}
-							on:mouseleave={() => (show = false)}
-						>
-							<span use:floatingRef>
-								<Help />
-							</span>
-						</i>
-						{#if show}
-							<div class="tooltip" use:floatingContent>
-								{field.description}
-							</div>
+				{#if field.type !== 'hidden'}
+					<label for={field.name}>
+						{field.label}
+						{#if field.optional}
+							<span class="optional"> (optioneel) </span>
 						{/if}
-					{:else}
-						<div />
-					{/if}
-				</label>
+						{#if field.description}
+							<i
+								role="tooltip"
+								class="description"
+								on:mouseenter={() => (show = true)}
+								on:mouseleave={() => (show = false)}
+							>
+								<span use:floatingRef>
+									<Help />
+								</span>
+							</i>
+							{#if show}
+								<div class="tooltip" use:floatingContent>
+									{field.description}
+								</div>
+							{/if}
+						{:else}
+							<div />
+						{/if}
+					</label>
+				{/if}
 				{#if field.type === 'select'}
-					<select name={field.name} id={field.name}>
+					<select name={field.name} id={field.name} hidden={field.hidden || false}>
 						{#if !field.options}
 							<option value="">Geen opties</option>
 						{:else}
@@ -166,7 +175,7 @@
 						name={field.name}
 						id={field.name}
 						placeholder={field.placeholder}
-						value={field.value || ''}
+						value={field.value?.toString() || ''}
 					/>
 				{:else}
 					<input
@@ -185,4 +194,12 @@
 			{submitStr}
 		</button>
 	</form>
+	<p class="error">{generalError}</p>
 </div>
+
+<style>
+	.error {
+		color: red;
+		margin: 1rem 0;
+	}
+</style>

@@ -1,347 +1,385 @@
-import type { Roles } from '$lib/constants'
-import db from '$lib/server/db'
-import type { User } from '@prisma/client'
-import { fail, type Actions } from '@sveltejs/kit'
-import { z } from 'zod'
+import type { Roles } from '$lib/constants';
+import db from '$lib/server/db';
+import type { User } from '@prisma/client';
+import { fail, type Actions } from '@sveltejs/kit';
+import { z } from 'zod';
 
 // All possible fields
-export type FieldType = TextField | 'number' | 'date' | CheckboxField | 'time' | SelectField | CustomFields | 'url'
-export type SelectField = 'select'
-export type TextField = 'text' | 'textarea'
-export type CheckboxField = 'checkbox'
-export type CustomFields = 'user' | 'committee' | 'location'
+export type FieldType =
+	| TextField
+	| 'number'
+	| 'date'
+	| CheckboxField
+	| 'time'
+	| SelectField
+	| CustomFields
+	| 'url'
+	| 'hidden';
+export type SelectField = 'select';
+export type TextField = 'text' | 'textarea';
+export type CheckboxField = 'checkbox';
+export type CustomFields = 'user' | 'committee' | 'location';
 
 export type OptionField<T extends InputType> = {
-  label: string
-  value: T
-}
+	label: string;
+	value: T;
+};
 
-export type InputType = string | number
+export type InputType = string | number;
 
 // Custom fields
-export type UserField = 'user'
+export type UserField = 'user';
 
 export type Field<T extends FieldType> = {
-  label: string
-  name: string
-  type: T
-  value?: T extends (TextField | 'time') ? string : (
-    T extends SelectField ? OptionField<InputType> : (
-      T extends CheckboxField ? boolean : (
-        T extends 'number' ? number : never
-      )
-    )
-  )
-  markdown?: boolean
-  optional?: boolean
-  maxValue?: number
-  minValue?: number
-  maxLength?: number
-  minLength?: number
-  options?: T extends SelectField ? OptionField<InputType>[] : never
-  getOptions?: (user: User | null) => Promise<OptionField<InputType>[]>
-  description?: string
-  placeholder?: string
-}
+	label: string;
+	name: string;
+	type: T;
+	value?: T extends TextField | 'time'
+		? string
+		: T extends SelectField
+		? OptionField<InputType>
+		: T extends CheckboxField
+		? boolean
+		: T extends 'number'
+		? number
+		: never;
+	markdown?: boolean;
+	optional?: boolean;
+	maxValue?: number;
+	minValue?: number;
+	maxLength?: number;
+	minLength?: number;
+	options?: T extends SelectField ? OptionField<InputType>[] : never;
+	getOptions?: (user: User | null) => Promise<OptionField<InputType>[]>;
+	description?: string;
+	placeholder?: string;
+	hidden?: boolean;
+};
 
 export type FormError = {
-  field: string | number
-  message: string
-}
+	field?: string | number;
+	message: string;
+};
 
-export type LogicReturnType = LogicReturnSuccessType | LogicReturnErrorType
+export type LogicReturnType = LogicReturnSuccessType | LogicReturnErrorType;
 
 type LogicReturnSuccessType = {
-  success: true
-  message: string
-  status: 200 | 201 | 204
-  redirectTo: string
-}
+	success: true;
+	message: string;
+	status: 200 | 201 | 204;
+	redirectTo: string;
+};
 
 type LogicReturnErrorType = {
-  success: false
-  message: string
-  status: number
-}
+	success: false;
+	message?: string;
+	errors?: FormError[];
+	status: number;
+};
 
 type LogicDataType<T> = T & {
-  user: User
-}
-
+	user: User;
+};
 
 type FormType<T> = {
-  title: string
-  shortTitle?: string
-  description?: string
-  formId: string
-  fields: Field<FieldType>[]
-  submitStr: string
-  requiredRoles: Roles[]
-  actionName?: string
-  needsConfirmation?: boolean
-  confirmText?: string
-  logic: (data: LogicDataType<T>) => Promise<LogicReturnType>
-  extraValidators?: (data: T) => Promise<FormError[]>
-}
+	title: string;
+	shortTitle?: string;
+	description?: string;
+	formId: string;
+	fields: Field<FieldType>[];
+	submitStr: string;
+	requiredRoles: Roles[];
+	actionName?: string;
+	needsConfirmation?: boolean;
+	confirmText?: string;
+	logic: (data: LogicDataType<T>) => Promise<LogicReturnType>;
+	extraValidators?: (data: T) => Promise<FormError[]>;
+};
 
 export class Form<T> {
+	private f;
+	private zodSchema = z.object({});
+	private type = {};
 
-  private f
-  private zodSchema = z.object({})
-  private type = {}
+	private transformed = false;
 
-  private transformed = false
+	constructor(form: FormType<T>) {
+		this.f = form;
+	}
 
-  constructor(form: FormType<T>) {
-    this.f = form
-  }
+	private async generateZod() {
+		let zod = z.object({});
 
-  private async generateZod() {
-    let zod = z.object({})
+		for (const field of this.f.fields) {
+			let obj;
+			const label = field.label;
 
-    for (const field of this.f.fields) {
-      let obj
-      const label = field.label
+			// Generate a zod object for all possible types
+			// text, number, date, checkbox, time, select, url, textarea
 
-      // Generate a zod object for all possible types
-      // text, number, date, checkbox, time, select, url, textarea
+			if (field.type === 'select') {
+				// Now check if there is a field.options with more than 0 items, or, if the field has a getOptions function
+				if (!field.options && !field.getOptions) {
+					console.log(field);
+					throw new Error(`Select field has no options or getOptions function`);
+				}
 
-      if (field.type === 'select') {
-        // Now check if there is a field.options with more than 0 items, or, if the field has a getOptions function
-        if (!field.options && !field.getOptions) {
-          console.log(field)
-          throw new Error(`Select field has no options or getOptions function`)
-        }
+				if (field.getOptions) {
+					await field.getOptions({} as User);
+				}
 
-        if (field.getOptions) {
-          await field.getOptions({} as User)
-        }
+				// @ts-expect-error
+				const options = field.options.map((option) => String(option.value));
 
-        const options = field.options.map(option => String(option.value))
+				obj = z.enum([options[0], ...options.slice(1)]);
+			} else if (field.type === 'checkbox') {
+				obj = z.preprocess((value) => value === 'on', z.boolean());
+			} else if (field.type === 'number') {
+				const min = field.minValue || Number.MIN_SAFE_INTEGER;
+				const max = field.maxValue || Number.MAX_SAFE_INTEGER;
 
-        obj = z.enum([options[0], ...(options.slice(1))])
-      } else if (field.type === 'checkbox') {
+				obj = z.coerce
+					.number()
+					.min(min, { message: `${label} moet minimaal ${min} zijn` })
+					.max(max, { message: `${label} mag maximaal ${max} zijn` });
+			} else if (field.type === 'date') {
+				obj = z
+					.string()
+					.transform((value) => {
+						return new Date(value);
+					})
+					.refine(
+						(value) => {
+							return value instanceof Date && !isNaN(value.getTime());
+						},
+						{ message: `${label} is verplicht` }
+					);
+			} else if (field.type === 'textarea') {
+				obj = z.string().min(3, { message: `${label} moet minimaal 3 karakters bevatten` });
+			} else if (field.type === 'time') {
+				obj = z
+					.string()
+					.transform((value) => {
+						const [hours, minutes] = value.split(':');
 
-        obj = z.preprocess(value => value === 'on', z.boolean())
+						return new Date(0, 0, 0, Number(hours), Number(minutes));
+					})
+					.refine(
+						(value) => {
+							return value instanceof Date && !isNaN(value.getTime());
+						},
+						{ message: `${label} is verplicht` }
+					);
+			} else if (field.type === 'url') {
+				obj = z.string().url({ message: `${label} is geen geldige URL` });
+			} else {
+				const min = field.minLength || 0;
+				const max = field.maxLength || 190;
 
-      } else if (field.type === 'number') {
+				obj = z
+					.string()
+					.min(min, { message: `${label} moet minimaal ${min} karakters bevatten` })
+					.max(max, { message: `${label} mag maximaal ${max} karakters bevatten` });
+			}
 
-        const min = field.minValue || -Number.MIN_SAFE_INTEGER
-        const max = field.maxValue || Number.MAX_SAFE_INTEGER
+			if (field.optional) {
+				if (field.type !== 'url') {
+					obj = obj.optional().or(z.literal(''));
+				}
+			}
 
-        obj = z.coerce
-          .number()
-          .min(min, { message: `${label} moet minimaal ${min} zijn` })
-          .max(max, { message: `${label} mag maximaal ${max} zijn` })
+			zod = zod.extend({
+				[field.name]: obj
+			});
+		}
 
-      } else if (field.type === 'date') {
+		this.zodSchema = zod;
+	}
 
-        obj = z.string().transform(value => {
-          return new Date(value)
-        }).refine(value => {
-          return value instanceof Date && !isNaN(value.getTime())
-        }, { message: `${label} is verplicht` })
+	/**
+	 * Transforms the form to a format that can be used by the frontend
+	 * @param user The user that is using the form
+	 * @param values The values that should be pre-filled in the form
+	 * @example
+	 * ```ts
+	 * await form.transform({ user: locals.user, values: { name: 'Naut' } });
+	 * ```
+	 */
+	async transform({
+		user,
+		values
+	}: { user?: User | null; values?: { [id: string]: string } } = {}) {
+		for (const field of this.f.fields) {
+			if (values && field.name in values) field.value = values[field.name];
 
-      } else if (field.type === 'textarea') {
+			if (field.type === 'user') {
+				const users = await db.user.findMany({
+					where: {
+						isActive: true
+					}
+				});
 
-        obj = z.string().min(3, { message: `${label} moet minimaal 3 karakters bevatten` })
+				field.options = users.map((user) => ({
+					label: `${user.firstName} ${user.lastName}`,
+					value: user.ldapId
+				}));
+				field.type = 'select';
+			} else if (field.type === 'committee') {
+				const committees = await db.committee.findMany({
+					where: {
+						isActive: true
+					}
+				});
 
-      } else if (field.type === 'time') {
-        obj = z.string().transform(value => {
-          const [hours, minutes] = value.split(':')
+				field.options = committees.map((committee) => ({
+					label: committee.name,
+					value: committee.ldapId
+				}));
 
-          return new Date(0, 0, 0, Number(hours), Number(minutes))
-        }).refine(value => {
-          return value instanceof Date && !isNaN(value.getTime())
-        }, { message: `${label} is verplicht` })
-      } else if (field.type === 'url') {
-        obj = z.string().url({ message: `${label} is geen geldige URL` })
+				field.type = 'select';
+			} else if (field.type === 'location') {
+				const locations = await db.activityLocation.findMany({
+					where: {
+						isActive: true
+					}
+				});
 
-      } else {
-        const min = field.minLength || 0
-        const max = field.maxLength || 190
+				field.options = locations.map((location) => ({
+					label: location.name,
+					value: location.id
+				}));
 
-        obj = z.string().min(min, { message: `${label} moet minimaal ${min} karakters bevatten` }).max(max, { message: `${label} mag maximaal ${max} karakters bevatten` })
-      }
+				field.type = 'select';
+			} else if (field.type === 'select') {
+				if (!field.getOptions) {
+					throw new Error('Select field has no getOptions function');
+				}
 
-      if (field.optional) {
-        if (field.type !== 'url') {
-          obj = obj.optional().or(z.literal(''))
-        }
-      }
+				if (!user) {
+					throw new Error('Select field has no user');
+				}
 
-      zod = zod.extend({
-        [field.name]: obj
-      })
-    }
+				field.options = await field.getOptions(user);
+				field.getOptions = undefined;
+			}
+		}
 
-    this.zodSchema = zod
-  }
+		await this.generateZod();
+		this.transformed = true;
+	}
 
-  async transform(user: User | null) {
-    for (const field of this.f.fields) {
-      if (field.type === 'user') {
-        const users = await db.user.findMany({
-          where: {
-            isActive: true
-          }
-        })
+	async checkRoles(locals: App.Locals): Promise<[boolean, string[]]> {
+		// Check if the user has the required roles
+		const committees = await db.committeeMember.findMany({
+			where: {
+				userId: locals.user.id
+			},
+			include: {
+				committee: {
+					select: {
+						ldapId: true
+					}
+				}
+			}
+		});
 
-        field.options = users.map(user => ({
-          label: `${user.firstName} ${user.lastName}`,
-          value: user.ldapId
-        }))
-        field.type = 'select'
+		const userRoles = committees.map((cm) => cm.committee.ldapId);
 
-      } else if (field.type === 'committee') {
-        const committees = await db.committee.findMany({
-          where: {
-            isActive: true
-          }
-        })
+		const hasOneRole = this.f.requiredRoles.some((role) => userRoles.includes(role));
 
-        field.options = committees.map(committee => ({
-          label: committee.name,
-          value: committee.ldapId
-        }))
+		if (hasOneRole) {
+			return [true, []];
+		} else {
+			return [false, this.f.requiredRoles.filter((role) => !userRoles.includes(role))];
+		}
+	}
 
-        field.type = 'select'
+	async validate<T>(object: T): Promise<T | FormError[]> {
+		// Validate against the zod schema
+		const x = this.zodSchema.safeParse(object);
 
-      } else if (field.type === 'location') {
-        const locations = await db.activityLocation.findMany({
-          where: {
-            isActive: true
-          }
-        })
+		let extraErrors: FormError[] = [];
 
-        field.options = locations.map(location => ({
-          label: location.name,
-          value: location.id
-        }))
+		if (this.f.extraValidators) {
+			// Validate against the extra validators
+			// @ts-expect-error Klopt wel
+			extraErrors = await this.f.extraValidators(object);
+		}
 
-        field.type = 'select'
+		let zodErrors: FormError[] = [];
 
-      } else if (field.type === 'select') {
-        if (!field.getOptions) {
-          throw new Error('Select field has no getOptions function')
-        }
+		if (!x.success) {
+			zodErrors = x.error.issues.map((obj) => {
+				return {
+					field: obj.path[0],
+					message: obj.message
+				};
+			});
+		}
 
-        field.options = await field.getOptions(user)
-        field.getOptions = undefined
-      }
-    }
+		if (zodErrors.length > 0 || extraErrors.length > 0) {
+			return [...zodErrors, ...extraErrors];
+		}
 
-    await this.generateZod()
-    this.transformed = true
-  }
+		// @ts-expect-error Klopt wel
+		return x.data as T;
+	}
 
-  async checkRoles(locals: App.Locals): Promise<[boolean, string[]]> {
-    // Check if the user has the required roles
-    const committees = await db.committeeMember.findMany({
-      where: {
-        userId: locals.user.id
-      },
-      include: {
-        committee: {
-          select: {
-            ldapId: true
-          }
-        }
-      }
-    })
+	get actions() {
+		return {
+			[this.f.actionName || 'default']: async ({ request, locals }) => {
+				const [ok, committees] = await this.checkRoles(locals);
 
-    const userRoles = committees.map(cm => cm.committee.ldapId)
+				if (!ok) {
+					return fail(403, {
+						success: false,
+						message:
+							'Je hebt niet de juiste rechten om dit formulier te gebruiken. Je mist een van de volgende rollen: ' +
+							committees.join(', '),
+						errors: []
+					});
+				}
 
-    const hasOneRole = this.f.requiredRoles.some(role => userRoles.includes(role))
+				const formData = await request.formData();
+				const body = Object.fromEntries(formData);
 
-    if (hasOneRole) {
-      return [true, []]
-    } else {
-      return [false, this.f.requiredRoles.filter(role => !userRoles.includes(role))]
-    }
-  }
+				let validated = await this.validate<T>(body as T);
 
-  async validate<T>(object: T): Promise<T | FormError[]> {
-    // Validate against the zod schema
-    const x = this.zodSchema.safeParse(object)
+				if (validated instanceof Array && validated.length > 0) {
+					return fail(400, {
+						success: false,
+						message: 'Niet elk veld is correct ingevuld.',
+						errors: validated
+					});
+				}
 
-    let extraErrors: FormError[] = []
+				validated = validated as Awaited<T>;
 
-    if (this.f.extraValidators) {
-      // Validate against the extra validators
-      // @ts-expect-error Klopt wel
-      extraErrors = await this.f.extraValidators(object)
-    }
+				(validated as LogicDataType<T>).user = locals.user;
 
-    let zodErrors: FormError[] = []
+				// @ts-expect-error
+				const ret = await this.f.logic(validated);
 
-    if (!x.success) {
-      zodErrors = x.error.issues.map(obj => {
-        return {
-          field: obj.path[0],
-          message: obj.message
-        }
-      })
-    }
+				if (ret.success) {
+					return ret;
+				} else {
+					return fail(ret.status, ret);
+				}
+			}
+		} satisfies Actions;
+	}
 
-    if (zodErrors.length > 0 || extraErrors.length > 0) {
+	get attributes() {
+		if (!this.transformed) throw new Error('Form not transformed yet, call transform() first');
 
-      return [...zodErrors, ...extraErrors]
-    }
-
-    // @ts-expect-error Klopt wel
-    return x.data as T
-  }
-
-  get actions() {
-    return {
-      [this.f.actionName || 'default']: async ({ request, locals }) => {
-        const [ok, committees] = await this.checkRoles(locals)
-
-        if (!ok) {
-          return fail(403, {
-            success: false, message: 'Je hebt niet de juiste rechten om dit formulier te gebruiken. Je mist een van de volgende rollen: ' + committees.join(', '), errors: []
-          })
-        }
-
-        const formData = await request.formData()
-        const body = Object.fromEntries(formData)
-
-        let validated = await this.validate<T>(body as T)
-
-        if (validated instanceof Array && validated.length > 0) {
-          return fail(400, {
-            success: false, message: 'Niet elk veld is correct ingevuld.', errors: validated
-          })
-        }
-
-        validated = validated as Awaited<T>
-
-        (validated as LogicDataType<T>).user = locals.user
-
-        const ret = await this.f.logic(validated)
-
-        if (ret.success) {
-          return ret
-        } else {
-          return fail(ret.status, ret)
-        }
-      }
-    } satisfies Actions
-  }
-
-  get attributes() {
-    if (!this.transformed) throw new Error('Form not transformed yet, call transform() first')
-
-    return {
-      title: this.f.title,
-      shortTitle: this.f.shortTitle,
-      description: this.f.description,
-      fields: this.f.fields,
-      needsConfirmation: this.f.needsConfirmation,
-      confirmText: this.f.confirmText,
-      submitStr: this.f.submitStr,
-    }
-  }
-
+		return {
+			title: this.f.title,
+			shortTitle: this.f.shortTitle,
+			description: this.f.description,
+			fields: this.f.fields,
+			needsConfirmation: this.f.needsConfirmation,
+			confirmText: this.f.confirmText,
+			submitStr: this.f.submitStr
+		};
+	}
 }

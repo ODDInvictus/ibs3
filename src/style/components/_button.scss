@@ -18,6 +18,15 @@ button {
 
 	color: var(--color-text-light);
 	background-color: var(--color-primary);
+
+  &[disabled] {
+    cursor: not-allowed;
+    background-color: var(--color-disabled) !important;
+
+    &:hover {
+      text-decoration: none !important;
+    }
+  }
 }
 
 a.button {
