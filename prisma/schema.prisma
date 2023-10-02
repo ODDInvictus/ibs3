@@ -90,6 +90,7 @@ model User {
   PhotoTaggedIn           PhotoPersonTag[]          @relation("taggedInPhoto")
   PhotoTaggedBy           PhotoPersonTag[]          @relation("photoTaggedBy")
   CommentsMade            Comment[]
+  SaleInvoice             SaleInvoice[]
 }
 
 model Account {
@@ -247,14 +248,15 @@ model Attending {
 // Grootboek rekening
 model Ledger {
   // Administratieve gegevens
-  id          Int           @id
-  name        String
-  description String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id             Int              @id
+  name           String
+  description    String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
   // Foreign keys
-  Transaction Transaction[]
-  isActive    Boolean       @default(true)
+  Transaction    Transaction[]
+  isActive       Boolean          @default(true)
+  SaleInvoiceRow SaleInvoiceRow[]
 }
 
 // Categorie waar een product onder kan vallen
@@ -289,12 +291,13 @@ model Product {
   data        Json        @db.Json
 
   // Foreign keys
-  category    ProductCategory @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  Sale        Sale[]
-  Acquisition Acquisition[]
+  category       ProductCategory  @relation(fields: [categoryId], references: [id])
+  categoryId     Int
+  Sale           Sale[]
+  Acquisition    Acquisition[]
   // Een product kan niet worden verwijderd, wel uitgeschakeld
-  isActive    Boolean         @default(true)
+  isActive       Boolean          @default(true)
+  SaleInvoiceRow SaleInvoiceRow[]
 }
 
 enum FinancialPersonType {
@@ -320,19 +323,22 @@ model FinancialPerson {
   isActive Boolean @default(true)
 
   // Foreign keys
-  FinancialGroup               FinancialGroup[]
-  FinancialPersonDataUser      FinancialPersonDataUser[]
-  FinancialPersonDataCommittee FinancialPersonDataCommittee[]
-  FinancialPersonDataActivity  FinancialPersonDataActivity[]
-  FinancialPersonDataOther     FinancialPersonDataOther[]
+  FinancialGroup               FinancialGroup?
+  FinancialPersonDataUser      FinancialPersonDataUser?
+  FinancialPersonDataCommittee FinancialPersonDataCommittee?
+  FinancialPersonDataActivity  FinancialPersonDataActivity?
+  FinancialPersonDataOther     FinancialPersonDataOther?
   FinancialGroupPersonElement  FinancialGroupPersonElement[]
 
-  TransactionFrom Transaction[] @relation("TransactionFrom")
-  TransactionTo   Transaction[] @relation("TransactionTo")
-  Sale            Sale[]
-  Acquisition     Acquisition[]
-  Declaration     Declaration[]
-  Streeplijst     Streeplijst[]
+  TransactionFrom     Transaction[]     @relation("TransactionFrom")
+  TransactionTo       Transaction[]     @relation("TransactionTo")
+  Sale                Sale[]
+  Acquisition         Acquisition[]
+  Declaration         Declaration[]
+  Streeplijst         Streeplijst[]
+  SaleInvoice         SaleInvoice[]
+  BankTransactionTo   BankTransaction[] @relation("BankTransactionTo")
+  BankTransactionFrom BankTransaction[] @relation("BankTransactionFrom")
 }
 
 // Extra data voor FinancialPerson, afhankelijk van FinancialPersonType
@@ -344,6 +350,7 @@ model FinancialPersonDataUser {
   personId Int             @id
   user     User            @relation(fields: [userId], references: [id])
   userId   Int
+  iban     String?
 }
 
 // FinancialPersonType.GROUP
@@ -393,8 +400,10 @@ model FinancialPersonDataCommittee {
 model FinancialPersonDataOther {
   person      FinancialPerson @relation(fields: [personId], references: [id])
   personId    Int             @id
-  name        String
-  description String
+  description String?
+  email       String?
+  address     String?
+  iban        String?
 }
 
 model Transaction {
@@ -507,6 +516,73 @@ model Declaration {
   // Heeft de penningmeester dit afgekeurd?
   // Als dit is afgekeurd wordt het ook niet omgezet naar een transactie
   denied   Boolean @default(false)
+}
+
+// Uitgaande factuur
+model SaleInvoice {
+  id             Int              @id @default(autoincrement())
+  reference      String?
+  rows           SaleInvoiceRow[]
+  date           DateTime         @db.Date
+  // Aantal dagen
+  termsOfPayment Int
+  sent           Boolean          @default(false)
+
+  to   FinancialPerson @relation(fields: [toId], references: [id])
+  toId Int
+
+  treasurer   User? @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
+  treasurerId Int?
+
+  // 1-1 relation to a bank transaction
+  BankTransaction   BankTransaction? @relation(fields: [bankTransactionId], references: [id])
+  bankTransactionId Int?             @unique
+}
+
+// Een regel in een uitgaande factuur
+model SaleInvoiceRow {
+  id          Int     @id @default(autoincrement())
+  amount      Int
+  // MySQL adviseerd 19, 4 voor geld
+  price       Decimal @db.Decimal(19, 4)
+  description String
+
+  product   Product? @relation(fields: [productId], references: [id])
+  productId Int?
+
+  ledger   Ledger @relation(fields: [ledgerId], references: [id])
+  ledgerId Int
+
+  SaleInvoice   SaleInvoice @relation(fields: [saleInvoiceId], references: [id])
+  saleInvoiceId Int
+}
+
+enum BankTransactionType {
+  TOPUP
+  TRANSFER
+  CARD_PAYMENT
+}
+
+enum BankTransactionProduct {
+  SAVINGS
+  CURRENT
+}
+
+model BankTransaction {
+  id            Int                    @id @default(autoincrement())
+  SaleInvoice   SaleInvoice?
+  Amount        Decimal                @db.Decimal(19, 4)
+  startedDate   DateTime
+  completedDate DateTime?
+  fee           Decimal                @db.Decimal(19, 4)
+  description   String
+  type          BankTransactionType
+  product       BankTransactionProduct
+
+  from   FinancialPerson? @relation(fields: [fromId], references: [id], name: "BankTransactionFrom")
+  fromId Int?
+  to     FinancialPerson? @relation(fields: [toId], references: [id], name: "BankTransactionTo")
+  toId   Int?
 }
 
 //

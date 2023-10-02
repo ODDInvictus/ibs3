@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { Field, FieldType } from './form-generator';
-	import Help from '~icons/tabler/help';
 	import { confirm } from '$lib/confirm';
 	import { toast } from '$lib/notification';
 	import Title from '$lib/components/title.svelte';
-	import { offset, flip, shift } from 'svelte-floating-ui/dom';
-	import { createFloatingActions } from 'svelte-floating-ui';
+	import FieldComponent from './_field.svelte';
+	import Label from './_label.svelte';
 
 	export let title: string;
 	export let shortTitle: string | undefined;
@@ -17,15 +16,6 @@
 
 	export let needsConfirmation: boolean;
 	export let confirmText = 'Weet je zeker dat je deze actie wilt uitvoeren?';
-
-	let tooltips = {};
-	let show = false;
-
-	const [floatingRef, floatingContent] = createFloatingActions({
-		strategy: 'absolute',
-		placement: 'left',
-		middleware: [offset(6), flip(), shift()]
-	});
 
 	let form: HTMLFormElement;
 	let generalError = '';
@@ -39,6 +29,9 @@
 		fields.forEach((field) => {
 			const name = field.getAttribute('data-name')!;
 			const type = field.getAttribute('data-type')!;
+
+			// TODO errors in table
+			if (type === 'table') return;
 
 			// Find the error message for this field
 			const error = errors.find((e) => e.field === name);
@@ -68,7 +61,7 @@
 		}
 	}
 
-	async function enhanceForm({ cancel }: { cancel: () => void }) {
+	async function enhanceForm({ cancel }: { cancel: () => void; formData: any }) {
 		// First check if needsConfirmation is true
 		let confirmed = false;
 
@@ -130,66 +123,19 @@
 
 	<form class="form-group" bind:this={form} method="POST" id={formId} use:enhance={enhanceForm}>
 		{#each fields as field}
-			<div class="form-control" data-name={field.name} data-type={field.type}>
-				{#if field.type !== 'hidden'}
-					<label for={field.name}>
-						{field.label}
-						{#if field.optional}
-							<span class="optional"> (optioneel) </span>
-						{/if}
-						{#if field.description}
-							<i
-								role="tooltip"
-								class="description"
-								on:mouseenter={() => (show = true)}
-								on:mouseleave={() => (show = false)}
-							>
-								<span use:floatingRef>
-									<Help />
-								</span>
-							</i>
-							{#if show}
-								<div class="tooltip" use:floatingContent>
-									{field.description}
-								</div>
-							{/if}
-						{:else}
-							<div />
-						{/if}
-					</label>
-				{/if}
-				{#if field.type === 'select'}
-					<select name={field.name} id={field.name} hidden={field.hidden || false}>
-						{#if !field.options}
-							<option value="">Geen opties</option>
-						{:else}
-							{#each field.options as option}
-								<option value={option.value}>{option.label}</option>
-							{/each}
-						{/if}
-					</select>
-				{:else if field.type === 'checkbox'}
-					<input type="checkbox" name={field.name} id={field.name} checked={Boolean(field.value)} />
-				{:else if field.type === 'textarea'}
-					<textarea
-						name={field.name}
-						id={field.name}
-						placeholder={field.placeholder}
-						value={field.value?.toString() || ''}
-					/>
-				{:else}
-					<input
-						type={field.type}
-						name={field.name}
-						id={field.name}
-						placeholder={field.placeholder}
-						value={field.value || ''}
-					/>
-				{/if}
-				<p id="{field.name}-error" class="form-error" />
-			</div>
+			{#if field.type !== 'hidden'}
+				<div class="form-control" data-name={field.name} data-type={field.type}>
+					{#if field.label}
+						<label for={field.name}>
+							<Label {field} />
+						</label>
+					{/if}
+					<FieldComponent {field} />
+				</div>
+			{:else}
+				<input type="hidden" name={field.name} value={field.value} />
+			{/if}
 		{/each}
-
 		<button type="submit">
 			{submitStr}
 		</button>

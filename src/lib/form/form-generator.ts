@@ -5,7 +5,9 @@ import { fail, type Actions } from '@sveltejs/kit';
 import { z } from 'zod';
 
 // All possible fields
-export type FieldType =
+export type FieldType = TableFieldType | TableField;
+
+export type TableFieldType =
 	| TextField
 	| 'number'
 	| 'date'
@@ -18,7 +20,8 @@ export type FieldType =
 export type SelectField = 'select';
 export type TextField = 'text' | 'textarea';
 export type CheckboxField = 'checkbox';
-export type CustomFields = 'user' | 'committee' | 'location';
+export type CustomFields = 'user' | 'committee' | 'location' | 'relation';
+export type TableField = 'table';
 
 export type OptionField<T extends InputType> = {
 	label: string;
@@ -42,18 +45,24 @@ export type Field<T extends FieldType> = {
 		? boolean
 		: T extends 'number'
 		? number
+		: T extends 'date'
+		? Date
 		: never;
 	markdown?: boolean;
 	optional?: boolean;
 	maxValue?: number;
 	minValue?: number;
+	step?: number;
 	maxLength?: number;
 	minLength?: number;
 	options?: T extends SelectField ? OptionField<InputType>[] : never;
-	getOptions?: (user: User | null) => Promise<OptionField<InputType>[]>;
+	getOptions?: () => Promise<OptionField<InputType>[]>;
 	description?: string;
 	placeholder?: string;
-	hidden?: boolean;
+	columns?: T extends TableField ? Field<TableFieldType>[] : never;
+	rows?: T extends TableField ? number : never;
+	rowLabels?: T extends TableField ? string[] : never;
+	rowLabelName?: T extends TableField ? string : never;
 };
 
 export type FormError = {
@@ -96,104 +105,147 @@ type FormType<T> = {
 	extraValidators?: (data: T) => Promise<FormError[]>;
 };
 
+type TransformOptions = {
+	user?: User;
+	values?: { [id: string]: string };
+};
+
 export class Form<T> {
 	private f;
 	private zodSchema = z.object({});
-	private type = {};
 
 	private transformed = false;
 
 	constructor(form: FormType<T>) {
 		this.f = form;
+
+		this.test();
 	}
 
-	private async generateZod() {
+	async test() {
+		await this.generateZod();
+		const res = this.zodSchema.safeParse({
+			reference: 'ref',
+			date: '2023-10-02',
+			termsOfPayment: '14',
+			toId: '35',
+			isNotSend: 'on',
+			rows: [
+				{
+					amount: '1',
+					price: '1',
+					description: '1',
+					ledgerId: '3100',
+					productId: ''
+				}
+			]
+		});
+	}
+
+	private async generateZod(fields: Field<FieldType>[] = this.f.fields) {
 		let zod = z.object({});
 
-		for (const field of this.f.fields) {
-			let obj;
-			const label = field.label;
-
-			// Generate a zod object for all possible types
-			// text, number, date, checkbox, time, select, url, textarea
-
-			if (field.type === 'select') {
-				// Now check if there is a field.options with more than 0 items, or, if the field has a getOptions function
-				if (!field.options && !field.getOptions) {
-					console.log(field);
-					throw new Error(`Select field has no options or getOptions function`);
+		for (const field of fields) {
+			if (field.type === 'table') {
+				const columns = field.columns!;
+				const obj: { [key: string]: any } = {};
+				for (const column of columns) {
+					obj[column.name] = await this.generateZodObject(column);
 				}
-
-				if (field.getOptions) {
-					await field.getOptions({} as User);
-				}
-
-				// @ts-expect-error
-				const options = field.options.map((option) => String(option.value));
-
-				obj = z.enum([options[0], ...options.slice(1)]);
-			} else if (field.type === 'checkbox') {
-				obj = z.preprocess((value) => value === 'on', z.boolean());
-			} else if (field.type === 'number') {
-				const min = field.minValue || Number.MIN_SAFE_INTEGER;
-				const max = field.maxValue || Number.MAX_SAFE_INTEGER;
-
-				obj = z.coerce
-					.number()
-					.min(min, { message: `${label} moet minimaal ${min} zijn` })
-					.max(max, { message: `${label} mag maximaal ${max} zijn` });
-			} else if (field.type === 'date') {
-				obj = z
-					.string()
-					.transform((value) => {
-						return new Date(value);
-					})
-					.refine(
-						(value) => {
-							return value instanceof Date && !isNaN(value.getTime());
-						},
-						{ message: `${label} is verplicht` }
-					);
-			} else if (field.type === 'textarea') {
-				obj = z.string().min(3, { message: `${label} moet minimaal 3 karakters bevatten` });
-			} else if (field.type === 'time') {
-				obj = z
-					.string()
-					.transform((value) => {
-						const [hours, minutes] = value.split(':');
-
-						return new Date(0, 0, 0, Number(hours), Number(minutes));
-					})
-					.refine(
-						(value) => {
-							return value instanceof Date && !isNaN(value.getTime());
-						},
-						{ message: `${label} is verplicht` }
-					);
-			} else if (field.type === 'url') {
-				obj = z.string().url({ message: `${label} is geen geldige URL` });
+				const tableSchema = z.object(obj);
+				zod = zod.extend({
+					[field.name]: z.array(tableSchema)
+				});
 			} else {
-				const min = field.minLength || 0;
-				const max = field.maxLength || 190;
-
-				obj = z
-					.string()
-					.min(min, { message: `${label} moet minimaal ${min} karakters bevatten` })
-					.max(max, { message: `${label} mag maximaal ${max} karakters bevatten` });
+				zod = zod.extend({
+					[field.name]: await this.generateZodObject(field)
+				});
 			}
-
-			if (field.optional) {
-				if (field.type !== 'url') {
-					obj = obj.optional().or(z.literal(''));
-				}
-			}
-
-			zod = zod.extend({
-				[field.name]: obj
-			});
 		}
 
 		this.zodSchema = zod;
+	}
+
+	private async generateZodObject(field: Field<FieldType>) {
+		let obj;
+		const label = field.label;
+
+		// Generate a zod object for all possible types
+		// text, number, date, checkbox, time, select, url, textarea
+
+		if (field.type === 'select') {
+			// Now check if there is a field.options with more than 0 items, or, if the field has a getOptions function
+			if (!field.options && !field.getOptions) {
+				throw new Error(`Select field has neither options nor getOptions`);
+			}
+
+			if (field.getOptions) {
+				field.options = await field.getOptions();
+			}
+
+			// @ts-expect-error
+			const options = field.options.map((option) => String(option.value));
+
+			obj = z.enum([options[0], ...options.slice(1)]);
+		} else if (field.type === 'checkbox') {
+			obj = z.preprocess((value) => value === 'on', z.boolean());
+		} else if (field.type === 'number') {
+			const min = field.minValue || Number.MIN_SAFE_INTEGER;
+			const max = field.maxValue || Number.MAX_SAFE_INTEGER;
+
+			obj = z.coerce
+				.number()
+				.min(min, { message: `${label} moet minimaal ${min} zijn` })
+				.max(max, { message: `${label} mag maximaal ${max} zijn` });
+		} else if (field.type === 'date') {
+			obj = z
+				.string()
+				.transform((value) => {
+					return new Date(value);
+				})
+				.refine(
+					(value) => {
+						return value instanceof Date && !isNaN(value.getTime());
+					},
+					{ message: `${label} is verplicht` }
+				);
+		} else if (field.type === 'textarea') {
+			obj = z.string().min(3, { message: `${label} moet minimaal 3 karakters bevatten` });
+		} else if (field.type === 'time') {
+			obj = z
+				.string()
+				.transform((value) => {
+					const [hours, minutes] = value.split(':');
+
+					return new Date(0, 0, 0, Number(hours), Number(minutes));
+				})
+				.refine(
+					(value) => {
+						return value instanceof Date && !isNaN(value.getTime());
+					},
+					{ message: `${label} is verplicht` }
+				);
+		} else if (field.type === 'url') {
+			obj = z.string().url({ message: `${label} is geen geldige URL` });
+		} else if (field.type === 'hidden') {
+			obj = z.string();
+		} else {
+			const min = field.minLength || 0;
+			const max = field.maxLength || 190;
+
+			obj = z
+				.string()
+				.min(min, { message: `${label} moet minimaal ${min} karakters bevatten` })
+				.max(max, { message: `${label} mag maximaal ${max} karakters bevatten` });
+		}
+
+		if (field.optional) {
+			if (field.type !== 'url') {
+				obj = obj!.optional().or(z.literal(''));
+			}
+		}
+
+		return obj!;
 	}
 
 	/**
@@ -205,11 +257,15 @@ export class Form<T> {
 	 * await form.transform({ user: locals.user, values: { name: 'Naut' } });
 	 * ```
 	 */
-	async transform({
-		user,
-		values
-	}: { user?: User | null; values?: { [id: string]: string } } = {}) {
-		for (const field of this.f.fields) {
+	async transform({ user, values }: TransformOptions = {}) {
+		await this.transformFields(this.f.fields, { user, values });
+		this.transformed = true;
+		await this.generateZod();
+	}
+
+	private async transformFields(fields: Field<FieldType>[], options: TransformOptions = {}) {
+		const { user, values } = options;
+		for (const field of fields) {
 			if (values && field.name in values) field.value = values[field.name];
 
 			if (field.type === 'user') {
@@ -251,21 +307,28 @@ export class Form<T> {
 
 				field.type = 'select';
 			} else if (field.type === 'select') {
-				if (!field.getOptions) {
-					throw new Error('Select field has no getOptions function');
+				if (!field.getOptions && !field.options) {
+					throw new Error('Select field has neither options nor getOptions');
 				}
 
-				if (!user) {
-					throw new Error('Select field has no user');
-				}
-
-				field.options = await field.getOptions(user);
+				if (field.getOptions) field.options = await field.getOptions();
 				field.getOptions = undefined;
-			}
-		}
+			} else if (field.type == 'relation') {
+				const relations = await db.financialPerson.findMany({
+					where: { type: 'OTHER', isActive: true }
+				});
 
-		await this.generateZod();
-		this.transformed = true;
+				field.options = relations.map((relation) => ({
+					label: `${relation.id} - ${relation.name}`,
+					value: relation.id
+				}));
+				field.type = 'select';
+			} else if (field.type === 'table' && field.columns) {
+				await this.transformFields(field.columns, options);
+			}
+
+			if (field.value instanceof Date) field.value = field.value.toISOString().split('T')[0];
+		}
 	}
 
 	async checkRoles(locals: App.Locals): Promise<[boolean, string[]]> {
@@ -298,6 +361,8 @@ export class Form<T> {
 		// Validate against the zod schema
 		const x = this.zodSchema.safeParse(object);
 
+		console.log(x);
+
 		let extraErrors: FormError[] = [];
 
 		if (this.f.extraValidators) {
@@ -325,6 +390,30 @@ export class Form<T> {
 		return x.data as T;
 	}
 
+	private parseFormData(data: any) {
+		const parsedFormData: { [key: string]: any } = {};
+		for (const [key, value] of data) {
+			if (!key.startsWith('table-')) {
+				parsedFormData[key] = value;
+				continue;
+			}
+
+			const [_, table, row, name] = key.split('-');
+
+			// Table is the name of the table
+			if (!parsedFormData[table]) parsedFormData[table] = [];
+
+			// Row is the row number
+			const rowNumber = Number(row);
+			if (isNaN(rowNumber)) return;
+
+			// Name is the name of the field
+			if (!parsedFormData[table][rowNumber]) parsedFormData[table][rowNumber] = {};
+			parsedFormData[table][rowNumber][name] = value;
+		}
+		return parsedFormData;
+	}
+
 	get actions() {
 		return {
 			[this.f.actionName || 'default']: async ({ request, locals }) => {
@@ -341,7 +430,9 @@ export class Form<T> {
 				}
 
 				const formData = await request.formData();
-				const body = Object.fromEntries(formData);
+				const body = this.parseFormData(formData);
+
+				console.log(body);
 
 				let validated = await this.validate<T>(body as T);
 
