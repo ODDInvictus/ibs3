@@ -100,7 +100,7 @@
 			transition: all 0.4s ease;
 
 			&:nth-child(odd) {
-				background-color: var(--color-table-highlight);
+				background-color: var(--color-primary);
 				color: white;
 				a,
 				i {
@@ -109,7 +109,7 @@
 			}
 
 			&:has(.cell:not(.actions):hover) {
-				background-color: var(--primary-color);
+				background-color: var(--color-primary);
 				color: white;
 				text-decoration: underline;
 			}
