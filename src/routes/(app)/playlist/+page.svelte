@@ -129,10 +129,6 @@
 	};
 </script>
 
-<svelte:head>
-	<title>IBS :: Playlist</title>
-</svelte:head>
-
 <audio src="" bind:this={audioPlayer} />
 {#if !mounted}
 	<div class="load">
@@ -168,7 +164,7 @@
 			<div class="actions">
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<!-- svelte-ignore a11y-no-static-element-interactions -->
-				<i
+				<icon
 					class="dislike"
 					on:click={async () => {
 						if (!current) return;
@@ -176,11 +172,11 @@
 					}}
 				>
 					<svelte:component this={Cross} width="70" height="70" />
-				</i>
+				</icon>
 
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<!-- svelte-ignore a11y-no-static-element-interactions -->
-				<i
+				<icon
 					on:click={async () => {
 						await next();
 						if (!current) return;
@@ -188,11 +184,11 @@
 					}}
 				>
 					<Arrow width="50" height="50" />
-				</i>
+				</icon>
 
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<!-- svelte-ignore a11y-no-static-element-interactions -->
-				<i
+				<icon
 					class="like"
 					on:click={async () => {
 						if (!current) return;
@@ -201,7 +197,7 @@
 					}}
 				>
 					<Heart width="70" height="70" />
-				</i>
+				</icon>
 			</div>
 		</div>
 	</content>
@@ -221,11 +217,11 @@
 	.card {
 		transition: transform 0.2s ease-in-out;
 
-		&:has(i.like:active) {
+		&:has(icon.like:active) {
 			transform: rotate(5deg);
 		}
 
-		&:has(i.dislike:active) {
+		&:has(icon.dislike:active) {
 			transform: rotate(-5deg);
 		}
 
@@ -279,7 +275,7 @@
 			justify-content: space-around;
 			align-items: center;
 
-			i:hover {
+			icon:hover {
 				cursor: pointer;
 				opacity: 0.8;
 			}

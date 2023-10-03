@@ -86,7 +86,7 @@ export const actions = {
         })
 
         // Save the receipt
-        fs.writeFileSync(`${env.UPLOAD_FOLDER}/receipts/${filename}`, Buffer.from(await data.receipt.arrayBuffer()), { encoding: 'binary' })
+        fs.writeFileSync(`${env.UPLOAD_FOLDER_OLD}/receipts/${filename}`, Buffer.from(await data.receipt.arrayBuffer()), { encoding: 'binary' })
 
       })
 
