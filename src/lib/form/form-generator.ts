@@ -37,6 +37,7 @@ export type Field<T extends FieldType> = {
 	label: string;
 	name: string;
 	type: T;
+	// TODO fix table type
 	value?: T extends TextField | 'time'
 		? string
 		: T extends SelectField
@@ -47,6 +48,8 @@ export type Field<T extends FieldType> = {
 		? number
 		: T extends 'date'
 		? Date
+		: T extends TableField
+		? any[]
 		: never;
 	markdown?: boolean;
 	optional?: boolean;
@@ -105,9 +108,9 @@ type FormType<T> = {
 	extraValidators?: (data: T) => Promise<FormError[]>;
 };
 
-type TransformOptions = {
+type TransformOptions<T> = {
 	user?: User;
-	values?: { [id: string]: string };
+	values?: T;
 };
 
 export class Form<T> {
@@ -118,28 +121,6 @@ export class Form<T> {
 
 	constructor(form: FormType<T>) {
 		this.f = form;
-
-		this.test();
-	}
-
-	async test() {
-		await this.generateZod();
-		const res = this.zodSchema.safeParse({
-			reference: 'ref',
-			date: '2023-10-02',
-			termsOfPayment: '14',
-			toId: '35',
-			isNotSend: 'on',
-			rows: [
-				{
-					amount: '1',
-					price: '1',
-					description: '1',
-					ledgerId: '3100',
-					productId: ''
-				}
-			]
-		});
 	}
 
 	private async generateZod(fields: Field<FieldType>[] = this.f.fields) {
@@ -193,10 +174,13 @@ export class Form<T> {
 			const min = field.minValue || Number.MIN_SAFE_INTEGER;
 			const max = field.maxValue || Number.MAX_SAFE_INTEGER;
 
-			obj = z.coerce
-				.number()
-				.min(min, { message: `${label} moet minimaal ${min} zijn` })
-				.max(max, { message: `${label} mag maximaal ${max} zijn` });
+			obj = z.preprocess(
+				(value) => Number(value),
+				z.coerce
+					.number()
+					.min(min, { message: `${label} moet minimaal ${min} zijn` })
+					.max(max, { message: `${label} mag maximaal ${max} zijn` })
+			);
 		} else if (field.type === 'date') {
 			obj = z
 				.string()
@@ -257,15 +241,17 @@ export class Form<T> {
 	 * await form.transform({ user: locals.user, values: { name: 'Naut' } });
 	 * ```
 	 */
-	async transform({ user, values }: TransformOptions = {}) {
+	async transform({ user, values }: TransformOptions<T> = {}) {
 		await this.transformFields(this.f.fields, { user, values });
 		this.transformed = true;
 		await this.generateZod();
 	}
 
-	private async transformFields(fields: Field<FieldType>[], options: TransformOptions = {}) {
+	private async transformFields(fields: Field<FieldType>[], options: TransformOptions<T> = {}) {
 		const { user, values } = options;
+
 		for (const field of fields) {
+			// @ts-expect-error
 			if (values && field.name in values) field.value = values[field.name];
 
 			if (field.type === 'user') {
@@ -361,8 +347,6 @@ export class Form<T> {
 		// Validate against the zod schema
 		const x = this.zodSchema.safeParse(object);
 
-		console.log(x);
-
 		let extraErrors: FormError[] = [];
 
 		if (this.f.extraValidators) {
@@ -431,8 +415,6 @@ export class Form<T> {
 
 				const formData = await request.formData();
 				const body = this.parseFormData(formData);
-
-				console.log(body);
 
 				let validated = await this.validate<T>(body as T);
 

@@ -1,78 +1,153 @@
 <script lang="ts">
 	import type { Field, FieldType } from './form-generator';
 	import Label from './_label.svelte';
+	import Trash from '~icons/tabler/trash';
+	import Plus from '~icons/tabler/plus';
+	import { onMount } from 'svelte';
 
 	export let field: Field<FieldType>;
 
-	const addTableAndRow = (table: string, row: number, field: Field<FieldType>) => {
-		if (!field.name.startsWith('table-')) field.name = `table-${table}-${row}-${field.name}`;
-		return field;
+	const addTableAndRow = (table: Field<'table'>, row: number, field: Field<FieldType>) => {
+		const f = { ...field };
+
+		// @ts-expect-error
+		const rowValues = table.value[row];
+		if (rowValues) {
+			const value = rowValues[f.name];
+			if (value) f.value = value;
+		}
+
+		if (!f.name.startsWith('table-')) f.name = `table-${table.name}-${row}-${f.name}`;
+		return f;
 	};
+
+	let rows: number[] = [];
+	let deleted: number[] = [];
+
+	const getMaxRow = (rows: number[], deleted: number[]) => {
+		if (field.type === 'table') {
+			return Math.max(...rows.filter((row) => !deleted.includes(row)));
+		}
+		return 0;
+	};
+
+	// TODO fix this mounted thiny
+	let mounted = false;
+	onMount(() => {
+		if (field.type === 'table') {
+			delete field.rows;
+			// @ts-expect-error
+			rows = Array.from(Array(field.value?.length || 1).keys());
+		}
+		mounted = true;
+	});
 </script>
 
-{#if field.type === 'select'}
-	<select name={field.name} id={field.name}>
-		{#if !field.options}
-			<option value="">Geen opties</option>
-		{:else}
-			<option disabled={!field.optional} selected value>Selecteer een optie</option>
-			{#each field.options as option}
-				<option value={option.value}>{option.label}</option>
-			{/each}
-		{/if}
-	</select>
-{:else if field.type === 'checkbox'}
-	<input type="checkbox" name={field.name} id={field.name} checked={Boolean(field.value)} />
-{:else if field.type === 'textarea'}
-	<textarea
-		name={field.name}
-		id={field.name}
-		placeholder={field.placeholder}
-		value={field.value?.toString() || ''}
-	/>
-{:else if field.type === 'table' && field.columns}
-	<table id={field.name}>
-		<thead>
-			{#if field.rowLabels}
-				<th>{field.rowLabelName ?? ''}</th>
+{#if mounted}
+	{#if field.type === 'select'}
+		<select name={field.name} id={field.name}>
+			{#if !field.options}
+				<option value="">Geen opties</option>
+			{:else}
+				<option disabled={!field.optional} selected value>Selecteer een optie</option>
+				{#each field.options as option}
+					<option selected={field.value == option.value} value={option.value}>{option.label}</option
+					>
+				{/each}
 			{/if}
-			{#each field.columns as column}
-				<th><Label field={column} /></th>
-			{/each}
-		</thead>
-		<tbody>
-			{#each Array(field.rows ?? 1) as _, i}
-				<tr>
-					{#if field.rowLabels}
-						<td class="left-align">{field.rowLabels[i] ?? ''}</td>
+		</select>
+	{:else if field.type === 'checkbox'}
+		<input type="checkbox" name={field.name} id={field.name} checked={Boolean(field.value)} />
+	{:else if field.type === 'textarea'}
+		<textarea
+			name={field.name}
+			id={field.name}
+			placeholder={field.placeholder}
+			value={field.value?.toString() || ''}
+		/>
+	{:else if field.type === 'table' && field.columns}
+		<table id={field.name}>
+			<thead>
+				{#if field.rowLabels}
+					<th>{field.rowLabelName ?? ''}</th>
+				{/if}
+				{#each field.columns as column}
+					<th><Label field={column} /></th>
+				{/each}
+				<th />
+				<th />
+			</thead>
+			<tbody>
+				{#each rows as i}
+					{#if !deleted.includes(i)}
+						<tr>
+							{#if field.rowLabels}
+								<td class="left-align">{field.rowLabels[i] ?? ''}</td>
+							{/if}
+							{#each field.columns as column}
+								<td>
+									<svelte:self field={addTableAndRow(field, i, column)} />
+								</td>
+							{/each}
+							<td>
+								{#if i == getMaxRow(rows, deleted)}
+									<i on:click={() => (rows = [...rows, Math.max(...rows) + 1])}><Plus /></i>
+								{/if}
+							</td>
+							<td>
+								{#if rows.length > 1}
+									<i on:click={() => (deleted = [...deleted, i])}><Trash /></i>
+								{/if}
+							</td>
+						</tr>
 					{/if}
-					{#each field.columns as column}
-						<td>
-							<svelte:self field={addTableAndRow(field.name, i, column)} />
-						</td>
-					{/each}
-				</tr>
-			{/each}
-		</tbody>
-	</table>
+				{/each}
+			</tbody>
+		</table>
+	{:else}
+		<input
+			type={field.type}
+			name={field.name}
+			id={field.name}
+			placeholder={field.placeholder}
+			value={field.value?.toString() || ''}
+			min={field.minValue}
+			max={field.maxValue}
+			step={field.step}
+		/>
+	{/if}
+	{#if field.type !== 'table'}
+		<p id="{field.name}-error" class="form-error" />
+	{/if}
 {:else}
-	<input
-		type={field.type}
-		name={field.name}
-		id={field.name}
-		placeholder={field.placeholder}
-		value={field.value?.toString() || ''}
-		min={field.minValue}
-		max={field.maxValue}
-		step={field.step}
-	/>
-{/if}
-{#if field.type !== 'table'}
-	<p id="{field.name}-error" class="form-error" />
+	<div class="loader {field.type == 'table' ? 'table-loader' : ''}" />
 {/if}
 
 <style>
 	.left-align {
 		text-align: left;
+	}
+
+	.loader {
+		background: linear-gradient(-45deg, #f3f3f3 0%, #e0e0e0 50%, #f3f3f3 100%);
+		animation: loading 1.5s ease infinite;
+		background-size: 400% 400%;
+		border-radius: 1rem;
+	}
+
+	.table-loader {
+		height: 40px;
+	}
+
+	@keyframes loading {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
 	}
 </style>

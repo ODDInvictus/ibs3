@@ -124,7 +124,11 @@
 	<form class="form-group" bind:this={form} method="POST" id={formId} use:enhance={enhanceForm}>
 		{#each fields as field}
 			{#if field.type !== 'hidden'}
-				<div class="form-control" data-name={field.name} data-type={field.type}>
+				<div
+					class="form-control {field.type === 'table' ? 'form-control-table' : ''}"
+					data-name={field.name}
+					data-type={field.type}
+				>
 					{#if field.label}
 						<label for={field.name}>
 							<Label {field} />
@@ -147,5 +151,9 @@
 	.error {
 		color: red;
 		margin: 1rem 0;
+	}
+
+	.form-control-table {
+		grid-template-columns: 1fr;
 	}
 </style>

@@ -1,32 +1,92 @@
 import { Form, type Field } from '$lib/form/form-generator';
 import { Roles } from '$lib/constants';
 import db from '$lib/server/db';
+import type { SaleInvoiceRow } from '@prisma/client';
+
+type row = {
+	amount: number;
+	price: number;
+	description: string;
+	ledgerId: string;
+	productId?: string;
+};
+
+const createInvoiceRows = async (rows: row[], invoiceId: number) => {
+	const rowInsertions: Promise<SaleInvoiceRow>[] = [];
+	rows.forEach((row) => {
+		const productId = row.productId ? Number(row.productId) : undefined;
+		rowInsertions.push(
+			db.saleInvoiceRow.create({
+				data: {
+					amount: row.amount,
+					price: row.price,
+					description: row.description,
+					ledgerId: Number(row.ledgerId),
+					productId,
+					saleInvoiceId: invoiceId
+				}
+			})
+		);
+	});
+
+	await Promise.all(rowInsertions);
+};
 
 export const createInvoiceForm = new Form<{
-	date: Date;
 	termsOfPayment: number;
-	toId: number;
+	toId: string;
 	reference?: string;
-	isNotSend: boolean;
-	rows: {
-		amount: number;
-		price: number;
-		description: string;
-		ledgerId: number;
-		productId?: number;
-	}[];
+	id?: string;
+	rows: row[];
 }>({
 	title: 'Factuur maken',
 	logic: async (data) => {
+		const id = Number(data.id);
 		try {
-			console.log(data);
-			return {
-				success: true,
-				message: 'Factuur aangemaakt, je wordt nu doorgestuurd.',
-				status: 201,
-				redirectTo: '/financieel/ledger'
-			};
+			if (Number.isNaN(id)) {
+				const invoice = await db.saleInvoice.create({
+					data: {
+						termsOfPayment: data.termsOfPayment,
+						toId: Number(data.toId),
+						ref: data.reference,
+						treasurerId: data.user.id
+					}
+				});
+
+				await createInvoiceRows(data.rows, invoice.id);
+
+				return {
+					success: true,
+					message: 'Factuur aangemaakt, je wordt nu doorgestuurd.',
+					status: 201,
+					redirectTo: '/financieel/sales'
+				};
+			} else {
+				await db.saleInvoice.update({
+					where: { id },
+					data: {
+						termsOfPayment: data.termsOfPayment,
+						toId: Number(data.toId),
+						ref: data.reference,
+						treasurerId: data.user.id
+					}
+				});
+
+				await db.saleInvoiceRow.deleteMany({
+					where: { saleInvoiceId: id }
+				});
+
+				await createInvoiceRows(data.rows, id);
+
+				return {
+					success: true,
+					message: 'Factuur opgeslagen',
+					status: 200,
+					redirectTo: `/financieel/sales`
+				};
+			}
 		} catch (e: any) {
+			console.error(e);
 			return {
 				success: false,
 				status: 500,
@@ -35,19 +95,12 @@ export const createInvoiceForm = new Form<{
 		}
 	},
 	requiredRoles: [Roles.Admins, Roles.FinanCie, Roles.Senaat],
-	needsConfirmation: true,
 	fields: [
 		{
 			label: 'Referentie',
 			name: 'reference',
 			type: 'text'
 		} as Field<'text'>,
-		{
-			label: 'Factuurdatum',
-			name: 'date',
-			type: 'date',
-			value: new Date()
-		} as Field<'date'>,
 		{
 			label: 'Betalingstermijn',
 			name: 'termsOfPayment',
@@ -69,15 +122,13 @@ export const createInvoiceForm = new Form<{
 			}
 		} as Field<'select'>,
 		{
-			name: 'isNotSend',
-			type: 'checkbox',
-			label: 'Draft',
-			value: true,
-			description: 'Een factuur kan niet meer worden gewijzigd als deze geen draft meer is.'
-		} as Field<'checkbox'>,
+			name: 'id',
+			type: 'hidden'
+		} as Field<'hidden'>,
 		{
 			type: 'table',
 			name: 'rows',
+			label: 'Factuurregels',
 			columns: [
 				{
 					name: 'amount',
@@ -133,5 +184,5 @@ export const createInvoiceForm = new Form<{
 		} as Field<'table'>
 	],
 	formId: 'create-invoice-form',
-	submitStr: 'Aanmaken'
+	submitStr: 'Opslaan'
 });

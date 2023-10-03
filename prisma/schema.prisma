@@ -521,12 +521,11 @@ model Declaration {
 // Uitgaande factuur
 model SaleInvoice {
   id             Int              @id @default(autoincrement())
-  reference      String?
+  ref            String?
   rows           SaleInvoiceRow[]
-  date           DateTime         @db.Date
+  date           DateTime?        @db.Date
   // Aantal dagen
   termsOfPayment Int
-  sent           Boolean          @default(false)
 
   to   FinancialPerson @relation(fields: [toId], references: [id])
   toId Int
