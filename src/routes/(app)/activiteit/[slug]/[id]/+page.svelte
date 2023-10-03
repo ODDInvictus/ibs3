@@ -194,7 +194,7 @@
 					}}
 					alt={nameWithoutMarkdown}
 					src={activity.photo
-						? `/image/${activity.photo.filename}?size=500x250`
+						? `/image/${activity.photo.filename}?size=1000x500`
 						: `/image/favicon-512.png?static=true`}
 					onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
 				/>
