@@ -253,6 +253,7 @@ export class Form<T> {
 		for (const field of fields) {
 			// @ts-expect-error
 			if (values && field.name in values) field.value = values[field.name];
+			else field.value = undefined;
 
 			if (field.type === 'user') {
 				const users = await db.user.findMany({

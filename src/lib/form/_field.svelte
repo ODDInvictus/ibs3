@@ -10,11 +10,12 @@
 	const addTableAndRow = (table: Field<'table'>, row: number, field: Field<FieldType>) => {
 		const f = { ...field };
 
-		// @ts-expect-error
-		const rowValues = table.value[row];
-		if (rowValues) {
-			const value = rowValues[f.name];
-			if (value) f.value = value;
+		if (table.value) {
+			const rowValues = table.value[row];
+			if (rowValues) {
+				const value = rowValues[f.name];
+				if (value) f.value = value;
+			}
 		}
 
 		if (!f.name.startsWith('table-')) f.name = `table-${table.name}-${row}-${f.name}`;
@@ -31,8 +32,9 @@
 		return 0;
 	};
 
-	// TODO fix this mounted thiny
+	// TODO fix table.rows
 	let mounted = false;
+	$: if (field.type !== 'select' && field.type !== 'table') mounted = true;
 	onMount(() => {
 		if (field.type === 'table') {
 			delete field.rows;
@@ -95,7 +97,7 @@
 								{/if}
 							</td>
 							<td>
-								{#if rows.length > 1}
+								{#if rows.length - deleted.length > 1}
 									<i on:click={() => (deleted = [...deleted, i])}><Trash /></i>
 								{/if}
 							</td>
@@ -120,7 +122,14 @@
 		<p id="{field.name}-error" class="form-error" />
 	{/if}
 {:else}
-	<div class="loader {field.type == 'table' ? 'table-loader' : ''}" />
+	{#if field.type == 'table'}
+		<div class="spacer" />
+	{/if}
+	<div class="loader" />
+	{#if field.type == 'table'}
+		<div class="spacer" />
+		<div class="loader table" />
+	{/if}
 {/if}
 
 <style>
@@ -133,10 +142,16 @@
 		animation: loading 1.5s ease infinite;
 		background-size: 400% 400%;
 		border-radius: 1rem;
+		min-height: 41px;
 	}
 
-	.table-loader {
-		height: 40px;
+	.spacer {
+		height: 41px;
+	}
+
+	table,
+	.table {
+		margin-bottom: 1rem;
 	}
 
 	@keyframes loading {

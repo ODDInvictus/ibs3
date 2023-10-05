@@ -403,6 +403,8 @@ model FinancialPersonDataOther {
   description String?
   email       String?
   address     String?
+  postalCode  String?
+  city        String?
   iban        String?
 }
 
@@ -526,6 +528,8 @@ model SaleInvoice {
   date           DateTime?        @db.Date
   // Aantal dagen
   termsOfPayment Int
+  tav            String?
+  description    String?
 
   to   FinancialPerson @relation(fields: [toId], references: [id])
   toId Int

@@ -35,12 +35,15 @@ const createInvoiceRows = async (rows: row[], invoiceId: number) => {
 export const createInvoiceForm = new Form<{
 	termsOfPayment: number;
 	toId: string;
+	description?: string;
+	tav?: string;
 	reference?: string;
 	id?: string;
 	rows: row[];
 }>({
 	title: 'Factuur maken',
 	logic: async (data) => {
+		// id is an hidden input that is set when editing an invoice
 		const id = Number(data.id);
 		try {
 			if (Number.isNaN(id)) {
@@ -49,7 +52,9 @@ export const createInvoiceForm = new Form<{
 						termsOfPayment: data.termsOfPayment,
 						toId: Number(data.toId),
 						ref: data.reference,
-						treasurerId: data.user.id
+						treasurerId: data.user.id,
+						description: data.description,
+						tav: data.tav
 					}
 				});
 
@@ -68,7 +73,9 @@ export const createInvoiceForm = new Form<{
 						termsOfPayment: data.termsOfPayment,
 						toId: Number(data.toId),
 						ref: data.reference,
-						treasurerId: data.user.id
+						treasurerId: data.user.id,
+						description: data.description,
+						tav: data.tav
 					}
 				});
 
@@ -102,6 +109,11 @@ export const createInvoiceForm = new Form<{
 			type: 'text'
 		} as Field<'text'>,
 		{
+			label: 'Omschrijving',
+			name: 'description',
+			type: 'text'
+		} as Field<'text'>,
+		{
 			label: 'Betalingstermijn',
 			name: 'termsOfPayment',
 			type: 'number'
@@ -112,7 +124,7 @@ export const createInvoiceForm = new Form<{
 			label: 'Klant',
 			getOptions: async () => {
 				const relations = await db.financialPerson.findMany({
-					where: { type: 'OTHER', isActive: true }
+					where: { OR: [{ type: 'OTHER' }, { type: 'USER' }], isActive: true }
 				});
 
 				return relations.map((relation) => ({
@@ -121,6 +133,11 @@ export const createInvoiceForm = new Form<{
 				}));
 			}
 		} as Field<'select'>,
+		{
+			name: 'tav',
+			type: 'text',
+			label: 'T.a.v.'
+		} as Field<'text'>,
 		{
 			name: 'id',
 			type: 'hidden'

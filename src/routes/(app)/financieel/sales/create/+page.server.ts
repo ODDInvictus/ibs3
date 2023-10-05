@@ -4,34 +4,38 @@ import { createInvoiceForm } from './createInvoiceForm';
 import db from '$lib/server/db';
 
 export const load = (async ({ url }) => {
+	// If the url contains an id, we are editing an invoice
 	const invoiceId = Number(url.searchParams.get('id'));
-	if (isNaN(invoiceId)) throw error(400);
 
-	const invoice = await db.saleInvoice.findUnique({
-		where: { id: invoiceId },
-		include: {
-			rows: true
-		}
-	});
+	if (invoiceId) {
+		if (isNaN(invoiceId)) throw error(400);
+		const invoice = await db.saleInvoice.findUnique({
+			where: { id: invoiceId },
+			include: {
+				rows: true
+			}
+		});
+		if (!invoice) throw error(404);
+		if (invoice.date) throw redirect(300, `/financieel/sales/${invoice.id}`);
 
-	if (!invoice) throw error(404);
-	if (invoice.date) throw redirect(300, `/financieel/sales/${invoice.id}`);
-
-	await createInvoiceForm.transform({
-		values: {
-			id: invoice.id.toString(),
-			toId: invoice.toId.toString(),
-			termsOfPayment: invoice.termsOfPayment,
-			reference: invoice.ref ?? '',
-			rows: invoice.rows.map((row) => ({
-				amount: row.amount,
-				price: Number(row.price),
-				description: row.description,
-				ledgerId: row.ledgerId.toString(),
-				productId: row.productId?.toString()
-			}))
-		}
-	});
+		await createInvoiceForm.transform({
+			values: {
+				id: invoice.id.toString(),
+				toId: invoice.toId.toString(),
+				termsOfPayment: invoice.termsOfPayment,
+				reference: invoice.ref ?? '',
+				rows: invoice.rows.map((row) => ({
+					amount: row.amount,
+					price: Number(row.price),
+					description: row.description,
+					ledgerId: row.ledgerId.toString(),
+					productId: row.productId?.toString()
+				}))
+			}
+		});
+	} else {
+		await createInvoiceForm.transform();
+	}
 
 	return {
 		form: createInvoiceForm.attributes
