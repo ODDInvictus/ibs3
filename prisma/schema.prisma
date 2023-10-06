@@ -567,25 +567,28 @@ enum BankTransactionType {
 }
 
 enum BankTransactionProduct {
-  SAVINGS
-  CURRENT
+  Savings
+  Current
 }
 
 model BankTransaction {
-  id            Int                    @id @default(autoincrement())
-  SaleInvoice   SaleInvoice?
-  Amount        Decimal                @db.Decimal(19, 4)
-  startedDate   DateTime
-  completedDate DateTime?
-  fee           Decimal                @db.Decimal(19, 4)
-  description   String
+  id          Int          @id @default(autoincrement())
+  SaleInvoice SaleInvoice?
+
   type          BankTransactionType
   product       BankTransactionProduct
+  startedDate   DateTime
+  completedDate DateTime?
+  description   String
+  amount        Decimal                @db.Decimal(19, 4)
+  fee           Decimal                @db.Decimal(19, 4)
 
   from   FinancialPerson? @relation(fields: [fromId], references: [id], name: "BankTransactionFrom")
   fromId Int?
   to     FinancialPerson? @relation(fields: [toId], references: [id], name: "BankTransactionTo")
   toId   Int?
+
+  @@unique([type, product, startedDate, completedDate, description, amount, fee])
 }
 
 //
