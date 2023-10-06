@@ -106,12 +106,14 @@ export const createInvoiceForm = new Form<{
 		{
 			label: 'Referentie',
 			name: 'reference',
-			type: 'text'
+			type: 'text',
+			optional: true
 		} as Field<'text'>,
 		{
 			label: 'Omschrijving',
 			name: 'description',
-			type: 'text'
+			type: 'text',
+			optional: true
 		} as Field<'text'>,
 		{
 			label: 'Betalingstermijn',
@@ -136,7 +138,8 @@ export const createInvoiceForm = new Form<{
 		{
 			name: 'tav',
 			type: 'text',
-			label: 'T.a.v.'
+			label: 'T.a.v.',
+			optional: true
 		} as Field<'text'>,
 		{
 			name: 'id',

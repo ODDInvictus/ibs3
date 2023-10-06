@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import Table from '$lib/components/table.svelte';
 	import Title from '$lib/components/title.svelte';
+	import Plus from '~icons/tabler/plus';
 
 	export let data: PageData;
 </script>
@@ -21,5 +21,11 @@
 				<td>{relation.FinancialPersonDataOther?.description}</td>
 			</tr>
 		{/each}
+		<tr>
+			<td><a href="/financieel/relations/create"><Plus /></a></td>
+			<td colspan="2" />
+		</tr>
 	</tbody>
 </table>
+
+<a href="/financieel/relations/inactive">Inactieve relaties</a>

@@ -2,6 +2,7 @@
 	import type { Ledger } from '@prisma/client';
 	import Create from './Create.svelte';
 	import { openModal } from 'svelte-modals';
+	import Plus from '~icons/tabler/plus';
 
 	export let ledgers: Ledger[];
 	export let showAdd = true;
@@ -29,7 +30,7 @@
 						on:click={() => {
 							openModal(Create);
 						}}
-						>+
+						><Plus />
 					</button>
 				</td>
 				<td />

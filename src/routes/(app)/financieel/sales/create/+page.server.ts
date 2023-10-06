@@ -8,7 +8,7 @@ export const load = (async ({ url }) => {
 	const invoiceId = Number(url.searchParams.get('id'));
 
 	if (invoiceId) {
-		if (isNaN(invoiceId)) throw error(400);
+		if (Number.isNaN(invoiceId)) throw error(400);
 		const invoice = await db.saleInvoice.findUnique({
 			where: { id: invoiceId },
 			include: {

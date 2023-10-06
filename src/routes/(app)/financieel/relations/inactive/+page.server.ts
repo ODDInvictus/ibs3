@@ -6,7 +6,7 @@ export const load = (async () => {
 		relations: db.financialPerson.findMany({
 			where: {
 				type: 'OTHER',
-				isActive: true
+				isActive: false
 			},
 			select: {
 				FinancialPersonDataOther: {

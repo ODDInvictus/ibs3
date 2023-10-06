@@ -9,7 +9,21 @@ export const load = (async ({ params }) => {
 	return {
 		relation: db.financialPerson.findUnique({
 			where: { id },
-			include: { FinancialPersonDataOther: true }
+			include: {
+				FinancialPersonDataOther: true,
+				_count: {
+					select: {
+						SaleInvoice: true,
+						BankTransactionTo: true,
+						BankTransactionFrom: true,
+						Sale: true,
+						Acquisition: true,
+						TransactionFrom: true,
+						TransactionTo: true,
+						Streeplijst: true
+					}
+				}
+			}
 		})
 	};
 }) satisfies PageServerLoad;

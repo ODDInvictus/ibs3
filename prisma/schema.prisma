@@ -398,7 +398,7 @@ model FinancialPersonDataCommittee {
 // Alleen gebruiken als het echt niet anders kan, en met duidelijke notities
 // denk aan pollo, 44 etc.
 model FinancialPersonDataOther {
-  person      FinancialPerson @relation(fields: [personId], references: [id])
+  person      FinancialPerson @relation(fields: [personId], references: [id], onDelete: Cascade)
   personId    Int             @id
   description String?
   email       String?

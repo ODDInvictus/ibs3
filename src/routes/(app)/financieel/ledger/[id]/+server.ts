@@ -21,7 +21,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
 	if (!ledger) return new Response(null, { status: 404 });
 
 	if (ledger._count.Transaction > 0) {
-		return new Response(null, { status: 400 });
+		return new Response(null, { status: 409 });
 	}
 
 	await db.ledger.delete({ where: { id: ledgerId } });
