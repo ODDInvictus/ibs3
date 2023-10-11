@@ -33,6 +33,9 @@ export const load = (async ({ locals }) => {
 								nickname: true
 							}
 						}
+					},
+					where: {
+						liked: true
 					}
 				}
 			}

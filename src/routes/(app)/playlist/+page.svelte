@@ -143,13 +143,18 @@
 {:else}
 	<content>
 		<div class="card">
-			<img
-				src={getSmallestImageAbove300(current.album.images).url}
-				alt={`${current.name} album cover`}
-			/>
+			<a href={`/playlist/${current.id}`}>
+				<img
+					src={getSmallestImageAbove300(current.album.images).url}
+					alt={`${current.name} album cover`}
+				/>
+			</a>
 			<div class="info">
 				<div class="top">
-					<p class={current.name.replace(' ', '').length > 30 ? 'slide' : ''}>{current.name}</p>
+					<a
+						class={current.name.replace(' ', '').length > 30 ? 'slide' : ''}
+						href={`/playlist/${current.id}`}>{current.name}</a
+					>
 					<p class={formatArtists(current.artists).length > 35 ? 'slide artists' : 'artists'}>
 						{formatArtists(current.artists)}
 					</p>
