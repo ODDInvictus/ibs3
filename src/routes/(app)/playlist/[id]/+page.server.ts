@@ -23,7 +23,8 @@ export const load = (async ({ params }) => {
 							select: {
 								nickname: true,
 								firstName: true,
-								picture: true,
+								lastName: true,
+								profilePictureId: true,
 								id: true
 							}
 						}

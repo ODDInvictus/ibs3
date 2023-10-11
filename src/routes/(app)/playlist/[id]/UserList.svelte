@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { env } from '$env/dynamic/public';
+	import ProfileIcon from '$lib/components/profile-icon.svelte';
 
 	export let users: {
 		firstName: string;
-		picture: string | null;
+		lastName: string;
+		profilePictureId: number | null;
 		nickname: string | null;
 		id: number;
 	}[];
@@ -17,12 +19,7 @@
 		{#each users as user}
 			<li>
 				<a href={`/playlist/create/${user.id}`}>
-					<img
-						src={user.picture
-							? env.PUBLIC_UPLOAD_URL + 'users/' + user.picture
-							: 'https://avatars.githubusercontent.com/u/11670885?v=4'}
-						alt={user.firstName}
-					/>
+					<ProfileIcon uid={user.profilePictureId} name={user.firstName + ' ' + user.lastName} />
 					<p>{user.nickname ?? user.firstName}</p>
 				</a>
 			</li>
@@ -39,6 +36,7 @@
 		ul {
 			display: flex;
 			flex-direction: column;
+			align-items: center;
 			gap: $margin;
 			margin-top: $margin;
 
@@ -46,13 +44,6 @@
 				display: flex;
 				gap: $margin;
 				align-items: center;
-
-				img {
-					height: 3rem;
-					width: 3rem;
-					object-fit: cover;
-					border-radius: 100%;
-				}
 			}
 		}
 	}
