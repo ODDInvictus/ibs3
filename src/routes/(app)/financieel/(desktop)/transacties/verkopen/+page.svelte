@@ -37,7 +37,7 @@
 				toast({
 					title: 'Er is iets fout gegaan',
 					message: 'Er is iets fout gegaan bij het verwerken van de streeplijst',
-					type: 'error'
+					type: 'danger'
 				});
 			}
 		});
@@ -58,7 +58,7 @@
 		</div>
 	{/if}
 
-	<table>
+	<table class="equal-width striped small">
 		<thead>
 			<tr>
 				<th>ID</th>

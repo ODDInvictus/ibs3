@@ -1,0 +1,78 @@
+.ibs-card {
+	width: auto;
+	height: auto;
+
+	position: relative;
+
+	background-color: var(--color-card);
+
+	border-radius: var(--border-radius);
+	box-shadow: 0 0 0.5rem 0 var(--color-box-shadow);
+
+	text-align: start;
+
+	& > .ibs-card--image {
+		img,
+		source {
+			// ignore padding for the image
+			width: 100%;
+			object-fit: cover;
+			aspect-ratio: 5/2;
+			border-top-left-radius: var(--border-radius);
+			border-top-right-radius: var(--border-radius);
+		}
+	}
+
+	& > .ibs-card--title {
+		padding: 1rem 0 0rem 1rem;
+	}
+
+	& > .ibs-card--links {
+		// stick to the bottom
+		position: absolute;
+		bottom: 0;
+		left: 0;
+
+		padding: 0 0 1rem 1rem;
+	}
+
+	& > .ibs-card--buttons {
+		padding: 0 0 1rem 1rem;
+	}
+
+	& > .ibs-card--buttons.top {
+		padding: 0;
+		padding-top: 1rem;
+	}
+
+	& > .ibs-card--row {
+		padding: 0.5rem 1rem 0.5rem 1rem;
+		border-top: 1px solid var(--color-card-border);
+
+		& > i {
+			padding-right: 0.5rem;
+		}
+
+		&:first-of-type {
+			margin-top: 0.5rem;
+			padding: 0.5rem 1rem 0.5rem 1rem;
+		}
+
+		&:nth-last-of-type(2) {
+			border-bottom: 1px solid var(--color-card-border);
+		}
+	}
+
+	& > .ibs-card--content {
+		padding: 1rem;
+	}
+}
+
+.ibs-card.outline {
+	border: 1px solid var(--color-card-border);
+}
+
+.ibs-card:hover {
+	transition: box-shadow 0.2s ease-in-out;
+	box-shadow: 0 0 1rem 0 var(--color-box-shadow);
+}

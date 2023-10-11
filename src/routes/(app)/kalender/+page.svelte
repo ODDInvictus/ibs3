@@ -1,26 +1,26 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { env } from '$env/dynamic/public';
 	import Title from '$lib/components/title.svelte';
 	import { markdown } from '$lib/utils';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 </script>
 
 <Title title="Kalender" />
 <a id="new-activity-link" href="/activiteit/nieuw">Activiteit aanmaken</a>
 
 <div id="activities">
-	{#each $page.data.activities as activity}
+	{#each data.activities as activity}
 		<div class="row">
 			<div class="image">
-				{#if activity.image == null}
-					<img
-						src={env.PUBLIC_UPLOAD_URL + 'activities/activiteit-0-logo.png'}
-						alt="Placeholder mist?"
-					/>
+				{#if !activity.photo}
+					<img src="/image/favicon-512.png?static=true" alt="⏳" />
 				{:else}
 					<img
-						src={env.PUBLIC_UPLOAD_URL + 'activities/' + activity.image}
-						alt="Geen plaatje geupload :("
+						src="/image/id/{activity.photo.id}?size=750x375"
+						onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
+						alt="⏳"
+						loading="lazy"
 					/>
 				{/if}
 
@@ -52,7 +52,7 @@
 </div>
 
 <style lang="scss">
-	$border-radius: 10px;
+	$border-radius: var(--border-radius);
 	$card-height: 250px;
 	$card-height-sm: 100px;
 
@@ -63,7 +63,7 @@
 		align-items: center;
 		margin: 0 40px;
 
-		@media screen and (max-width: 640px) {
+		@media screen and (max-width: 600px) {
 			margin: 0 10px !important;
 		}
 	}
@@ -74,7 +74,7 @@
 		height: $card-height;
 		width: 100%;
 
-		@media screen and (max-width: 640px) {
+		@media screen and (max-width: 600px) {
 			height: $card-height-sm;
 		}
 
@@ -84,7 +84,7 @@
 		.image {
 			position: relative;
 
-			@media screen and (max-width: 640px) {
+			@media screen and (max-width: 600px) {
 				.date-tag {
 					display: none !important;
 				}
@@ -93,7 +93,7 @@
 			img {
 				height: $card-height;
 
-				@media screen and (max-width: 640px) {
+				@media screen and (max-width: 600px) {
 					height: $card-height-sm;
 				}
 
@@ -107,7 +107,7 @@
 				border-bottom-left-radius: $border-radius;
 				border-bottom-right-radius: $border-radius;
 
-				background-color: var(--card-color);
+				background-color: var(--color-card);
 
 				position: absolute;
 				z-index: 1;
@@ -132,9 +132,15 @@
 			grid-template-rows: 1fr 4fr 1fr 1fr;
 			height: $card-height;
 
+			.activity-title {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
 			.activity-description {
 				overflow-x: hidden;
-				overflow-y: scroll;
+				overflow-y: auto;
 			}
 
 			.activity-time {
@@ -151,7 +157,7 @@
 				display: none;
 			}
 
-			@media screen and (max-width: 640px) {
+			@media screen and (max-width: 600px) {
 				grid-template-rows: 1fr 1fr 1fr;
 				height: $card-height-sm;
 
@@ -180,6 +186,6 @@
 	}
 
 	hr {
-		margin: var(--hr-margin);
+		margin: 0.5rem;
 	}
 </style>

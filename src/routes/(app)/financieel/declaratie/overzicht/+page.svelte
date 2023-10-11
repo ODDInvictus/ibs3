@@ -58,52 +58,54 @@
 		{/if}
 	</p>
 
-	<table>
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Prijs</th>
-				<th>Datum</th>
-				<th>Persoon</th>
-				<th>Reden</th>
-				<th>Betaalwijze</th>
-				<th>Acties</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#if !$page.data.declarations.length}
+	<div class="table-wrapper">
+		<table class="striped small">
+			<thead>
 				<tr>
-					<td colspan="7">
-						<p id="no-decla">Geen declaraties gevonden</p>
-						<a href="/financieel/declaratie" class="link">Wil je een declaratie doen?</a>
-					</td>
+					<th>Id</th>
+					<th>Prijs</th>
+					<th>Datum</th>
+					<th>Persoon</th>
+					<th>Reden</th>
+					<th>Betaalwijze</th>
+					<th>Acties</th>
 				</tr>
-			{/if}
-			{#each $page.data.declarations as declaration}
-				<tr data-id={declaration.id}>
-					<td>{declaration.id}</td>
-					<td class="price">{formatPrice(declaration.price)}</td>
-					<td>{new Date(declaration.createdAt).toLocaleString('nl-NL')}</td>
-					<td>{declaration.person.name}</td>
-					<td>{declaration.reason}</td>
-					<td>{declaration.methodOfPayment}</td>
-					<td>
-						<div class="actions">
-							<button on:click={() => process(declaration.id, 'accept')}>
-								<Check class="text-green-500" />
-							</button>
-							<button on:click={() => process(declaration.id, 'decline')}>
-								<XCircle class="text-red-500" />
-							</button>
-							<a href="/financieel/declaratie/{declaration.id}">
-								<Edit class="text-purple-500" />
-							</a>
-						</div>
-					</td>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				{#if !$page.data.declarations.length}
+					<tr>
+						<td colspan="7">
+							<p id="no-decla">Geen declaraties gevonden</p>
+							<a href="/financieel/declaratie" class="link">Wil je een declaratie doen?</a>
+						</td>
+					</tr>
+				{/if}
+				{#each $page.data.declarations as declaration}
+					<tr data-id={declaration.id}>
+						<td>{declaration.id}</td>
+						<td class="price">{formatPrice(declaration.price)}</td>
+						<td>{new Date(declaration.createdAt).toLocaleString('nl-NL')}</td>
+						<td>{declaration.person.name}</td>
+						<td>{declaration.reason}</td>
+						<td>{declaration.methodOfPayment}</td>
+						<td>
+							<div class="actions">
+								<button class="btn-a" on:click={() => process(declaration.id, 'accept')}>
+									<Check class="text-green-500" />
+								</button>
+								<button class="btn-a" on:click={() => process(declaration.id, 'decline')}>
+									<XCircle class="text-red-500" />
+								</button>
+								<a href="/financieel/declaratie/{declaration.id}">
+									<Edit class="text-purple-500" />
+								</a>
+							</div>
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
 </div>
 
 <style lang="scss">
@@ -119,9 +121,13 @@
 		margin-bottom: 1rem;
 	}
 
-	@media (max-width: 640px) {
+	@media (max-width: 600px) {
 		#root {
-			overflow: scroll;
+			overflow: hidden;
+		}
+
+		.table-wrapper {
+			overflow-x: scroll;
 		}
 
 		table {

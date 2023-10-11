@@ -8,6 +8,8 @@ import { verdubbelStrafbakken } from './strafbakken';
 import { prisma } from './prisma';
 import { newActivitiyNotification } from './notifications';
 import { sendCustomEmail } from './email-utils';
+import { processPhotos } from './image-processing';
+import redis from './redis';
 
 const API_VERSION = '1.0.1'
 
@@ -23,27 +25,6 @@ const port = process.env.BACKEND_PORT || 3000
 app.use(express.json())
 
 app.get('/version', (req, res) => res.json({ version: API_VERSION }))
-
-app.post('/notify/activity/:id', async (req, res) => {
-  const id = req.params.id
-
-  const activity = await prisma.activity.findUnique({
-    where: {
-      id: Number(id)
-    }
-  })
-
-  if (!activity) {
-    res.sendStatus(404)
-    return
-  }
-
-  // Now return to the client
-  res.sendStatus(200)
-
-  // Send notifications
-  await newActivitiyNotification(activity)
-})
 
 app.post('/email/send', async (req, res) => {
   const b = req.body
@@ -64,6 +45,42 @@ app.post('/email/send', async (req, res) => {
 
 app.listen(port, async () => {
   console.log(`Job scheduler listening at http://localhost:${port}`)
+
+  console.log('Connecting to redis...')
+  await redis.connect()
+
+  console.log('[REDIS] Listening for jobs')
+  // Listen for photo processing
+  await redis.subscribe('photo-processing', async (msg) => {
+    if (!msg) return
+    console.log('[REDIS] Received photo-processing job', msg)
+    // New photo's have been uploaded, process them
+    await processPhotos()
+  })
+
+  await redis.subscribe('new-activity', async (msg) => {
+    if (!msg) return
+
+    const body = JSON.parse(msg)
+
+    console.log('[REDIS] Received new-activity job', body.data)
+
+    const aid = Number.parseInt(body.data)
+
+    const activity = await prisma.activity.findUnique({
+      where: {
+        id: aid
+      }
+    })
+
+    if (!activity) {
+      console.log('[REDIS] Invalid activity id')
+      return
+    }
+
+    // Now send out the discord notification and emails
+    await newActivitiyNotification(activity)
+  })
 })
 
 /*

@@ -63,9 +63,6 @@ async function newActivityDiscord(activity: Activity, location?: string) {
     description: activity.description,
     color: 0x8800bb,
     fields: fields,
-    thumbnail: {
-      url: `${process.env.PUBLIC_UPLOAD_URL}/activities${activity.image ?? 'activiteit-0-logo.png'}`
-    }
   }
 
   await sendNotification(obj)

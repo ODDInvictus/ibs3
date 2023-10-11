@@ -20,7 +20,7 @@
 					return toast({
 						title: 'Oei!',
 						message: `${value} is geen geldig email adres`,
-						type: 'error'
+						type: 'danger'
 					});
 				}
 
@@ -51,7 +51,7 @@
 					return toast({
 						title: 'Oei!',
 						message: 'Geen gebruiker geselecteerd',
-						type: 'error'
+						type: 'danger'
 					});
 
 				// Now get the ID
@@ -82,7 +82,7 @@
 				toast({
 					title: 'Oei!',
 					message: obj.message,
-					type: 'error'
+					type: 'danger'
 				});
 			}
 		});
@@ -137,7 +137,7 @@
 		</div>
 	</div>
 {/if}
-<a href="/admin/email/alias"> Terug </a>
+<a id="back" href="/admin/email/alias"> Terug </a>
 
 <style lang="scss">
 	span {
@@ -155,5 +155,10 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+
+	#back {
+		display: inline-block;
+		padding-top: 1rem;
 	}
 </style>

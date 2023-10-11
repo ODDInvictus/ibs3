@@ -38,8 +38,12 @@ export default function IBSAdapter(client: PrismaClient) {
       })
     },
     async linkAccount(data: any) {
-      const account = await client.account.create({ data })
-      return account
+      data.expires_in = data.expires_at
+      delete data['expires_at']
+
+      console.log(data)
+
+      return await client.account.create({ data })
     },
     unlinkAccount: (provider_providerAccountId) => client.account.delete({ where: { provider_providerAccountId } }) as any,
     async getSessionAndUser(sessionToken) {
@@ -51,14 +55,26 @@ export default function IBSAdapter(client: PrismaClient) {
       const { user, ...session } = userAndSession
       return { user, session }
     },
-    createSession: (data) => client.session.create({ data }),
-    updateSession: (data) => client.session.update({ data, where: { sessionToken: data.sessionToken } }),
+    createSession: (data) => {
+      client.session.create({ data })
+    },
+    updateSession: (data) => {
+      client.session.update({ data, where: { sessionToken: data.sessionToken } })
+    },
     deleteSession: (sessionToken) => client.session.delete({ where: { sessionToken } }),
     async getUserByAccount(provider_providerAccountId) {
       const account = await client.account.findUnique({
         where: { provider_providerAccountId },
         select: { user: true },
       })
+      // User logging in, update lastLoggedIn property
+      if (account?.user) {
+        await client.user.update({
+          where: { id: account.user.id },
+          data: { lastLoggedin: new Date() },
+        })
+      }
+
       return account?.user ?? null
     },
   }

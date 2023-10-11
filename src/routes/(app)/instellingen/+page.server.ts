@@ -10,6 +10,7 @@ export const load = (async ({ locals }) => {
       include: {
         base: true
       }
-    })
+    }),
+    currentTheme: locals.user.preferredTheme
   };
 }) satisfies PageServerLoad;

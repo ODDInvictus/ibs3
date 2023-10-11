@@ -39,7 +39,7 @@ export type Field<T extends FieldType> = {
   maxLength?: number
   minLength?: number
   options?: T extends SelectField ? OptionField<InputType>[] : never
-  getOptions?: (user: User) => Promise<OptionField<InputType>[]>
+  getOptions?: (user: User | null) => Promise<OptionField<InputType>[]>
   description?: string
   placeholder?: string
 }
@@ -64,9 +64,14 @@ type LogicReturnErrorType = {
   status: number
 }
 
+type LogicDataType<T> = T & {
+  user: User
+}
+
 
 type FormType<T> = {
   title: string
+  shortTitle?: string
   description?: string
   formId: string
   fields: Field<FieldType>[]
@@ -75,7 +80,7 @@ type FormType<T> = {
   actionName?: string
   needsConfirmation?: boolean
   confirmText?: string
-  logic: (data: T) => Promise<LogicReturnType>
+  logic: (data: LogicDataType<T>) => Promise<LogicReturnType>
   extraValidators?: (data: T) => Promise<FormError[]>
 }
 
@@ -91,7 +96,7 @@ export class Form<T> {
     this.f = form
   }
 
-  private generateZod() {
+  private async generateZod() {
     let zod = z.object({})
 
     for (const field of this.f.fields) {
@@ -102,7 +107,15 @@ export class Form<T> {
       // text, number, date, checkbox, time, select, url, textarea
 
       if (field.type === 'select') {
-        if (!field.options || field.options.length === 0) throw new Error(`Select field has no options`)
+        // Now check if there is a field.options with more than 0 items, or, if the field has a getOptions function
+        if (!field.options && !field.getOptions) {
+          console.log(field)
+          throw new Error(`Select field has no options or getOptions function`)
+        }
+
+        if (field.getOptions) {
+          await field.getOptions({} as User)
+        }
 
         const options = field.options.map(option => String(option.value))
 
@@ -142,7 +155,7 @@ export class Form<T> {
           return value instanceof Date && !isNaN(value.getTime())
         }, { message: `${label} is verplicht` })
       } else if (field.type === 'url') {
-        obj = z.string().url({ message: `${label} is geen geldige URL` }).optional().or(z.literal(''))
+        obj = z.string().url({ message: `${label} is geen geldige URL` })
 
       } else {
         const min = field.minLength || 0
@@ -165,7 +178,7 @@ export class Form<T> {
     this.zodSchema = zod
   }
 
-  async transform(user: User) {
+  async transform(user: User | null) {
     for (const field of this.f.fields) {
       if (field.type === 'user') {
         const users = await db.user.findMany({
@@ -218,7 +231,7 @@ export class Form<T> {
       }
     }
 
-    this.generateZod()
+    await this.generateZod()
     this.transformed = true
   }
 
@@ -304,6 +317,8 @@ export class Form<T> {
 
         validated = validated as Awaited<T>
 
+        (validated as LogicDataType<T>).user = locals.user
+
         const ret = await this.f.logic(validated)
 
         if (ret.success) {
@@ -320,6 +335,7 @@ export class Form<T> {
 
     return {
       title: this.f.title,
+      shortTitle: this.f.shortTitle,
       description: this.f.description,
       fields: this.f.fields,
       needsConfirmation: this.f.needsConfirmation,

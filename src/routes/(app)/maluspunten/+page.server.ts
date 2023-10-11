@@ -4,7 +4,7 @@ import { error, fail } from "@sveltejs/kit";
 import { authMember } from '$lib/server/authorizationMiddleware';
 
 export const load = (async ({ locals }) => {
-  const [ok] = authMember(locals)
+  const [ok] = await authMember(locals)
 
   if (!ok) {
     return error(403)

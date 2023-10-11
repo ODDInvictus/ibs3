@@ -1,7 +1,9 @@
 import db from '$lib/server/db'
 import { fail } from '@sveltejs/kit'
-import fs from 'fs'
-import { env } from '$env/dynamic/private'
+import type { Actions, PageServerLoad } from './$types.js'
+import { getPhotoCreator, uploadPhoto } from '$lib/server/images.js'
+import { createRedisJob } from '$lib/server/cache.js'
+import { invalidateUser } from '$lib/server/userCache.js'
 
 export const load = (async ({ params, locals }) => {
   let id = params.id
@@ -16,13 +18,32 @@ export const load = (async ({ params, locals }) => {
     }
   })
 
+
+  const committees = await db.committee.findMany({
+    where: {
+      CommitteeMember: {
+        some: {
+          member: {
+            ldapId: id
+          }
+        }
+      }
+    },
+    select: {
+      ldapId: true,
+      name: true,
+    }
+  })
+
   const isCurrentUser = locals.user.ldapId === member.ldapId
 
   return {
     member,
-    isCurrentUser
+    isCurrentUser,
+    committees,
+    title: member.firstName + ' ' + member.lastName,
   }
-})
+}) satisfies PageServerLoad
 
 export const actions = {
   default: async ({ request, params, locals }) => {
@@ -36,16 +57,27 @@ export const actions = {
 
     const data = Object.fromEntries(await request.formData())
 
+    const abuf = await data.image.arrayBuffer()
+
+    if (abuf.byteLength === 0) {
+      return fail(400, { success: false, message: 'Geen foto geupload' })
+    }
+
     db.$transaction(async tx => {
 
-      const d = new Date()
-      const date = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
-      const filename = `profiel-${locals.user.ldapId}-${date}-${data.image.name}`
+      const img = data.image as any
 
-      const image = await data.image.arrayBuffer()
-
-      // save the image
-      fs.writeFileSync(`${env.UPLOAD_FOLDER}/users/${filename}`, Buffer.from(image), { encoding: 'binary' })
+      const p = await uploadPhoto({
+        upload: {
+          filename: img.name,
+          buf: Buffer.from(abuf)
+        },
+        additionalName: 'profiel',
+        runProcessingJob: false,
+        uploader: locals.user,
+        creator: await getPhotoCreator(locals.user, false),
+        invisible: true
+      }, tx)
 
       // update the user
       await tx.user.update({
@@ -53,9 +85,10 @@ export const actions = {
           ldapId: locals.user.ldapId
         },
         data: {
-          picture: filename
+          profilePictureId: p.id
         }
       })
-    })
+    }).then(async () => await createRedisJob('photo-processing'))
+      .then(() => invalidateUser(locals.user.email))
   }
-}
+} satisfies Actions

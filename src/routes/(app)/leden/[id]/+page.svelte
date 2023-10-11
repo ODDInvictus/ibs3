@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { env } from '$env/dynamic/public';
+	import InputFile from '$lib/components/input-file.svelte';
 	import Title from '$lib/components/title.svelte';
+	import type { PageData } from './$types.js';
 
 	let member = $page.data.member;
 
@@ -18,7 +20,9 @@
 		'becameMember',
 		'lastLoggedin',
 		'picture',
-		'id'
+		'id',
+		'isActive',
+		'personalEmail'
 	];
 
 	const fields = Object.keys(member).filter((key) => !usedFields.includes(key));
@@ -39,20 +43,23 @@
 	}
 
 	export let form;
+
+	export let data: PageData;
 </script>
 
 <Title title="{member.firstName} {member.lastName}" />
 
 <div id="img">
-	<img
-		src={env.PUBLIC_UPLOAD_URL + '/users/' + member?.picture ?? 'miel.jpg'}
-		alt={member.firstName}
-	/>
+	{#if !member.profilePictureId}
+		<img src="/image/logo.png?static=true" alt={member.firstName} />
+	{:else}
+		<img src="/image/id/{data.member.profilePictureId}" alt={member.firstName} />
+	{/if}
 
 	{#if $page.data.isCurrentUser}
 		<div>
 			<form method="POST" enctype="multipart/form-data">
-				<input type="file" name="image" accept="image/*" />
+				<InputFile name="image" id="image" accept="image/*" />
 				{#if form?.success !== undefined}
 					<p class="error">{form?.message}</p>
 				{:else}
@@ -77,6 +84,8 @@
 		<p>{toDate(member.birthDate)}</p>
 		<p>Leeftijd</p>
 		<p>{getAge(new Date(member.birthDate))}</p>
+		<p>Persoonlijke email</p>
+		<p>{member.personalEmail}</p>
 	</div>
 </div>
 
@@ -103,6 +112,8 @@
 	<div>
 		<p>ID</p>
 		<p>{member.id}</p>
+		<p>Actief lid</p>
+		<p>{member.isActive}</p>
 		<p>Bijnaam</p>
 		<p>{member.nickname}</p>
 		<p>Eerste meeborrel</p>
@@ -132,6 +143,19 @@
 		</div>
 	</div>
 {/if}
+
+<div id="committees" class="info">
+	<h2>Commissies</h2>
+
+	<hr />
+
+	<div>
+		{#each $page.data.committees as committee}
+			<p>{committee.name}</p>
+			<a href="/leden/commissie/{committee.ldapId}">{committee.ldapId}</a>
+		{/each}
+	</div>
+</div>
 
 <style lang="scss">
 	$size: 250px;
@@ -199,9 +223,5 @@
 		height: $size;
 		object-fit: cover;
 		margin-left: $margin;
-	}
-
-	hr {
-		margin: var(--hr-margin);
 	}
 </style>

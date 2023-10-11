@@ -42,7 +42,7 @@ export const testForm = new Form<{
   },
   needsConfirmation: true,
   confirmText: 'Weet je zeker dat je deze activiteit wilt aanmaken?',
-  requiredRoles: [Roles.Users],
+  requiredRoles: [Roles.Members],
   formId: 'test-form',
   fields: [
     {

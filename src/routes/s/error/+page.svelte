@@ -1,31 +1,53 @@
-<div id="root">
-  <h1>
-    Oei! Die link bestaat niet
-  </h1>
-  
-  <p>Doe je niks aan.</p>
-</div>
+<script>
+	// @ts-nocheck
 
+	function back() {
+		history.back();
+	}
+</script>
+
+<main>
+	<h1>Oei! Die link bestaat niet</h1>
+
+	<p>Doe je niks aan.</p>
+
+	<button onclick="history.back()">Ga terug</button>
+</main>
 
 <style lang="scss">
-  #root {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+	main {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		height: 100vh;
 
-    color: white;
+		color: white;
 
-    background-color: var(--primary-color);
-  }
+		background-color: var(--color-primary);
+	}
 
-  h1 {
-    font-size: 5rem !important;
-  }
+	h1 {
+		font-size: 5rem;
+	}
 
-  p {
-    font-size: 2rem !important;
-    margin-bottom: 1rem;
-  }
+	p {
+		font-size: 2rem;
+	}
+
+	button {
+		font-size: 1.5rem;
+	}
+
+	@media (max-width: 600px) {
+		h1 {
+			font-size: 2rem;
+		}
+
+		p,
+		button {
+			font-size: 1rem;
+		}
+	}
 </style>

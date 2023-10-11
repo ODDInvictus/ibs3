@@ -4,9 +4,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install && \
-    npx prisma generate && \
-    bash /app/build.sh
+RUN npm install
+RUN npx prisma generate
+RUN npm run build
 
 FROM node:18.14.0 as runtime
 

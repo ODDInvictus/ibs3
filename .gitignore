@@ -10,6 +10,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 static/upload/
 !static/upload/activities/bier.jpg
+static/fotos/
 
 # Logs
 logs
@@ -141,3 +142,5 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+upload

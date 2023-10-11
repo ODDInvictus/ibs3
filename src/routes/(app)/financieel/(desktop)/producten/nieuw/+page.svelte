@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
-	import StyledButton from '$lib/components/StyledButton.svelte';
 
 	function mapProductType(productType: string) {
 		switch (productType) {

@@ -1,0 +1,62 @@
+.ibs-theme--dark {
+	--color-text: #f0f0f0;
+	--color-text-light: #f0f0f0;
+	--color-bg-base: #0c0c0c;
+	--color-bg: #1c1c1c;
+
+	--color-hr: #707070;
+	--color-hr-light: #000;
+
+	--color-card: #31313180;
+	--color-card-border: var(--color-hr);
+
+	// Override the default color for text
+	color: var(--color-text);
+
+	--color-comment-bg: #31313180;
+
+	--color-table-highlight: #551b8a;
+	--color-table-highlight-focus: rgba(85, 27, 138, 0.9);
+	--color-table-stripe: rgba(84, 27, 138, 0.288);
+	--color-table-focus: rgba(0, 0, 0, 0.205);
+
+	--color-form-border: var(--color-hr);
+	--color-form-focus: var(--color-primary);
+	--color-form-bg: #1b1b1bb9;
+
+	.form-group {
+		label {
+			color: var(--color-text);
+		}
+	}
+
+	.ibs-error-page {
+		background-color: var(--color-bg-base);
+
+		color: #c990ff;
+
+		code {
+			color: #c990ff;
+		}
+	}
+
+	a,
+	button.btn-a {
+		color: #c990ff;
+	}
+
+	a.button {
+		color: white;
+	}
+
+	.layout--navbar {
+		.logo {
+			svg {
+				path,
+				rect {
+					fill: #c990ff;
+				}
+			}
+		}
+	}
+}
