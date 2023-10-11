@@ -103,7 +103,7 @@
 			display: flex;
 			align-items: center;
 			cursor: pointer;
-			color: var(--primary-focus-color);
+			color: var(--color-primary);
 
 			&:hover {
 				text-decoration: underline;

@@ -137,7 +137,7 @@
 			gap: 20px;
 
 			&.highlight {
-				$hightlight-color: var(--primary-light-color);
+				$hightlight-color: var(--color-primary);
 
 				background-color: $hightlight-color;
 				box-shadow: $hightlight-color -20px 0px 0px 5px, $hightlight-color 20px 0px 0px 5px;
@@ -185,7 +185,7 @@
 				white-space: nowrap;
 
 				a {
-					color: var(--text-color);
+					color: var(--color-text);
 				}
 
 				.artists {

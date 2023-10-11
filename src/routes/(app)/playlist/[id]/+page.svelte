@@ -255,7 +255,7 @@
 			}
 
 			progress[value]::-webkit-progress-value {
-				background-color: var(--primary-light-color);
+				background-color: var(--color-primary);
 				border-radius: 1rem;
 				background-size: 35px 20px, 100% 100%, 100% 100%;
 			}
@@ -282,13 +282,13 @@
 			padding: 9px;
 			gap: 7px;
 			border-radius: 1rem;
-			background-color: var(--primary-light-color);
+			background-color: var(--color-primary);
 			align-items: center;
 			color: white;
 
 			&:hover {
 				text-decoration: none;
-				background-color: var(--primary-color);
+				background-color: var(--color-primary);
 			}
 		}
 	}
