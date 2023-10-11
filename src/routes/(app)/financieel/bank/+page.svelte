@@ -1,89 +1,42 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { toast } from '$lib/notification';
+	import type { PageData } from './$types';
+	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
+	import Title from '$lib/components/title.svelte';
 
-	let files: FileList | undefined;
-	let keys: string[] = [];
-	let transactions: string[][] = [];
-
-	const handleNewFile = async () => {
-		if (!files || files.length === 0) {
-			keys = [];
-			transactions = [];
-			return;
-		}
-		const file = files[0];
-		const json = csvJSON(await file.text());
-		keys = json.shift() ?? [];
-		transactions = json;
-	};
-
-	const csvJSON = (csv: string) => {
-		const data = csv.split('\n');
-		const keys = data.shift()?.split(',') ?? [];
-		const transactions: string[][] = [];
-		for (const row of data) {
-			transactions.push(row.split(','));
-		}
-		return [keys, ...transactions];
-	};
+	export let data: PageData;
 </script>
 
-<form
-	method="POST"
-	use:enhance={() => {
-		return ({ result }) => {
-			if (result.type === 'success') {
-				toast({
-					title: 'Gelukt!',
-					message: 'Bank transacties succesvol opgeslagen',
-					type: 'success'
-				});
-				files = undefined;
-				handleNewFile();
-			} else {
-				toast({
-					title: result.status?.toString() ?? 'Error',
-					message: 'Er is iets misgegaan',
-					type: 'danger'
-				});
-			}
-		};
-	}}
-	enctype="multipart/form-data"
->
-	<input type="file" name="file" id="file" bind:files on:change={handleNewFile} accept=".csv" />
-	<button type="submit">Upload</button>
-</form>
-
-{#if keys.length > 0}
-	<h2>Geselecteerde bestand:</h2>
-{/if}
+<Title title="Bank transactions" />
+<a href="/financieel/bank/upload" class="button">Upload bank transactions</a>
 <table>
 	<thead>
-		{#each keys as key}
-			<th>{key}</th>
-		{/each}
+		<tr>
+			<th>ID</th>
+			<th>Date</th>
+			<th>Referentie</th>
+			<th>Description</th>
+			<th>Amount</th>
+		</tr>
 	</thead>
 	<tbody>
-		{#each transactions as transaction}
+		{#each data.bankTransactions as transaction}
 			<tr>
-				{#each transaction as value}
-					<td>{value}</td>
-				{/each}
+				<td><a href="/financieel/bank/{transaction.id}">{transaction.id}</a></td>
+				<td
+					>{transaction.completedDate
+						? formatDateTimeHumanReadable(new Date(transaction.completedDate))
+						: 'Pending'}</td
+				>
+				<td>{transaction.ref ?? ''}</td>
+				<td>{transaction.description}</td>
+				<td>{transaction.amount}</td>
 			</tr>
 		{/each}
 	</tbody>
 </table>
 
 <style>
-	form {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	button {
-		width: fit-content;
+	table {
+		margin-top: 2rem;
 	}
 </style>

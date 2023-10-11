@@ -11,6 +11,12 @@ type row = {
 	productId?: string;
 };
 
+/**
+ * Creates sale invoice rows in the database.
+ * @param rows - An array of row objects containing information about the sale invoice rows.
+ * @param invoiceId - The ID of the sale invoice to which the rows belong.
+ * @returns A Promise that resolves when all the sale invoice rows have been created in the database.
+ */
 const createInvoiceRows = async (rows: row[], invoiceId: number) => {
 	const rowInsertions: Promise<SaleInvoiceRow>[] = [];
 	rows.forEach((row) => {
@@ -123,7 +129,7 @@ export const createInvoiceForm = new Form<{
 		{
 			name: 'toId',
 			type: 'select',
-			label: 'Klant',
+			label: 'Relatie',
 			getOptions: async () => {
 				const relations = await db.financialPerson.findMany({
 					where: { OR: [{ type: 'OTHER' }, { type: 'USER' }], isActive: true }

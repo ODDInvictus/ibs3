@@ -248,15 +248,16 @@ model Attending {
 // Grootboek rekening
 model Ledger {
   // Administratieve gegevens
-  id             Int              @id
-  name           String
-  description    String
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  id              Int               @id
+  name            String
+  description     String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
   // Foreign keys
-  Transaction    Transaction[]
-  isActive       Boolean          @default(true)
-  SaleInvoiceRow SaleInvoiceRow[]
+  Transaction     Transaction[]
+  isActive        Boolean           @default(true)
+  SaleInvoiceRow  SaleInvoiceRow[]
+  BankTransaction BankTransaction[]
 }
 
 // Categorie waar een product onder kan vallen
@@ -337,7 +338,6 @@ model FinancialPerson {
   Declaration         Declaration[]
   Streeplijst         Streeplijst[]
   SaleInvoice         SaleInvoice[]
-  BankTransactionTo   BankTransaction[] @relation("BankTransactionTo")
   BankTransactionFrom BankTransaction[] @relation("BankTransactionFrom")
 }
 
@@ -538,8 +538,7 @@ model SaleInvoice {
   treasurerId Int?
 
   // 1-1 relation to a bank transaction
-  BankTransaction   BankTransaction? @relation(fields: [bankTransactionId], references: [id])
-  bankTransactionId Int?             @unique
+  BankTransaction BankTransaction?
 }
 
 // Een regel in een uitgaande factuur
@@ -572,9 +571,10 @@ enum BankTransactionProduct {
 }
 
 model BankTransaction {
-  id          Int          @id @default(autoincrement())
-  SaleInvoice SaleInvoice?
+  id  Int     @id @default(autoincrement())
+  ref String?
 
+  // Data extracted from uploaded CSV
   type          BankTransactionType
   product       BankTransactionProduct
   startedDate   DateTime
@@ -583,10 +583,13 @@ model BankTransaction {
   amount        Decimal                @db.Decimal(19, 4)
   fee           Decimal                @db.Decimal(19, 4)
 
-  from   FinancialPerson? @relation(fields: [fromId], references: [id], name: "BankTransactionFrom")
-  fromId Int?
-  to     FinancialPerson? @relation(fields: [toId], references: [id], name: "BankTransactionTo")
-  toId   Int?
+  SaleInvoice   SaleInvoice?     @relation(fields: [saleInvoiceId], references: [id])
+  saleInvoiceId Int?             @unique
+  from          FinancialPerson? @relation(fields: [fromId], references: [id], name: "BankTransactionFrom")
+  fromId        Int?
+  ledger        Ledger?          @relation(fields: [ledgerId], references: [id])
+  ledgerId      Int?
+  toSaldo       Boolean          @default(false)
 
   @@unique([type, product, startedDate, completedDate, description, amount, fee])
 }

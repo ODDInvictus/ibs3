@@ -7,8 +7,6 @@ export const load = (async ({ url }) => {
 	const id = Number(url.searchParams.get('id'));
 
 	if (id) {
-		if (Number.isNaN(id)) throw error(400);
-
 		const relation = await db.financialPerson.findUnique({
 			where: {
 				id

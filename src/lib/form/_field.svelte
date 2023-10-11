@@ -47,7 +47,7 @@
 
 {#if mounted}
 	{#if field.type === 'select'}
-		<select name={field.name} id={field.name}>
+		<select name={field.name} id={field.name} disabled={field.disabled}>
 			{#if !field.options}
 				<option value="">Geen opties</option>
 			{:else}
@@ -59,13 +59,20 @@
 			{/if}
 		</select>
 	{:else if field.type === 'checkbox'}
-		<input type="checkbox" name={field.name} id={field.name} checked={Boolean(field.value)} />
+		<input
+			type="checkbox"
+			name={field.name}
+			id={field.name}
+			checked={Boolean(field.value)}
+			disabled={field.disabled}
+		/>
 	{:else if field.type === 'textarea'}
 		<textarea
 			name={field.name}
 			id={field.name}
 			placeholder={field.placeholder}
 			value={field.value?.toString() || ''}
+			disabled={field.disabled}
 		/>
 	{:else if field.type === 'table' && field.columns}
 		<table id={field.name}>
@@ -116,6 +123,7 @@
 			min={field.minValue}
 			max={field.maxValue}
 			step={field.step}
+			disabled={field.disabled}
 		/>
 	{/if}
 	{#if field.type !== 'table'}
@@ -164,5 +172,10 @@
 		100% {
 			background-position: 0% 50%;
 		}
+	}
+
+	*:disabled {
+		background-color: #f3f3f3;
+		color: #c0c0c0;
 	}
 </style>

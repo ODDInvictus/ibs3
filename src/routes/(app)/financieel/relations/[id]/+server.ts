@@ -13,7 +13,6 @@ export const DELETE: RequestHandler = async ({ params }) => {
 			_count: {
 				select: {
 					SaleInvoice: true,
-					BankTransactionTo: true,
 					BankTransactionFrom: true,
 					Sale: true,
 					Acquisition: true,

@@ -14,7 +14,6 @@ export const load = (async ({ params }) => {
 				_count: {
 					select: {
 						SaleInvoice: true,
-						BankTransactionTo: true,
 						BankTransactionFrom: true,
 						Sale: true,
 						Acquisition: true,

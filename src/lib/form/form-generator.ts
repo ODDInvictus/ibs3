@@ -66,6 +66,7 @@ export type Field<T extends FieldType> = {
 	rows?: T extends TableField ? number : never;
 	rowLabels?: T extends TableField ? string[] : never;
 	rowLabelName?: T extends TableField ? string : never;
+	disabled?: boolean;
 };
 
 export type FormError = {
@@ -111,6 +112,7 @@ type FormType<T> = {
 type TransformOptions<T> = {
 	user?: User;
 	values?: T;
+	disabled?: string[];
 };
 
 export class Form<T> {
@@ -236,24 +238,27 @@ export class Form<T> {
 	 * Transforms the form to a format that can be used by the frontend
 	 * @param user The user that is using the form
 	 * @param values The values that should be pre-filled in the form
+	 * @param disabled The fields that should be disabled
 	 * @example
 	 * ```ts
 	 * await form.transform({ user: locals.user, values: { name: 'Naut' } });
 	 * ```
 	 */
-	async transform({ user, values }: TransformOptions<T> = {}) {
-		await this.transformFields(this.f.fields, { user, values });
+	async transform({ user, values, disabled }: TransformOptions<T> = {}) {
+		await this.transformFields(this.f.fields, { user, values, disabled });
 		this.transformed = true;
 		await this.generateZod();
 	}
 
 	private async transformFields(fields: Field<FieldType>[], options: TransformOptions<T> = {}) {
-		const { user, values } = options;
+		const { user, values, disabled } = options;
 
 		for (const field of fields) {
 			// @ts-expect-error
 			if (values && field.name in values) field.value = values[field.name];
 			else field.value = undefined;
+
+			field.disabled = disabled && disabled.includes(field.name);
 
 			if (field.type === 'user') {
 				const users = await db.user.findMany({

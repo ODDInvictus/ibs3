@@ -37,3 +37,7 @@ export const LEDGER_IDS = {
 	DECLARATION_BEER: 3101,
 	DECLARATION_FOOD: 3102
 };
+
+export const FINANCIAL_PERSON_IDS = {
+	INVICTUS: 0
+};

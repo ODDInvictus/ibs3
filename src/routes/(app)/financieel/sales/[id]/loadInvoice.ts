@@ -2,6 +2,13 @@ import db from '$lib/server/db';
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
+/**
+ * Loads a sale invoice by ID, including related data.
+ * @param {Object} params - The parameters object.
+ * @param {string} params.id - The ID of the sale invoice to load.
+ * @returns {Promise<Object>} - A promise that resolves to an object containing the loaded invoice data.
+ * @throws {Error} - Throws an error if the ID is not a number, or if the invoice is not found.
+ */
 export default (async ({ params }) => {
 	const id = Number(params.id);
 	if (isNaN(id)) throw error(400);
