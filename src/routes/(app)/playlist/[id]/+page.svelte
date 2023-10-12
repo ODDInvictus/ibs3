@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte';
-	import UserList from './UserList.svelte';
+	import UserList from '../UserList.svelte';
 	import { env } from '$env/dynamic/public';
 	import { browser } from '$app/environment';
 	import Play from '~icons/tabler/playerPlayFilled';
@@ -48,8 +48,6 @@
 		)}`;
 	};
 
-	$: console.log(data);
-
 	const react = async (liked: boolean) => {
 		if (!data.track) return;
 
@@ -91,12 +89,6 @@
 
 	let player: HTMLAudioElement;
 	let isPaused = true;
-
-	let progress = 2;
-	setInterval(() => {
-		if (!player || isPaused) return;
-		progress = (player.currentTime / 30) * 27 + 3;
-	}, 100);
 </script>
 
 {#if data.error}
@@ -135,7 +127,7 @@
 								player.play();
 							}}
 						>
-							<Play color="#8b5cf6" height="2rem" width="2rem" />
+							<Play color="#551b8a" height="2rem" width="2rem" />
 						</button>
 					{:else}
 						<button
@@ -144,10 +136,9 @@
 								player.pause();
 							}}
 						>
-							<Pause color="#8b5cf6" height="2rem" width="2rem" />
+							<Pause color="#551b8a" height="2rem" width="2rem" />
 						</button>
 					{/if}
-					<progress value={progress} max="30" />
 				{:else}
 					<p>Geen preview</p>
 				{/if}
@@ -237,6 +228,11 @@
 			align-items: center;
 			gap: 10px;
 
+			button {
+				padding: 0;
+				background: transparent;
+			}
+
 			progress[value]::-webkit-progress-value::after {
 				content: '';
 				width: 6px;
@@ -300,5 +296,11 @@
 		@media (max-width: 300px) {
 			flex-direction: column;
 		}
+	}
+
+	button {
+		width: fit-content;
+		min-width: auto;
+		min-height: auto;
 	}
 </style>

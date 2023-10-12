@@ -8,6 +8,7 @@
 	import { env } from '$env/dynamic/public';
 
 	import type { PageServerData } from './$types';
+	import UserList from '../UserList.svelte';
 
 	export let data: PageServerData;
 
@@ -36,12 +37,18 @@
 <Title title="Playlist" />
 <main>
 	{#if mounted}
-		<div class="top">
-			<input type="text" name="search" bind:value={search} placeholder="Zoeken..." />
+		<input type="text" name="search" bind:value={search} placeholder="Zoek een nummer..." />
+
+		{#if search === ''}
 			<a href={`https://open.spotify.com/playlist/${PUBLIC_PLAYLIST_ID}`} target="_blank">
-				<Playlist />
+				Naar de playlist
 			</a>
-		</div>
+			<h3>Bekijk anderen hun playlist:</h3>
+			<div class="lists">
+				<UserList users={data.users.slice(0, Math.floor(data.users.length / 2))} />
+				<UserList users={data.users.slice(Math.floor(data.users.length / 2) + 1)} />
+			</div>
+		{/if}
 
 		{#await tracks}
 			<div class="loader">
@@ -50,14 +57,14 @@
 		{:then tracks}
 			{#if tracks}
 				<Tracklist {tracks} {search} liked={data.liked} playlist={data.playlist} />
-			{:else}
+			{:else if search !== ''}
 				<p>Geen resultaten</p>
 			{/if}
 		{:catch error}
 			{toast({
 				title: 'Error',
 				message: error,
-				type: 'error'
+				type: 'danger'
 			})}
 		{/await}
 	{:else}
@@ -69,12 +76,10 @@
 
 <style lang="scss">
 	input {
-		width: 100%;
 		padding: 0.5rem;
 		font-size: 1.5rem;
 		border: 1px solid #ccc;
 		border-radius: 0.5rem;
-		margin-bottom: 1rem;
 		max-width: 700px;
 	}
 
@@ -86,16 +91,19 @@
 		margin-top: 200px;
 	}
 
-	.top {
+	.lists {
+		display: flex;
+		justify-content: space-around;
+
+		@media (min-width: 640px) {
+			justify-content: flex-start;
+			gap: 3rem;
+		}
+	}
+
+	main {
 		display: flex;
 		gap: 20px;
-
-		a {
-			font-size: 2.5rem;
-
-			&:hover {
-				opacity: 0.8;
-			}
-		}
+		flex-direction: column;
 	}
 </style>

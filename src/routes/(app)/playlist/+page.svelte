@@ -109,7 +109,7 @@
 			toast({
 				title: 'Error',
 				message: 'Er is iets fout gegaan, probeer het later opnieuw',
-				type: 'error'
+				type: 'danger'
 			});
 			return;
 		}
@@ -230,14 +230,15 @@
 			transform: rotate(-5deg);
 		}
 
-		@media screen and (max-width: 640px) {
-			max-width: 300px;
-		}
-
 		max-width: 500px;
 
 		display: flex;
 		flex-direction: column;
+
+		img {
+			max-width: 400px;
+			width: calc(100vw - 32px);
+		}
 
 		.top {
 			font-size: 1.3rem;
@@ -279,6 +280,10 @@
 			height: 100%;
 			justify-content: space-around;
 			align-items: center;
+
+			@media screen and (min-width: 640px) {
+				margin-top: 2rem;
+			}
 
 			icon:hover {
 				cursor: pointer;

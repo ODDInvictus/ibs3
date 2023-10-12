@@ -8,7 +8,7 @@ export const load = (async ({ params, url, locals }) => {
 	if (Number.isNaN(uid)) throw redirect(300, '/playlist');
 
 	let page = Number(new URLSearchParams(url.search).get('p'));
-	if (Number.isNaN(page)) page = 1;
+	if (Number.isNaN(page) || page < 1) page = 1;
 
 	const PAGE_SIZE = 25;
 
@@ -24,34 +24,40 @@ export const load = (async ({ params, url, locals }) => {
 			liked: true,
 			userId: uid
 		},
-		skip: PAGE_SIZE * (page + 1),
+		skip: PAGE_SIZE * (page - 1),
 		take: PAGE_SIZE
 	});
 
 	const [tracks, trackCount] = await Promise.all([tracksReq, trackCountReq]);
 
-	if (tracks.length === 0)
-		throw redirect(300, `/playlist/create/${uid}?p=${Math.floor(trackCount / PAGE_SIZE) - 1}`);
-	const trackIds = tracks.map((track) => track.trackId);
+	if (tracks.length === 0 && page > 1)
+		throw redirect(300, `/playlist/create/${uid}?p=${Math.floor(trackCount / PAGE_SIZE) + 1}`);
 
 	let res: SpotifyApi.TrackObjectFull[] = [];
-	try {
-		res = (await spotify.getTracks(trackIds)).body.tracks;
-	} catch (e) {
-		await refreshToken();
+	if (tracks.length > 0) {
+		const trackIds = tracks.map((track) => track.trackId);
 		try {
 			res = (await spotify.getTracks(trackIds)).body.tracks;
 		} catch (e) {
-			console.error(e);
-			throw error(500, 'Failed to get tracks from Spotify');
+			await refreshToken();
+			try {
+				res = (await spotify.getTracks(trackIds)).body.tracks;
+			} catch (e) {
+				console.error(e);
+				throw error(500, 'Failed to get tracks from Spotify');
+			}
 		}
 	}
 
 	return {
 		tracks: res,
-		user: db.user.findUnique({
+		playlistUser: db.user.findUnique({
 			where: {
 				id: uid
+			},
+			select: {
+				firstName: true,
+				nickname: true
 			}
 		}),
 		liked: (
