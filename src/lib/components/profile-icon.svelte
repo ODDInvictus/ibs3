@@ -3,6 +3,7 @@
 
 	let height = $$props.height ?? 64;
 	let width = $$props.width ?? 64;
+	let fixedSize = $$props.width ?? false;
 </script>
 
 <div class={mergeClassNames('ibs-profile-icon', $$props.class)}>
@@ -12,5 +13,7 @@
 			.split(' ')
 			.map((w) => w[0])
 			.join('')}
+		width={fixedSize ? width : undefined}
+		height={fixedSize ? height : undefined}
 	/>
 </div>

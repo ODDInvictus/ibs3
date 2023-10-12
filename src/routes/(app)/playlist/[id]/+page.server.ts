@@ -6,7 +6,7 @@ export const load = (async ({ params }) => {
 	try {
 		var track = await spotify.getTrack(params.id);
 	} catch (error: any) {
-		console.log(error);
+		console.error(error);
 		return { error: error?.body?.error?.message ?? 'Unknown error' };
 	}
 

@@ -6,20 +6,26 @@
 	export let data: PageData;
 </script>
 
-{#if !data.user}
+{#if !data.playlistUser}
 	<h1>Gebruiker niet gevonden</h1>
 {:else}
-	<Title title={`${data.user?.firstName} zijn playlist`} />
-	<Tracklist tracks={data.tracks} liked={data.liked} playlist={data.playlist} />
-	<div class="pagination">
-		{#if data.page > 1}
-			<a href={`/playlist/create/${data.user.id}?p=${data.page - 1}`}>{data.page - 1}</a>
-		{/if}
-		<p>{data.page}</p>
-		{#if data.page < data.maxPage}
-			<a href={`/playlist/create/${data.user.id}?p=${data.page + 1}`}>{data.page + 1}</a>
-		{/if}
-	</div>
+	<Title title={`${data.playlistUser.nickname ?? data.playlistUser.firstName} zijn playlist`} />
+	{#if data.tracks.length === 0}
+		<h2>
+			{data.playlistUser.nickname ?? data.playlistUser.firstName} heeft nog geen een nummer geliked!
+		</h2>
+	{:else}
+		<Tracklist tracks={data.tracks} liked={data.liked} playlist={data.playlist} />
+		<div class="pagination">
+			{#if data.page > 1}
+				<a href={`/playlist/create/${data.user.id}?p=${data.page - 1}`}>{data.page - 1}</a>
+			{/if}
+			<p>{data.page}</p>
+			{#if data.page < data.maxPage}
+				<a href={`/playlist/create/${data.user.id}?p=${data.page + 1}`}>{data.page + 1}</a>
+			{/if}
+		</div>
+	{/if}
 {/if}
 
 <style>
