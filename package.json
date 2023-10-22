@@ -63,6 +63,7 @@
 		"@prisma/client": "^5.0.0",
 		"autoprefixer": "^10.4.14",
 		"csv-parser": "^3.0.0",
+		"decimal.js": "^10.4.3",
 		"dotenv": "^16.3.1",
 		"express": "^4.18.2",
 		"filereader": "^0.10.3",

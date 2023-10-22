@@ -43,6 +43,8 @@
 		}
 		mounted = true;
 	});
+
+	const noType = (x: any) => x;
 </script>
 
 {#if mounted}
@@ -95,16 +97,20 @@
 							{/if}
 							{#each field.columns as column}
 								<td>
-									<svelte:self field={addTableAndRow(field, i, column)} />
+									<svelte:self field={addTableAndRow(noType(field), i, column)} />
 								</td>
 							{/each}
 							<td>
 								{#if i == getMaxRow(rows, deleted)}
+									<!-- svelte-ignore a11y-no-static-element-interactions -->
+									<!-- svelte-ignore a11y-click-events-have-key-events -->
 									<i on:click={() => (rows = [...rows, Math.max(...rows) + 1])}><Plus /></i>
 								{/if}
 							</td>
 							<td>
 								{#if rows.length - deleted.length > 1}
+									<!-- svelte-ignore a11y-click-events-have-key-events -->
+									<!-- svelte-ignore a11y-no-static-element-interactions -->
 									<i on:click={() => (deleted = [...deleted, i])}><Trash /></i>
 								{/if}
 							</td>

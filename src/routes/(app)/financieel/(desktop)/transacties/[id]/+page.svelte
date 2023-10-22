@@ -17,7 +17,7 @@
 	<p>Datum: {formatDateTimeHumanReadable(data.transaction.createdAt)}</p>
 	{#if data.transaction.ledger}
 		<p>
-			Ledger: <a href="/financieel/ledger/{data.transaction.ledgerId}"
+			Ledger: <a href="/ongeveer/ledger/{data.transaction.ledgerId}"
 				>{data.transaction.ledger.id} - {data.transaction.ledger.name}</a
 			>
 		</p>

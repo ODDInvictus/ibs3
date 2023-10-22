@@ -90,7 +90,7 @@ model User {
   PhotoTaggedIn           PhotoPersonTag[]          @relation("taggedInPhoto")
   PhotoTaggedBy           PhotoPersonTag[]          @relation("photoTaggedBy")
   CommentsMade            Comment[]
-  SaleInvoice             SaleInvoice[]
+  Invoice                 Invoice[]
 }
 
 model Account {
@@ -248,16 +248,16 @@ model Attending {
 // Grootboek rekening
 model Ledger {
   // Administratieve gegevens
-  id              Int               @id
-  name            String
-  description     String
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id                      Int                       @id
+  name                    String
+  description             String
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
   // Foreign keys
-  Transaction     Transaction[]
-  isActive        Boolean           @default(true)
-  SaleInvoiceRow  SaleInvoiceRow[]
-  BankTransaction BankTransaction[]
+  Transaction             Transaction[]
+  isActive                Boolean                   @default(true)
+  InvoiceRow              InvoiceRow[]
+  BankTransactionMatchRow BankTransactionMatchRow[]
 }
 
 // Categorie waar een product onder kan vallen
@@ -292,13 +292,13 @@ model Product {
   data        Json        @db.Json
 
   // Foreign keys
-  category       ProductCategory  @relation(fields: [categoryId], references: [id])
-  categoryId     Int
-  Sale           Sale[]
-  Acquisition    Acquisition[]
+  category    ProductCategory @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  Sale        Sale[]
+  Acquisition Acquisition[]
   // Een product kan niet worden verwijderd, wel uitgeschakeld
-  isActive       Boolean          @default(true)
-  SaleInvoiceRow SaleInvoiceRow[]
+  isActive    Boolean         @default(true)
+  InvoiceRow  InvoiceRow[]
 }
 
 enum FinancialPersonType {
@@ -337,8 +337,8 @@ model FinancialPerson {
   Acquisition         Acquisition[]
   Declaration         Declaration[]
   Streeplijst         Streeplijst[]
-  SaleInvoice         SaleInvoice[]
-  BankTransactionFrom BankTransaction[] @relation("BankTransactionFrom")
+  Invoice             Invoice[]
+  BankTransactionFrom BankTransaction[]
 }
 
 // Extra data voor FinancialPerson, afhankelijk van FinancialPersonType
@@ -420,10 +420,11 @@ model Transaction {
 
   // Gebruikers
 
-  from   FinancialPerson @relation(fields: [fromId], references: [id], name: "TransactionFrom")
-  fromId Int
-  to     FinancialPerson @relation(fields: [toId], references: [id], name: "TransactionTo")
-  toId   Int
+  from                    FinancialPerson           @relation(fields: [fromId], references: [id], name: "TransactionFrom")
+  fromId                  Int
+  to                      FinancialPerson           @relation(fields: [toId], references: [id], name: "TransactionTo")
+  toId                    Int
+  BankTransactionMatchRow BankTransactionMatchRow[]
 }
 
 // In een verkoop kan iemand x aantal producten kopen
@@ -520,29 +521,33 @@ model Declaration {
   denied   Boolean @default(false)
 }
 
+enum InvoiceType {
+  SALE
+  PURCHASE
+}
+
 // Uitgaande factuur
-model SaleInvoice {
-  id             Int              @id @default(autoincrement())
+model Invoice {
+  id             Int          @id @default(autoincrement())
   ref            String?
-  rows           SaleInvoiceRow[]
-  date           DateTime?        @db.Date
-  // Aantal dagen
-  termsOfPayment Int
+  rows           InvoiceRow[]
+  date           DateTime?    @db.Date
+  termsOfPayment Int // Aantal dagen
   tav            String?
   description    String?
+  type           InvoiceType
 
-  to   FinancialPerson @relation(fields: [toId], references: [id])
-  toId Int
+  relation   FinancialPerson @relation(fields: [relationId], references: [id])
+  relationId Int
 
-  treasurer   User? @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
-  treasurerId Int?
-
-  // 1-1 relation to a bank transaction
-  BankTransaction BankTransaction?
+  treasurer               User?                    @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
+  treasurerId             Int?
+  BankTransactionMatchRow BankTransactionMatchRow?
+  CreditNote              CreditNote[]
 }
 
 // Een regel in een uitgaande factuur
-model SaleInvoiceRow {
+model InvoiceRow {
   id          Int     @id @default(autoincrement())
   amount      Int
   // MySQL adviseerd 19, 4 voor geld
@@ -555,8 +560,8 @@ model SaleInvoiceRow {
   ledger   Ledger @relation(fields: [ledgerId], references: [id])
   ledgerId Int
 
-  SaleInvoice   SaleInvoice @relation(fields: [saleInvoiceId], references: [id])
-  saleInvoiceId Int
+  Invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  invoiceId Int
 }
 
 enum BankTransactionType {
@@ -583,15 +588,38 @@ model BankTransaction {
   amount        Decimal                @db.Decimal(19, 4)
   fee           Decimal                @db.Decimal(19, 4)
 
-  SaleInvoice   SaleInvoice?     @relation(fields: [saleInvoiceId], references: [id])
-  saleInvoiceId Int?             @unique
-  from          FinancialPerson? @relation(fields: [fromId], references: [id], name: "BankTransactionFrom")
-  fromId        Int?
-  ledger        Ledger?          @relation(fields: [ledgerId], references: [id])
-  ledgerId      Int?
-  toSaldo       Boolean          @default(false)
+  Relation                FinancialPerson?          @relation(fields: [relationId], references: [id])
+  relationId              Int?
+  BankTransactionMatchRow BankTransactionMatchRow[]
 
   @@unique([type, product, startedDate, completedDate, description, amount, fee])
+}
+
+model BankTransactionMatchRow {
+  id          Int     @id @default(autoincrement())
+  description String?
+  amount      Decimal @db.Decimal(19, 4)
+
+  SaldoTransaction Transaction? @relation(fields: [transactionId], references: [id])
+  transactionId    Int?
+
+  Invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+  invoiceId Int?     @unique
+
+  Ledger   Ledger @relation(fields: [ledgerId], references: [id])
+  ledgerId Int
+
+  BankTransaction   BankTransaction @relation(fields: [bankTransactionId], references: [id])
+  bankTransactionId Int
+}
+
+model CreditNote {
+  id          Int     @id @default(autoincrement())
+  description String?
+  amount      Decimal @db.Decimal(19, 4)
+
+  Invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  invoiceId Int
 }
 
 //
