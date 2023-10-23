@@ -19,6 +19,12 @@ export const load = (async ({ url, locals }) => {
 
   const edit = url.searchParams.get('edit')
 
+  const committees = db.committee.findMany({
+    where: {
+      isActive: true,
+    }
+  })
+
   if (edit === 'true') {
     // Load up all the values
     const id = url.searchParams.get('id')
@@ -50,7 +56,7 @@ export const load = (async ({ url, locals }) => {
             endDate,
             endTime,
           },
-          committees: locals.committees,
+          committees: committees,
           locations
         }
       }
@@ -59,7 +65,7 @@ export const load = (async ({ url, locals }) => {
 
   return {
     locations,
-    committees: locals.committees
+    committees
   }
 }) satisfies PageServerLoad
 
