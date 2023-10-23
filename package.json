@@ -14,7 +14,8 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
 		"log": "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit",
-		"mailhog": "docker run --rm -it -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog"
+		"mailhog": "docker run --rm -it -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog",
+		"ory:proxy": "ory proxy --no-jwt --port 4000 --project ibs3 http://localhost:5173"
 	},
 	"devDependencies": {
 		"@floating-ui/core": "^1.4.1",
@@ -60,6 +61,8 @@
 	"type": "module",
 	"dependencies": {
 		"@auth/sveltekit": "^0.3.6",
+		"@ory/cli": "^0.2.2",
+		"@ory/client": "^1.2.11",
 		"@prisma/client": "^5.0.0",
 		"autoprefixer": "^10.4.14",
 		"dotenv": "^16.3.1",

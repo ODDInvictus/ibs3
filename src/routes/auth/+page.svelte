@@ -43,17 +43,21 @@
 		<div class="login-card">
 			<div class="ibs-card">
 				{#if selection === 'login'}
-					<h1>Login</h1>
-					<p>Werkt nog niet; Gebruik Authentik</p>
-					<input name="username" type="text" placeholder="gebruikersnaam" />
-					<input name="password" type="password" placeholder="wachtwoord" />
-					<button>Login</button>
+					<form action="?/login" method="POST">
+						<h1>Login</h1>
+						<p>Werkt nog niet; Gebruik Authentik</p>
+						<input required name="username" type="text" placeholder="gebruikersnaam" />
+						<input required name="password" type="password" placeholder="wachtwoord" />
+						<button>Login</button>
+					</form>
 				{:else if selection === 'register'}
-					<h1>Registreer</h1>
-					<p>Gebruik de code die je hebt gekregen</p>
-					<input name="username" type="text" placeholder="gebruikersnaam" />
-					<input name="code" type="text" placeholder="code" />
-					<button>Registreer</button>
+					<form action="?/register" method="POST">
+						<h1>Registreer</h1>
+						<p>Gebruik de code die je hebt gekregen</p>
+						<input required name="username" type="text" placeholder="gebruikersnaam" />
+						<input required name="code" type="text" placeholder="code" />
+						<button>Registreer</button>
+					</form>
 				{/if}
 			</div>
 		</div>
