@@ -153,7 +153,7 @@ export const actions = {
               startTime: start,
               endTime: end,
               locationId: loc,
-              membersOnly: membersOnly === 'on',
+              membersOnly: membersOnly ? membersOnly === 'on' : false,
               committeeId: parseInt(organisedBy),
               url: url ?? null,
             }
@@ -213,6 +213,7 @@ export const actions = {
             uploader: event.locals.user,
             runProcessingJob: false,
             additionalName: 'Activiteit',
+            invisible: true,
             upload: {
               buf,
               filename: image.name
