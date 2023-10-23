@@ -2,8 +2,6 @@
 
 Invictus Bier Systeem is _het_ websysteem voor O.D.D. Invictus.
 
-[![Build Status](https://drone.oddinvictus.nl/api/badges/ODDInvictus/ibs3/status.svg)](https://drone.oddinvictus.nl/ODDInvictus/ibs3)
-
 ## Ontwikkelen
 
 Om te beginnen met ontwikkelen moet je eerst de repository clonen met
@@ -24,7 +22,24 @@ npx prisma generate
 cd backend; npm install
 ```
 
+Hierna moet je je database opzetten, zie kopje [Database](#database)
+
 Daarna kan je de development server starten met `npm run dev`
+
+## Database
+
+IBS3 gebruikt 2 databases, MariaDB en Redis.
+
+### MariaDB
+
+Om MariaDB lokaal te draaien moet je even een kopie van de productie database maken, en dan kan je aan de slag.
+Er is ook een gehoste development database, vraag Niels hierna.
+
+Redis is makkelijk lokaal te draaien in docker.
+
+```console
+docker run -d -p 6379:6379 --name redis redis
+```
 
 ## Tasks
 
@@ -42,35 +57,29 @@ cron.schedule('1 * * * *', syncLDAPUsers);
 
 Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab.guru/) gebruiken
 
-## Production
-
-Paar willekeurige notities voor draaien in production
-
-### Jobs
-
-- In je webserver configuratie moet je de backend beveiligen. Dit is omdat deze geen authenticatie laag heeft. Dit is erg simpel om te doen in nginx:
-
-```
-location /jobs {
-  allow 192.168.0.0/16;
-  deny any;
-  proxy_pass route_naar_ibs3_backend;
-}
-```
-
 ## Environment Variables
 
-| Sleutel                      | Waarde                                                       | Voorbeeld                                             |
-| ---------------------------- | ------------------------------------------------------------ | ----------------------------------------------------- |
-| DATABASE_URL                 | MySQL connection string                                      | mysql://ibs3:password@mariadb:3306/ibs3?schema=public |
-| IBS_CLIENT_ID                | Client ID in Authentik                                       | ibs                                                   |
-| IBS_CLIENT_SECRET            | Client Secret in Authentik                                   | bjdsbjadshbjsbjsdbjabdhwvdksd                         |
-| IBS_ISSUER                   | Issuer url vanuit Authentik                                  | https://auth.example.com/application/o/ibs/           |
-| AUTHENTIK_BASE_URL           | Base URL van Authentik                                       | https://auth.example.com                              |
-| AUTHENTIK_GROUP_NAME         | Naam van de groep met alle IBS gebruikers                    | ibs3_users                                            |
-| AUTHENTIK_TOKEN              | Access token van service account                             | aaasDJKASJDHSAJKHDLOIJASHDIABDSKJASJKDJKAS            |
-| ORIGIN                       | URL waar deze app gevonden kan worden                        | https://ibs.example.com                               |
-| DISCORD_NOTIFICATION_WEBHOOK | Webhook URL voor discord kanaal waar errors in gepost worden | https://discord.com/api/webhooks/server/key           |
-| BACKEND_PORT                 | Poort waarop de backend draait                               | 3001                                                  |
-| UPLOAD_FOLDER                | Map op de schijf waar uploads opgeslagen worden              | ./static/upload                                       |
-| PUBLIC_UPLOAD_URL            | URL waar de uploads gevonden kunnen worden                   | /upload/                                              |
+| Sleutel                      | Waarde                                                                                | Voorbeeld                                             |
+| ---------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| DATABASE_URL                 | MySQL connection string                                                               | mysql://ibs3:password@mariadb:3306/ibs3?schema=public |
+| IBS_CLIENT_ID                | Client ID in Authentik                                                                | ibs                                                   |
+| IBS_CLIENT_SECRET            | Client Secret in Authentik                                                            | bjdsbjadshbjsbjsdbjabdhwvdksd                         |
+| IBS_ISSUER                   | Issuer url vanuit Authentik                                                           | https://auth.example.com/application/o/ibs/           |
+| AUTHENTIK_BASE_URL           | Base URL van Authentik                                                                | https://auth.example.com                              |
+| AUTHENTIK_GROUP_NAME         | Naam van de groep met alle IBS gebruikers                                             | ibs3_users                                            |
+| AUTHENTIK_TOKEN              | Access token van service account                                                      | aaasDJKASJDHSAJKHDLOIJASHDIABDSKJASJKDJKAS            |
+| ORIGIN                       | URL waar deze app gevonden kan worden                                                 | https://ibs.example.com                               |
+| DISCORD_NOTIFICATION_WEBHOOK | Webhook URL voor discord kanaal waar errors in gepost worden                          | https://discord.com/api/webhooks/server/key           |
+| BACKEND_PORT                 | Poort waarop de backend draait                                                        | 3001                                                  |
+| UPLOAD_FOLDER                | Map op de schijf waar uploads opgeslagen worden                                       | ./static/upload                                       |
+| PUBLIC_UPLOAD_URL            | URL waar de uploads gevonden kunnen worden                                            | /upload/                                              |
+| BACKEND_URL                  | URL waar de backend op te vinden is                                                   | http://localhost:3000                                 |
+| UPLOAD_FOLDER                | Pad waar foto's naar geupload worden                                                  | ./upload                                              |
+| PUBLIC_UPLOAD_URL            | Oude url naar de static server                                                        | http://localhost:8000                                 |
+| STATIC_FOLDER                | Waar static files gevonden kunnen worden                                              | ./static                                              |
+| IMAGE_CACHE_TIME             | Hoelang een image in de cache blijft                                                  | 86400                                                 |
+| QUOTE_API_URL                | Url naar de quote api                                                                 | ...                                                   |
+| QUOTE_API_TOKEN              | API Token voor de quote api                                                           | ...                                                   |
+| PUBLIC_SPOTIFY_CLIENT_ID     | Client id voor spotify                                                                | ...                                                   |
+| SPOTIFY_CLIENT_SECRET        | Client secret voor spotify                                                            | ...                                                   |
+| PUBLIC_SPOITFY_REDIRECT_URI  | Redirect uri voor spotify, alles van spotify is alleen nodig voor de playlist feature | http://localhost:5173/playlist/callback               |
