@@ -132,12 +132,7 @@
 	</div>
 
 	<label for="membersOnly">Alleen voor leden</label>
-	<input
-		type="checkbox"
-		name="membersOnly"
-		id="membersOnly"
-		value={activity?.membersOnly ?? false}
-	/>
+	<input type="checkbox" name="membersOnly" id="membersOnly" checked={activity?.membersOnly} />
 
 	<button type="submit">Opslaan</button>
 </form>

@@ -19,6 +19,12 @@ export const load = (async ({ url, locals }) => {
 
   const edit = url.searchParams.get('edit')
 
+  const committees = db.committee.findMany({
+    where: {
+      isActive: true,
+    }
+  })
+
   if (edit === 'true') {
     // Load up all the values
     const id = url.searchParams.get('id')
@@ -50,7 +56,7 @@ export const load = (async ({ url, locals }) => {
             endDate,
             endTime,
           },
-          committees: locals.committees,
+          committees: committees,
           locations
         }
       }
@@ -59,7 +65,7 @@ export const load = (async ({ url, locals }) => {
 
   return {
     locations,
-    committees: locals.committees
+    committees
   }
 }) satisfies PageServerLoad
 
@@ -153,7 +159,7 @@ export const actions = {
               startTime: start,
               endTime: end,
               locationId: loc,
-              membersOnly: membersOnly === 'on',
+              membersOnly: membersOnly ? membersOnly === 'on' : false,
               committeeId: parseInt(organisedBy),
               url: url ?? null,
             }
@@ -213,6 +219,7 @@ export const actions = {
             uploader: event.locals.user,
             runProcessingJob: false,
             additionalName: 'Activiteit',
+            invisible: true,
             upload: {
               buf,
               filename: image.name
