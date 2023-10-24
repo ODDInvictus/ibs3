@@ -10,17 +10,41 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const { status, activityId }: RequestType = await request.json();
   const user = locals.user
 
-  await db.attending.updateMany({
+  const att = await db.attending.findFirst({
     where: {
       userId: user.id,
       activityId
     },
-    data: {
-      isAttending: status
-    }
   })
 
-  return new Response("", {
-    status: 200,
-  });
+  if (!att) {
+    await db.attending.create({
+      data: {
+        isAttending: status,
+        activityId,
+        userId: user.id
+      }
+    })
+  } else {
+    await db.attending.update({
+      where: {
+        id: att.id
+      },
+      data: {
+        isAttending: status
+      }
+    })
+  }
+
+  return new Response(JSON.stringify({
+    attending: await db.attending.findFirst({
+      where: {
+        userId: user.id,
+        activityId
+      },
+      include: {
+        user: true
+      }
+    })
+  }))
 };

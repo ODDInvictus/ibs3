@@ -19,32 +19,60 @@
 	import { enhance } from '$app/forms';
 	import ProfileIcon from '$lib/components/profile-icon.svelte';
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
+	import type { Attending } from '@prisma/client';
 
 	export let data: PageData;
 
 	const activity = data.activity;
 
-	let attending = $page.data.attending;
-	$: bij = attending.filter((a: any) => a.isAttending).map((a: any) => a.user);
-	$: unsure = attending
-		.filter((a: any) => {
-			if (bij.includes(a.user)) return false;
+	// $: bij = attending.filter((a: any) => a.isAttending).map((a: any) => a.user);
+	// $: unsure = attending
+	// 	.filter((a: any) => {
+	// 		if (bij.includes(a.user)) return false;
 
+	// 		let cr = new Date(a.createdAt);
+	// 		let ua = new Date(a.updatedAt);
+
+	// 		cr.setMilliseconds(0);
+	// 		ua.setMilliseconds(0);
+	// 		cr.setSeconds(0);
+	// 		ua.setSeconds(0);
+
+	// 		return cr.getTime() === ua.getTime();
+	// 	})
+	// 	.map((a: any) => a.user);
+
+	// $: notBij = attending
+	// 	.map((a: any) => a.user)
+	// 	.filter((u: any) => !bij.includes(u) && !unsure.includes(u));
+
+	let attending: any[] = [];
+
+	$: {
+		let positive = [];
+		let unsure = [];
+		let negative = [];
+
+		for (const a of data.activity.attending) {
+			// If a.createdAt and a.updatedAt are within 5 seconds, then set a.isUnsure to true
 			let cr = new Date(a.createdAt);
 			let ua = new Date(a.updatedAt);
 
 			cr.setMilliseconds(0);
 			ua.setMilliseconds(0);
-			cr.setSeconds(0);
-			ua.setSeconds(0);
 
-			return cr.getTime() === ua.getTime();
-		})
-		.map((a: any) => a.user);
+			if (ua.getTime() - cr.getTime() < 5000) {
+				a.isUnsure = true;
+				unsure.push(a);
+			} else if (a.isAttending) {
+				positive.push(a);
+			} else {
+				negative.push(a);
+			}
+		}
 
-	$: notBij = attending
-		.map((a: any) => a.user)
-		.filter((u: any) => !bij.includes(u) && !unsure.includes(u));
+		attending = positive.concat(unsure, negative);
+	}
 
 	const nameWithoutMarkdown = stripMarkdown(activity.name);
 
@@ -88,7 +116,7 @@
 		// First check if the user is attending
 		const a = attending.find((a: any) => a.user.ldapId == $page.data.user.ldapId);
 
-		if (a.isAttending === status) {
+		if (a && a.isAttending === status) {
 			// The user is already attending/not attending, so do nothing
 			return;
 		}
@@ -104,12 +132,20 @@
 				activityId: activity.id
 			})
 		})
-			.then(() => {
+			.then((res) => res.json())
+			.then((body) => {
 				toast({
 					title: status ? 'Gezellig!' : 'Jammer!',
 					message: `Je  ${status ? 'aanwezigheid' : 'afwezigheid'} is opgeslagen`,
 					type: status ? 'success' : 'info'
 				});
+
+				if (!a) {
+					attending.push(body.attending);
+				} else {
+					a.isAttending = status;
+					attending = attending;
+				}
 			})
 			.catch((err) => {
 				toast({
@@ -119,10 +155,6 @@
 				});
 				console.error(err);
 			});
-
-		// Update the attending status
-		a.isAttending = status;
-		attending = attending;
 	}
 
 	function generateIcal() {
@@ -267,7 +299,7 @@
 			</div>
 
 			<div class="ibs-card--content users">
-				{#each bij as user}
+				<!-- {#each bij as user}
 					<UserCard status="positive" {user} />
 				{/each}
 				{#each unsure as user}
@@ -275,6 +307,12 @@
 				{/each}
 				{#each notBij as user}
 					<UserCard status="negative" {user} />
+				{/each} -->
+				{#each attending as a}
+					<UserCard
+						user={a.user}
+						status={a.isUnsure ? 'unsure' : a.isAttending ? 'positive' : 'negative'}
+					/>
 				{/each}
 			</div>
 		</div>
