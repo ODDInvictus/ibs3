@@ -10,6 +10,23 @@
 	import { afterNavigate } from '$app/navigation';
 	import { Modals, closeModal } from 'svelte-modals';
 	import MobileMenu from './_mobile-menu.svelte';
+	import { getFlash } from 'sveltekit-flash-message';
+	import { page } from '$app/stores';
+	import { toast } from '$lib/notification';
+
+	const flash = getFlash(page);
+
+	flash.subscribe(($flash) => {
+		if (!$flash) return;
+
+		toast({
+			type: $flash.type,
+			title: $flash.type,
+			message: $flash.message
+		});
+
+		flash.set(undefined);
+	});
 
 	afterNavigate(() => {
 		// Reset scroll position on layout--container-slot

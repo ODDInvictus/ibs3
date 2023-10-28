@@ -524,6 +524,7 @@ model Declaration {
 enum InvoiceType {
   SALE
   PURCHASE
+  DECLARATION
 }
 
 // Uitgaande factuur

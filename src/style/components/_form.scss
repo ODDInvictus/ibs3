@@ -1,15 +1,37 @@
+// TODO Refactor
+
 form.form-group {
 	color: var(--color-text);
 }
 
-form .form-control {
+$label-width: 200px;
+
+.form-control, .superform .input-group {
 	display: grid;
-	grid-template-columns: 200px 1fr;
+	grid-template-columns: $label-width 1fr;
 	min-height: 3rem;
 	padding-top: 0.25rem;
 	padding-bottom: 0.25rem;
+}
 
-	label {
+// Shared styles between form generator and superforms
+.form-control, .superform {
+  .form-error {
+		color: var(--color-danger);
+		font-size: smaller;
+	}
+
+	.has-error {
+		border: 1px solid var(--color-danger);
+	}
+
+	.has-error:focus {
+		// Red shadow
+		box-shadow: 0 0 0 0.25rem rgba(239, 68, 68, 0.25);
+    border: 1px solid transparent;
+	}
+
+  label {
 		display: flex;
 		align-items: center;
 		gap: 0.25rem;
@@ -33,20 +55,28 @@ form .form-control {
 			margin-right: 0.25rem;
 		}
 	}
+}
 
-	.form-error {
-		color: var(--color-danger);
-		font-size: smaller;
-	}
+form.superform {
+  display: flex;
+	flex-direction: column;
 
-	.has-error {
-		border: 1px solid var(--color-danger);
-	}
+  .input-group {
+    width: 100%;
+  }
 
-	.has-error:focus {
-		// Red shadow
-		box-shadow: 0 0 0 0.25rem rgba(239, 68, 68, 0.25);
-	}
+  .form-error {
+    margin-left: $label-width;
+    width: fit-content;
+  }
+
+  button {
+    width: fit-content;
+  }
+
+  table button {
+    min-width: 0;
+  }
 }
 
 textarea,

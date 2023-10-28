@@ -1,18 +1,19 @@
+import { authorization } from '$/lib/ongeveer/utils';
 import db from '$lib/server/db';
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const DELETE: RequestHandler = async ({ params }) => {
+export const DELETE: RequestHandler = async ({ params, locals }) => {
 	const id = Number(params.id);
 	if (Number.isNaN(id)) return new Response(null, { status: 400 });
 
-	// TODO check user permissions
+	if (!authorization(locals.roles)) return new Response(null, { status: 403 });
 
 	const relation = await db.financialPerson.findUnique({
 		where: { id, type: 'OTHER' },
 		select: {
 			_count: {
 				select: {
-					SaleInvoice: true,
+					Invoice: true,
 					BankTransactionFrom: true,
 					Sale: true,
 					Acquisition: true,
@@ -35,11 +36,11 @@ export const DELETE: RequestHandler = async ({ params }) => {
 	return new Response(null, { status: 200 });
 };
 
-export const PATCH: RequestHandler = async ({ params }) => {
+export const PATCH: RequestHandler = async ({ params, locals }) => {
 	const id = Number(params.id);
 	if (Number.isNaN(id)) return new Response(null, { status: 400 });
 
-	// TODO check user permissions
+	if (!authorization(locals.roles)) return new Response(null, { status: 403 });
 
 	const relation = await db.financialPerson.findUnique({
 		where: { id, type: 'OTHER' }

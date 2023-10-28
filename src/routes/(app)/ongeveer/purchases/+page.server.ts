@@ -3,6 +3,6 @@ import type { PageServerLoad } from './$types';
 
 export const load = (async () => {
 	return {
-		invoices: getInvoices('SALE')
+		invoices: getInvoices('PURCHASE')
 	};
 }) satisfies PageServerLoad;
