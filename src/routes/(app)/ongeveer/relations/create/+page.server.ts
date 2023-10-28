@@ -9,6 +9,7 @@ import schema from './relationSchema';
 export const load = (async ({ url }) => {
 	const id = Number(url.searchParams.get('id'));
 
+	// Query the database for the relation if an id is provided
 	let relation = null;
 	if (id) {
 		relation = await db.financialPerson.findUnique({
@@ -25,19 +26,21 @@ export const load = (async ({ url }) => {
 		if (!relation) throw error(404);
 	}
 
-	const form = await superValidate(
-		{
-			id: relation?.id,
-			name: relation?.name,
-			description: relation?.FinancialPersonDataOther?.description ?? undefined,
-			iban: relation?.FinancialPersonDataOther?.iban ?? undefined,
-			address: relation?.FinancialPersonDataOther?.address ?? undefined,
-			postalCode: relation?.FinancialPersonDataOther?.postalCode ?? undefined,
-			city: relation?.FinancialPersonDataOther?.city ?? undefined,
-			email: relation?.FinancialPersonDataOther?.email ?? undefined
-		},
-		schema
-	);
+	// Populate form with existing data if it exists
+	const data = relation
+		? {
+				id: relation.id,
+				name: relation.name,
+				description: relation.FinancialPersonDataOther?.description ?? undefined,
+				iban: relation.FinancialPersonDataOther?.iban ?? undefined,
+				address: relation.FinancialPersonDataOther?.address ?? undefined,
+				postalCode: relation.FinancialPersonDataOther?.postalCode ?? undefined,
+				city: relation.FinancialPersonDataOther?.city ?? undefined,
+				email: relation.FinancialPersonDataOther?.email ?? undefined
+		  }
+		: {};
+
+	const form = await superValidate(data, schema);
 
 	return { form };
 }) satisfies PageServerLoad;
@@ -48,12 +51,12 @@ export const actions = {
 		const form = await superValidate(request, schema);
 
 		if (!authorization(locals.roles)) throw error(403);
+		// If there is inavlid data, return the form with the errors
 		if (!form.valid) return fail(400, { form });
 
 		const { name, description, iban, address, postalCode, city, email } = form.data;
 		const id = Number(form.data.id);
 
-		// TODO Upsert?
 		try {
 			const data = {
 				description,
@@ -91,6 +94,7 @@ export const actions = {
 			console.error(e);
 			throw error(500, 'Er is iets misgegaan, probeer het later opnieuw');
 		}
+		// Redirect with custom redirect that shows flash message
 		throw redirect(
 			'/ongeveer/relations',
 			{

@@ -10,10 +10,13 @@
 	export let data: PageData;
 
 	const formProps = superForm(data.form, {
+		// Zod schema for client side validation
 		validators,
+		// Error handeler for thrown errors (403, 500 etc.)
 		onError
 	});
 	const { form, enhance } = formProps;
+	// Cast the id to a number
 	const idProxy = intProxy(form, 'id');
 </script>
 
