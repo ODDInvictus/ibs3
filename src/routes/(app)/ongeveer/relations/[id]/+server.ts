@@ -1,4 +1,4 @@
-import { authorization } from '$/lib/ongeveer/utils';
+import { authorization } from '$lib/ongeveer/utils';
 import db from '$lib/server/db';
 import type { RequestHandler } from '@sveltejs/kit';
 

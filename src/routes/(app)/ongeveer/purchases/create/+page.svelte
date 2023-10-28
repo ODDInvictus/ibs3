@@ -27,6 +27,7 @@
 <form class="superform" method="POST" use:enhance>
 	<input name="id" type="hidden" bind:value={$idProxy} />
 
+	<!-- TODO update to new component -->
 	<SuperTextField
 		name="ref"
 		bind:value={$form.ref}

@@ -47,7 +47,7 @@ export const actions = {
 		const { request, locals } = event;
 		const form = await superValidate(request, schema);
 
-		if (!authorization(locals.roles)) return fail(403, { form });
+		if (!authorization(locals.roles)) throw error(403);
 		if (!form.valid) return fail(400, { form });
 
 		const { name, description, iban, address, postalCode, city, email } = form.data;
@@ -55,6 +55,15 @@ export const actions = {
 
 		// TODO Upsert?
 		try {
+			const data = {
+				description,
+				iban,
+				address,
+				postalCode,
+				city,
+				email
+			};
+
 			// If there is no id, we are creating a new relation
 			if (Number.isNaN(id)) {
 				await db.financialPerson.create({
@@ -62,14 +71,7 @@ export const actions = {
 						name,
 						type: 'OTHER',
 						FinancialPersonDataOther: {
-							create: {
-								description,
-								iban,
-								address,
-								postalCode,
-								city,
-								email
-							}
+							create: data
 						}
 					}
 				});
@@ -80,21 +82,14 @@ export const actions = {
 					data: {
 						name,
 						FinancialPersonDataOther: {
-							update: {
-								description,
-								iban,
-								address,
-								postalCode,
-								city,
-								email
-							}
+							update: data
 						}
 					}
 				});
 			}
 		} catch (e: any) {
 			console.error(e);
-			return fail(500, { form });
+			throw error(500, 'Er is iets misgegaan, probeer het later opnieuw');
 		}
 		throw redirect(
 			'/ongeveer/relations',

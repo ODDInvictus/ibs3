@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export default z.object({
-	name: z.string().min(1, 'Naam is verplicht'),
+	name: z.string({ required_error: 'Naam is verplicht' }).min(1, 'Naam is verplicht'),
 	description: z.string().optional(),
 	iban: z.string().optional(),
 	address: z.string().optional(),

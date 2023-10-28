@@ -10,19 +10,17 @@
 
 	export let formProps: SuperForm<ZodValidation<T>, unknown>;
 	export let field: FormPathLeaves<z.infer<T>>;
+	export let type: 'text' | 'textarea' | 'date' | 'number' = 'text';
 
 	const name = field.toString();
 
 	const { value, errors, constraints } = formFieldProxy(formProps, field);
-	$errors = [];
 
 	// TODO fix types
-	// TODO fix reload
 	function deleteRequired(obj: { required?: boolean; [key: string]: any } | undefined) {
 		if (!obj) return obj;
-		const copy = { ...obj };
-		copy.required = false;
-		return copy;
+		obj.required = false;
+		return obj;
 	}
 </script>
 
@@ -32,26 +30,54 @@
   <script lang="ts">
     import type { PageData } from './$types';
     import { superForm } from 'sveltekit-superforms/client';
-    import SuperTextField from '$lib/superforms/SuperTextField.svelte';
+    import SuperField from '$lib/superforms/SuperField.svelte';
 
     export let data: PageData;
 
     const formProps = superForm(data.form);
   </script>
 
-  <SuperTextField {formProps} field="name">Naam</SuperTextField>
+  <SuperField {formProps} field="name">Naam</SuperField>
   ```
 -->
 
 <div class="input-group">
 	<Label {name} {constraints}><slot /></Label>
-	<input
-		{name}
-		type="text"
-		class:has-error={$errors?.length ?? 0 > 0}
-		bind:value={$value}
-		{...$constraints}
-		{...$$restProps}
-	/>
+	{#if type === 'textarea'}
+		<textarea
+			{name}
+			class:has-error={$errors?.length ?? 0 > 0}
+			bind:value={$value}
+			{...deleteRequired($constraints)}
+			{...$$restProps}
+		/>
+	{:else if type === 'date'}
+		<input
+			{name}
+			type="date"
+			class:has-error={$errors?.length ?? 0 > 0}
+			bind:value={$value}
+			{...deleteRequired($constraints)}
+			{...$$restProps}
+		/>
+	{:else if type === 'number'}
+		<input
+			{name}
+			type="number"
+			class:has-error={$errors?.length ?? 0 > 0}
+			bind:value={$value}
+			{...deleteRequired($constraints)}
+			{...$$restProps}
+		/>
+	{:else if type === 'text'}
+		<input
+			{name}
+			type="text"
+			class:has-error={$errors?.length ?? 0 > 0}
+			bind:value={$value}
+			{...deleteRequired({ ...$constraints })}
+			{...$$restProps}
+		/>
+	{/if}
 </div>
 <Error {errors} />

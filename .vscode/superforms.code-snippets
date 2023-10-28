@@ -3,7 +3,7 @@
 		"scope": "svelte",
 		"prefix": "sf",
 		"body": [
-			"<Super${1|Text,TextArea,Number,Date|}Field {formProps} field=\"$2\">$3</SuperTextField>$0"
+			"<SuperField type=\"${1|text,textArea,number,date|}\" {formProps} field=\"$2\">$3</SuperField>$0"
 		],
 		"description": "Create super field component"
 	}

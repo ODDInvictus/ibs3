@@ -2,43 +2,39 @@
 	import type { PageData } from './$types';
 	import { intProxy, superForm } from 'sveltekit-superforms/client';
 	import Title from '$lib/components/title.svelte';
-	import SuperTextField from '$lib/superforms/SuperTextField.svelte';
+	import SuperField from '$lib/superforms/SuperField.svelte';
 	import validators from './relationSchema';
+	import Submit from '$lib/superforms/Submit.svelte';
+	import { onError } from '$lib/superforms/error';
 
 	export let data: PageData;
 
-	// TODO handle errors not bound to field
-	// https://superforms.rocks/concepts/error-handling
-	const formProps = superForm(data.form, { validators });
-	const { form, enhance, delayed } = formProps;
+	const formProps = superForm(data.form, {
+		validators,
+		onError
+	});
+	const { form, enhance } = formProps;
 	const idProxy = intProxy(form, 'id');
-
-	const x = Object.entries(validators.shape);
-	console.log(x);
 </script>
 
 <Title title="Relatie {$form.id ? `${$form.name} bewerken` : 'aanmaken'}" />
 
 <form class="superform" method="POST" use:enhance>
-	<SuperTextField {formProps} field="name">Naam</SuperTextField>
+	<SuperField {formProps} field="name">Naam</SuperField>
 
-	<SuperTextField {formProps} field="description">Omschrijving</SuperTextField>
+	<SuperField {formProps} field="description">Omschrijving</SuperField>
 
-	<SuperTextField {formProps} field="iban">IBAN</SuperTextField>
+	<SuperField {formProps} field="iban">IBAN</SuperField>
 
-	<SuperTextField {formProps} field="address">Adres</SuperTextField>
+	<SuperField {formProps} field="address">Adres</SuperField>
 
-	<SuperTextField {formProps} field="postalCode">Postcode</SuperTextField>
+	<SuperField {formProps} field="postalCode">Postcode</SuperField>
 
-	<SuperTextField {formProps} field="city">Stad</SuperTextField>
+	<SuperField {formProps} field="city">Stad</SuperField>
 
-	<SuperTextField {formProps} field="email">Email</SuperTextField>
+	<SuperField {formProps} field="email">Email</SuperField>
 
 	<input type="hidden" name="id" bind:value={$idProxy} />
 
-	<button type="submit">{$form.id ? 'Opslaan' : 'Aanmaken'}</button>
-	{#if $delayed}
-		<!-- TODO Extract to component -->
-		<p>Loading...</p>
-	{/if}
+	<Submit {formProps}>{$form.id ? 'Opslaan' : 'Aanmaken'}</Submit>
 </form>
