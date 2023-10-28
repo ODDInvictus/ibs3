@@ -1,50 +1,28 @@
 import type { Actions, PageServerLoad } from './$types';
-import { z } from 'zod';
-import { message, superValidate } from 'sveltekit-superforms/server';
+import { superValidate } from 'sveltekit-superforms/server';
 import { authorization } from '$lib/ongeveer/utils';
 import db from '$lib/server/db';
 import { error, fail } from '@sveltejs/kit';
 import { getLedgers, getRelations } from '$lib/ongeveer/db';
-
-const schema = z.object({
-	id: z.number().int().optional(),
-	ref: z.string().optional(),
-	date: z.date(),
-	termsOfPayment: z.number().int().min(0),
-	relation: z.number().int(),
-	type: z.enum(['PURCHASE', 'DECLARATION']),
-	rows: z
-		.object({
-			amount: z.number().int().min(0, 'Aantal mag niet negatief zijn'),
-			price: z
-				.number()
-				.min(0, 'Prijs mag niet negatief zijn')
-				.step(0.01, 'Prijs moet een geldig bedrag zijn'),
-			description: z.string(),
-			ledger: z.number().int()
-		})
-		.array()
-		.min(1, 'Er moet minimaal 1 regel zijn')
-});
+import schema from './pruchaseSchema';
+import { redirect } from 'sveltekit-flash-message/server';
 
 export const load = (async ({ url }) => {
 	const id = Number(url.searchParams.get('id'));
 
-	let form;
-	if (!id) {
-		form = await superValidate(schema);
-	} else {
-		const purchase = await db.invoice.findUnique({
+	let purchase = null;
+	if (id) {
+		purchase = await db.invoice.findUnique({
 			where: { id },
 			include: {
 				rows: true
 			}
 		});
-
 		if (!purchase) throw error(404);
+	}
 
-		form = await superValidate(
-			{
+	const data = purchase
+		? {
 				id: purchase.id,
 				ref: purchase.ref ?? undefined,
 				date: purchase.date ?? undefined,
@@ -56,34 +34,57 @@ export const load = (async ({ url }) => {
 					description: row.description,
 					ledger: row.ledgerId
 				}))
-			},
-			schema
-		);
-	}
+		  }
+		: {
+				rows: [{ amount: 1, price: 0, description: '', ledger: 0 }]
+		  };
+
+	const form = await superValidate(data, schema);
 
 	return { form, relations: await getRelations(), ledgers: await getLedgers() };
 }) satisfies PageServerLoad;
 
 export const actions: Actions = {
-	default: async ({ request, locals }) => {
+	default: async (event) => {
+		const { request, locals } = event;
 		const form = await superValidate(request, schema);
 
-		if (!authorization(locals.roles)) return fail(403, { form });
+		if (!authorization(locals.roles)) throw error(403);
 		if (!form.valid) return fail(400, { form });
 
 		const { id, ref, date, termsOfPayment, relation, rows, type } = form.data;
 
-		if (id) {
-			// TODO check if purchase can be updated
-			await db.invoice.update({
-				where: { id },
+		try {
+			if (id) {
+				// TODO check if purchase can be updated
+				await db.invoice.update({
+					where: { id },
+					data: {
+						ref,
+						date,
+						termsOfPayment,
+						relationId: relation,
+						rows: {
+							deleteMany: {},
+							create: rows.map(({ amount, price, description, ledger }) => ({
+								amount,
+								price,
+								description,
+								ledgerId: ledger
+							}))
+						}
+					}
+				});
+			}
+
+			await db.invoice.create({
 				data: {
+					type,
 					ref,
 					date,
 					termsOfPayment,
 					relationId: relation,
 					rows: {
-						deleteMany: {},
 						create: rows.map(({ amount, price, description, ledger }) => ({
 							amount,
 							price,
@@ -93,28 +94,19 @@ export const actions: Actions = {
 					}
 				}
 			});
-
-			return message(form, 'Purchase updated successfully!');
+		} catch (e) {
+			console.error(e);
+			throw error(500);
 		}
 
-		await db.invoice.create({
-			data: {
-				type,
-				ref,
-				date,
-				termsOfPayment,
-				relationId: relation,
-				rows: {
-					create: rows.map(({ amount, price, description, ledger }) => ({
-						amount,
-						price,
-						description,
-						ledgerId: ledger
-					}))
-				}
-			}
-		});
-
-		return message(form, 'Purchase created successfully!');
+		throw redirect(
+			'/ongeveer/purchases',
+			{
+				message: `Aankoop boeking ${id ? 'aangepast' : 'aangemaakt'}`,
+				type: 'success',
+				title: 'Succes'
+			},
+			event
+		);
 	}
 };

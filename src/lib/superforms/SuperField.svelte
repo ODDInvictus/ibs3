@@ -2,14 +2,11 @@
 	import Label from './Label.svelte';
 	import Error from './Error.svelte';
 
-	import type { z, AnyZodObject } from 'zod';
-	import type { ZodValidation, FormPathLeaves } from 'sveltekit-superforms';
-	import { formFieldProxy, type SuperForm } from 'sveltekit-superforms/client';
+	import { formFieldProxy } from 'sveltekit-superforms/client';
+	import type { formProps, field } from './types';
 
-	type T = $$Generic<AnyZodObject>;
-
-	export let formProps: SuperForm<ZodValidation<T>, unknown>;
-	export let field: FormPathLeaves<z.infer<T>>;
+	export let formProps: formProps;
+	export let field: field;
 	export let type: 'text' | 'textarea' | 'date' | 'number' = 'text';
 
 	const name = field.toString();

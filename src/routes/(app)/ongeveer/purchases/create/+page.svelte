@@ -2,24 +2,21 @@
 	import Title from '$lib/components/title.svelte';
 	import { dateProxy, intProxy, superForm } from 'sveltekit-superforms/client';
 	import type { PageData } from './$types';
-	import SuperTextField from '$lib/superforms/SuperTextField.svelte';
-	import SuperDateField from '$lib/superforms/SuperDateField.svelte';
-	import SuperNumberField from '$/lib/superforms/SuperNumberField.svelte';
-	import Label from '$/lib/superforms/Label.svelte';
+	import SuperField from '$lib/superforms/SuperField.svelte';
+	import Label from '$lib/superforms/Label.svelte';
+	import SuperSelect from '$lib/superforms/SuperSelect.svelte';
 
 	export let data: PageData;
 
-	const { form, errors, enhance, constraints } = superForm(data.form, {
+	const formProps = superForm(data.form, {
 		dataType: 'json'
 	});
+
+	const { form, errors, enhance, constraints } = formProps;
 
 	const invoiceDateProxy = dateProxy(form, 'date');
 	const termsOfPaymentProxy = intProxy(form, 'termsOfPayment');
 	const idProxy = intProxy(form, 'id');
-
-	$form.rows = $form.rows.length
-		? $form.rows
-		: [{ description: '', amount: 0, price: 0, ledger: 0 }];
 </script>
 
 <Title title="Aankoop boeking" />
@@ -27,52 +24,27 @@
 <form class="superform" method="POST" use:enhance>
 	<input name="id" type="hidden" bind:value={$idProxy} />
 
-	<!-- TODO update to new component -->
-	<SuperTextField
-		name="ref"
-		bind:value={$form.ref}
-		errors={$errors.ref}
-		constraints={$constraints.ref}
+	<SuperField {formProps} field="ref">Referentie</SuperField>
+
+	<SuperField type="date" {formProps} field="date">Factuur datum</SuperField>
+
+	<SuperField type="number" {formProps} field="termsOfPayment">Betalingstermijn</SuperField>
+
+	<SuperSelect
+		{formProps}
+		field="relation"
+		options={data.relations.map(({ id, name }) => [id, name])}>Relatie</SuperSelect
 	>
-		Referentie
-	</SuperTextField>
 
-	<SuperDateField
-		name="date"
-		bind:value={$invoiceDateProxy}
-		errors={$errors.date}
-		constraints={$constraints.date}
+	<SuperSelect
+		{formProps}
+		field="type"
+		options={[
+			['PURCHASE', 'Aankoop'],
+			['DECLERATION', 'Declaratie']
+		]}>Type</SuperSelect
 	>
-		Datum
-	</SuperDateField>
-
-	<SuperNumberField
-		name="termsOfPayment"
-		bind:value={$termsOfPaymentProxy}
-		errors={$errors.termsOfPayment}
-		constraints={$constraints.termsOfPayment}
-	>
-		Betalingstermijn
-	</SuperNumberField>
-
-	<!-- TODO extract relation select and group options -->
-	<div class="input-group">
-		<Label name="relation" constraints={{ required: true }}>Relatie</Label>
-		<select name="relation">
-			{#each data.relations ?? [] as relation}
-				<option value={relation.id}>{relation.name}</option>
-			{/each}
-		</select>
-	</div>
-
-	<div class="input-group">
-		<Label name="type" constraints={{ required: true }}>Type</Label>
-		<select name="type">
-			<option value="PURCHASE">Aankoop</option>
-			<option value="DECLARATION">Declaratie</option>
-		</select>
-	</div>
-
+	<!-- TODO extract into component smth idk -->
 	<table>
 		<thead>
 			<th>Omschrijving</th>
