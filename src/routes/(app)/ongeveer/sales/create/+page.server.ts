@@ -8,11 +8,10 @@ export const load = (async ({ url }) => {
 	const invoiceId = Number(url.searchParams.get('id'));
 
 	if (invoiceId) {
-		if (Number.isNaN(invoiceId)) throw error(400);
 		const invoice = await db.invoice.findUnique({
 			where: { id: invoiceId },
 			include: {
-				rows: true
+				Rows: true
 			}
 		});
 		if (!invoice) throw error(404);
@@ -26,7 +25,7 @@ export const load = (async ({ url }) => {
 				reference: invoice.ref ?? '',
 				description: invoice.description ?? '',
 				tav: invoice.tav ?? '',
-				rows: invoice.rows.map((row) => ({
+				rows: invoice.Rows.map((row) => ({
 					amount: row.amount,
 					price: Number(row.price),
 					description: row.description,

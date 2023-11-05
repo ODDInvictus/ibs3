@@ -7,7 +7,7 @@ export const getInvoice = async (id: number) => {
 	const invoice = await db.invoice.findUnique({
 		where: { id },
 		include: {
-			rows: true,
+			Rows: true,
 			BankTransactionMatchRow: true,
 			relation: {
 				include: {
@@ -19,7 +19,7 @@ export const getInvoice = async (id: number) => {
 					}
 				}
 			},
-			treasurer: {
+			Treasurer: {
 				select: {
 					firstName: true,
 					lastName: true

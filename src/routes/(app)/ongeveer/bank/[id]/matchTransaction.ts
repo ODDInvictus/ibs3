@@ -1,7 +1,6 @@
 import { Roles } from '$lib/constants';
 import { Form, type Field } from '$lib/form/form-generator';
 import db from '$lib/server/db';
-import type { BankTransactionType } from '@prisma/client';
 import { FINANCIAL_PERSON_IDS } from '$lib/constants';
 import { error } from '@sveltejs/kit';
 import { Decimal } from 'decimal.js';
