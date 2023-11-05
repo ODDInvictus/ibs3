@@ -31,6 +31,6 @@ export const getInvoice = async (id: number) => {
 	if (!invoice) throw error(404);
 	if (!invoice.date) throw redirect(300, `/ongeveer/sales/create?id=${id}`);
 
-	invoice.rows.map((r) => ((r.price as unknown as number) = r.price.toNumber()));
+	invoice.Rows.map((r) => ((r.price as unknown as number) = r.price.toNumber()));
 	return invoice;
 };

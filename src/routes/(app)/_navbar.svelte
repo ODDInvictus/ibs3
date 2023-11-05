@@ -17,14 +17,22 @@
 	import Menu from '~icons/tabler/menu-2';
 	import X from '~icons/tabler/x';
 	import Equal from '~icons/tabler/equal';
+	import Revolut from '~icons/tabler/brand-revolut';
+	import Book from '~icons/tabler/book';
+	import People from '~icons/tabler/users';
+	import ArrowBarRight from '~icons/tabler/arrow-bar-right';
+	import ArrowBarLeft from '~icons/tabler/arrow-bar-to-left';
+	import Home from '~icons/tabler/home';
 
 	export let openMenu: () => void;
 	export let open: boolean;
+
+	$: inOngeveer = $page.url.pathname.startsWith('/ongeveer');
 </script>
 
 <nav class="layout--navbar">
-	<a href="/" class="logo">
-		{#if $page.url.pathname.startsWith('/ongeveer')}
+	<a href={inOngeveer ? '/ongeveer' : '/'} class="logo">
+		{#if inOngeveer}
 			<svg
 				width="255"
 				height="129"
@@ -95,62 +103,89 @@
 
 	<hr />
 
-	<a class="layout--navbar--item" href="/kalender">
-		<i><Calendar /></i>
-		<span>Kalender</span>
-	</a>
-	<a class="layout--navbar--item" href="/strafbakken">
-		<i><Beer /></i>
-		<span>Strafbakken</span>
-	</a>
-	<a class="layout--navbar--item" href="/fotos">
-		<i><Photo /></i>
-		<span>Foto's</span>
-	</a>
-	<a class="layout--navbar--item" href="/playlist">
-		<i><Music /></i>
-		<span>Playlist</span>
-	</a>
+	{#if inOngeveer}
+		<a href="/" class="layout--navbar--item">
+			<i><Home /></i>
+			<span>IBS</span>
+		</a>
+		<a href="/ongeveer/bank" class="layout--navbar--item">
+			<i><Revolut /></i>
+			<span>Bank</span>
+		</a>
+		<a href="/ongeveer/purchases" class="layout--navbar--item">
+			<i><ArrowBarLeft /></i>
+			<span>Inkoop</span>
+		</a>
+		<a href="/ongeveer/sales" class="layout--navbar--item">
+			<i><ArrowBarRight /></i>
+			<span>Verkoop</span>
+		</a>
+		<a href="/ongeveer/ledger" class="layout--navbar--item">
+			<i><Book /></i>
+			<span>Grootboekrekeningen</span>
+		</a>
+		<a href="/ongeveer/relations" class="layout--navbar--item">
+			<i><People /></i>
+			<span>Relaties</span>
+		</a>
+	{:else}
+		<a class="layout--navbar--item" href="/kalender">
+			<i><Calendar /></i>
+			<span>Kalender</span>
+		</a>
+		<a class="layout--navbar--item" href="/strafbakken">
+			<i><Beer /></i>
+			<span>Strafbakken</span>
+		</a>
+		<a class="layout--navbar--item" href="/fotos">
+			<i><Photo /></i>
+			<span>Foto's</span>
+		</a>
+		<a class="layout--navbar--item" href="/playlist">
+			<i><Music /></i>
+			<span>Playlist</span>
+		</a>
 
-	<button class="layout--navbar--item btn-a" on:click={openMenu}>
-		{#if open}
-			<i><X /></i>
-		{:else}
-			<i><Menu /></i>
+		<button class="layout--navbar--item btn-a" on:click={openMenu}>
+			{#if open}
+				<i><X /></i>
+			{:else}
+				<i><Menu /></i>
+			{/if}
+			<span>Menu</span>
+		</button>
+
+		{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
+			<a class="layout--navbar--item" href="/maluspunten">
+				<i><AccessibleOff /></i>
+				<span>Maluspunten</span>
+			</a>
 		{/if}
-		<span>Menu</span>
-	</button>
 
-	{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
-		<a class="layout--navbar--item" href="/maluspunten">
-			<i><AccessibleOff /></i>
-			<span>Maluspunten</span>
+		<a class="layout--navbar--item" href="/financieel">
+			<i><PigMoney /></i>
+			<span>Financieel</span>
 		</a>
-	{/if}
-
-	<a class="layout--navbar--item" href="/financieel">
-		<i><PigMoney /></i>
-		<span>Financieel</span>
-	</a>
-	<a class="layout--navbar--item" href="/leden">
-		<i><Users /></i>
-		<span>Leden</span>
-	</a>
-	<a class="layout--navbar--item" href="/instellingen">
-		<i><Settings /></i>
-		<span>Instellingen</span>
-	</a>
-	{#if $page.data.roles[LDAP_IDS.ADMINS] || $page.data.roles[LDAP_IDS.SENAAT]}
-		<a class="layout--navbar--item" href="/admin">
-			<i><ShieldCheck /></i>
-			<span>Admin</span>
+		<a class="layout--navbar--item" href="/leden">
+			<i><Users /></i>
+			<span>Leden</span>
 		</a>
-	{/if}
-	{#if $page.data.roles[LDAP_IDS.ADMINS] || $page.data.roles[LDAP_IDS.SENAAT] || $page.data.roles[LDAP_IDS.FINANCIE]}
-		<a class="layout--navbar--item" href="/ongeveer">
-			<i><Equal /></i>
-			<span>Ongeveer</span>
+		<a class="layout--navbar--item" href="/instellingen">
+			<i><Settings /></i>
+			<span>Instellingen</span>
 		</a>
+		{#if $page.data.roles[LDAP_IDS.ADMINS] || $page.data.roles[LDAP_IDS.SENAAT]}
+			<a class="layout--navbar--item" href="/admin">
+				<i><ShieldCheck /></i>
+				<span>Admin</span>
+			</a>
+		{/if}
+		{#if $page.data.roles[LDAP_IDS.ADMINS] || $page.data.roles[LDAP_IDS.SENAAT] || $page.data.roles[LDAP_IDS.FINANCIE]}
+			<a class="layout--navbar--item" href="/ongeveer">
+				<i><Equal /></i>
+				<span>Ongeveer</span>
+			</a>
+		{/if}
 	{/if}
 
 	<a class="layout--navbar--item version" href="/over">
