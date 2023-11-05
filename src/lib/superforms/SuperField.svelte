@@ -1,17 +1,33 @@
-<script lang="ts">
+<script lang="ts" context="module">
+	import type { AnyZodObject } from 'zod';
+	type T = AnyZodObject;
+</script>
+
+<script lang="ts" generics="T extends AnyZodObject">
 	import Label from './Label.svelte';
 	import Error from './Error.svelte';
 
-	import { formFieldProxy } from 'sveltekit-superforms/client';
-	import type { formProps, field } from './types';
+	import type { z } from 'zod';
+	import type { ZodValidation, FormPathLeaves } from 'sveltekit-superforms';
+	import { dateProxy, formFieldProxy, type SuperForm } from 'sveltekit-superforms/client';
+	import type { Writable } from 'svelte/store';
 
-	export let formProps: formProps;
-	export let field: field;
-	export let type: 'text' | 'textarea' | 'date' | 'number' = 'text';
+	export let formProps: SuperForm<ZodValidation<T>, unknown>;
+	export let field: FormPathLeaves<z.infer<T>>;
+	export let type: 'text' | 'textarea' | 'date' | 'number' | 'checkbox' = 'text';
 
 	const name = field.toString();
 
 	const { value, errors, constraints } = formFieldProxy(formProps, field);
+
+	const proxyDate =
+		type === 'date'
+			? dateProxy(formProps.form, field, {
+					format: 'date'
+			  })
+			: undefined;
+
+	$: boolValue = value as Writable<boolean>;
 
 	// TODO fix types
 	function deleteRequired(obj: { required?: boolean; [key: string]: any } | undefined) {
@@ -53,7 +69,7 @@
 			{name}
 			type="date"
 			class:has-error={$errors?.length ?? 0 > 0}
-			bind:value={$value}
+			bind:value={$proxyDate}
 			{...deleteRequired($constraints)}
 			{...$$restProps}
 		/>
@@ -73,6 +89,15 @@
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
 			{...deleteRequired({ ...$constraints })}
+			{...$$restProps}
+		/>
+	{:else if type === 'checkbox'}
+		<input
+			{name}
+			type="checkbox"
+			class:has-error={$errors?.length ?? 0 > 0}
+			bind:checked={$boolValue}
+			{...deleteRequired($constraints)}
 			{...$$restProps}
 		/>
 	{/if}

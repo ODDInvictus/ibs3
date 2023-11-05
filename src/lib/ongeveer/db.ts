@@ -27,3 +27,15 @@ export const getRelations = async () => {
 export const getLedgers = async () => {
 	return await db.ledger.findMany({ where: { isActive: true } });
 };
+
+export const getInvoiceStatus = async (id: number) => {
+	const invoice = await db.invoice.findUnique({
+		where: { id },
+		include: {
+			BankTransactionMatchRow: true
+		}
+	});
+	if (!invoice) return null;
+	if (invoice.BankTransactionMatchRow) return 'PAID';
+	return 'UNPAID';
+};

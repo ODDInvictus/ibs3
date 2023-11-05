@@ -90,14 +90,14 @@
 						<tr>
 							<td>{row.description}</td>
 							<td>{row.amount}</td>
-							<td>{row.price}</td>
-							<td>{row.amount * Number(row.price)}</td>
+							<td>€ {row.price}</td>
+							<td>€ {row.amount * Number(row.price)}</td>
 						</tr>
 					{/each}
 					<tr class="total">
 						<td /><td />
 						<td><i>Totaal</i></td>
-						<td>{invoice.rows.reduce((t, row) => t + row.amount * Number(row.price), 0)}</td>
+						<td>€ {invoice.rows.reduce((t, row) => t + row.amount * Number(row.price), 0)}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -106,8 +106,8 @@
 			Gelieve binnen {invoice.termsOfPayment} dagen het bedrag van {invoice.rows.reduce(
 				(t, row) => t + row.amount * Number(row.price),
 				0
-			)} euro over te maken op rekeningnummer<br />{IBAN} t.n.v. O.D.D. Invictus onder vermelding van
-			het factuurnummer {invoice.id}.
+			)} euro over te maken op rekeningnummer<br />{IBAN} t.n.v. N. Rotmensen onder vermelding van het
+			factuurnummer {invoice.id}.
 			<div class="bottom-bar">
 				<p>IBAN: {IBAN}</p>
 				<p>Email: questor@oddinvictus.nl</p>

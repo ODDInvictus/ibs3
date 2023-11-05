@@ -14,4 +14,8 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Invictus_factuur_{data.invoice.id}</title>
+</svelte:head>
+
 <Invoice invoice={data.invoice} />

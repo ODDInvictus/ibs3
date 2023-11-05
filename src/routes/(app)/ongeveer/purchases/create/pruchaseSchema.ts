@@ -6,7 +6,8 @@ export default z.object({
 	date: z.date(),
 	termsOfPayment: z.number().int().min(0),
 	relation: z.number().int(),
-	type: z.enum(['PURCHASE', 'DECLARATION']),
+	type: z.enum(['PURCHASE', 'DECLARATION'], { required_error: 'Type is verplicht' }),
+	attatchments: z.instanceof(Array).array().optional(),
 	rows: z
 		.object({
 			amount: z.number().int().min(0, 'Aantal mag niet negatief zijn'),

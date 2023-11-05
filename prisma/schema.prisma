@@ -531,7 +531,7 @@ enum InvoiceType {
 model Invoice {
   id             Int          @id @default(autoincrement())
   ref            String?
-  rows           InvoiceRow[]
+  Rows           InvoiceRow[]
   date           DateTime?    @db.Date
   termsOfPayment Int // Aantal dagen
   tav            String?
@@ -541,10 +541,11 @@ model Invoice {
   relation   FinancialPerson @relation(fields: [relationId], references: [id])
   relationId Int
 
-  treasurer               User?                    @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
+  Treasurer               User?                    @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
   treasurerId             Int?
   BankTransactionMatchRow BankTransactionMatchRow?
-  CreditNote              CreditNote[]
+  CreditNotes             CreditNote[]
+  Attachments             InvoiceAttachments[]
 }
 
 // Een regel in een uitgaande factuur
@@ -555,14 +556,24 @@ model InvoiceRow {
   price       Decimal @db.Decimal(19, 4)
   description String
 
-  product   Product? @relation(fields: [productId], references: [id])
+  Product   Product? @relation(fields: [productId], references: [id])
   productId Int?
 
-  ledger   Ledger @relation(fields: [ledgerId], references: [id])
+  Ledger   Ledger @relation(fields: [ledgerId], references: [id])
   ledgerId Int
 
-  Invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  Invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   invoiceId Int
+}
+
+model InvoiceAttachments {
+  id       Int    @id @default(autoincrement())
+  MIMEtype String
+  filename String @unique
+  size     Int // Bytes
+
+  Invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+  invoiceId Int?
 }
 
 enum BankTransactionType {
