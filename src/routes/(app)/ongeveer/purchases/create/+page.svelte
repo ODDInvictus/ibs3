@@ -34,7 +34,7 @@
 
 	function showAttatchments() {
 		if (!attatchments || attatchments.length === 0) return;
-		previews = [...data.attachments];
+		previews = data.attachments.filter((attatchment) => !toDelete.includes(attatchment.name));
 
 		for (const attatchment of attatchments) {
 			const reader = new FileReader();
@@ -187,6 +187,7 @@
 									on:click={() => {
 										toDelete = [...toDelete, previews[i].name];
 										previews = previews.filter((_, j) => j !== i);
+										selected = 0;
 									}}
 								>
 									x
@@ -200,7 +201,13 @@
 					{:else if previews[selected].MIMEtype === 'application/pdf'}
 						<iframe src={previews[selected].src} title={previews[selected].name} />
 					{:else}
-						<a href={previews[selected].src} download={previews[selected].name}>Download</a>
+						<a
+							href={previews[selected].src}
+							download={previews[selected].name}
+							class="button download"
+						>
+							Download
+						</a>
 					{/if}
 				</div>
 			{/if}
@@ -239,6 +246,10 @@
 			object-position: left top;
 			border: 3px solid gray;
 			max-height: 800px;
+		}
+
+		.download {
+			width: fit-content;
 		}
 
 		.nav-item {

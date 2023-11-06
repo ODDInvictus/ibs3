@@ -335,7 +335,6 @@ model FinancialPerson {
   TransactionTo       Transaction[]     @relation("TransactionTo")
   Sale                Sale[]
   Acquisition         Acquisition[]
-  Declaration         Declaration[]
   Streeplijst         Streeplijst[]
   Invoice             Invoice[]
   BankTransactionFrom BankTransaction[]
@@ -495,32 +494,6 @@ model Acquisition {
   isActive Boolean @default(true)
 }
 
-// Een declaratie is een generiekere vorm van inkoop
-model Declaration {
-  id        Int             @id @default(autoincrement())
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  // Wie heeft er gekocht
-  person    FinancialPerson @relation(fields: [personId], references: [id])
-  personId  Int
-
-  // Hoeveel wil iemand terug
-  price           Float
-  // Wat is de reden voor deze declaratie
-  reason          String
-  // Hoe is dit betaald? (Eigen rekening, bank, contant, of Invictus bankrekening)
-  methodOfPayment String  @default("Eigen rekening")
-  // Bonnetje (link naar cdn)
-  receipt         String?
-
-  // Heeft de penningmeester dit goedgekeurd?
-  // Als dit niet is goedgekeurd wordt het ook niet omgezet naar een transactie
-  accepted Boolean @default(false)
-  // Heeft de penningmeester dit afgekeurd?
-  // Als dit is afgekeurd wordt het ook niet omgezet naar een transactie
-  denied   Boolean @default(false)
-}
-
 enum InvoiceType {
   SALE
   PURCHASE
@@ -541,11 +514,30 @@ model Invoice {
   relation   FinancialPerson @relation(fields: [relationId], references: [id])
   relationId Int
 
-  Treasurer               User?                    @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
-  treasurerId             Int?
+  Treasurer   User? @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
+  treasurerId Int?
+
   BankTransactionMatchRow BankTransactionMatchRow?
   CreditNotes             CreditNote[]
   Attachments             InvoiceAttachments[]
+  DeclarationData         DeclarationData?
+}
+
+enum DeclarationStatus {
+  ACCEPTED
+  DECLIEND
+  PENDING
+}
+
+model DeclarationData {
+  id              Int               @id @default(autoincrement())
+  // Hoe is dit betaald? (Eigen rekening, bank, contant, of Invictus bankrekening)
+  methodOfPayment String            @default("Eigen rekening")
+  status          DeclarationStatus
+  updatedAt       DateTime          @updatedAt
+
+  Invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId Int     @unique
 }
 
 // Een regel in een uitgaande factuur
@@ -572,7 +564,7 @@ model InvoiceAttachments {
   filename String @unique
   size     Int // Bytes
 
-  Invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+  Invoice   Invoice? @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   invoiceId Int?
 }
 
@@ -630,7 +622,7 @@ model CreditNote {
   description String?
   amount      Decimal @db.Decimal(19, 4)
 
-  Invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  Invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   invoiceId Int
 }
 
