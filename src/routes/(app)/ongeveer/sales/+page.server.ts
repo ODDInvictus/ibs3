@@ -1,8 +1,8 @@
-import { getInvoices } from '$lib/ongeveer/db';
+import { getJournals } from '$lib/ongeveer/db';
 import type { PageServerLoad } from './$types';
 
 export const load = (async () => {
 	return {
-		invoices: getInvoices('SALE')
+		invoices: getJournals('SALE')
 	};
 }) satisfies PageServerLoad;

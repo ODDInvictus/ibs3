@@ -6,7 +6,7 @@ export const load = async ({ params, locals }) => {
 	const id = parseInt(params.id);
 	if (isNaN(id)) throw error(404, `Declaratie ${params.id} niet gevonden`);
 
-	const declaration = await db.invoice.findFirst({
+	const declaration = await db.journal.findFirst({
 		where: {
 			id: id,
 			type: 'DECLARATION',

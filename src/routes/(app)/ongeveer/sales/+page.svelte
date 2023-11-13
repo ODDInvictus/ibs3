@@ -3,8 +3,6 @@
 	import Title from '$lib/components/title.svelte';
 
 	export let data: PageData;
-
-	$: console.log(data.invoices);
 </script>
 
 <Title title="Verkoop overzicht" />
@@ -32,11 +30,8 @@
 					</td>
 					<td>€ {invoice.total}</td>
 					<td>
-						{#if invoice.bankTransactionId}
-							<a href="/ongeveer/bank/{invoice.bankTransactionId}">
-								{invoice.bankTransactionId}
-							</a>
-						{:else if invoice.date}
+						<!-- TODO: Link naar banktransactie -->
+						{#if invoice.date}
 							Verstuurd
 						{:else}
 							<a href="/ongeveer/sales/{invoice.id}/process">Verwerk</a>

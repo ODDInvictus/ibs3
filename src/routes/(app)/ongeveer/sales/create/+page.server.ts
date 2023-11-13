@@ -8,7 +8,7 @@ export const load = (async ({ url }) => {
 	const invoiceId = Number(url.searchParams.get('id'));
 
 	if (invoiceId) {
-		const invoice = await db.invoice.findUnique({
+		const invoice = await db.journal.findUnique({
 			where: { id: invoiceId },
 			include: {
 				Rows: true

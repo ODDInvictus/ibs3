@@ -69,7 +69,6 @@
 		margin-top: 2rem;
 	}
 
-	ul,
 	ol {
 		margin-left: 2rem;
 

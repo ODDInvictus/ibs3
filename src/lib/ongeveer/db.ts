@@ -1,21 +1,21 @@
 import db from '$lib/server/db';
-import type { Invoice, InvoiceType } from '@prisma/client';
+import type { Journal, JournalType } from '@prisma/client';
 
-type InvoiceResponse = Invoice & {
+type JournalResponse = Journal & {
 	total: string;
 	relation: string;
 };
 
-export const getInvoices = async (type: InvoiceType) => {
-	const invoices = await db.$queryRaw`
+export const getJournals = async (type: JournalType) => {
+	const journals = await db.$queryRaw`
   SELECT i.*, SUM(r.amount * r.price) AS total, p.name AS relation
-  FROM Invoice AS i, InvoiceRow AS r, FinancialPerson as p
+  FROM Journal AS i, JournalRow AS r, FinancialPerson as p
   WHERE i.type = ${type}
-  AND r.invoiceId = i.id
+  AND r.journalId = i.id
   AND i.relationId = p.id
   GROUP BY i.id
 `;
-	return JSON.parse(JSON.stringify(invoices)) as InvoiceResponse[];
+	return JSON.parse(JSON.stringify(journals)) as JournalResponse[];
 };
 
 export const getRelations = async () => {
@@ -28,14 +28,14 @@ export const getLedgers = async () => {
 	return await db.ledger.findMany({ where: { isActive: true } });
 };
 
-export const getInvoiceStatus = async (id: number) => {
-	const invoice = await db.invoice.findUnique({
+export const getJournalStatus = async (id: number) => {
+	const journal = await db.journal.findUnique({
 		where: { id },
 		include: {
 			BankTransactionMatchRow: true
 		}
 	});
-	if (!invoice) return null;
-	if (invoice.BankTransactionMatchRow) return 'PAID';
+	if (!journal) return null;
+	if (journal.BankTransactionMatchRow) return 'PAID';
 	return 'UNPAID';
 };

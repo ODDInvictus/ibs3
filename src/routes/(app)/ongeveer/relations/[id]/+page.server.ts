@@ -13,7 +13,7 @@ export const load = (async ({ params }) => {
 				FinancialPersonDataOther: true,
 				_count: {
 					select: {
-						Invoice: true,
+						Journal: true,
 						BankTransactionFrom: true,
 						Sale: true,
 						Acquisition: true,

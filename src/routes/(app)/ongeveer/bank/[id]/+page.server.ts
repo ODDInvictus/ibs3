@@ -13,7 +13,7 @@ export const load = (async ({ params }) => {
 			Relation: true,
 			BankTransactionMatchRow: {
 				include: {
-					Invoice: {
+					Journal: {
 						select: {
 							ref: true
 						}
@@ -37,7 +37,8 @@ export const load = (async ({ params }) => {
 			rows: bankTransaction.BankTransactionMatchRow.map((row) => ({
 				description: row.description ?? '',
 				amount: row.amount.toNumber(),
-				invoice: row.invoiceId?.toString() ?? '',
+				// TODO: journal?
+				invoice: row.journalId?.toString() ?? '',
 				saldo: !!row.transactionId,
 				ledger: row.ledgerId?.toString() ?? ''
 			}))

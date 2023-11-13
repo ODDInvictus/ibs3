@@ -2,7 +2,7 @@ import db from '$lib/server/db';
 import Decimal from 'decimal.js';
 
 export const load = async ({ locals }) => {
-	const declarations = await db.invoice.findMany({
+	const declarations = await db.journal.findMany({
 		where: {
 			type: 'DECLARATION',
 			relation: {

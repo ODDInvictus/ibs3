@@ -1,7 +1,7 @@
 import { Form, type Field } from '$lib/form/form-generator';
 import { Roles } from '$lib/constants';
 import db from '$lib/server/db';
-import type { InvoiceRow } from '@prisma/client';
+import type { JournalRow } from '@prisma/client';
 
 type row = {
 	amount: number;
@@ -18,18 +18,18 @@ type row = {
  * @returns A Promise that resolves when all the sale invoice rows have been created in the database.
  */
 const createInvoiceRows = async (rows: row[], invoiceId: number) => {
-	const rowInsertions: Promise<InvoiceRow>[] = [];
+	const rowInsertions: Promise<JournalRow>[] = [];
 	rows.forEach((row) => {
 		const productId = row.productId ? Number(row.productId) : undefined;
 		rowInsertions.push(
-			db.invoiceRow.create({
+			db.journalRow.create({
 				data: {
 					amount: row.amount,
 					price: row.price,
 					description: row.description,
 					ledgerId: Number(row.ledgerId),
 					productId,
-					invoiceId: invoiceId
+					journalId: invoiceId
 				}
 			})
 		);
@@ -53,7 +53,7 @@ export const createInvoiceForm = new Form<{
 		const id = Number(data.id);
 		try {
 			if (Number.isNaN(id)) {
-				const invoice = await db.invoice.create({
+				const invoice = await db.journal.create({
 					data: {
 						termsOfPayment: data.termsOfPayment,
 						relationId: Number(data.toId),
@@ -74,7 +74,7 @@ export const createInvoiceForm = new Form<{
 					redirectTo: '/ongeveer/sales'
 				};
 			} else {
-				await db.invoice.update({
+				await db.journal.update({
 					where: { id },
 					data: {
 						termsOfPayment: data.termsOfPayment,
@@ -86,8 +86,8 @@ export const createInvoiceForm = new Form<{
 					}
 				});
 
-				await db.invoiceRow.deleteMany({
-					where: { invoiceId: id }
+				await db.journalRow.deleteMany({
+					where: { journalId: id }
 				});
 
 				await createInvoiceRows(data.rows, id);

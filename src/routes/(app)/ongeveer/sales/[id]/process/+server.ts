@@ -6,8 +6,8 @@ export const GET: RequestHandler = async ({ params }) => {
 	const id = Number(params.id);
 	if (isNaN(id)) throw error(400, 'Invalid id');
 
-	// Update the saleInvoice date to the current date
-	await db.invoice.update({
+	// Update the journal date to the current date
+	await db.journal.update({
 		where: { id },
 		data: { date: new Date() }
 	});

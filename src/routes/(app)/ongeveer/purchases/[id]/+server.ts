@@ -1,4 +1,4 @@
-import { getInvoiceStatus } from '$lib/ongeveer/db';
+import { getJournalStatus } from '$lib/ongeveer/db';
 import { authorization } from '$lib/ongeveer/utils';
 import db from '$lib/server/db';
 import type { RequestHandler } from './$types';
@@ -11,7 +11,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 		return new Response('Je moet senaat of financie zijn', { status: 403 });
 
 	try {
-		var status: Awaited<ReturnType<typeof getInvoiceStatus>> = await getInvoiceStatus(id);
+		var status: Awaited<ReturnType<typeof getJournalStatus>> = await getJournalStatus(id);
 	} catch (error) {
 		console.error(error);
 		return new Response('Kan de status van de aankoop niet verkrijgen', { status: 500 });
@@ -24,7 +24,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 		);
 
 	try {
-		await db.invoice.delete({ where: { id } });
+		await db.journal.delete({ where: { id } });
 	} catch (error) {
 		console.error(error);
 		return new Response('Kan de aankoop niet verwijderen', { status: 500 });

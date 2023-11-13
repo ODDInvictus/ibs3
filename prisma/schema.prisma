@@ -90,7 +90,7 @@ model User {
   PhotoTaggedIn           PhotoPersonTag[]          @relation("taggedInPhoto")
   PhotoTaggedBy           PhotoPersonTag[]          @relation("photoTaggedBy")
   CommentsMade            Comment[]
-  Invoice                 Invoice[]
+  Journal                 Journal[]
 }
 
 model Account {
@@ -256,7 +256,7 @@ model Ledger {
   // Foreign keys
   Transaction             Transaction[]
   isActive                Boolean                   @default(true)
-  InvoiceRow              InvoiceRow[]
+  JournalRows             JournalRow[]
   BankTransactionMatchRow BankTransactionMatchRow[]
 }
 
@@ -298,7 +298,7 @@ model Product {
   Acquisition Acquisition[]
   // Een product kan niet worden verwijderd, wel uitgeschakeld
   isActive    Boolean         @default(true)
-  InvoiceRow  InvoiceRow[]
+  JournalRow  JournalRow[]
 }
 
 enum FinancialPersonType {
@@ -336,7 +336,7 @@ model FinancialPerson {
   Sale                Sale[]
   Acquisition         Acquisition[]
   Streeplijst         Streeplijst[]
-  Invoice             Invoice[]
+  Journal             Journal[]
   BankTransactionFrom BankTransaction[]
 }
 
@@ -494,22 +494,22 @@ model Acquisition {
   isActive Boolean @default(true)
 }
 
-enum InvoiceType {
+enum JournalType {
   SALE
   PURCHASE
   DECLARATION
 }
 
-// Uitgaande factuur
-model Invoice {
+// Boekstuk
+model Journal {
   id             Int          @id @default(autoincrement())
   ref            String?
-  Rows           InvoiceRow[]
+  Rows           JournalRow[]
   date           DateTime?    @db.Date
   termsOfPayment Int // Aantal dagen
   tav            String?
   description    String?
-  type           InvoiceType
+  type           JournalType
 
   relation   FinancialPerson @relation(fields: [relationId], references: [id])
   relationId Int
@@ -517,9 +517,9 @@ model Invoice {
   Treasurer   User? @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
   treasurerId Int?
 
-  BankTransactionMatchRow BankTransactionMatchRow?
+  BankTransactionMatchRow BankTransactionMatchRow[]
   CreditNotes             CreditNote[]
-  Attachments             InvoiceAttachments[]
+  Attachments             JournalAttachments[]
   DeclarationData         DeclarationData?
 }
 
@@ -544,12 +544,12 @@ model DeclarationData {
   updatedAt       DateTime          @updatedAt
   askedAmount     Decimal           @db.Decimal(19, 4)
 
-  Invoice   Invoice? @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  invoiceId Int?     @unique
+  Journal   Journal? @relation(fields: [journalId], references: [id], onDelete: Cascade)
+  journalId Int?     @unique
 }
 
 // Een regel in een uitgaande factuur
-model InvoiceRow {
+model JournalRow {
   id          Int     @id @default(autoincrement())
   amount      Int
   // MySQL adviseerd 19, 4 voor geld
@@ -562,18 +562,18 @@ model InvoiceRow {
   Ledger   Ledger @relation(fields: [ledgerId], references: [id])
   ledgerId Int
 
-  Invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  invoiceId Int
+  Journal   Journal @relation(fields: [journalId], references: [id], onDelete: Cascade)
+  journalId Int
 }
 
-model InvoiceAttachments {
+model JournalAttachments {
   id       Int    @id @default(autoincrement())
   MIMEtype String
   filename String @unique
   size     Int // Bytes
 
-  Invoice   Invoice? @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  invoiceId Int?
+  Journal   Journal? @relation(fields: [journalId], references: [id], onDelete: Cascade)
+  journalId Int?
 }
 
 enum BankTransactionType {
@@ -615,8 +615,8 @@ model BankTransactionMatchRow {
   SaldoTransaction Transaction? @relation(fields: [transactionId], references: [id])
   transactionId    Int?
 
-  Invoice   Invoice? @relation(fields: [invoiceId], references: [id])
-  invoiceId Int?     @unique
+  Journal   Journal? @relation(fields: [journalId], references: [id])
+  journalId Int?
 
   Ledger   Ledger @relation(fields: [ledgerId], references: [id])
   ledgerId Int
@@ -630,8 +630,8 @@ model CreditNote {
   description String?
   amount      Decimal @db.Decimal(19, 4)
 
-  Invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  invoiceId Int
+  Journal   Journal @relation(fields: [journalId], references: [id], onDelete: Cascade)
+  journalId Int
 }
 
 //

@@ -3,7 +3,7 @@ import { superValidate } from 'sveltekit-superforms/server';
 import { authorization } from '$lib/ongeveer/utils';
 import db from '$lib/server/db';
 import { error, fail } from '@sveltejs/kit';
-import { getInvoiceStatus, getLedgers, getRelations } from '$lib/ongeveer/db';
+import { getJournalStatus, getLedgers, getRelations } from '$lib/ongeveer/db';
 import schema from './pruchaseSchema';
 import { redirect } from 'sveltekit-flash-message/server';
 import fs from 'fs';
@@ -20,7 +20,7 @@ export const load = (async (event) => {
 
 	let purchase = null;
 	if (id) {
-		purchase = await db.invoice.findUnique({
+		purchase = await db.journal.findUnique({
 			where: { id },
 			include: {
 				Rows: true,
@@ -110,7 +110,7 @@ export const actions: Actions = {
 		// TODO make sure declaration can only be related to a user
 
 		if (id) {
-			const status = await getInvoiceStatus(id);
+			const status = await getJournalStatus(id);
 			if (!status) throw error(404);
 
 			// TODO make if posible to change irrelevant fields
@@ -125,9 +125,9 @@ export const actions: Actions = {
 
 		try {
 			if (id) {
-				// Update existing invoice
+				// Update existing journal
 				files = createFileNames(attatchments, id);
-				await db.invoice.update({
+				await db.journal.update({
 					where: { id },
 					data: {
 						ref,
@@ -162,8 +162,8 @@ export const actions: Actions = {
 					}
 				});
 			} else {
-				// Create new invoice
-				const { id } = await db.invoice.create({
+				// Create new journal
+				const { id } = await db.journal.create({
 					data: {
 						type,
 						ref,
@@ -181,7 +181,7 @@ export const actions: Actions = {
 					}
 				});
 				files = createFileNames(attatchments, id);
-				await db.invoice.update({
+				await db.journal.update({
 					where: { id },
 					data: {
 						Attachments: {
@@ -203,7 +203,7 @@ export const actions: Actions = {
 
 		// Write files to disk
 		// TODO @niels write new endpoint to upload files
-		// TODO prevent files from being overwritten / uploading a file twice when updating an existing invoice
+		// TODO prevent files from being overwritten / uploading a file twice when updating an existing journal
 		try {
 			for (let fileData of files) {
 				if (toDelete.includes(fileData.name)) continue;

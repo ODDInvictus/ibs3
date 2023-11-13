@@ -1,12 +1,12 @@
 import type { PageServerLoad } from './$types';
-import { getInvoice } from './getInvoice';
+import { getJournal } from './getJournal';
 import { editRefForm } from './editRef';
 import { redirect } from '@sveltejs/kit';
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
 
-	const invoice = await getInvoice(id);
+	const invoice = await getJournal(id);
 
 	if (!invoice.date) throw redirect(300, `/financieel/sales/create?id=${id}`);
 

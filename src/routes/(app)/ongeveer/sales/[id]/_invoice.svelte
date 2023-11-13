@@ -3,21 +3,21 @@
 	import type {
 		FinancialPerson,
 		FinancialPersonDataOther,
-		Invoice,
-		InvoiceRow,
+		Journal,
+		JournalRow,
 		User
 	} from '@prisma/client';
 	import { PUBLIC_IBAN as IBAN } from '$env/static/public';
 
 	// TODO fix type
-	export let invoice: Invoice & {
+	export let invoice: Journal & {
 		relation: FinancialPerson & {
 			FinancialPersonDataOther?: FinancialPersonDataOther;
 			FinancialPersonDataUser?: { user: User };
 		};
 		date: Date;
 		treasurer: User;
-		rows: InvoiceRow[];
+		rows: JournalRow[];
 	};
 </script>
 

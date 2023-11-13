@@ -46,14 +46,14 @@
 		</div>
 	{/if}
 
-	{#if data.bankTransaction.BankTransactionMatchRow.some((r) => r.Invoice)}
+	{#if data.bankTransaction.BankTransactionMatchRow.some((r) => r.Journal)}
 		<div>
 			<h3>Facturen</h3>
 			{#each data.bankTransaction.BankTransactionMatchRow as row}
-				{#if row.Invoice}
+				{#if row.Journal}
 					<p>
 						Factuur:
-						<a href="/ongeveer/sales/{row.invoiceId}">{row.invoiceId} - {row.Invoice.ref}</a>
+						<a href="/ongeveer/sales/{row.journalId}">{row.journalId} - {row.Journal.ref}</a>
 					</p>
 				{/if}
 			{/each}

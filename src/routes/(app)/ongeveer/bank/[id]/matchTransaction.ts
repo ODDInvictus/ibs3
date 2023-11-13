@@ -110,7 +110,7 @@ export const matchForm = new Form<{
 						description: row.description,
 						amount: row.amount,
 						bankTransactionId: Number(data.id),
-						invoiceId: row.invoice ? Number(row.invoice) : undefined,
+						journalId: row.invoice ? Number(row.invoice) : undefined,
 						ledgerId: Number(row.ledger)
 					}
 				});
@@ -173,13 +173,12 @@ export const matchForm = new Form<{
 					label: 'Factuur',
 					type: 'select',
 					getOptions: async () => {
-						const invoices = await db.invoice.findMany({
-							where: { BankTransactionMatchRow: null }
-						});
+						// TODO filter
+						const journals = await db.journal.findMany();
 
-						return invoices.map((invoice) => ({
-							label: `${invoice.id} - ${invoice.ref ?? ''}`,
-							value: invoice.id
+						return journals.map((journal) => ({
+							label: `${journal.id} - ${journal.ref ?? ''}`,
+							value: journal.id
 						}));
 					},
 					optional: true

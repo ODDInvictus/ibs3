@@ -1,10 +1,10 @@
 import db from '$lib/server/db';
 import { error, redirect } from '@sveltejs/kit';
 
-export const getInvoice = async (id: number) => {
+export const getJournal = async (id: number) => {
 	if (isNaN(id)) throw error(400);
 
-	const invoice = await db.invoice.findUnique({
+	const journal = await db.journal.findUnique({
 		where: { id },
 		include: {
 			Rows: true,
@@ -28,9 +28,9 @@ export const getInvoice = async (id: number) => {
 		}
 	});
 
-	if (!invoice) throw error(404);
-	if (!invoice.date) throw redirect(300, `/ongeveer/sales/create?id=${id}`);
+	if (!journal) throw error(404);
+	if (!journal.date) throw redirect(300, `/ongeveer/sales/create?id=${id}`);
 
-	invoice.Rows.map((r) => ((r.price as unknown as number) = r.price.toNumber()));
-	return invoice;
+	journal.Rows.map((r) => ((r.price as unknown as number) = r.price.toNumber()));
+	return journal;
 };

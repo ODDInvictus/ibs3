@@ -23,7 +23,7 @@ export const editRefForm = new Form<{
 	],
 	requiredRoles: [Roles.Admins, Roles.FinanCie, Roles.Senaat],
 	logic: async ({ ref, id }) => {
-		await db.invoice.update({
+		await db.journal.update({
 			where: {
 				id: Number(id)
 			},

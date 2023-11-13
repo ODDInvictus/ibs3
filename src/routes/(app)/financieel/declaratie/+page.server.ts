@@ -40,7 +40,7 @@ export const actions = {
 
 			await db.$transaction(async (tx) => {
 				// Create object in database
-				const declaration = await tx.invoice.create({
+				const declaration = await tx.journal.create({
 					data: {
 						type: 'DECLARATION',
 						date: new Date(),
@@ -59,7 +59,8 @@ export const actions = {
 						DeclarationData: {
 							create: {
 								methodOfPayment,
-								status: 'PENDING'
+								status: 'PENDING',
+								askedAmount: price
 							}
 						}
 					}
@@ -67,7 +68,7 @@ export const actions = {
 
 				const filename = `receipt-${declaration.id}-${receipt.name}`;
 
-				await tx.invoice.update({
+				await tx.journal.update({
 					where: {
 						id: declaration.id
 					},
