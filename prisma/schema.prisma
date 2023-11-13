@@ -525,19 +525,27 @@ model Invoice {
 
 enum DeclarationStatus {
   ACCEPTED
-  DECLIEND
+  DECLINED
   PENDING
+}
+
+enum ReceiveMethod {
+  SALDO
+  ACCOUNT
 }
 
 model DeclarationData {
   id              Int               @id @default(autoincrement())
-  // Hoe is dit betaald? (Eigen rekening, bank, contant, of Invictus bankrekening)
+  // Hoe is dit betaald? (Eigen rekening, bank, contant)
   methodOfPayment String            @default("Eigen rekening")
-  status          DeclarationStatus
+  reiceiveMethod  ReceiveMethod     @default(SALDO)
+  status          DeclarationStatus @default(PENDING)
+  iban            String?
   updatedAt       DateTime          @updatedAt
+  askedAmount     Decimal           @db.Decimal(19, 4)
 
-  Invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  invoiceId Int     @unique
+  Invoice   Invoice? @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId Int?     @unique
 }
 
 // Een regel in een uitgaande factuur

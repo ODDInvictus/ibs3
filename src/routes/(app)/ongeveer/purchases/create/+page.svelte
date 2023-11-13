@@ -85,7 +85,26 @@
 		]}>Type</SuperSelect
 	>
 
+	{#if data.declarationData}
+		<hr />
+		<div class="input-group">
+			<label for="">Betaalmethode</label>
+			<input type="text" disabled value={data.declarationData.methodOfPayment} />
+		</div>
+		<div class="input-group">
+			<label for="">Status</label>
+			<input type="text" disabled value={data.declarationData.status} />
+		</div>
+		{#if data.declarationData.status === 'PENDING'}
+			<div class="decla-actions">
+				<button type="button">Goedkeuren</button>
+				<button type="button" class="btn-danger">Afwijzen</button>
+			</div>
+		{/if}
+	{/if}
+	<!-- Wie dit leest trekt bak-->
 	<!-- TODO extract into component smth idk -->
+	<hr />
 	<table>
 		<thead>
 			<th>Omschrijving</th>

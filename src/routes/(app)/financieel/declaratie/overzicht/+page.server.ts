@@ -1,17 +1,32 @@
-import db from '$lib/server/db'
+import db from '$lib/server/db';
+import Decimal from 'decimal.js';
 
-export const load = (async () => {
-  const declarations = await db.declaration.findMany({
-    where: {
-      accepted: false,
-      denied: false,
-    },
-    include: {
-      person: true
-    }
-  })
+export const load = async ({ locals }) => {
+	const declarations = await db.invoice.findMany({
+		where: {
+			type: 'DECLARATION',
+			relation: {
+				FinancialPersonDataUser: {
+					userId: locals.user.id
+				}
+			}
+		},
+		include: {
+			DeclarationData: true,
+			Rows: true
+		}
+	});
 
-  return {
-    declarations
-  }
-})
+	const data = declarations.map(({ id, date, DeclarationData, Rows, description }) => ({
+		id,
+		date,
+		methodOfPayment: DeclarationData?.methodOfPayment ?? null,
+		description,
+		total: Rows.reduce(
+			(acc, { price, amount }) => acc.add(new Decimal(price).mul(amount)),
+			new Decimal(0)
+		).toNumber()
+	}));
+
+	return { declarations: data };
+};

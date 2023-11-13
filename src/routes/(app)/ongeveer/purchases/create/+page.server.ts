@@ -24,7 +24,8 @@ export const load = (async (event) => {
 			where: { id },
 			include: {
 				Rows: true,
-				Attachments: true
+				Attachments: true,
+				DeclarationData: true
 			}
 		});
 		if (!purchase) throw error(404);
@@ -64,8 +65,6 @@ export const load = (async (event) => {
 
 	const form = await superValidate(data, schema);
 
-	console.log(purchase?.Attachments);
-
 	const attachments =
 		purchase?.Attachments?.map((attatchment) => {
 			return {
@@ -80,7 +79,8 @@ export const load = (async (event) => {
 		form,
 		relations: await getRelations(),
 		ledgers: await getLedgers(),
-		attachments
+		attachments,
+		declarationData: purchase?.DeclarationData ?? null
 	};
 }) satisfies PageServerLoad;
 

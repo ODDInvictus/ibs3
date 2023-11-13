@@ -1,42 +1,42 @@
 import db from '$lib/server/db';
-import { fail } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import { error, fail } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
 import fs from 'fs';
 import { env } from '$env/dynamic/private';
+import schema from './declarationSchema';
+import { setError, superValidate } from 'sveltekit-superforms/server';
+import { redirect } from 'sveltekit-flash-message/server';
 
-type FormData = {
-	product: string;
-	methode: string;
-	prijs: string;
-	statiegeld: string;
-	receipt: File;
+export const load: PageServerLoad = async () => {
+	const data = {
+		methodOfPayment: 'Eigen rekening',
+		receiveMethod: 'SALDO' as const
+	};
+	const form = await superValidate(data, schema);
+
+	return { form };
 };
 
 export const actions = {
 	default: async (event) => {
 		try {
-			const data = Object.fromEntries(await event.request.formData()) as unknown as FormData;
+			const { request, locals } = event;
+			const formData = await request.formData();
+			const form = await superValidate(formData, schema);
 
-			// save declaration
-			if (!data.product) throw new Error('Product is verplicht');
-			if (!data.methode) throw new Error('Methode is verplicht');
-			if (!data.prijs || parseFloat(data.prijs) < 0.01) throw new Error('Prijs is verplicht');
-			if (!data.statiegeld || parseFloat(data.statiegeld) < 0)
-				throw new Error('Statiegeld is verplicht of onder 0');
-			if (!data.receipt) throw new Error('Bonnetje is verplicht');
+			if (!form.valid) return fail(400, { form });
+			const receipt = formData.get('receipt') as File;
+			const { receiveMethod, product, methodOfPayment, iban, price } = form.data;
 
-			const prijs = parseFloat(data.prijs);
-			const statiegeld = parseFloat(data.statiegeld);
-
-			const user = event.locals.user;
+			if (receiveMethod === 'BANK' && !iban) return setError(form, 'iban', 'Verplicht');
 
 			const personData = await db.financialPersonDataUser.findFirst({
 				where: {
-					userId: user.id
+					userId: locals.user.id
 				}
 			});
 
-			if (!personData) throw new Error('Geen persoonsgegevens gevonden');
+			if (!personData) throw error(500, 'Gebruiker heeft geen financiële gegevens');
 
 			await db.$transaction(async (tx) => {
 				// Create object in database
@@ -50,28 +50,22 @@ export const actions = {
 							create: [
 								{
 									amount: 1,
-									price: prijs,
+									price,
 									ledgerId: 3100, // TODO fix this
-									description: data.product
-								},
-								{
-									amount: 1,
-									price: statiegeld,
-									ledgerId: 3100, // TODO fix this
-									description: 'Statiegeld'
+									description: product
 								}
 							]
 						},
 						DeclarationData: {
 							create: {
-								methodOfPayment: data.methode,
+								methodOfPayment,
 								status: 'PENDING'
 							}
 						}
 					}
 				});
 
-				const filename = `receipt-${declaration.id}-${data.receipt.name}`;
+				const filename = `receipt-${declaration.id}-${receipt.name}`;
 
 				await tx.invoice.update({
 					where: {
@@ -82,8 +76,8 @@ export const actions = {
 							create: [
 								{
 									filename,
-									size: data.receipt.size,
-									MIMEtype: data.receipt.type
+									size: receipt.size,
+									MIMEtype: receipt.type
 								}
 							]
 						}
@@ -94,18 +88,18 @@ export const actions = {
 				// TODO @niels replace with new endpoint
 				fs.writeFileSync(
 					`${env.UPLOAD_FOLDER}/purchases/${filename}`,
-					Buffer.from(await data.receipt.arrayBuffer()),
+					Buffer.from(await receipt.arrayBuffer()),
 					{ encoding: 'binary' }
 				);
 			});
-
-			return {
-				success: true,
-				message: 'Declaratie is opgeslagen. Je kan gelijk nog een declaratie doen!'
-			};
 		} catch (err: any) {
 			console.error(err);
 			return fail(400, { succes: false, message: err?.message ?? 'Internal Error' });
 		}
+
+		throw redirect(
+			{ message: 'Je kan er gelijk nog een doen.', title: 'Declaratie ingediend', type: 'success' },
+			event
+		);
 	}
 } satisfies Actions;

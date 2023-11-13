@@ -1,48 +1,42 @@
 <script lang="ts">
-	import { applyAction, enhance } from '$app/forms';
 	import Title from '$lib/components/title.svelte';
-	import type { PageData, ActionData } from './$types';
+	import { superForm } from 'sveltekit-superforms/client';
+	import validators from './declarationSchema';
+	import type { PageData } from './$types';
+	import { onError } from '$lib/superforms/error';
+	import SuperField from '$lib/superforms/SuperField.svelte';
+	import SuperSelect from '$lib/superforms/SuperSelect.svelte';
+	import Submit from '$lib/superforms/Submit.svelte';
+	import SuperFileField from '$lib/superforms/SuperFileField.svelte';
 
-	export let form: ActionData;
+	export let data: PageData;
 
-	let productData = {
-		product: form?.product ?? '',
-		prijs: form?.prijs ?? 0,
-		statiegeld: form?.statiegeld ?? 0,
-		methode: form?.methode ?? 'Eigen rekening'
-	};
+	const formProps = superForm(data.form, {
+		validators,
+		onError
+	});
 
-	let files: FileList | null = null;
+	const { enhance, form, message } = formProps;
+
+	let files: FileList;
+	let src: string | null = null;
 
 	$: if (files) {
 		showImage();
 	}
 
 	function showImage() {
-		const receipt = document.getElementById('receipt')! as HTMLInputElement;
-		const image = document.getElementById('receipt-image')! as HTMLImageElement;
+		if (!files || files.length === 0) return;
 
-		if (receipt) {
-			const fileList = receipt.files;
+		const file = files[0];
 
-			if (!fileList || fileList.length === 0) return;
+		const reader = new FileReader();
 
-			const file = fileList[0];
+		reader.onload = function (event) {
+			src = event.target?.result?.toString() ?? null;
+		};
 
-			const reader = new FileReader();
-
-			reader.onload = function (e) {
-				// @ts-expect-error Is gewoon string niet piepen
-				image.src = e.target?.result ?? '';
-			};
-
-			reader.readAsDataURL(file);
-		}
-	}
-
-	function removeImage() {
-		const image = document.getElementById('receipt-image')! as HTMLImageElement;
-		image.src = '';
+		reader.readAsDataURL(file);
 	}
 </script>
 
@@ -52,126 +46,37 @@
 	underTitle="Heb je bier gekocht, of wil je gewoon geld van ons? Doe dan een declaratie!"
 />
 
-{#if form?.success}
-	<p class="success">{form.message ?? ''}</p>
+{#if $message}
+	<div class="message">{$message}</div>
 {/if}
 
-{#if !form?.success}
-	<p class="error">{form?.message ?? ''}</p>
-{/if}
+<form method="POST" enctype="multipart/form-data" class="superform" use:enhance>
+	<SuperField type="text" {formProps} field="product">Wat heb je gekocht</SuperField>
 
-<form
-	method="POST"
-	enctype="multipart/form-data"
-	use:enhance={() => {
-		return async ({ result }) => {
-			removeImage();
-			await applyAction(result);
-		};
-	}}
->
-	<label for="product">Wat heb je gekocht</label>
-	<input type="text" name="product" id="product" bind:value={productData.product} />
+	<SuperField type="text" {formProps} field="methodOfPayment">Betaalmethode</SuperField>
 
-	<label for="methode">Betaalmethode</label>
-	<input type="text" name="methode" id="methode" bind:value={productData.methode} />
+	<SuperSelect
+		{formProps}
+		field="receiveMethod"
+		options={[
+			['SALDO', 'Saldo'],
+			['BANK', 'Rekening']
+		]}
+	>
+		Hoe wil je terug betaald worden?
+	</SuperSelect>
 
-	<label for="statiegeld">Prijs</label>
-	<span class="input-euro">
-		<input
-			type="number"
-			class="euro"
-			min="0.00"
-			step=".01"
-			name="prijs"
-			id="prijs"
-			bind:value={productData.prijs}
-		/>
-	</span>
+	{#if $form.receiveMethod === 'BANK'}
+		<SuperField type="text" {formProps} field="iban">IBAN</SuperField>
+	{/if}
 
-	<label for="statiegeld">Statiegeld</label>
-	<span class="input-euro">
-		<input
-			type="number"
-			class="euro"
-			min="0.00"
-			step=".01"
-			name="statiegeld"
-			id="statiegeld"
-			bind:value={productData.statiegeld}
-		/>
-	</span>
+	<SuperField type="number" {formProps} field="price" class="input-euro euro">Prijs</SuperField>
 
-	<label for="receipt">Bon</label>
-	<input type="file" name="receipt" id="receipt" accept="image/*" bind:files />
+	<SuperFileField name="receipt" bind:files>Bon</SuperFileField>
 
-	<button type="submit"> Verstuur </button>
+	<Submit {formProps}>Verstuur</Submit>
 </form>
 
-<img src="" id="receipt-image" alt="Hier komt je bonnetje te staan" />
-
-<style lang="scss">
-	.error {
-		color: red;
-	}
-
-	.success {
-		color: purple;
-	}
-
-	form {
-		margin-top: 1rem;
-		display: grid;
-		grid-template-columns: 100px 1fr;
-		gap: 1rem;
-
-		@media (max-width: 600px) {
-			grid-template-columns: 1fr;
-			gap: 0.25rem;
-
-			input[type='file'] {
-				margin-bottom: 1rem;
-			}
-		}
-
-		label {
-			font-weight: 600;
-			padding-top: 0.4rem;
-		}
-
-		button {
-			margin-bottom: 1rem;
-		}
-
-		input:not([type='file']) {
-			padding: 0.5rem;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-			outline: none;
-		}
-
-		input[type='file'] {
-			outline: none;
-			cursor: pointer;
-		}
-
-		input:focus:not([type='file']) {
-			border: 1px solid purple;
-		}
-
-		.euro {
-			padding-left: 22px !important;
-		}
-	}
-
-	.input-euro {
-		position: relative;
-	}
-
-	.input-euro:before {
-		position: absolute;
-		content: '€';
-		top: 9px;
-		left: 9px;
-	}
-</style>
+{#if src}
+	<img {src} id="receipt-image" alt="Hier komt je bonnetje te staan" />
+{/if}

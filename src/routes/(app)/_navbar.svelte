@@ -22,6 +22,7 @@
 	import People from '~icons/tabler/users';
 	import ArrowBarRight from '~icons/tabler/arrow-bar-right';
 	import ArrowBarLeft from '~icons/tabler/arrow-bar-to-left';
+	import QuestionMark from '~icons/tabler/question-mark';
 	import Home from '~icons/tabler/home';
 
 	export let openMenu: () => void;
@@ -127,6 +128,10 @@
 		<a href="/ongeveer/relations" class="layout--navbar--item">
 			<i><People /></i>
 			<span>Relaties</span>
+		</a>
+		<a href="/ongeveer/help" class="layout--navbar--item">
+			<i><QuestionMark /></i>
+			<span>Hulp</span>
 		</a>
 	{:else}
 		<a class="layout--navbar--item" href="/kalender">
