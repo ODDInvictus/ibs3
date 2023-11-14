@@ -3,10 +3,9 @@ import { env } from '$env/dynamic/private'
 import { redirect, type Handle, type HandleServerError } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import AuthentikProvider from '@auth/core/providers/authentik'
-import IBSAdapter from '$lib/server/authAdapter'
-import prisma from '$lib/server/db'
 import { getCommittees, getRoles, getUser } from '$lib/server/userCache';
 import { notifyDiscordError } from '$lib/server/notifications/discord';
+import NewIBSAdapter from '$lib/server/authAdapterNew';
 
 
 const authorization = (async ({ event, resolve }) => {
@@ -62,7 +61,7 @@ export const handle: Handle = sequence(
 		providers: [
 			AuthentikProvider(authentikOptions),
 		],
-		adapter: IBSAdapter(prisma),
+		adapter: NewIBSAdapter(),
 		secret: env.IBS_CLIENT_SECRET,
 		session: {
 			strategy: 'jwt',
