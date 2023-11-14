@@ -100,6 +100,8 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const form = await superValidate(formData, schema);
 
+		console.log(form);
+
 		if (!authorization(locals.roles)) throw error(403);
 		if (!form.valid) return fail(400, { form });
 

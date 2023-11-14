@@ -34,22 +34,22 @@
 		<p>Fee: {data.bankTransaction.fee}</p>
 	</div>
 
-	{#if data.bankTransaction.BankTransactionMatchRow.length > 0}
+	{#if data.bankTransaction.Transaction.TransactionMatchRow.length > 0}
 		<div>
 			<h3>Grootboekrekeningen</h3>
-			{#each data.bankTransaction.BankTransactionMatchRow as row}
+			{#each data.bankTransaction.Transaction.TransactionMatchRow as row}
 				<p>
-					Grootboekrekening:
-					<a href="/ongeveer/ledger/{row.ledgerId}">{row.ledgerId} - {row.Ledger.name}</a>
+					Boekstukken:
+					<a href="/ongeveer/journal/{row.journalId}">{row.journalId} - {row.Journal.ref}</a>
 				</p>
 			{/each}
 		</div>
 	{/if}
 
-	{#if data.bankTransaction.BankTransactionMatchRow.some((r) => r.Journal)}
+	{#if data.bankTransaction.Transaction.TransactionMatchRow.some((r) => r.Journal)}
 		<div>
 			<h3>Facturen</h3>
-			{#each data.bankTransaction.BankTransactionMatchRow as row}
+			{#each data.bankTransaction.Transaction.TransactionMatchRow as row}
 				{#if row.Journal}
 					<p>
 						Factuur:

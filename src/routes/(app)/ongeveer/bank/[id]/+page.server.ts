@@ -11,16 +11,11 @@ export const load = (async ({ params }) => {
 		where: { id },
 		include: {
 			Relation: true,
-			BankTransactionMatchRow: {
+			Transaction: {
 				include: {
-					Journal: {
-						select: {
-							ref: true
-						}
-					},
-					Ledger: {
-						select: {
-							name: true
+					TransactionMatchRow: {
+						include: {
+							Journal: true
 						}
 					}
 				}
@@ -34,13 +29,11 @@ export const load = (async ({ params }) => {
 			id: bankTransaction.id.toString(),
 			relation: bankTransaction.relationId?.toString(),
 			ref: bankTransaction.ref ?? '',
-			rows: bankTransaction.BankTransactionMatchRow.map((row) => ({
+			rows: (bankTransaction.Transaction.TransactionMatchRow ?? []).map((row) => ({
 				description: row.description ?? '',
 				amount: row.amount.toNumber(),
-				// TODO: journal?
-				invoice: row.journalId?.toString() ?? '',
-				saldo: !!row.transactionId,
-				ledger: row.ledgerId?.toString() ?? ''
+				journal: row.journalId?.toString() ?? '',
+				saldo: !!row.transactionId
 			}))
 		}
 	});

@@ -5,7 +5,7 @@ export default z.object({
 	ref: z.string().optional(),
 	date: z.date(),
 	termsOfPayment: z.number().int().min(0),
-	relation: z.number().int(),
+	relation: z.number({ required_error: 'Verplicht' }).int().min(1, 'Verplicht'),
 	type: z.enum(['PURCHASE', 'DECLARATION'], { required_error: 'Type is verplicht' }),
 	attatchments: z.instanceof(Array).array().optional(),
 	rows: z
@@ -16,7 +16,7 @@ export default z.object({
 				.min(0, 'Prijs mag niet negatief zijn')
 				.step(0.01, 'Prijs moet een geldig bedrag zijn'),
 			description: z.string(),
-			ledger: z.number().int()
+			ledger: z.number().int().min(1, 'Verplicht')
 		})
 		.array()
 		.min(1, 'Er moet minimaal 1 regel zijn')

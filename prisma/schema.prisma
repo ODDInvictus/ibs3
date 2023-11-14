@@ -248,16 +248,15 @@ model Attending {
 // Grootboek rekening
 model Ledger {
   // Administratieve gegevens
-  id                      Int                       @id
-  name                    String
-  description             String
-  createdAt               DateTime                  @default(now())
-  updatedAt               DateTime                  @updatedAt
+  id          Int      @id
+  name        String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isActive    Boolean  @default(true)
+
   // Foreign keys
-  Transaction             Transaction[]
-  isActive                Boolean                   @default(true)
-  JournalRows             JournalRow[]
-  BankTransactionMatchRow BankTransactionMatchRow[]
+  JournalRows JournalRow[]
 }
 
 // Categorie waar een product onder kan vallen
@@ -331,8 +330,8 @@ model FinancialPerson {
   FinancialPersonDataOther     FinancialPersonDataOther?
   FinancialGroupPersonElement  FinancialGroupPersonElement[]
 
-  TransactionFrom     Transaction[]     @relation("TransactionFrom")
-  TransactionTo       Transaction[]     @relation("TransactionTo")
+  TransactionFrom     SaldoTransaction[] @relation("TransactionFrom")
+  TransactionTo       SaldoTransaction[] @relation("TransactionTo")
   Sale                Sale[]
   Acquisition         Acquisition[]
   Streeplijst         Streeplijst[]
@@ -407,23 +406,88 @@ model FinancialPersonDataOther {
   iban        String?
 }
 
+enum TransactionType {
+  SALDO
+  BANK
+}
+
 model Transaction {
+  id        Int             @id @default(autoincrement())
+  type      TransactionType @default(SALDO)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @default(now()) @updatedAt
+
+  SaldoTransaction    SaldoTransaction?
+  BankTransaction     BankTransaction?
+  TransactionMatchRow TransactionMatchRow[]
+}
+
+// Een transactie wordt gematched aan een Journal, maar een banktransactie kan ook gematched worden aan een saldo transactie als iemand geld overmaakt voor zijn saldo
+model TransactionMatchRow {
+  id          Int     @id @default(autoincrement())
+  description String?
+  amount      Decimal @db.Decimal(19, 4)
+
+  Transaction   Transaction @relation(fields: [transactionId], references: [id])
+  transactionId Int
+
+  SaldoTransaction   SaldoTransaction? @relation(fields: [saldoTransactionId], references: [id])
+  saldoTransactionId Int?              @unique
+
+  Journal   Journal? @relation(fields: [journalId], references: [id])
+  journalId Int?
+}
+
+model SaldoTransaction {
   // Administratieve gegevens
-  id          Int      @id @default(autoincrement())
-  ledger      Ledger?  @relation(fields: [ledgerId], references: [id])
-  ledgerId    Int?
+  id          Int    @id @default(autoincrement())
   description String
-  createdAt   DateTime @default(now())
   // Transactie gegevens
   price       Float
 
   // Gebruikers
+  from   FinancialPerson @relation(fields: [fromId], references: [id], name: "TransactionFrom")
+  fromId Int
+  to     FinancialPerson @relation(fields: [toId], references: [id], name: "TransactionTo")
+  toId   Int
 
-  from                    FinancialPerson           @relation(fields: [fromId], references: [id], name: "TransactionFrom")
-  fromId                  Int
-  to                      FinancialPerson           @relation(fields: [toId], references: [id], name: "TransactionTo")
-  toId                    Int
-  BankTransactionMatchRow BankTransactionMatchRow[]
+  Transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  transactionId Int         @unique
+
+  TransactionMatchRow TransactionMatchRow?
+}
+
+enum BankTransactionType {
+  TOPUP
+  TRANSFER
+  CARD_PAYMENT
+}
+
+enum BankTransactionProduct {
+  Savings
+  Current
+}
+
+model BankTransaction {
+  id  Int     @id @default(autoincrement())
+  ref String?
+
+  // Data extracted from uploaded CSV
+  type          BankTransactionType
+  product       BankTransactionProduct
+  startedDate   DateTime
+  completedDate DateTime?
+  description   String
+  amount        Decimal                @db.Decimal(19, 4)
+  fee           Decimal                @db.Decimal(19, 4)
+
+  Relation   FinancialPerson? @relation(fields: [relationId], references: [id])
+  relationId Int?
+
+  Transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  transactionId Int         @unique
+
+  @@unique([type, product, startedDate, completedDate, description, amount, fee])
 }
 
 // In een verkoop kan iemand x aantal producten kopen
@@ -517,10 +581,10 @@ model Journal {
   Treasurer   User? @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
   treasurerId Int?
 
-  BankTransactionMatchRow BankTransactionMatchRow[]
-  CreditNotes             CreditNote[]
-  Attachments             JournalAttachments[]
-  DeclarationData         DeclarationData?
+  CreditNotes         CreditNote[]
+  Attachments         JournalAttachments[]
+  DeclarationData     DeclarationData?
+  TransactionMatchRow TransactionMatchRow[]
 }
 
 enum DeclarationStatus {
@@ -574,55 +638,6 @@ model JournalAttachments {
 
   Journal   Journal? @relation(fields: [journalId], references: [id], onDelete: Cascade)
   journalId Int?
-}
-
-enum BankTransactionType {
-  TOPUP
-  TRANSFER
-  CARD_PAYMENT
-}
-
-enum BankTransactionProduct {
-  Savings
-  Current
-}
-
-model BankTransaction {
-  id  Int     @id @default(autoincrement())
-  ref String?
-
-  // Data extracted from uploaded CSV
-  type          BankTransactionType
-  product       BankTransactionProduct
-  startedDate   DateTime
-  completedDate DateTime?
-  description   String
-  amount        Decimal                @db.Decimal(19, 4)
-  fee           Decimal                @db.Decimal(19, 4)
-
-  Relation                FinancialPerson?          @relation(fields: [relationId], references: [id])
-  relationId              Int?
-  BankTransactionMatchRow BankTransactionMatchRow[]
-
-  @@unique([type, product, startedDate, completedDate, description, amount, fee])
-}
-
-model BankTransactionMatchRow {
-  id          Int     @id @default(autoincrement())
-  description String?
-  amount      Decimal @db.Decimal(19, 4)
-
-  SaldoTransaction Transaction? @relation(fields: [transactionId], references: [id])
-  transactionId    Int?
-
-  Journal   Journal? @relation(fields: [journalId], references: [id])
-  journalId Int?
-
-  Ledger   Ledger @relation(fields: [ledgerId], references: [id])
-  ledgerId Int
-
-  BankTransaction   BankTransaction @relation(fields: [bankTransactionId], references: [id])
-  bankTransactionId Int
 }
 
 model CreditNote {

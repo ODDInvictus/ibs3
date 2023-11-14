@@ -2,6 +2,7 @@ import db from '$lib/server/db';
 import { error, type Actions } from '@sveltejs/kit';
 import { hasRole } from '$lib/server/authorization';
 import { LDAP_IDS } from '$lib/constants';
+import type { BankTransactionProduct, BankTransactionType } from '@prisma/client';
 
 const HEADERS = [
 	'Type',
@@ -28,8 +29,7 @@ export const actions = {
 			const transaction: { [key: string]: string } = {};
 			const values = row.split(',');
 			for (let i = 0; i < keys.length; i++) {
-				// @ts-expect-error
-				if (!HEADERS.includes(keys[i])) continue; // skip unknown headers
+				if (!(HEADERS as readonly string[]).includes(keys[i])) continue; // skip unknown headers
 				if (values[i] === undefined) throw error(400, 'Invalid file');
 				transaction[keys[i]] = values[i];
 			}
@@ -40,8 +40,8 @@ export const actions = {
 			await Promise.all(
 				transactions.map((transaction) => {
 					const data = {
-						type: transaction.Type,
-						product: transaction.Product,
+						type: transaction.Type as BankTransactionType,
+						product: transaction.Product as BankTransactionProduct,
 						startedDate: new Date(transaction['Started Date']).toISOString(),
 						completedDate: new Date(transaction['Completed Date']).toISOString(),
 						description: transaction.Description,
@@ -51,11 +51,16 @@ export const actions = {
 
 					return db.bankTransaction.upsert({
 						where: {
-							// @ts-expect-error
 							type_product_startedDate_completedDate_description_amount_fee: data
 						},
-						// @ts-expect-error
-						create: data,
+						create: {
+							...data,
+							Transaction: {
+								create: {
+									type: 'BANK'
+								}
+							}
+						},
 						update: {}
 					});
 				})

@@ -10,7 +10,7 @@ type row = {
 	amount: number;
 	invoice?: string;
 	saldo: boolean;
-	ledger: string;
+	journal: string;
 };
 
 export const matchForm = new Form<{
@@ -23,10 +23,17 @@ export const matchForm = new Form<{
 	logic: async (data) => {
 		const bankTransaction = await db.bankTransaction.findUnique({
 			where: { id: Number(data.id) },
-			include: { BankTransactionMatchRow: true }
+			include: {
+				Transaction: {
+					include: {
+						TransactionMatchRow: true
+					}
+				}
+			}
 		});
 		if (!bankTransaction) throw error(404, 'Bank transaction not found');
-		const { type, BankTransactionMatchRow } = bankTransaction;
+		const { type, Transaction } = bankTransaction;
+		const { TransactionMatchRow } = Transaction;
 
 		// Check if there is a relation if required
 		if (!data.relation && data.rows.some((r) => r.saldo))
@@ -38,7 +45,7 @@ export const matchForm = new Form<{
 				status: 400
 			};
 
-		if (BankTransactionMatchRow.some((r) => r.transactionId))
+		if (TransactionMatchRow.some((r) => r.transactionId))
 			return {
 				success: false,
 				status: 400,
@@ -73,15 +80,19 @@ export const matchForm = new Form<{
 				if (!row.saldo) return;
 				return db.transaction.create({
 					data: {
-						price: row.amount,
-						description:
-							row.description ??
-							`Saldo ${type === 'TOPUP' ? 'toegevoegd' : 'verminderd'} van banktransactie ${
-								data.id
-							}`,
-						toId: type === 'TOPUP' ? Number(data.relation) : FINANCIAL_PERSON_IDS.INVICTUS,
-						fromId: type !== 'TOPUP' ? Number(data.relation) : FINANCIAL_PERSON_IDS.INVICTUS,
-						ledgerId: row.ledger ? Number(row.ledger) : undefined
+						type: 'SALDO',
+						SaldoTransaction: {
+							create: {
+								description:
+									row.description ??
+									`Saldo ${type === 'TOPUP' ? 'toegevoegd' : 'verminderd'} van banktransactie ${
+										data.id
+									}`,
+								price: row.amount,
+								fromId: type === 'TOPUP' ? Number(data.relation) : FINANCIAL_PERSON_IDS.INVICTUS,
+								toId: type !== 'TOPUP' ? Number(data.relation) : FINANCIAL_PERSON_IDS.INVICTUS
+							}
+						}
 					}
 				});
 			})
@@ -99,19 +110,18 @@ export const matchForm = new Form<{
 		});
 
 		// Reset match rows
-		await db.bankTransactionMatchRow.deleteMany({
-			where: { bankTransactionId: Number(data.id) }
+		await db.transactionMatchRow.deleteMany({
+			where: { transactionId: Number(data.id) }
 		});
 
 		await Promise.all(
 			data.rows.map((row) => {
-				return db.bankTransactionMatchRow.create({
+				return db.transactionMatchRow.create({
 					data: {
 						description: row.description,
 						amount: row.amount,
-						bankTransactionId: Number(data.id),
-						journalId: row.invoice ? Number(row.invoice) : undefined,
-						ledgerId: Number(row.ledger)
+						transactionId: Number(data.id),
+						journalId: Number(row.invoice)
 					}
 				});
 			})
