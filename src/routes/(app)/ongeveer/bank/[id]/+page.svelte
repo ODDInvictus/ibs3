@@ -12,7 +12,8 @@
 <div class="info">
 	<div>
 		<h3>Gegevens</h3>
-		<p>ID: {data.bankTransaction.id}</p>
+		<p>Bank transactie ID: {data.bankTransaction.id}</p>
+		<p>Transactie ID: {data.bankTransaction.Transaction.id}</p>
 		<p>Referentie: {data.bankTransaction.ref}</p>
 		{#if data.bankTransaction.Relation}
 			<p>Relatie: {data.bankTransaction.relationId} - {data.bankTransaction.Relation.name}</p>
@@ -34,26 +35,28 @@
 		<p>Fee: {data.bankTransaction.fee}</p>
 	</div>
 
-	{#if data.bankTransaction.Transaction.TransactionMatchRow.length > 0}
+	{#if data.bankTransaction.Transaction.TransactionMatchRow.some((r) => r.Journal)}
 		<div>
-			<h3>Grootboekrekeningen</h3>
+			<h3>Boekstukken</h3>
 			{#each data.bankTransaction.Transaction.TransactionMatchRow as row}
-				<p>
-					Boekstukken:
-					<a href="/ongeveer/journal/{row.journalId}">{row.journalId} - {row.Journal.ref}</a>
-				</p>
+				{#if row.Journal}
+					<p>
+						<a href="/ongeveer/journal/{row.journalId}">{row.journalId} - {row.Journal.ref}</a>
+					</p>
+				{/if}
 			{/each}
 		</div>
 	{/if}
 
-	{#if data.bankTransaction.Transaction.TransactionMatchRow.some((r) => r.Journal)}
+	{#if data.bankTransaction.Transaction.TransactionMatchRow.some((r) => r.SaldoTransaction)}
 		<div>
-			<h3>Facturen</h3>
+			<h3>Saldo transacties</h3>
 			{#each data.bankTransaction.Transaction.TransactionMatchRow as row}
-				{#if row.Journal}
+				{#if row.SaldoTransaction}
 					<p>
-						Factuur:
-						<a href="/ongeveer/sales/{row.journalId}">{row.journalId} - {row.Journal.ref}</a>
+						<a href="/financieel/transacties/{row.transactionId}"
+							>{row.SaldoTransaction.id} - {row.SaldoTransaction.description}</a
+						>
 					</p>
 				{/if}
 			{/each}

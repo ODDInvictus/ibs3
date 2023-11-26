@@ -32,10 +32,10 @@ export const getJournalStatus = async (id: number) => {
 	const journal = await db.journal.findUnique({
 		where: { id },
 		include: {
-			BankTransactionMatchRow: true
+			TransactionMatchRow: true
 		}
 	});
 	if (!journal) return null;
-	if (journal.BankTransactionMatchRow) return 'PAID';
+	if (journal.TransactionMatchRow.length > 0) return 'PAID';
 	return 'UNPAID';
 };

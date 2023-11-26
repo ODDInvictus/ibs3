@@ -6,14 +6,19 @@ export const load = (async ({ params }) => {
 	const id = Number(params.id);
 	if (Number.isNaN(id)) throw error(404, 'Not found');
 
-	return {
-		transaction: db.transaction.findUnique({
-			where: { id },
-			include: {
-				from: true,
-				to: true,
-				ledger: true
+	const transaction = db.transaction.findUnique({
+		where: { id, type: 'SALDO' },
+		include: {
+			SaldoTransaction: {
+				include: {
+					from: true,
+					to: true
+				}
 			}
-		})
-	};
+		}
+	});
+
+	if (!transaction?.SaldoTransaction) throw error(404);
+
+	return { transaction };
 }) satisfies PageServerLoad;

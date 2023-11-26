@@ -422,7 +422,9 @@ model Transaction {
   TransactionMatchRow TransactionMatchRow[]
 }
 
-// Een transactie wordt gematched aan een Journal, maar een banktransactie kan ook gematched worden aan een saldo transactie als iemand geld overmaakt voor zijn saldo
+// Een transactie wordt gematched aan een Journal,
+// maar een banktransactie kan ook gematched worden aan een saldo transactie
+// als iemand geld overmaakt voor zijn saldo.
 model TransactionMatchRow {
   id          Int     @id @default(autoincrement())
   description String?

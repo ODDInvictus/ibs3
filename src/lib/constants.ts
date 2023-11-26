@@ -38,6 +38,7 @@ export const LEDGER_IDS = {
 	DECLARATION_FOOD: 3102
 };
 
+// TODO huh dit was ineens 1 en vroeger 0
 export const FINANCIAL_PERSON_IDS = {
-	INVICTUS: 0
+	INVICTUS: 1
 };

@@ -100,12 +100,10 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const form = await superValidate(formData, schema);
 
-		console.log(form);
-
 		if (!authorization(locals.roles)) throw error(403);
 		if (!form.valid) return fail(400, { form });
 
-		const attatchments = formData.getAll('attatchments') as File[];
+		const attachments = formData.getAll('attachments') as File[];
 		const toDelete = JSON.parse(formData.get('toDelete') as string) as string[]; // Filenames to delete, include already uploaded files and files that are not uploaded yet
 		const { id, ref, date, termsOfPayment, relation, rows, type } = form.data;
 
@@ -128,7 +126,7 @@ export const actions: Actions = {
 		try {
 			if (id) {
 				// Update existing journal
-				files = createFileNames(attatchments, id);
+				files = createFileNames(attachments, id);
 				await db.journal.update({
 					where: { id },
 					data: {
@@ -182,7 +180,7 @@ export const actions: Actions = {
 						}
 					}
 				});
-				files = createFileNames(attatchments, id);
+				files = createFileNames(attachments, id);
 				await db.journal.update({
 					where: { id },
 					data: {

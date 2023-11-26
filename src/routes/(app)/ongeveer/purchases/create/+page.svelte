@@ -9,6 +9,7 @@
 	import Submit from '$lib/superforms/Submit.svelte';
 	import DeleteButton from '$lib/ongeveer/DeleteButton.svelte';
 	import { formatFileSize } from '$lib/utils';
+	import Attatchment from '$lib/ongeveer/Attatchment.svelte';
 
 	export let data: PageData;
 
@@ -56,7 +57,6 @@
 	}
 
 	let toDelete: string[] = [];
-	let selected = 0;
 </script>
 
 <Title title="Aankoop boeking" />
@@ -193,42 +193,7 @@
 			<h1>Bijlagen</h1>
 			<input type="file" name="attachments" multiple bind:files={attatchments} />
 			{#if previews.length > 0}
-				<div class="preview">
-					<div class="selector">
-						{#each previews as preview, i}
-							<button class="nav-item btn-secondary" class:selected={selected === i} type="button">
-								<span on:click={() => (selected = i)} class="select">
-									{preview.name.match(/^purchase-\d+-.*/)
-										? preview.name.split('-').slice(2).join('-')
-										: preview.name}
-								</span>
-								<span
-									on:click={() => {
-										toDelete = [...toDelete, previews[i].name];
-										previews = previews.filter((_, j) => j !== i);
-										selected = 0;
-									}}
-								>
-									x
-								</span>
-							</button>
-						{/each}
-					</div>
-					<p class="small">{previews[selected].name} ({previews[selected].size})</p>
-					{#if previews[selected].MIMEtype.startsWith('image/')}
-						<img src={previews[selected].src} alt={previews[selected].name} />
-					{:else if previews[selected].MIMEtype === 'application/pdf'}
-						<iframe src={previews[selected].src} title={previews[selected].name} />
-					{:else}
-						<a
-							href={previews[selected].src}
-							download={previews[selected].name}
-							class="button download"
-						>
-							Download
-						</a>
-					{/if}
-				</div>
+				<Attatchment {previews} bind:toDelete />
 			{/if}
 		</div>
 	</div>
@@ -249,68 +214,5 @@
 
 	.attachments {
 		width: 100%;
-
-		iframe,
-		img {
-			width: 100%;
-			max-width: 600px;
-		}
-
-		iframe {
-			height: 800px;
-		}
-
-		img {
-			object-fit: contain;
-			object-position: left top;
-			border: 3px solid gray;
-			max-height: 800px;
-		}
-
-		.download {
-			width: fit-content;
-		}
-
-		.nav-item {
-			cursor: default;
-			display: flex;
-
-			.select {
-				margin-right: 1ex;
-			}
-
-			span {
-				cursor: pointer;
-
-				&:hover {
-					text-decoration: underline;
-				}
-			}
-
-			&:hover {
-				text-decoration: none;
-			}
-
-			&.selected {
-				outline: 3px solid var(--color-primary);
-			}
-		}
-
-		.small {
-			font-size: 0.8rem;
-		}
-
-		.selector {
-			display: flex;
-			flex-direction: row;
-			widows: 100%;
-			gap: 1ex;
-			margin: 1rem 0;
-		}
-
-		.preview {
-			display: flex;
-			flex-direction: column;
-		}
 	}
 </style>

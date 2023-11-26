@@ -26,7 +26,7 @@
 	<tbody>
 		{#each data.invoices as invoice}
 			<tr>
-				<td><a href="/ongeveer/purchases/create?id={invoice.id}">{invoice.id}</a></td>
+				<td><a href="/ongeveer/purchases/{invoice.id}">{invoice.id}</a></td>
 				<td>{invoice.ref ?? ''}</td>
 				<td>€ {invoice.total}</td>
 				<td

@@ -15,7 +15,8 @@ export const load = (async ({ params }) => {
 				include: {
 					TransactionMatchRow: {
 						include: {
-							Journal: true
+							Journal: true,
+							SaldoTransaction: true
 						}
 					}
 				}
@@ -33,7 +34,7 @@ export const load = (async ({ params }) => {
 				description: row.description ?? '',
 				amount: row.amount.toNumber(),
 				journal: row.journalId?.toString() ?? '',
-				saldo: !!row.transactionId
+				saldo: !!row.SaldoTransaction
 			}))
 		}
 	});
