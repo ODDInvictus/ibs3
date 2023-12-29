@@ -14,7 +14,8 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
 		"log": "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit",
-		"mailhog": "docker run --rm -it -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog"
+		"mailhog": "docker run --rm -it -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog",
+		"data-migration:attending": "ts-node-esm ./prisma/migrations/20231228173512_attending/data-migration.ts"
 	},
 	"devDependencies": {
 		"@floating-ui/core": "^1.4.1",
@@ -27,7 +28,7 @@
 		"@types/markdown-it": "^12.2.3",
 		"@types/markdown-it-emoji": "^2.0.2",
 		"@types/minio": "^7.0.17",
-		"@types/node": "^20.4.5",
+		"@types/node": "^20.10.5",
 		"@types/node-cron": "^3.0.7",
 		"@types/sanitize-html": "^2.9.0",
 		"@types/spotify-web-api-node": "^5.0.7",

@@ -225,6 +225,13 @@ model ActivityLocation {
   Activity    Activity[]
 }
 
+enum AttendingStatus {
+  ATTENDING
+  NOT_ATTENDING
+  UNSURE
+  NO_RESPONSE
+}
+
 model Attending {
   id         Int      @id @default(autoincrement())
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -232,6 +239,7 @@ model Attending {
   activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
   activityId Int
 
+  status AttendingStatus @default(NO_RESPONSE) 
   isAttending Boolean @default(false)
 
   createdAt DateTime @default(now())
