@@ -66,6 +66,14 @@
 	& > .ibs-card--content {
 		padding: 1rem;
 	}
+
+	@media (max-width: 600px) {
+		& > .ibs-card--buttons {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+	}
 }
 
 .ibs-card.outline {

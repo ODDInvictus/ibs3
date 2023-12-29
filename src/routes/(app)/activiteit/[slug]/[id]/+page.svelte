@@ -18,11 +18,10 @@
 	import { enhance } from '$app/forms';
 	import ProfileIcon from '$lib/components/profile-icon.svelte';
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
-	import { AttendingStatus } from '@prisma/client';
 
 	export let data: PageData;
 
-	const STATUS_ORDER: Record<AttendingStatus, number> = {
+	const STATUS_ORDER: Record<string, number> = {
 		ATTENDING: 1,
 		UNSURE: 2,
 		NOT_ATTENDING: 3,
@@ -80,7 +79,7 @@
 		});
 	}
 
-	async function setAttending(status: AttendingStatus) {
+	async function setAttending(status: string) {
 		// First check if the user is attending
 		const a = attending.find((a: any) => a.user.ldapId == data.user.ldapId);
 
@@ -105,11 +104,11 @@
 				let title, message;
 				let type: 'info' | 'success' | 'warning' | 'error' = 'info';
 
-				if (status === AttendingStatus.ATTENDING) {
+				if (status === 'ATTENDING') {
 					title = 'Gezellig!';
 					message = 'Je aanwezigheid is opgeslagen';
 					type = 'success';
-				} else if (status === AttendingStatus.NOT_ATTENDING) {
+				} else if (status === 'NOT_ATTENDING') {
 					title = 'Jammer!';
 					message = 'Je afwezigheid is opgeslagen';
 				} else {
@@ -283,15 +282,9 @@
 			<h2 class="ibs-card--title">Wie komen er allemaal?</h2>
 
 			<div class="ibs-card--buttons top">
-				<button on:click={async () => await setAttending(AttendingStatus.ATTENDING)}
-					>Ik ben 🐝</button
-				>
-				<button on:click={async () => await setAttending(AttendingStatus.UNSURE)}
-					>Ik weet het nog niet</button
-				>
-				<button on:click={async () => await setAttending(AttendingStatus.NOT_ATTENDING)}
-					>Ik ben niet 🐝</button
-				>
+				<button on:click={async () => await setAttending('ATTENDING')}>Ik ben 🐝</button>
+				<button on:click={async () => await setAttending('UNSURE')}>Ik weet het nog niet</button>
+				<button on:click={async () => await setAttending('NOT_ATTENDING')}>Ik ben niet 🐝</button>
 			</div>
 
 			<div class="ibs-card--content users">
