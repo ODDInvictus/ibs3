@@ -1,19 +1,33 @@
 import { LDAP_IDS } from '$lib/constants';
-import { PrismaClient, type Transaction, type FinancialPerson, type User } from '@prisma/client';
+import {
+	PrismaClient,
+	type FinancialPerson,
+	type User,
+	type SaldoTransaction,
+	Prisma
+} from '@prisma/client';
+import type { DefaultArgs } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
 type IncOrDec = 'increment' | 'decrement';
 
+type PrismaClientMiddleware = Omit<
+	PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+	'$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
+>;
+
 // Prisma middleware
+// TODO: middlewares are deprecated, use custom query instead
+// https://www.prisma.io/docs/orm/prisma-client/client-extensions/query
 prisma.$use(async (params, next) => {
 	// Change saldo when a transaction is created
 
 	// Helper function to change the balance of a financialPerson of type COMMITTEE
 	const changeBalanceCommittee = async (
-		tx: PrismaClient,
+		tx: PrismaClientMiddleware,
 		fp: FinancialPerson,
-		transaction: Transaction,
+		transaction: SaldoTransaction,
 		type: IncOrDec
 	) => {
 		const { price } = transaction;
@@ -59,7 +73,7 @@ prisma.$use(async (params, next) => {
 		});
 	};
 
-	const changeBalance = async (transaction: Transaction) => {
+	const changeBalance = async (transaction: SaldoTransaction) => {
 		const { price, fromId, toId } = transaction;
 
 		await prisma.$transaction(async (tx) => {
@@ -91,6 +105,7 @@ prisma.$use(async (params, next) => {
 				});
 			}
 
+			// Dit deet het eerst niet volgens mijn comment maar lijkt het nu wel te doen?
 			// Increment the balance of the receiver
 			await tx.financialPerson.update({
 				where: {
@@ -105,14 +120,14 @@ prisma.$use(async (params, next) => {
 		});
 	};
 
-	if (params.model === 'Transaction') {
+	if (params.model === 'SaldoTransaction') {
 		try {
 			switch (params.action) {
 				case 'create':
 					await changeBalance(params.args.data);
 					break;
 				case 'createMany':
-					params.args.data.forEach(async (t) => await changeBalance(t));
+					params.args.data.forEach(async (t: SaldoTransaction) => await changeBalance(t));
 					break;
 			}
 		} catch (e) {

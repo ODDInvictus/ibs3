@@ -148,6 +148,7 @@ export const matchForm = new Form<{
 				if (!row.saldo) return Promise.resolve(null);
 
 				// TODO figure out why cant create transaction via prisma.
+				// TODO use $transaction
 				await db.$queryRaw`
           INSERT INTO \`Transaction\` VALUES ();
         `;
