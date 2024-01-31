@@ -22,6 +22,7 @@
 	import People from '~icons/tabler/users';
 	import ArrowBarRight from '~icons/tabler/arrow-bar-right';
 	import ArrowBarLeft from '~icons/tabler/arrow-bar-to-left';
+	import MoodDollar from '~icons/tabler/mood-dollar';
 	import QuestionMark from '~icons/tabler/question-mark';
 	import Home from '~icons/tabler/home';
 	import OngeveerLogo from './_ongeveer-logo.svelte';
@@ -68,6 +69,10 @@
 		<a href="/ongeveer/relations" class="layout--navbar--item">
 			<i><People /></i>
 			<span>Relaties</span>
+		</a>
+		<a href="/ongeveer/saldo" class="layout--navbar--item">
+			<i><MoodDollar /></i>
+			<span>Saldo</span>
 		</a>
 		<a href="/ongeveer/help" class="layout--navbar--item">
 			<i><QuestionMark /></i>

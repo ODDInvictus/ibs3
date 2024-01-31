@@ -8,6 +8,8 @@
 
 <Title title="Saldo overzicht" />
 
+<a href="/ongeveer/saldo/transaction" class="button">Transactie maken</a>
+
 <table class="small">
 	<thead>
 		<tr>
@@ -22,6 +24,3 @@
 		</tr>
 	{/each}
 </table>
-
-<style lang="scss">
-</style>

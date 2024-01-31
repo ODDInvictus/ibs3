@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { number } from 'zod';
 	import type { PageData, ActionData } from './$types';
 
 	export let data: PageData;
@@ -63,12 +64,7 @@
 			<input type="number" class="euro" min="0.00" step=".01" name="amount" id="amount" />
 		</span>
 
-		<button
-			type="submit"
-			class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br font-medium rounded-lg text-sm px-5 py-2.5 text-center transition"
-		>
-			Verstuur
-		</button>
+		<button type="submit"> Verstuur </button>
 	</form>
 </div>
 
