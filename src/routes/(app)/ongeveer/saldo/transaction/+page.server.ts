@@ -2,6 +2,7 @@ import type { PageServerLoad, Actions } from './$types';
 import db from '$lib/server/db';
 import { z } from 'zod';
 import { isFinancie } from '$lib/server/authorization';
+import { createTransacton } from '$lib/ongeveer/db';
 
 export const load = (async () => {
 	const fp = await db.financialPerson.findMany({
@@ -11,6 +12,9 @@ export const load = (async () => {
 	const financialPeople: { [key: string]: typeof fp } = {};
 
 	for (const person of fp) {
+		// TODO remove this line when support is added for committees.
+		if (person.type !== 'USER' && person.type !== 'INVICTUS') continue;
+
 		const arr = financialPeople[person.type] || [];
 		arr.push(person);
 		financialPeople[person.type] = arr;
@@ -64,24 +68,12 @@ export const actions = {
 			};
 		}
 
-		const { giver, receiver, amount, description } = parse.data;
-		const transaction = await db.transaction.create({
-			data: {
-				SaldoTransaction: {
-					create: {
-						fromId: giver,
-						toId: receiver,
-						price: amount,
-						description: 'Handmatige transactie: ' + description
-					}
-				}
-			}
-		});
+		const saldoTransaction = await createTransacton(parse.data);
 
 		return {
 			success: true,
 			message: 'Transactie is succesvol toegevoegd',
-			data: transaction
+			data: saldoTransaction
 		};
 	}
 } satisfies Actions;

@@ -18,7 +18,7 @@
 			<tr>
 				<td><a href="/ongeveer/relations/{relation.id}">{relation.id}</a></td>
 				<td>{relation.name}</td>
-				<td>{relation.FinancialPersonDataOther?.description}</td>
+				<td>{relation.FinancialPersonDataOther?.description ?? '-'}</td>
 			</tr>
 		{/each}
 		<tr>
