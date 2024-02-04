@@ -8,7 +8,7 @@ export const getJournal = async (id: number) => {
 		where: { id },
 		include: {
 			Rows: true,
-			BankTransactionMatchRow: true,
+			TransactionMatchRow: true,
 			relation: {
 				include: {
 					FinancialPersonDataOther: true,

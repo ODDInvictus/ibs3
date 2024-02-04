@@ -7,11 +7,9 @@
 	import { openModal } from 'svelte-modals';
 
 	export let data: PageData;
-
-	const noTypeCheck = (x: any) => x;
 </script>
 
-<Title title={data.invoice.ref ?? 'Factuur'} />
+<Title title={data.invoice.ref || 'Factuur'} />
 <div class="info">
 	<div class="print">
 		<a href="/ongeveer/sales/{data.invoice.id}/print" class="button" target="_blank">Print/PDF</a>
@@ -36,11 +34,7 @@
 	<p>Status: {data.invoice ? 'Betaald' : 'Vestuurd'}</p>
 </div>
 <main>
-	<Invoice
-		{...noTypeCheck({
-			invoice: data.invoice
-		})}
-	/>
+	<Invoice invoice={data.invoice} />
 </main>
 
 <style>

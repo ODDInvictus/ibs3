@@ -64,7 +64,10 @@
 			<input type="number" class="euro" min="0.00" step=".01" name="amount" id="amount" />
 		</span>
 
-		<button type="submit"> Verstuur </button>
+		<div class="button">
+			<button type="submit">Verstuur</button>
+			<a href="/ongeveer/saldo">Terug</a>
+		</div>
 	</form>
 </div>
 

@@ -54,7 +54,7 @@
 			{#each data.bankTransaction.Transaction.TransactionMatchRow as row}
 				{#if row.SaldoTransaction}
 					<p>
-						<a href="/financieel/transacties/{row.transactionId}"
+						<a href="/ongeveer/saldo/transactions/{row.SaldoTransaction.id}"
 							>{row.SaldoTransaction.id} - {row.SaldoTransaction.description}</a
 						>
 					</p>

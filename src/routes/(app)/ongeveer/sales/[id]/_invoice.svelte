@@ -1,24 +1,9 @@
 <script lang="ts">
 	import { formatDateHumanReadable } from '$lib/dateUtils';
-	import type {
-		FinancialPerson,
-		FinancialPersonDataOther,
-		Journal,
-		JournalRow,
-		User
-	} from '@prisma/client';
 	import { PUBLIC_IBAN as IBAN } from '$env/static/public';
+	import type { getJournal } from './getJournal';
 
-	// TODO fix type
-	export let invoice: Journal & {
-		relation: FinancialPerson & {
-			FinancialPersonDataOther?: FinancialPersonDataOther;
-			FinancialPersonDataUser?: { user: User };
-		};
-		date: Date;
-		treasurer: User;
-		rows: JournalRow[];
-	};
+	export let invoice: Awaited<ReturnType<typeof getJournal>>;
 </script>
 
 <div id="invoice">
@@ -56,7 +41,7 @@
 					</div>
 					<div>
 						<p>{invoice.id}</p>
-						<p>{formatDateHumanReadable(new Date(invoice.date))}</p>
+						<p>{formatDateHumanReadable(new Date(invoice.date ?? ''))}</p>
 						<p>{invoice.termsOfPayment} dagen</p>
 					</div>
 				</div>
@@ -73,7 +58,7 @@
 							<p>{invoice.description ?? ''}</p>
 						{/if}
 						<p>{invoice.relation.id}</p>
-						<p>{invoice.treasurer.firstName} {invoice.treasurer.lastName}</p>
+						<p>{invoice.Treasurer?.firstName ?? ''} {invoice.Treasurer?.lastName ?? ''}</p>
 					</div>
 				</div>
 			</div>
@@ -86,7 +71,7 @@
 					<th>Totaal</th>
 				</thead>
 				<tbody>
-					{#each invoice.rows as row}
+					{#each invoice.Rows as row}
 						<tr>
 							<td>{row.description}</td>
 							<td>{row.amount}</td>
@@ -97,13 +82,13 @@
 					<tr class="total">
 						<td /><td />
 						<td><i>Totaal</i></td>
-						<td>€ {invoice.rows.reduce((t, row) => t + row.amount * Number(row.price), 0)}</td>
+						<td>€ {invoice.Rows.reduce((t, row) => t + row.amount * Number(row.price), 0)}</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 		<footer>
-			Gelieve binnen {invoice.termsOfPayment} dagen het bedrag van {invoice.rows.reduce(
+			Gelieve binnen {invoice.termsOfPayment} dagen het bedrag van {invoice.Rows.reduce(
 				(t, row) => t + row.amount * Number(row.price),
 				0
 			)} euro over te maken op rekeningnummer<br />{IBAN} t.n.v. N. Rotmensen onder vermelding van het

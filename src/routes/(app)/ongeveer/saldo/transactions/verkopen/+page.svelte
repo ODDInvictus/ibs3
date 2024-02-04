@@ -1,9 +1,9 @@
-<script>
-	import { page } from '$app/stores';
+<script lang="ts">
 	import { confirm } from '$lib/confirm';
 	import { toast } from '$lib/notification';
+	import type { PageData } from './$types';
 
-	const data = $page.data;
+	export let data: PageData;
 
 	const submit = () => {
 		confirm({
