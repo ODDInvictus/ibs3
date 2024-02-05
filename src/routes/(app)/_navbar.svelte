@@ -25,6 +25,7 @@
 	import MoodDollar from '~icons/tabler/mood-dollar';
 	import QuestionMark from '~icons/tabler/question-mark';
 	import Home from '~icons/tabler/home';
+	import ShoppingCart from '~icons/tabler/shopping-cart';
 	import OngeveerLogo from './_ongeveer-logo.svelte';
 	import IbsLogo from './_ibs-logo.svelte';
 
@@ -54,6 +55,10 @@
 			<i><Revolut /></i>
 			<span>Bank</span>
 		</a>
+		<a href="/ongeveer/saldo" class="layout--navbar--item">
+			<i><MoodDollar /></i>
+			<span>Saldo</span>
+		</a>
 		<a href="/ongeveer/purchases" class="layout--navbar--item">
 			<i><ArrowBarLeft /></i>
 			<span>Inkoop</span>
@@ -70,9 +75,9 @@
 			<i><People /></i>
 			<span>Relaties</span>
 		</a>
-		<a href="/ongeveer/saldo" class="layout--navbar--item">
-			<i><MoodDollar /></i>
-			<span>Saldo</span>
+		<a href="/ongeveer/products" class="layout--navbar--item">
+			<i><ShoppingCart /></i>
+			<span>Producten</span>
 		</a>
 		<a href="/ongeveer/help" class="layout--navbar--item">
 			<i><QuestionMark /></i>
