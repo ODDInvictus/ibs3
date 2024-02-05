@@ -57,9 +57,7 @@
 				{#each [20, 30, 50, 100] as size}
 					<a
 						href="/ongeveer/saldo/transactions?size={size}&p={data.p}"
-						class={size == data.size ? 'underline' : ''}
-					>
-						{size}</a
+						class={size == data.size ? 'underline' : ''}>{size}</a
 					>
 				{/each}
 			</p>

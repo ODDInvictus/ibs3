@@ -8,16 +8,8 @@
 
 <Title title="Inactieve producten" />
 
-<div class="nav">
-	<a href="/ongeveer/products" class="button">Terug</a>
+<div class="ongeveer-nav">
+	<a href="/ongeveer/products">Terug</a>
 </div>
 
 <ProductsTable products={data.products} />
-
-<style>
-	.nav {
-		display: flex;
-		margin-bottom: 1rem;
-		gap: 1rem;
-	}
-</style>

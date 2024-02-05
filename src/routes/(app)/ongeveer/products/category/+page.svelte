@@ -8,18 +8,10 @@
 
 <Title title="Product categorieën" />
 
-<div class="nav">
-	<a href="/ongeveer/products/category/create" class="button">Nieuwe categorie</a>
-	<a href="/ongeveer/products/category/inactive" class="button">Inactive categorieën</a>
-	<a href="/ongeveer/products" class="button">Terug</a>
+<div class="ongeveer-nav">
+	<a href="/ongeveer/products/category/create">Nieuwe categorie</a>
+	<a href="/ongeveer/products/category/inactive">Inactive categorieën</a>
+	<a href="/ongeveer/products">Terug</a>
 </div>
 
 <CategoriesTable categories={data.categories} />
-
-<style>
-	.nav {
-		display: flex;
-		margin-bottom: 1rem;
-		gap: 1rem;
-	}
-</style>

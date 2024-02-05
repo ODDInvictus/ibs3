@@ -3,11 +3,17 @@
 
 	import Title from '$lib/components/title.svelte';
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
+	import { formatPrice } from '$lib/textUtils';
 
 	export let data: PageData;
 </script>
 
 <Title title={data.transaction ? 'Transactie' : 'Niet gevonden'} />
+
+<div class="ongeveer-nav">
+	<a href="/ongeveer/saldo/transactions">Terug</a>
+</div>
+
 <table>
 	<tr>
 		<td>ID</td>
@@ -27,7 +33,7 @@
 	</tr>
 	<tr>
 		<td>Prijs</td>
-		<td>€ {Number(data.transaction.price).toFixed(2)}</td>
+		<td>{formatPrice(data.transaction.price)}</td>
 	</tr>
 	<tr>
 		<td>Omschrijving</td>
@@ -45,12 +51,3 @@
 		</tr>
 	{/if}
 </table>
-<div class="links">
-	<a href="/ongeveer/saldo/transactions" class="button">Terug</a>
-</div>
-
-<style>
-	.links {
-		padding: 2rem 1rem;
-	}
-</style>

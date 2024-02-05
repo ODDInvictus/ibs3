@@ -8,6 +8,12 @@
 </script>
 
 <Title title={data.product.name} />
+
+<div class="ongeveer-nav">
+	<a href="/ongeveer/products">Terug</a>
+	<a href="/ongeveer/products/create?id={data.product.id}">Bewerken</a>
+</div>
+
 <table>
 	<tr>
 		<td>ID</td>
@@ -59,16 +65,3 @@
 		{/each}
 	{/if}
 </table>
-
-<div class="nav">
-	<a href="/ongeveer/products" class="button">Terug</a>
-	<a href="/ongeveer/products/create?id={data.product.id}" class="button">Bewerken</a>
-</div>
-
-<style>
-	.nav {
-		display: flex;
-		margin: 1rem;
-		gap: 1rem;
-	}
-</style>

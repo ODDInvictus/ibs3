@@ -8,9 +8,9 @@
 
 <Title title={data.catergory.name} />
 
-<div class="nav">
-	<a href="/ongeveer/products/category" class="button">Terug</a>
-	<a href="/ongeveer/products/category/create?id={data.catergory.id}" class="button">Bewerken</a>
+<div class="ongeveer-nav">
+	<a href="/ongeveer/products/category">Terug</a>
+	<a href="/ongeveer/products/category/create?id={data.catergory.id}">Bewerken</a>
 </div>
 
 <h2>Info</h2>
@@ -57,12 +57,7 @@
 	</tbody>
 </table>
 
-<style>
-	.nav {
-		display: flex;
-		gap: 1rem;
-	}
-
+<style lang="scss">
 	h2 {
 		margin-top: 1rem;
 	}

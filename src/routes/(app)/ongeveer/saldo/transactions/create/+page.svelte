@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { number } from 'zod';
 	import type { PageData, ActionData } from './$types';
 
 	export let data: PageData;

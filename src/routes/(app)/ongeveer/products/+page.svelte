@@ -8,18 +8,10 @@
 
 <Title title="Producten" />
 
-<div class="nav">
-	<a href="/ongeveer/products/create" class="button">Nieuw product</a>
-	<a href="/ongeveer/products/inactive" class="button">Inactive producten</a>
-	<a href="/ongeveer/products/category" class="button">Categorieën</a>
+<div class="ongeveer-nav">
+	<a href="/ongeveer/products/create">Nieuw product</a>
+	<a href="/ongeveer/products/inactive">Inactive producten</a>
+	<a href="/ongeveer/products/category">Categorieën</a>
 </div>
 
 <ProductsTable products={data.products} />
-
-<style>
-	.nav {
-		display: flex;
-		margin-bottom: 1rem;
-		gap: 1rem;
-	}
-</style>

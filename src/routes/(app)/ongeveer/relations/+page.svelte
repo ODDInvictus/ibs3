@@ -7,6 +7,7 @@
 </script>
 
 <Title title="Relaties" />
+
 <table>
 	<thead>
 		<th>ID</th>

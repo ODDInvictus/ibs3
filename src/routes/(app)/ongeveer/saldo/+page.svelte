@@ -10,9 +10,9 @@
 
 <Title title="Saldo overzicht" />
 
-<div id="buttons">
-	<a href="/ongeveer/saldo/transactions/create" class="button">Transactie maken</a>
-	<a href="/ongeveer/saldo/transactions" class="button">Transacties overzicht</a>
+<div class="ongeveer-nav">
+	<a href="/ongeveer/saldo/transactions/create">Transactie maken</a>
+	<a href="/ongeveer/saldo/transactions">Transacties overzicht</a>
 </div>
 
 <table class="small">
@@ -29,13 +29,3 @@
 		</tr>
 	{/each}
 </table>
-
-<style lang="scss">
-	#buttons {
-		padding: 2rem 1rem;
-
-		a {
-			margin-right: 1rem;
-		}
-	}
-</style>
