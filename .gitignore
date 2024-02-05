@@ -11,6 +11,9 @@ vite.config.ts.timestamp-*
 static/upload/
 !static/upload/activities/bier.jpg
 static/fotos/
+playwright-report/
+playwright/.auth
+
 
 # Logs
 logs
@@ -144,3 +147,7 @@ dist
 .pnp.*
 
 upload
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
