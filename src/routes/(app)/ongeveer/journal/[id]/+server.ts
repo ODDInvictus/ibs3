@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ params }) => {
 	});
 	if (!journal) throw error(404);
 
-	if (journal.type === 'SALE') throw redirect(300, `/ongeveer/sales/${id}`);
-	if (journal.type === 'PURCHASE') throw redirect(300, `/ongeveer/purchases/${id}`);
+	if (journal.type === 'SALE') throw redirect(308, `/ongeveer/sales/${id}`);
+	if (journal.type === 'PURCHASE') throw redirect(308, `/ongeveer/purchases/${id}`);
 	throw error(501);
 };

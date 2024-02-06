@@ -29,11 +29,9 @@
 
 	$: boolValue = value as Writable<boolean>;
 
-	// TODO fix types
-	function deleteRequired(obj: { required?: boolean; [key: string]: any } | undefined) {
-		if (!obj) return obj;
-		obj.required = false;
-		return obj;
+	function deleteRequired(constraints: typeof $constraints) {
+		if (constraints) constraints.required = false;
+		return constraints;
 	}
 </script>
 

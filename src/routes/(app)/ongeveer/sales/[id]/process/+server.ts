@@ -7,10 +7,12 @@ export const GET: RequestHandler = async ({ params }) => {
 	if (isNaN(id)) throw error(400, 'Invalid id');
 
 	// Update the journal date to the current date
-	await db.journal.update({
-		where: { id },
+	const journal = await db.journal.update({
+		where: { id, date: null },
 		data: { date: new Date() }
 	});
 
-	throw redirect(300, `/ongeveer/sales/${id}`);
+	if (!journal) throw error(404, `Journal #${id} not found`);
+
+	throw redirect(301, `/ongeveer/sales/${id}`);
 };

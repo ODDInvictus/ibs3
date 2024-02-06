@@ -1,7 +1,6 @@
 import prisma from '$lib/server/db';
 import db from '$lib/server/db';
-import type { Journal, JournalType, Prisma, PrismaClient } from '@prisma/client';
-import type { DefaultArgs } from '@prisma/client/runtime/library';
+import type { Journal, JournalType } from '@prisma/client';
 
 type JournalResponse = Journal & {
 	total: string;

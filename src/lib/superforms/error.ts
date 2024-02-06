@@ -4,18 +4,17 @@ import type { Writable } from 'svelte/store';
 import type { SuperValidated, UnwrapEffects, ZodValidation } from 'sveltekit-superforms';
 import type { AnyZodObject } from 'zod';
 
-type onError =
-	| 'apply'
-	| ((event: {
-			result: {
-				type: 'error';
-				status?: number;
-				error: App.Error;
-			};
-			message: Writable<SuperValidated<UnwrapEffects<ZodValidation<AnyZodObject>>, any>['message']>;
-	  }) => MaybePromise<unknown | void>);
+type onError = (event: {
+	result: {
+		type: 'error';
+		status?: number;
+		error: App.Error;
+	};
+	message: Writable<SuperValidated<UnwrapEffects<ZodValidation<AnyZodObject>>, any>['message']>;
+}) => MaybePromise<unknown | void>;
 
 export const onError = (({ result }) => {
+	console.log('hello');
 	toast({
 		title: `Error: ${result.status}`,
 		message: result.error.message,

@@ -6,8 +6,14 @@
 </script>
 
 <Title title="Verkoop overzicht" />
+
+<div class="ongeveer-nav">
+	<a href="/ongeveer/sales/create">Nieuwe facuur aanmaken</a>
+	<a href="/ongeveer/tallysheet/create">Steeplijst verwerken</a>
+	<a href="/ongeveer/tallysheet">Streeplijst overzicht</a>
+</div>
+
 <main>
-	<a href="/ongeveer/sales/create" class="button">Nieuwe facuur aanmaken</a>
 	<table>
 		<thead>
 			<th>Factuur</th>

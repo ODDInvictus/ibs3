@@ -91,6 +91,7 @@ model User {
   PhotoTaggedBy           PhotoPersonTag[]          @relation("photoTaggedBy")
   CommentsMade            Comment[]
   Journal                 Journal[]
+  Streeplijst             Streeplijst[]
 }
 
 model Account {
@@ -283,7 +284,7 @@ model Product {
   updatedAt   DateTime @updatedAt
   name        String
   description String
-  price       Float
+  price       Decimal  @db.Decimal(19, 4)
 
   // Dit bepaald wat er in data kan staan
   productType ProductType @default(OTHER)
@@ -293,7 +294,6 @@ model Product {
   // Foreign keys
   category    ProductCategory @relation(fields: [categoryId], references: [id])
   categoryId  Int
-  Sale        Sale[]
   Acquisition Acquisition[]
   // Een product kan niet worden verwijderd, wel uitgeschakeld
   isActive    Boolean         @default(true)
@@ -318,7 +318,7 @@ model FinancialPerson {
   // Naam van het financiele persoon, denk aan "O.D.D. Invictus", "Meeborrel" of gewoon de naam van een lid
   name    String
   // Huidige saldo
-  balance Float  @default(0)
+  balance Decimal @default(0) @db.Decimal(19, 4)
 
   isActive Boolean @default(true)
 
@@ -332,9 +332,7 @@ model FinancialPerson {
 
   TransactionFrom     SaldoTransaction[] @relation("TransactionFrom")
   TransactionTo       SaldoTransaction[] @relation("TransactionTo")
-  Sale                Sale[]
   Acquisition         Acquisition[]
-  Streeplijst         Streeplijst[]
   Journal             Journal[]
   BankTransactionFrom BankTransaction[]
 }
@@ -442,10 +440,10 @@ model TransactionMatchRow {
 
 model SaldoTransaction {
   // Administratieve gegevens
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   description String
   // Transactie gegevens
-  price       Float
+  price       Decimal @db.Decimal(19, 4)
 
   // Gebruikers
   from   FinancialPerson @relation(fields: [fromId], references: [id], name: "TransactionFrom")
@@ -492,47 +490,25 @@ model BankTransaction {
   @@unique([type, product, startedDate, completedDate, description, amount, fee])
 }
 
-// In een verkoop kan iemand x aantal producten kopen
-// Prijs voor verkoop wordt pas bepaald zodra de transactie aangemaakt wordt
-model Sale {
-  // Administratieve gegevens
-  id        Int             @id @default(autoincrement())
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  // Hoeveel van welk product zijn er gekocht
-  product   Product         @relation(fields: [productId], references: [id])
-  productId Int
-  amount    Int
-  // Wie heeft er gekocht
-  person    FinancialPerson @relation(fields: [personId], references: [id])
-  personId  Int
-
-  // Link naar streeplijst (indien van toepassing)
-  streeplijst   Streeplijst? @relation(fields: [streeplijstId], references: [id])
-  streeplijstId Int?
-
-  // Een verkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
-  isActive Boolean @default(true)
-}
-
 model Streeplijst {
   // Administratieve gegevens
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Wanneer is de streeplijst aangemaakt
-  date DateTime
+  // Wanneer is de streeplijst begonnen
+  startDate DateTime?
+  // Wanneer is de streeplijst afgelopen
+  endDate   DateTime?
 
   // Wie heeft dit verwerkt
-  person   FinancialPerson @relation(fields: [personId], references: [id])
-  personId Int
+  // TODO maakt dit niet optional
+  treasurer User? @relation(fields: [userId], references: [id])
+  userId    Int?
 
-  // Een streeplijst kan niet worden verwijdered, maar kan wel worden gedeactiveerd
-  isActive Boolean @default(true)
+  notes String?
 
-  // Foreign keys
-  Sale Sale[]
+  sales Journal[]
 }
 
 // Een inkoop
@@ -545,7 +521,7 @@ model Acquisition {
   product   Product  @relation(fields: [productId], references: [id])
   productId Int
   amount    Int
-  price     Float
+  price     Decimal  @db.Decimal(19, 4)
 
   // Bonnetje
   receipt String
@@ -587,6 +563,8 @@ model Journal {
   Attachments         JournalAttachments[]
   DeclarationData     DeclarationData?
   TransactionMatchRow TransactionMatchRow[]
+  Streeplijst         Streeplijst?          @relation(fields: [streeplijstId], references: [id])
+  streeplijstId       Int?
 }
 
 enum DeclarationStatus {

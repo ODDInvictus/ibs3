@@ -10,7 +10,8 @@ export const getJournal = async (id: number) => {
 			Rows: true,
 			TransactionMatchRow: true,
 			relation: {
-				include: {
+				select: {
+					name: true,
 					FinancialPersonDataOther: true,
 					FinancialPersonDataUser: {
 						include: {
@@ -29,7 +30,7 @@ export const getJournal = async (id: number) => {
 	});
 
 	if (!journal) throw error(404);
-	if (!journal.date) throw redirect(300, `/ongeveer/sales/create?id=${id}`);
+	if (!journal.date) throw redirect(302, `/ongeveer/sales/create?id=${id}`);
 
 	journal.Rows.map((r) => ((r.price as unknown as number) = r.price.toNumber()));
 	return journal;

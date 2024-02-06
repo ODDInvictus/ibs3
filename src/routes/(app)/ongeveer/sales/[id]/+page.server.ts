@@ -8,7 +8,7 @@ export const load = (async ({ params }) => {
 
 	const invoice = await getJournal(id);
 
-	if (!invoice.date) throw redirect(300, `/financieel/sales/create?id=${id}`);
+	if (!invoice.date) throw redirect(302, `/financieel/sales/create?id=${id}`);
 
 	await editRefForm.transform({
 		values: {

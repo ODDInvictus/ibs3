@@ -82,6 +82,7 @@
 		"node-cache": "^5.1.2",
 		"sanitize-html": "^2.11.0",
 		"sharp": "^0.32.4",
+		"simple-svelte-autocomplete": "^2.5.2",
 		"spotify-web-api-node": "^5.0.2",
 		"stream-to-async-iterator": "^1.0.0",
 		"svelte-modals": "^1.2.1",

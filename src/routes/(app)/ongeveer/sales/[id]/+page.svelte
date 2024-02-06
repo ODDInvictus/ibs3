@@ -28,10 +28,11 @@
 					form: data.form
 				})}
 		>
-			<Pencil color="#777" />
+			<Pencil color="#777" class="pointer" />
 		</i>
 	</p>
-	<p>Status: {data.invoice ? 'Betaald' : 'Vestuurd'}</p>
+	<!-- TODO: status -->
+	<p>Status: Verstuurd</p>
 </div>
 <main>
 	<Invoice invoice={data.invoice} />
@@ -60,5 +61,9 @@
 	:global(#invoice) {
 		transform-origin: top left;
 		transform: scale(0.5);
+	}
+
+	:global(.pointer) {
+		cursor: pointer;
 	}
 </style>
