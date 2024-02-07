@@ -4,6 +4,11 @@ export async function GET() {
   const ical = await generateActivityIcal()
 
   // Nu nog headers enzo...
+  // En authenticatie
 
-  return new Response(ical)
+  const res = new Response(ical)
+
+  res.headers.set('Content-Type', 'text/calendar')
+
+  return res
 }
