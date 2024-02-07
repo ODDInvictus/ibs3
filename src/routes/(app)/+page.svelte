@@ -254,7 +254,7 @@
 			<div class="ibs-card--content">
 				<p>Gefeliciteerd {data.nextBirthday.firstName}!</p>
 				<p>
-					Hij is {toAge(birthday) + 1} jaar geworden
+					Hij is {toAge(birthday)} jaar geworden
 				</p>
 			</div>
 		{/if}

@@ -23,7 +23,8 @@
 				<tr class={bd.ldapId === data.user.ldapId ? 'highlight' : ''}>
 					<td>{bd.firstName} {bd.lastName} {bd.nickname ? `(${bd.nickname})` : ''}</td>
 					<td>{toBirthday(bd.birthDate)}</td>
-					<td>{toAge(bd.birthDate) + 1}</td>
+					<td>{daysLeftTill(bd.birthDate) === 0 ? toAge(bd.birthDate) : toAge(bd.birthDate) + 1}</td
+					>
 					<td>{daysLeftTill(bd.birthDate)}</td>
 				</tr>
 			{/each}
