@@ -5,7 +5,10 @@ export function formatPrice(price: number): string {
 }
 
 export function getSlug(id: number, title: string): string {
-  return '' + id + '-' + title.toLowerCase().replace(/ /g, '-')
+  return '' + id + '-' + title
+    .toLowerCase()
+    .replace(/ /g, '-')
+    .replace(/[#?@!\$%\^&*().]/g, '')
 }
 
 export function prettySlug(slug: string): string {
@@ -23,6 +26,7 @@ export function activitySlug(activityName: string) {
 
   // This adds a space to the end, remove it
   md = md.replace(/ $/g, '')
+  md = md.replace(/[#?@!\$%\^&*().]/g, '')
 
   return md.toLowerCase().replace(/ /g, '-')
 }
