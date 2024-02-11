@@ -1,6 +1,7 @@
 import prisma from '$lib/server/db';
 import db from '$lib/server/db';
 import type { Journal, JournalType } from '@prisma/client';
+import Decimal from 'decimal.js';
 
 type JournalResponse = Journal & {
 	total: string;
@@ -33,12 +34,22 @@ export const getJournalStatus = async (id: number) => {
 	const journal = await db.journal.findUnique({
 		where: { id },
 		include: {
-			TransactionMatchRow: true
+			TransactionMatchRow: true,
+			Rows: true
 		}
 	});
 	if (!journal) return null;
-	if (journal.TransactionMatchRow.length > 0) return 'PAID';
-	return 'UNPAID';
+
+	const total = journal.Rows.reduce(
+		(acc, row) => acc.add(row.price.mul(row.amount)),
+		new Decimal(0)
+	);
+	const paid = journal.TransactionMatchRow.reduce(
+		(acc, row) => acc.add(row.amount),
+		new Decimal(0)
+	);
+
+	return total.lessThanOrEqualTo(paid) ? 'PAID' : 'UNPAID';
 };
 
 /**
@@ -110,4 +121,22 @@ export async function createTransacton({
 			transactionId: transaction.id
 		}
 	});
+}
+
+/**
+ * Check is streeplijst is already processed.
+ * This means that every journal is fully paid.
+ */
+export async function tallySheetIsProcessed(streeplijstId: number) {
+	const journals = await db.journal.findMany({
+		where: { streeplijstId },
+		include: {
+			TransactionMatchRow: true,
+			Rows: true
+		}
+	});
+	for (const journal of journals) {
+		if ((await getJournalStatus(journal.id)) === 'UNPAID') return false;
+	}
+	return true;
 }

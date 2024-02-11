@@ -11,8 +11,11 @@
 <div class="ongeveer-nav">
 	<a href="/ongeveer/tallysheet">Terug</a>
 	<a href="/ongeveer/tallysheet/{data.tallySheet.id}/edit">Bewerken</a>
-	<!-- TODO process -->
-	<button>Process</button>
+	{#if data.isProcessed}
+		<button disabled>Maak transacties</button>
+	{:else}
+		<a href="/ongeveer/tallysheet/{data.tallySheet.id}/process">Maak transacties</a>
+	{/if}
 </div>
 
 <h2>Info</h2>
@@ -22,7 +25,7 @@
 		<td>{data.tallySheet.id}</td>
 	</tr>
 	<tr>
-		<td>Verwerk datum</td>
+		<td>Invoer datum</td>
 		<td>{formatDateTimeHumanReadable(new Date(data.tallySheet.createdAt))}</td>
 	</tr>
 	<tr>
@@ -42,12 +45,16 @@
 		>
 	</tr>
 	<tr>
-		<td>Notes</td>
-		<td>{data.tallySheet.notes ?? '-'}</td>
+		<td>Verwerkt</td>
+		<td>{data.isProcessed ? 'Ja' : 'Nee'}</td>
 	</tr>
 	<tr>
 		<td>Penningmeester</td>
 		<td>{data.tallySheet.treasurer?.firstName ?? '-'}</td>
+	</tr>
+	<tr>
+		<td>Notes</td>
+		<td>{data.tallySheet.notes ?? '-'}</td>
 	</tr>
 </table>
 

@@ -18,7 +18,7 @@ export const load = (async ({ params }) => {
 	});
 
 	return {
-		invoice,
+		invoice: JSON.parse(JSON.stringify(invoice)) as typeof invoice,
 		form: editRefForm.attributes
 	};
 }) satisfies PageServerLoad;

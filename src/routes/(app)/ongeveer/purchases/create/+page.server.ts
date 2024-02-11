@@ -75,9 +75,11 @@ export const load = (async (event) => {
 			};
 		}) ?? [];
 
+	const relations = await getRelations();
+
 	return {
 		form,
-		relations: await getRelations(),
+		relations: JSON.parse(JSON.stringify(relations)) as typeof relations,
 		ledgers: await getLedgers(),
 		attachments,
 		declarationData: purchase?.DeclarationData ?? null

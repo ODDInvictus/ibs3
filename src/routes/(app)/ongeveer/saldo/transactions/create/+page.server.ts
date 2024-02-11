@@ -20,9 +20,11 @@ export const load = (async () => {
 		financialPeople[person.type] = arr;
 	}
 
+	const products = await db.product.findMany();
+
 	return {
-		financialPeople,
-		products: await db.product.findMany()
+		financialPeople: JSON.parse(JSON.stringify(financialPeople)) as typeof financialPeople,
+		products: JSON.parse(JSON.stringify(products)) as typeof products
 	};
 }) satisfies PageServerLoad;
 

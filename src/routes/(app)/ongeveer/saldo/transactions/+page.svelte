@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Pagination from '$lib/components/Pagination.svelte';
 	import Title from '$lib/components/title.svelte';
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
 	import type { PageData } from './$types';
@@ -51,22 +52,7 @@
 				{/each}
 			</tbody>
 		</table>
-		<div class="nav">
-			<p class="pageSize">
-				Paginagrootte
-				{#each [20, 30, 50, 100] as size}
-					<a
-						href="/ongeveer/saldo/transactions?size={size}&p={data.p}"
-						class={size == data.size ? 'underline' : ''}>{size}</a
-					>
-				{/each}
-			</p>
-			<a href="/ongeveer/saldo/transactions?size={data.size}&p={data.p - 2}">{'<<'}</a>
-			<a href="/ongeveer/saldo/transactions?size={data.size}&p={data.p - 1}">{'<'}</a>
-			<p>{data.p + 1}</p>
-			<a href="/ongeveer/saldo/transactions?size={data.size}&p={data.p + 1}">{'>'}</a>
-			<a href="/ongeveer/saldo/transactions?size={data.size}&p={data.p + 2}">{'>>'}</a>
-		</div>
+		<Pagination size={data.size} p={data.p} url="/ongeveer/saldo/transactions" />
 	</div>
 </div>
 
@@ -75,40 +61,11 @@
 		text-align: center;
 	}
 
-	.pageSize {
-		position: absolute;
-		top: 1rem;
-		left: 0;
-		font-size: 1rem;
-
-		@media screen and (max-width: 780px) {
-			display: none;
-		}
-
-		a {
-			margin: 0 1ex;
-		}
-	}
-
-	.underline {
-		text-decoration: underline;
-	}
-
 	.buttons {
 		padding: 2rem 1rem;
 
 		a {
 			margin-right: 1rem;
 		}
-	}
-
-	.nav {
-		font-size: 1.2rem;
-		display: flex;
-		gap: 1rem;
-		width: 100%;
-		justify-content: center;
-		padding: 1rem;
-		position: relative;
 	}
 </style>

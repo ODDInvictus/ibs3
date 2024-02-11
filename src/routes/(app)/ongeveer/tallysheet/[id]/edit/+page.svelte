@@ -40,6 +40,7 @@
 		<button
 			type="button"
 			class="btn-danger"
+			disabled={!data.canDelete}
 			on:click={async () => {
 				// TODO: Zeg in confirm hoeveel boekstukken er zijn ofz
 				if (confirm('Weet je zeker dat je deze streeplijst wilt verwijderen?')) {

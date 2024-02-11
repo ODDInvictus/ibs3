@@ -10,7 +10,7 @@ export const load = async ({ locals }) => {
 	const own = personData.find((p) => p.userId === locals.user.id);
 
 	return {
-		persons: personData,
-		own
+		persons: JSON.parse(JSON.stringify(personData)) as typeof personData,
+		own: JSON.parse(JSON.stringify(own)) as typeof own
 	};
 };

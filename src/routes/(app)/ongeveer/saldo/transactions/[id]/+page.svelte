@@ -1,9 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-
 	import Title from '$lib/components/title.svelte';
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
-	import { formatPrice } from '$lib/textUtils';
 
 	export let data: PageData;
 </script>
@@ -13,6 +11,8 @@
 <div class="ongeveer-nav">
 	<a href="/ongeveer/saldo/transactions">Terug</a>
 </div>
+
+<h2>Info</h2>
 
 <table>
 	<tr>
@@ -33,7 +33,7 @@
 	</tr>
 	<tr>
 		<td>Prijs</td>
-		<td>{formatPrice(data.transaction.price)}</td>
+		<td>€ {Number(data.transaction.price).toFixed(2)}</td>
 	</tr>
 	<tr>
 		<td>Omschrijving</td>
@@ -41,13 +41,50 @@
 	</tr>
 	<tr>
 		<td>Datum</td>
-		<td>{formatDateTimeHumanReadable(data.transaction.Transaction.createdAt)}</td>
+		<td>{formatDateTimeHumanReadable(new Date(data.transaction.Transaction.createdAt))}</td>
 	</tr>
-	{#if data.transaction.TransactionMatchRow}
-		{@const matched = data.transaction.TransactionMatchRow.Transaction}
-		<tr>
-			<td>Matched transaction</td>
-			<td><a href="/ongeveer/transaction/{matched.id}">{matched.type} - {matched.id}</a></td>
-		</tr>
-	{/if}
 </table>
+
+{#if data.transaction.TransactionMatchRow}
+	{@const matched = data.transaction.TransactionMatchRow.Transaction}
+	<h2>Gematchde transactie</h2>
+	<table>
+		<tr>
+			<td>ID</td>
+			<td><a href="/ongeveer/transaction/{matched.id}">{matched.id}</a></td>
+		</tr>
+		<tr>
+			<td>Type</td>
+			<td>{matched.type}</td>
+		</tr>
+	</table>
+{/if}
+
+{#if data.transaction.Transaction.TransactionMatchRow.length > 0}
+	{@const rows = data.transaction.Transaction.TransactionMatchRow}
+
+	<h2>Gematchde boekstukken</h2>
+
+	<table>
+		<thead>
+			<th>Boekstuknummer</th>
+			<th>Beschrijving</th>
+			<th>Bedrag</th>
+		</thead>
+		<tbody>
+			{#each rows as row}
+				<tr>
+					<td><a href="/ongeveer/journal/{row.journalId}">{row.journalId}</a></td>
+					<td>{row.description}</td>
+					<td>€ {Number(row.amount).toFixed(2)}</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+{/if}
+
+<style lang="scss">
+	h2 {
+		margin-top: 1rem;
+	}
+</style>

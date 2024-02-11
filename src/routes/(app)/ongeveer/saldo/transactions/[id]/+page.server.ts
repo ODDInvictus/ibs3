@@ -9,7 +9,11 @@ export const load = (async ({ params }) => {
 	const transaction = await db.saldoTransaction.findUnique({
 		where: { id },
 		include: {
-			Transaction: true,
+			Transaction: {
+				include: {
+					TransactionMatchRow: true
+				}
+			},
 			from: true,
 			to: true,
 			TransactionMatchRow: {
@@ -27,5 +31,5 @@ export const load = (async ({ params }) => {
 
 	if (!transaction) throw error(404);
 
-	return { transaction };
+	return { transaction: JSON.parse(JSON.stringify(transaction)) as typeof transaction };
 }) satisfies PageServerLoad;

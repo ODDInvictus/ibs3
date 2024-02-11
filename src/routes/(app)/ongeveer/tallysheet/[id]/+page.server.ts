@@ -1,6 +1,7 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import db from '$lib/server/db';
+import { tallySheetIsProcessed } from '$lib/ongeveer/db';
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
@@ -29,5 +30,7 @@ export const load = (async ({ params }) => {
 
 	if (!tallySheet) throw error(404);
 
-	return { tallySheet: JSON.parse(JSON.stringify(tallySheet)) as typeof tallySheet };
+	const isProcessed = await tallySheetIsProcessed(id);
+
+	return { tallySheet: JSON.parse(JSON.stringify(tallySheet)) as typeof tallySheet, isProcessed };
 }) satisfies PageServerLoad;

@@ -6,11 +6,17 @@ const prisma = new PrismaClient().$extends({
 	query: {
 		saldoTransaction: {
 			async create({ args, query }) {
-				const { price, fromId, toId } = args.data;
+				let { price, fromId, toId } = args.data;
+				if (fromId === undefined) {
+					fromId = args.data.from?.connect?.id;
+				}
+				if (toId === undefined) {
+					toId = args.data.to?.connect?.id;
+				}
 				if (fromId === undefined || toId === undefined) {
 					throw new Error('fromId or toId is undefined');
 				}
-				await applyTransaction({ price, fromId, toId });
+				await applyTransaction({ price: Number(price), fromId, toId });
 				return query(args);
 			},
 			async createMany({ args, query }) {
@@ -21,11 +27,11 @@ const prisma = new PrismaClient().$extends({
 						if (fromId === undefined || toId === undefined) {
 							throw new Error('fromId or toId is undefined');
 						}
-						await applyTransaction({ price, fromId, toId });
+						await applyTransaction({ price: Number(price), fromId, toId });
 					}
 				} else {
 					await applyTransaction({
-						price: transactions.price,
+						price: Number(transactions.price),
 						fromId: transactions.fromId,
 						toId: transactions.toId
 					});

@@ -6,6 +6,7 @@ import { editTallySheetSchema } from './editTallySheetSchema';
 import type { Actions } from './$types';
 import { authorization } from '$lib/ongeveer/utils';
 import { redirect } from 'sveltekit-flash-message/server';
+import { canDeleteTallySheet } from './canDeleteTallySheet';
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
@@ -23,7 +24,9 @@ export const load = (async ({ params }) => {
 	};
 	const form = await superValidate(data, editTallySheetSchema);
 
-	return { form, id };
+	const canDelete = await canDeleteTallySheet(id);
+
+	return { form, id, canDelete };
 }) satisfies PageServerLoad;
 
 export const actions = {
