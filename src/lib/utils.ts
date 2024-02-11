@@ -13,6 +13,7 @@ import markdownItKbd from 'markdown-it-kbd';
 import markdownItPlainText from 'markdown-it-plain-text';
 
 import xss from 'xss';
+import type Decimal from 'decimal.js';
 
 const md = new markdownIt({
 	linkify: true,
@@ -159,4 +160,18 @@ export function generateRandomString(length: number) {
 export function formatFileSize(size: number) {
 	const i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
 	return `${(size / Math.pow(1024, i)).toFixed(2)} ${['B', 'kB', 'MB', 'GB', 'TB'][i]}`;
+}
+
+export function pagination(url: URL) {
+	let p = Number(url.searchParams.get('p'));
+	if (Number.isNaN(p) || p < 0) p = 0;
+
+	let size = Number(url.searchParams.get('size'));
+	if (Number.isNaN(size) || size <= 0) size = 20;
+
+	return { p, size };
+}
+
+export function formatMoney(price: number | Decimal | String) {
+	return `€ ${Number(price).toFixed(2)}`;
 }

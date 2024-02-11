@@ -1,34 +1,46 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte';
-	import { formatPrice } from '$lib/textUtils';
+	import Decimal from 'decimal.js';
 	import type { PageData } from './$types';
+	import { formatMoney } from '$lib/utils';
+	import ShoppingCart from '~icons/tabler/shopping-cart';
+	import Coins from '~icons/tabler/coins';
+	import FileEuro from '~icons/tabler/file-euro';
+	import BasketPlus from '~icons/tabler/basket-plus';
 
 	export let data: PageData;
 </script>
 
 <Title title="Financieel" />
 
-{#if !data.person}
-	<p class="text-red-500">
-		Oei! Er is nog geen financiele data voor jou aangemaakt. Kijk over een uurtje hier weer terug.
-		Werkt het dan nog niet? Stuur dan even een mailtje naar bakkentrekkers@oddinvictus.nl
-	</p>
-{:else}
-	<p>
-		Huidig saldo:
-		<span class={data.person.balance < 0 ? 'red' : ''}>
-			{formatPrice(data.person.balance)}
-		</span>
-	</p>
-{/if}
+<h3>
+	Huidig saldo:
+	<span class:red={data.person.balance < new Decimal(0)} class="bold">
+		{formatMoney(data.person.balance)}
+	</span>
+</h3>
 
-<p>Je hebt de volgende opties:</p>
+<div class="menu">
+	<a href="/financieel/consumpties" class="card">
+		<ShoppingCart />
+		<p>Consumpties</p>
+	</a>
 
-<a href="/financieel/declaratie/overzicht">Declaratie overzicht</a>
-{#if data.person}
-	<a href="/financieel/streeplijst/verwerk">Verwerk streeplijst</a>
-	<a href="/financieel/declaratie">Doe een declaratie</a>
-{/if}
+	<a href="/financieel/transacties" class="card">
+		<Coins />
+		<p>Transacties</p>
+	</a>
+
+	<a href="/financieel/declaraties" class="card">
+		<FileEuro />
+		<p>Declaraties</p>
+	</a>
+
+	<a href="/financieel/declaraties/indienen" class="card">
+		<BasketPlus />
+		<p>Declaratie indienen</p>
+	</a>
+</div>
 
 <style lang="scss">
 	a {
@@ -37,11 +49,56 @@
 		width: fit-content;
 	}
 
+	.bold {
+		font-weight: bold;
+	}
+
 	.red {
 		color: rgb(146, 0, 0);
 	}
 
 	:global(.ibs-theme--dark) .red {
 		color: red;
+	}
+
+	h3 {
+		margin-top: 2rem;
+		text-align: center;
+	}
+
+	.menu {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+		margin-top: 1rem;
+		width: fit-content;
+		margin-left: auto;
+		margin-right: auto;
+
+		.card {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			background-color: #e4e4e4;
+			border-radius: 0.5rem;
+			padding: 1rem;
+			font-size: 1.5rem;
+			text-align: center;
+			width: 100%;
+			height: 100%;
+
+			&:hover {
+				background-color: #d4d4d4;
+			}
+		}
+	}
+
+	:global(.ibs-theme--dark) .menu .card {
+		background-color: #2d2d2d;
+
+		&:hover {
+			background-color: #3d3d3d;
+		}
 	}
 </style>
