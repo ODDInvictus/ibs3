@@ -3,6 +3,8 @@
 
 	export let url: string;
 	export let redirect: string;
+	export let confirmMessage: string | undefined = undefined;
+	export let text = 'Verwijderen';
 </script>
 
 <!-- TODO add loading spinner, prevent spam clicking -->
@@ -10,6 +12,7 @@
 	class="btn-danger"
 	type="button"
 	on:click={async () => {
+		if (confirmMessage && !confirm(confirmMessage)) return;
 		const res = await fetch(url, { method: 'DELETE' });
 		if (res.ok) {
 			location.href = redirect;
@@ -22,5 +25,5 @@
 				time: message ? 10000 : undefined
 			});
 		}
-	}}>Verwijderen</button
+	}}>{text}</button
 >

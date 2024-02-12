@@ -8,6 +8,8 @@
 	import Banknotes from '~icons/tabler/cash-banknote';
 	import type { PageData } from './$types';
 	import { formatDateHumanReadable } from '$lib/dateUtils';
+	import Title from '$lib/components/title.svelte';
+	import { formatMoney } from '$lib/utils';
 
 	export let data: PageData;
 
@@ -17,21 +19,44 @@
 	}
 </script>
 
+<Title title="Declaratie #{data.declaration.id}" shortTitle="Declaratie" />
+
 <div id="root">
 	<div id="left">
-		<h1>Declaratie #{data.declaration.id}</h1>
-		<p title="Declarant"><UserCircle />{data.user.firstName}</p>
-		<p title="Geld"><CurrencyEuro /> {formatPrice(data.declaration.total)}</p>
-		<p title="Reden"><QuestionMarkCircle />{data.declaration.description ?? ''}</p>
-		<p title="Wanneer">
-			<CalendarDays />
-			{data.declaration.date ? formatDateHumanReadable(new Date(data.declaration.date)) : '?'}
-		</p>
-		<p title="Betaalmethode"><Banknotes /> {data.declaration.methodOfPayment}</p>
-		<p title="Status acceptatie">
-			<Check />
-			{data.declaration.status?.toLowerCase() ?? '?'}
-		</p>
+		<table>
+			<tr>
+				<th>Declarant</th>
+				<td>{data.user.firstName}</td>
+			</tr>
+			<tr>
+				<th>Bedrag</th>
+				<td>{formatMoney(data.declaration.total)}</td>
+			</tr>
+			<tr>
+				<th>Reden</th>
+				<td>{data.declaration.description ?? ''}</td>
+			</tr>
+			<tr>
+				<th>Indien datum</th>
+				<td
+					>{data.declaration.date
+						? formatDateHumanReadable(new Date(data.declaration.date))
+						: '?'}</td
+				>
+			</tr>
+			<tr>
+				<th>Status</th>
+				<td>{data.declaration.status.toLowerCase()}</td>
+			</tr>
+			<tr>
+				<th>Betaal methode</th>
+				<td>{data.declaration.methodOfPayment}</td>
+			</tr>
+			<tr>
+				<th>Bericht</th>
+				<td>{data.declaration.message ?? '-'}</td>
+			</tr>
+		</table>
 	</div>
 
 	{#if data.declaration.Attachments.length > 0}
@@ -59,19 +84,21 @@
 		grid-template-columns: 1fr 1fr;
 	}
 
-	#receipt {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
 	#left {
 		p {
 			display: flex;
 			align-items: center;
-			cursor: help;
 			gap: 0.5rem;
 			margin: 0.5rem 0;
+		}
+
+		table {
+			width: fit-content;
+
+			// th {
+			// 	display: flex;
+			// 	align-items: center;
+			// }
 		}
 	}
 

@@ -335,6 +335,7 @@ model FinancialPerson {
   Acquisition         Acquisition[]
   Journal             Journal[]
   BankTransactionFrom BankTransaction[]
+  DeclarationData     DeclarationData[]
 }
 
 // Extra data voor FinancialPerson, afhankelijk van FinancialPersonType
@@ -582,13 +583,18 @@ model DeclarationData {
   id              Int               @id @default(autoincrement())
   // Hoe is dit betaald? (Eigen rekening, bank, contant)
   methodOfPayment String            @default("Eigen rekening")
-  reiceiveMethod  ReceiveMethod     @default(SALDO)
+  receiveMethod   ReceiveMethod     @default(SALDO)
   status          DeclarationStatus @default(PENDING)
   iban            String?
+  createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   askedAmount     Decimal           @db.Decimal(19, 4)
+  reason          String
 
-  Journal   Journal? @relation(fields: [journalId], references: [id], onDelete: Cascade)
+  DeclaratedBy      FinancialPerson @relation(fields: [financialPersonId], references: [id])
+  financialPersonId Int
+
+  Journal   Journal? @relation(fields: [journalId], references: [id], onDelete: SetNull)
   journalId Int?     @unique
 }
 

@@ -39,19 +39,7 @@
 				<td>Open</td>
 			</tr>
 		{/each}
-	</tbody>
-</table>
-<h2 class="mt-1">Declaraties</h2>
-<table>
-	<thead>
-		<th>ID</th>
-		<th>Referentie</th>
-		<th>Bedrag</th>
-		<th>Relatie</th>
-		<th>Datum</th>
-		<td>Status</td>
-	</thead>
-	<tbody>
+		<h2 class="mt-1">Declaraties</h2>
 		{#each data.declarations as declaration}
 			<tr>
 				<td><a href="/ongeveer/purchases/create?id={declaration.id}">{declaration.id}</a></td>

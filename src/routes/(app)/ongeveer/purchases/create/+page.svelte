@@ -8,8 +8,11 @@
 	import { onError } from '$lib/superforms/error';
 	import Submit from '$lib/superforms/Submit.svelte';
 	import DeleteButton from '$lib/ongeveer/DeleteButton.svelte';
-	import { formatFileSize } from '$lib/utils';
+	import { formatFileSize, formatMoney } from '$lib/utils';
 	import Attatchment from '$lib/ongeveer/Attatchment.svelte';
+	import Plus from '~icons/tabler/plus';
+	import Trashcan from '~icons/tabler/trash';
+	import { toast } from '$lib/notification';
 
 	export let data: PageData;
 
@@ -22,7 +25,7 @@
 		}
 	});
 
-	const { form, errors, enhance } = formProps;
+	const { form, errors, enhance, tainted } = formProps;
 
 	const idProxy = intProxy(form, 'id');
 
@@ -92,17 +95,30 @@
 			<input type="text" disabled value={data.declarationData.methodOfPayment} />
 		</div>
 		<div class="input-group">
+			<label for="">Ontvangmethode</label>
+			<input
+				type="text"
+				disabled
+				value={data.declarationData.receiveMethod === 'SALDO' ? 'Saldo' : 'Bankrekening'}
+			/>
+		</div>
+		{#if data.declarationData.iban}
+			<div class="input-group">
+				<label for="">IBAN</label>
+				<input type="text" disabled value={data.declarationData.iban} />
+			</div>
+		{/if}
+		<div class="input-group">
+			<label for="">Gevraagde hoeveelheid</label>
+			<input type="text" disabled value={formatMoney(data.declarationData.askedAmount)} />
+		</div>
+		<div class="input-group">
 			<label for="">Status</label>
 			<input type="text" disabled value={data.declarationData.status} />
 		</div>
-		{#if data.declarationData.status === 'PENDING'}
-			<div class="decla-actions">
-				<button type="button">Goedkeuren</button>
-				<button type="button" class="btn-danger">Afwijzen</button>
-			</div>
-		{/if}
 	{/if}
 	<!-- Wie dit leest trekt bak-->
+	<!-- Ja gotver -->
 	<!-- TODO extract into component smth idk -->
 	<hr />
 	<table>
@@ -153,7 +169,6 @@
 						</select>
 					</td>
 					<td>
-						<!-- TODO use icons -->
 						{#if i === $form.rows.length - 1}
 							<button
 								type="button"
@@ -163,7 +178,7 @@
 										{ description: '', amount: 0, price: 0, ledger: 0 }
 									])}
 							>
-								Add
+								<Plus />
 							</button>
 						{/if}
 						{#if $form.rows.length > 1}
@@ -173,7 +188,7 @@
 									const filtered = [...$form.rows];
 									filtered.splice(i, 1);
 									$form.rows = filtered;
-								}}>Del</button
+								}}><Trashcan /></button
 							>
 						{/if}
 					</td>
@@ -185,8 +200,45 @@
 	<div class="bottom">
 		<div class="btns">
 			<Submit {formProps}>Opslaan</Submit>
+			{#if data.declarationData?.status === 'PENDING'}
+				<button
+					class:disabled={!!$tainted}
+					type="button"
+					on:click={async () => {
+						if (!!$tainted) {
+							return toast({
+								title: 'Wijzigingen',
+								message: 'Sla de wijzigingen eerst op',
+								type: 'danger'
+							});
+						}
+
+						if (!confirm('Weet je zeker dat je deze declaratie wilt goedkeuren?')) return;
+
+						const res = await fetch(`/ongeveer/purchases/${$idProxy}`, {
+							method: 'PATCH'
+						});
+						if (res.ok) {
+							location.href = '/ongeveer/purchases';
+						} else {
+							toast({
+								title: res.statusText,
+								message: await res.text(),
+								type: 'danger'
+							});
+						}
+					}}>Goedkeuren en transactie maken</button
+				>
+			{/if}
 			{#if $idProxy}
-				<DeleteButton url={`/ongeveer/purchases/${$idProxy}`} redirect="/ongeveer/purchases" />
+				<DeleteButton
+					url={`/ongeveer/purchases/${$idProxy}${
+						data.declarationData?.status === 'PENDING' ? '?type=declaration' : ''
+					}`}
+					redirect="/ongeveer/purchases"
+					confirmMessage="Weet je zeker dat je dit boekstuk wilt verwijderen?"
+					text={data.declarationData?.status === 'PENDING' ? 'Afwijzen en verwijderen' : undefined}
+				/>
 			{/if}
 		</div>
 		<div class="attachments">
@@ -214,5 +266,11 @@
 
 	.attachments {
 		width: 100%;
+	}
+
+	input:disabled,
+	.disabled {
+		cursor: not-allowed;
+		opacity: 0.7;
 	}
 </style>

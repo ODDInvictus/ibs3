@@ -77,12 +77,16 @@ export const load = (async (event) => {
 
 	const relations = await getRelations();
 
+	const declarationData = purchase?.DeclarationData
+		? (JSON.parse(JSON.stringify(purchase.DeclarationData)) as typeof purchase.DeclarationData)
+		: null;
+
 	return {
 		form,
 		relations: JSON.parse(JSON.stringify(relations)) as typeof relations,
 		ledgers: await getLedgers(),
 		attachments,
-		declarationData: purchase?.DeclarationData ?? null
+		declarationData
 	};
 }) satisfies PageServerLoad;
 

@@ -1,19 +1,20 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte';
 	import { superForm } from 'sveltekit-superforms/client';
-	import validators from './declarationSchema';
-	import type { PageData } from './$types';
-	import { onError } from '$lib/superforms/error';
+	import { declatationSchema } from './declarationSchema';
 	import SuperField from '$lib/superforms/SuperField.svelte';
 	import SuperSelect from '$lib/superforms/SuperSelect.svelte';
 	import Submit from '$lib/superforms/Submit.svelte';
 	import SuperFileField from '$lib/superforms/SuperFileField.svelte';
+	import type { PageData } from './$types';
+	import { onError } from '$lib/superforms/error';
 
 	export let data: PageData;
 
 	const formProps = superForm(data.form, {
-		validators,
-		onError
+		validators: declatationSchema,
+		onError,
+		onSubmit: () => (src = null)
 	});
 
 	const { enhance, form, message } = formProps;
@@ -40,18 +41,14 @@
 	}
 </script>
 
-<Title
-	title="Doe een declaratie"
-	shortTitle="Declaratie"
-	underTitle="Heb je bier gekocht, of wil je gewoon geld van ons? Doe dan een declaratie!"
-/>
+<Title title="Declaratie indienen" shortTitle="Declaratie" />
 
 {#if $message}
 	<div class="message">{$message}</div>
 {/if}
 
 <form method="POST" enctype="multipart/form-data" class="superform" use:enhance>
-	<SuperField type="text" {formProps} field="product">Wat heb je gekocht</SuperField>
+	<SuperField type="text" {formProps} field="product">Wat heb je gekocht?</SuperField>
 
 	<SuperField type="text" {formProps} field="methodOfPayment">Betaalmethode</SuperField>
 
@@ -60,13 +57,13 @@
 		field="receiveMethod"
 		options={[
 			['SALDO', 'Saldo'],
-			['BANK', 'Rekening']
+			['ACCOUNT', 'Rekening']
 		]}
 	>
-		Hoe wil je terug betaald worden?
+		Ontvangemethode
 	</SuperSelect>
 
-	{#if $form.receiveMethod === 'BANK'}
+	{#if $form.receiveMethod === 'ACCOUNT'}
 		<SuperField type="text" {formProps} field="iban">IBAN</SuperField>
 	{/if}
 
@@ -78,5 +75,24 @@
 </form>
 
 {#if src}
-	<img {src} id="receipt-image" alt="Hier komt je bonnetje te staan" />
+	<img {src} id="receipt-image" alt="bonnetje" />
 {/if}
+
+<style lang="scss">
+	img {
+		position: absolute;
+		bottom: 7rem;
+		right: 1rem;
+		max-height: 20rem;
+		max-width: 80%;
+	}
+
+	@media (min-width: 600px) {
+		img {
+			right: 4rem;
+			bottom: 4rem;
+			max-width: 30%;
+			max-height: 30rem;
+		}
+	}
+</style>

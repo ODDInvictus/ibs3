@@ -1,56 +1,51 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte';
 	import type { PageData } from './$types';
-	import { formatDateHumanReadable } from '$lib/dateUtils';
+	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
 	import { goto } from '$app/navigation';
-
-	function formatPrice(price: number) {
-		return price.toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' });
-	}
+	import { formatMoney } from '$lib/utils';
 
 	export let data: PageData;
 </script>
 
-<!--
- TODO: Make responsive
--->
-
 <div id="root">
-	<Title
-		title="Declaratie overzicht"
-		shortTitle="Declaratie overzicht"
-		underTitle="Hieronder staan alle declaraties die door jou zijn ingediend."
-	/>
-
-	<div class="buttons">
-		<a href="/financieel/declaratie">Wil je een declaratie doen?</a>
-	</div>
+	<Title title="Declaratie overzicht" shortTitle="Declaratie overzicht" />
 
 	<div class="table-wrapper">
 		<table class="striped">
 			<thead>
 				<tr>
-					<th>Prijs</th>
-					<th>Datum</th>
+					<th>Status</th>
 					<th>Reden</th>
-					<th>Betaalwijze</th>
+					<th>Prijs</th>
+					<th>Indien datum</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#if !data.declarations.length}
 					<tr>
-						<td colspan="7">
+						<td colspan="4">
 							<p id="no-decla">Geen declaraties gevonden</p>
-							<a href="/financieel/declaratie" class="link">Wil je een declaratie doen?</a>
 						</td>
 					</tr>
 				{/if}
 				{#each data.declarations as declaration}
-					<tr on:click={() => goto(`/financieel/declaratie/${declaration.id}`)}>
-						<td class="price">{formatPrice(declaration.total)}</td>
-						<td>{declaration.date ? formatDateHumanReadable(new Date(declaration.date)) : '?'}</td>
-						<td>{declaration.description ?? '?'}</td>
-						<td>{declaration.methodOfPayment ?? '?'}</td>
+					{@const { id, date, description, total, status } = declaration}
+					<tr on:click={() => goto(`/financieel/declaraties/${id}`)}>
+						<td>
+							{#if status === 'PENDING'}
+								In behandeling
+							{:else if status === 'ACCEPTED'}
+								Goedgekeurd
+							{:else if status === 'DECLINED'}
+								Afgekeurd
+							{:else}
+								?
+							{/if}
+						</td>
+						<td>{description ?? '?'}</td>
+						<td class="price">{formatMoney(total)}</td>
+						<td>{declaration.date ? formatDateTimeHumanReadable(new Date(date)) : '?'}</td>
 					</tr>
 				{/each}
 			</tbody>

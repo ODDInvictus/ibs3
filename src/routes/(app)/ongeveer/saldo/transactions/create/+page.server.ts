@@ -2,7 +2,7 @@ import type { PageServerLoad, Actions } from './$types';
 import db from '$lib/server/db';
 import { z } from 'zod';
 import { isFinancie } from '$lib/server/authorization';
-import { createTransacton } from '$lib/ongeveer/db';
+import { createTransaction } from '$lib/ongeveer/db';
 
 export const load = (async () => {
 	const fp = await db.financialPerson.findMany({
@@ -70,7 +70,7 @@ export const actions = {
 			};
 		}
 
-		const saldoTransaction = await createTransacton(parse.data);
+		const saldoTransaction = await createTransaction(parse.data);
 
 		return {
 			success: true,

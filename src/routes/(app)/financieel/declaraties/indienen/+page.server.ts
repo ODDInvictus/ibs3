@@ -1,34 +1,32 @@
-import db from '$lib/server/db';
+import { superValidate } from 'sveltekit-superforms/server';
+import type { PageServerLoad, Actions } from './$types';
+import { declatationSchema } from './declarationSchema';
 import { error, fail } from '@sveltejs/kit';
-import type { Actions, PageServerLoad } from './$types';
-import fs from 'fs';
-import { env } from '$env/dynamic/private';
-import schema from './declarationSchema';
-import { setError, superValidate } from 'sveltekit-superforms/server';
 import { redirect } from 'sveltekit-flash-message/server';
+import { env } from '$env/dynamic/private';
+import fs from 'fs';
+import db from '$lib/server/db';
+import { LEDGER_IDS } from '$lib/constants';
 
-export const load: PageServerLoad = async () => {
+export const load = (async () => {
 	const data = {
 		methodOfPayment: 'Eigen rekening',
-		receiveMethod: 'SALDO' as const
-	};
-	const form = await superValidate(data, schema);
-
+		receiveMethod: 'SALDO'
+	} as const;
+	const form = await superValidate(data, declatationSchema);
 	return { form };
-};
+}) satisfies PageServerLoad;
 
 export const actions = {
 	default: async (event) => {
 		try {
 			const { request, locals } = event;
 			const formData = await request.formData();
-			const form = await superValidate(formData, schema);
+			const form = await superValidate(formData, declatationSchema);
 
 			if (!form.valid) return fail(400, { form });
 			const receipt = formData.get('receipt') as File;
 			const { receiveMethod, product, methodOfPayment, iban, price } = form.data;
-
-			if (receiveMethod === 'BANK' && !iban) return setError(form, 'iban', 'Verplicht');
 
 			const personData = await db.financialPersonDataUser.findFirst({
 				where: {
@@ -39,6 +37,7 @@ export const actions = {
 			if (!personData) throw error(500, 'Gebruiker heeft geen financiële gegevens');
 
 			await db.$transaction(async (tx) => {
+				const description = `Declaratie: ${product}`;
 				// Create object in database
 				const declaration = await tx.journal.create({
 					data: {
@@ -46,12 +45,14 @@ export const actions = {
 						date: new Date(),
 						termsOfPayment: 14,
 						relationId: personData.personId,
+						description,
+						ref: description,
 						Rows: {
 							create: [
 								{
 									amount: 1,
 									price,
-									ledgerId: 3100, // TODO fix this
+									ledgerId: LEDGER_IDS.DECLARATION_GENERIC,
 									description: product
 								}
 							]
@@ -60,7 +61,11 @@ export const actions = {
 							create: {
 								methodOfPayment,
 								status: 'PENDING',
-								askedAmount: price
+								askedAmount: price,
+								receiveMethod,
+								iban,
+								financialPersonId: personData.personId,
+								reason: product
 							}
 						}
 					}

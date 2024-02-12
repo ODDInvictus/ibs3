@@ -100,16 +100,18 @@ export async function applyTransaction({
 /*
  * Creates a saldo transaction in the database. The balance is automatically changes. ID's are user ID's, not financial person ID's
  */
-export async function createTransacton({
+export async function createTransaction({
 	giver,
 	receiver,
 	amount,
-	description
+	description,
+	isManual
 }: {
 	giver: number;
 	receiver: number;
-	amount: number;
+	amount: number | Decimal;
 	description: string;
+	isManual?: boolean;
 }) {
 	const transaction = await db.transaction.create();
 	return await db.saldoTransaction.create({
@@ -117,8 +119,11 @@ export async function createTransacton({
 			fromId: giver,
 			toId: receiver,
 			price: amount,
-			description: 'Handmatige transactie: ' + description,
+			description: `${isManual ?? true ? 'Handmatige transactie: ' : ''}${description}`,
 			transactionId: transaction.id
+		},
+		include: {
+			Transaction: true
 		}
 	});
 }
