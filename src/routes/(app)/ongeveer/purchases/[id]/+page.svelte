@@ -17,16 +17,27 @@
 				<p>Omschrijving:</p>
 				<p>Betalingstermijn:</p>
 				<p>Boekstuknummer:</p>
-				<p>Ingeboekt: door:</p>
+				<p>Ingeboekt door:</p>
 				<p>Datum:</p>
 			</div>
 			<div>
 				<p>{data.purchase.ref ?? '-'}</p>
 				<p>{data.purchase.description ?? '-'}</p>
-				<p>{data.purchase.id}</p>
 				<p>{data.purchase.termsOfPayment} dagen</p>
+				<p>{data.purchase.id}</p>
 				<p>{data.purchase.Treasurer?.firstName ?? '-'}</p>
 				<p>{data.purchase.date ? formatDateHumanReadable(data.purchase.date) : '-'}</p>
+			</div>
+		</div>
+	</div>
+	<div>
+		<h3>Declaratie</h3>
+		<div class="info">
+			<div>
+				<p>Titel:</p>
+			</div>
+			<div>
+				<p>huts</p>
 			</div>
 		</div>
 	</div>
@@ -60,7 +71,9 @@
 			</tr>
 		{/each}
 		<tr>
-			<td /><td /><td /><td><i>Totaal</i></td><td>{formatPrice(data.purchase.total)}</td>
+			<td colspan="3" />
+			<td><i>Totaal</i></td>
+			<td>{formatPrice(data.purchase.total)}</td>
 		</tr>
 	</tbody>
 </table>
@@ -76,8 +89,8 @@
 
 		.info {
 			display: grid;
-			grid-template-columns: 1fr 1fr;
 			width: fit-content;
+			gap: 1rem;
 		}
 	}
 

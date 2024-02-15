@@ -1,8 +1,9 @@
 import db from '$lib/server/db';
 import { error, redirect } from '@sveltejs/kit';
+import Decimal from 'decimal.js';
 
 export const getJournal = async (id: number) => {
-	if (isNaN(id)) throw error(400);
+	if (Number.isNaN(id)) throw error(400);
 
 	const journal = await db.journal.findUnique({
 		where: { id },
@@ -10,8 +11,7 @@ export const getJournal = async (id: number) => {
 			Rows: true,
 			TransactionMatchRow: true,
 			relation: {
-				select: {
-					name: true,
+				include: {
 					FinancialPersonDataOther: true,
 					FinancialPersonDataUser: {
 						include: {
@@ -30,8 +30,17 @@ export const getJournal = async (id: number) => {
 	});
 
 	if (!journal) throw error(404);
-	if (!journal.date) throw redirect(302, `/ongeveer/sales/create?id=${id}`);
+
+	const total = journal.Rows.reduce(
+		(acc, row) => acc.add(row.price.mul(row.amount)),
+		new Decimal(0)
+	);
+	const paid = journal.TransactionMatchRow.reduce(
+		(acc, row) => acc.add(row.amount),
+		new Decimal(0)
+	);
+	const toPay = total.sub(paid).toNumber();
 
 	journal.Rows.map((r) => ((r.price as unknown as number) = r.price.toNumber()));
-	return journal;
+	return { journal, total: total.toNumber(), paid: paid.toNumber(), toPay };
 };

@@ -6,7 +6,6 @@
 	export let data: PageData;
 
 	onMount(() => {
-		console.log('onMount');
 		window.document.close();
 		window.focus();
 		window.print();

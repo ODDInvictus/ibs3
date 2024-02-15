@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Pagination from '$lib/components/Pagination.svelte';
 	import Title from '$lib/components/title.svelte';
 	import { toDateString } from '$lib/dateUtils';
 	import type { PageData } from './$types';
@@ -16,7 +17,8 @@
 <h2>Facturen</h2>
 <table>
 	<thead>
-		<th>ID</th>
+		<th>Boekstuknummer</th>
+		<th>Type</th>
 		<th>Referentie</th>
 		<th>Bedrag</th>
 		<th>Relatie</th>
@@ -24,48 +26,25 @@
 		<th>Status</th>
 	</thead>
 	<tbody>
-		{#each data.invoices as invoice}
+		{#each data.journals as { id, ref, total, relationId, date, paid, type, relation }}
 			<tr>
-				<td><a href="/ongeveer/purchases/{invoice.id}">{invoice.id}</a></td>
-				<td>{invoice.ref ?? ''}</td>
-				<td>€ {invoice.total}</td>
-				<td
-					><a href="/ongeveer/relations/{invoice.relationId}"
-						>{invoice.relationId} - {invoice.relation}</a
-					></td
-				>
-				<td>{invoice.date ? toDateString(new Date(invoice.date)) : ''}</td>
-				<!-- TODO get status -->
-				<td>Open</td>
-			</tr>
-		{/each}
-		<h2 class="mt-1">Declaraties</h2>
-		{#each data.declarations as declaration}
-			<tr>
-				<td><a href="/ongeveer/purchases/create?id={declaration.id}">{declaration.id}</a></td>
-				<td>{declaration.ref ?? ''}</td>
-				<td>€ {declaration.total}</td>
-				<td>
-					<a href="/ongeveer/relations/{declaration.relationId}">
-						{declaration.relationId} - {declaration.relation}
-					</a>
-				</td>
-				<td>{declaration.date ? toDateString(new Date(declaration.date)) : ''}</td>
-				<!-- TODO get status -->
-				<td>Open</td>
+				<td><a href="/ongeveer/purchases/{id}">{id}</a></td>
+				<td>{type.toLowerCase()}</td>
+				<td>{ref ?? ''}</td>
+				<td>€ {total}</td>
+				<td><a href="/ongeveer/relations/{relationId}">{relationId} - {relation.name}</a></td>
+				<td>{date ? toDateString(new Date(date)) : ''}</td>
+				<td>{Number(paid) >= Number(total) ? 'Betaald' : 'Open'}</td>
 			</tr>
 		{/each}
 	</tbody>
 </table>
+<Pagination p={data.p} size={data.size} url="/ongeveer/purchases" />
 
-<style>
+<style lang="scss">
 	.links {
 		padding: 1rem 0;
 		display: flex;
 		gap: 1rem;
-	}
-
-	.mt-1 {
-		margin-top: 1rem;
 	}
 </style>

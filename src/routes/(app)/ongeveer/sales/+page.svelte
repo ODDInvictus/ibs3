@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import Title from '$lib/components/title.svelte';
+	import { formatPrice } from '$lib/textUtils';
+	import Pagination from '$lib/components/Pagination.svelte';
 
 	export let data: PageData;
 </script>
@@ -13,50 +15,41 @@
 	<a href="/ongeveer/tallysheet">Streeplijst overzicht</a>
 </div>
 
-<main>
-	<table>
-		<thead>
-			<th>Factuur</th>
-			<th>Relatie</th>
-			<th>Totaal</th>
-			<th>Status</th>
-		</thead>
-		<tbody>
-			{#each data.invoices as invoice}
-				<tr>
-					<td>
-						<a href="/ongeveer/sales/{invoice.id}">
-							{invoice.id} - {invoice.ref}
-						</a>
-					</td>
-					<td>
-						<a href="/ongeveer/relations/{invoice.relationId}">
-							{invoice.relationId} - {invoice.relation}
-						</a>
-					</td>
-					<td>€ {invoice.total}</td>
-					<td>
-						<!-- TODO: Link naar banktransactie -->
-						{#if invoice.date}
-							Verstuurd
-						{:else}
-							<a href="/ongeveer/sales/{invoice.id}/process">Verwerk</a>
-						{/if}
-					</td>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
-</main>
+<table>
+	<thead>
+		<th>Factuur</th>
+		<th>Relatie</th>
+		<th>Totaal</th>
+		<th>Status</th>
+	</thead>
+	<tbody>
+		{#if data.invoices.length == 0}
+			<td colspan="4">Geen verkopen gevonden</td>
+		{/if}
+		{#each data.invoices as { id, ref, relationId, relation, total, date }}
+			<tr>
+				<td>
+					<a href="/ongeveer/sales/{id}">
+						{ref ? `${id} - ${ref}` : id}
+					</a>
+				</td>
+				<td>
+					<a href="/ongeveer/relations/{relationId}">
+						{relationId} - {relation.name}
+					</a>
+				</td>
+				<td>{formatPrice(total)}</td>
+				<td>
+					<!-- Betaald status -->
+					{#if date}
+						Open
+					{:else}
+						Concept
+					{/if}
+				</td>
+			</tr>
+		{/each}
+	</tbody>
+</table>
 
-<style lang="scss">
-	main {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-
-		a {
-			width: fit-content;
-		}
-	}
-</style>
+<Pagination p={data.p} size={data.size} url="/ongeveer/sales" />

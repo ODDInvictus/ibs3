@@ -9,7 +9,7 @@
 <Title title="Inactieve producten" />
 
 <div class="ongeveer-nav">
-	<a href="/ongeveer/products">Terug</a>
+	<a href="/ongeveer/products">Actieve producten</a>
 </div>
 
 <ProductsTable products={data.products} />

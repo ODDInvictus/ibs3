@@ -7,6 +7,10 @@
 
 <Title title="Inactieve relaties" />
 
+<div class="ongeveer-nav">
+	<a href="/ongeveer/relations">Actieve relaties</a>
+</div>
+
 <table>
 	<thead>
 		<th>ID</th>
@@ -14,20 +18,17 @@
 		<th>Omschrijving</th>
 	</thead>
 	<tbody>
-		{#if data.relations}
-			{#each data.relations as relation}
-				<tr>
-					<td><a href="/ongeveer/relations/{relation.id}">{relation.id}</a></td>
-					<td>{relation.name}</td>
-					<td>{relation.FinancialPersonDataOther?.description}</td>
-				</tr>
-			{/each}
-		{:else}
+		{#if data.relations.length === 0}
 			<tr>
 				<td colspan="3">Geen inactieve relaties gevonden</td>
 			</tr>
 		{/if}
+		{#each data.relations as relation}
+			<tr>
+				<td><a href="/ongeveer/relations/{relation.id}">{relation.id}</a></td>
+				<td>{relation.name}</td>
+				<td>{relation.FinancialPersonDataOther?.description}</td>
+			</tr>
+		{/each}
 	</tbody>
 </table>
-
-<a href="/ongeveer/relations">Actieve relaties</a>

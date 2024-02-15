@@ -9,14 +9,11 @@
 
 <div id="root">
 	<div id="sales">
-		<Title
-			title="Laatste {data.p * data.size + 1}-{(data.p + 1) * data.size} saldo transacties"
-			shortTitle="Transacties"
-		/>
+		<Title title="Saldo transacties" shortTitle="Transacties" />
 
-		<div class="buttons">
-			<a href="/ongeveer/saldo/transactions/create" class="button">Transactie maken</a>
-			<a href="/ongeveer/saldo" class="button">Saldo overzicht</a>
+		<div class="ongeveer-nav">
+			<a href="/ongeveer/saldo/transactions/create">Transactie maken</a>
+			<a href="/ongeveer/saldo">Saldo overzicht</a>
 		</div>
 
 		{#if data.transactions.length == 0}
@@ -59,13 +56,5 @@
 <style lang="scss">
 	.not-found {
 		text-align: center;
-	}
-
-	.buttons {
-		padding: 2rem 1rem;
-
-		a {
-			margin-right: 1rem;
-		}
 	}
 </style>

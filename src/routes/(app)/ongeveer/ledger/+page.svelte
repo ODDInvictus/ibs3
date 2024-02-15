@@ -7,7 +7,7 @@
 	export let data: PageData;
 </script>
 
-<Title title="Ledgers" />
+<Title title="Grootboekrekening" />
 <LedgersTable ledgers={data.ledgers} />
 <br />
 <a href="/ongeveer/ledger/inactive">Inactieve grootboekrekeningen</a>

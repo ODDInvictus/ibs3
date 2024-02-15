@@ -7,7 +7,7 @@ import { formatFileSize } from '$lib/utils';
 
 export const load = (async ({ params }) => {
 	const purchase = await db.journal.findUnique({
-		where: { id: Number(params.id), type: 'PURCHASE' },
+		where: { id: Number(params.id), type: { in: ['PURCHASE', 'DECLARATION'] } },
 		include: {
 			Rows: {
 				include: {

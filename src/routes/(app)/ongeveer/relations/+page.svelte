@@ -8,9 +8,14 @@
 
 <Title title="Relaties" />
 
+<div class="ongeveer-nav">
+	<a href="/ongeveer/relations/create">Nieuwe relatie</a>
+	<a href="/ongeveer/relations/inactive">Inactieve relaties</a>
+</div>
+
 <table>
 	<thead>
-		<th>ID</th>
+		<th>Klantnummer</th>
 		<th>Naam</th>
 		<th>Omschrijving</th>
 	</thead>
@@ -28,5 +33,3 @@
 		</tr>
 	</tbody>
 </table>
-
-<a href="/ongeveer/relations/inactive">Inactieve relaties</a>

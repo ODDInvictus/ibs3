@@ -1,9 +1,38 @@
 <script lang="ts">
 	import { formatDateHumanReadable } from '$lib/dateUtils';
 	import { PUBLIC_IBAN as IBAN } from '$env/static/public';
-	import type { getJournal } from './getJournal';
+	import type Decimal from 'decimal.js';
 
-	export let invoice: Awaited<ReturnType<typeof getJournal>>;
+	export let invoice: {
+		id: number;
+		relation: {
+			id: number;
+			name: string;
+			FinancialPersonDataOther?: {
+				address?: string | null;
+				postalCode?: string | null;
+				city?: string | null;
+			} | null;
+			FinancialPersonDataUser?: {
+				user: {
+					personalEmail?: string | null;
+				};
+			} | null;
+		};
+		tav?: string | null;
+		date?: Date | null;
+		termsOfPayment: number;
+		description?: string | null;
+		Rows: {
+			description: string;
+			amount: number;
+			price: number | Decimal;
+		}[];
+		Treasurer?: {
+			firstName: string;
+			lastName: string;
+		} | null;
+	};
 </script>
 
 <div id="invoice">
@@ -123,6 +152,8 @@
 		height: 297mm;
 		box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 20px 0px;
 		position: relative;
+		background-color: white;
+		color: black;
 	}
 	.topbar {
 		position: absolute;

@@ -1,25 +1,25 @@
 import type { PageServerLoad } from './$types';
 import { getJournal } from './getJournal';
 import { editRefForm } from './editRef';
-import { redirect } from '@sveltejs/kit';
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
 
-	const invoice = await getJournal(id);
-
-	if (!invoice.date) throw redirect(302, `/financieel/sales/create?id=${id}`);
+	const { journal, paid, toPay, total } = await getJournal(id);
 
 	await editRefForm.transform({
 		values: {
-			ref: invoice.ref ?? '',
-			id: invoice.id.toString()
+			ref: journal.ref ?? '',
+			id: journal.id.toString()
 		}
 	});
 
 	return {
-		invoice: JSON.parse(JSON.stringify(invoice)) as typeof invoice,
-		form: editRefForm.attributes
+		invoice: JSON.parse(JSON.stringify(journal)) as typeof journal,
+		form: editRefForm.attributes,
+		paid,
+		toPay,
+		total
 	};
 }) satisfies PageServerLoad;
 

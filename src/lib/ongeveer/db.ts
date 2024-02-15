@@ -1,23 +1,66 @@
 import prisma from '$lib/server/db';
 import db from '$lib/server/db';
-import type { Journal, JournalType } from '@prisma/client';
+import type { JournalType } from '@prisma/client';
 import Decimal from 'decimal.js';
 
-type JournalResponse = Journal & {
-	total: string;
-	relation: string;
-};
+/**
+ * Retrieves journals from the database based on the specified type.
+ * If no type is provided, all journals are returned.
+ * @param type - The type of journals to retrieve. Can be a single type or an array of types.
+ * @returns An array of journals with additional calculated properties for total and paid amounts.
+ */
+export const getJournals = async ({
+	type,
+	pagination
+}: {
+	type?: JournalType | JournalType[];
+	pagination?: { p: number; size: number };
+}) => {
+	const journals = await db.journal.findMany({
+		where: {
+			type: type ? (Array.isArray(type) ? { in: type } : type) : undefined
+		},
+		include: {
+			Rows: {
+				select: {
+					amount: true,
+					price: true
+				}
+			},
+			relation: {
+				select: {
+					name: true
+				}
+			},
+			TransactionMatchRow: {
+				select: {
+					amount: true
+				}
+			}
+		},
+		orderBy: { date: { sort: 'desc', nulls: 'first' } },
+		take: pagination?.size,
+		skip: pagination ? pagination.p * pagination.size : undefined
+	});
 
-export const getJournals = async (type: JournalType) => {
-	const journals = await db.$queryRaw`
-  SELECT i.*, SUM(r.amount * r.price) AS total, p.name AS relation
-  FROM Journal AS i, JournalRow AS r, FinancialPerson as p
-  WHERE i.type = ${type}
-  AND r.journalId = i.id
-  AND i.relationId = p.id
-  GROUP BY i.id
-`;
-	return JSON.parse(JSON.stringify(journals)) as JournalResponse[];
+	const journalsWithTotal = journals.map((journal) => {
+		const total = journal.Rows.reduce(
+			(acc, row) => acc.add(row.price.mul(row.amount)),
+			new Decimal(0)
+		);
+		const paid = journal.TransactionMatchRow.reduce(
+			(acc, row) => acc.add(row.amount),
+			new Decimal(0)
+		);
+
+		return {
+			...journal,
+			total: total.toNumber(),
+			paid: paid.toNumber()
+		};
+	});
+
+	return JSON.parse(JSON.stringify(journalsWithTotal)) as typeof journalsWithTotal;
 };
 
 export const getRelations = async () => {
@@ -89,9 +132,9 @@ export async function applyTransaction({
 						}
 					}
 				});
-			} else if (fp.type === 'COMMITTEE') {
+			} else {
 				// TODO Add support for committee
-				throw new Error('Committee not supported yet');
+				throw new Error('Committee / others not supported yet');
 			}
 		}
 	});

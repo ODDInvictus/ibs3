@@ -11,6 +11,7 @@
 <button
 	class="btn-danger"
 	type="button"
+	{...$$restProps}
 	on:click={async () => {
 		if (confirmMessage && !confirm(confirmMessage)) return;
 		const res = await fetch(url, { method: 'DELETE' });

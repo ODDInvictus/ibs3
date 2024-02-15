@@ -12,7 +12,14 @@ export const GET: RequestHandler = async ({ params }) => {
 	});
 	if (!journal) throw error(404);
 
-	if (journal.type === 'SALE') throw redirect(308, `/ongeveer/sales/${id}`);
-	if (journal.type === 'PURCHASE') throw redirect(308, `/ongeveer/purchases/${id}`);
-	throw error(501);
+	if (journal.type === 'SALE') {
+		throw redirect(308, `/ongeveer/sales/${id}`);
+	}
+	if (journal.type === 'PURCHASE' || journal.type === 'DECLARATION') {
+		throw redirect(308, `/ongeveer/purchases/${id}`);
+	}
+
+	const errorMessage = `Ongeveer weet niet waar hij je heen moet verwijzen, omdat het type van de journal (${journal.type}) met ID ${id} onbekend is.`;
+	console.error(errorMessage);
+	throw error(500, errorMessage);
 };

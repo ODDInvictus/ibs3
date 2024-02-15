@@ -2,7 +2,7 @@ import type Decimal from 'decimal.js';
 import { stripMarkdown } from './utils';
 
 export function formatPrice(price: number | Decimal): string {
-	return price.toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' });
+	return Number(price).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' });
 }
 
 export function getSlug(id: number, title: string): string {
