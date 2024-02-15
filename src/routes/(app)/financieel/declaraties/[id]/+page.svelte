@@ -1,22 +1,11 @@
 <script lang="ts">
 	import { env } from '$env/dynamic/public';
-	import Check from '~icons/tabler/square-rounded-check';
-	import UserCircle from '~icons/tabler/user-circle';
-	import CurrencyEuro from '~icons/tabler/coin-euro';
-	import QuestionMarkCircle from '~icons/tabler/help';
-	import CalendarDays from '~icons/tabler/calendar';
-	import Banknotes from '~icons/tabler/cash-banknote';
 	import type { PageData } from './$types';
 	import { formatDateHumanReadable } from '$lib/dateUtils';
 	import Title from '$lib/components/title.svelte';
 	import { formatMoney } from '$lib/utils';
 
 	export let data: PageData;
-
-	function formatPrice(price: number): string {
-		const p = price.toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' }).split('€')[1];
-		return p.substring(1);
-	}
 </script>
 
 <Title title="Declaratie #{data.declaration.id}" shortTitle="Declaratie" />
@@ -24,6 +13,7 @@
 <div id="root">
 	<div id="left">
 		<table>
+			<h2>Info</h2>
 			<tr>
 				<th>Declarant</th>
 				<td>{data.user.firstName}</td>
@@ -80,8 +70,8 @@
 	}
 
 	#root {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
+		display: flex;
+		justify-content: space-around;
 	}
 
 	#left {
@@ -95,18 +85,14 @@
 		table {
 			width: fit-content;
 
-			// th {
-			// 	display: flex;
-			// 	align-items: center;
-			// }
+			th,
+			td {
+				text-align: left;
+			}
 		}
 	}
 
 	@media (max-width: 600px) {
-		#root {
-			grid-template-columns: 1fr;
-		}
-
 		.receipts {
 			margin-top: 1rem;
 		}

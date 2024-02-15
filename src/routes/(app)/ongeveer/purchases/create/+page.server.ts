@@ -123,7 +123,7 @@ export const actions: Actions = {
 			if (status === 'PAID')
 				throw error(409, {
 					message:
-						'Deze factuur is al gematched, unmatch de banktransactie voordat je de aankoop kan wijzigen'
+						'Deze factuur is al gematched, unmatch de transactie voordat je de aankoop kan wijzigen'
 				});
 		}
 

@@ -144,7 +144,6 @@
 							type="number"
 							class:has-error={$errors.rows?.[i]?.amount}
 							bind:value={$form.rows[i].amount}
-							min="0"
 							step="1"
 						/>
 					</td>
@@ -153,7 +152,6 @@
 							type="number"
 							class:has-error={$errors.rows?.[i]?.price}
 							bind:value={$form.rows[i].price}
-							min="0"
 							step="0.01"
 						/>
 					</td>

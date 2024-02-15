@@ -71,6 +71,8 @@ export const actions = {
 					}
 				});
 
+				if (!receipt) return;
+
 				const filename = `receipt-${declaration.id}-${receipt.name}`;
 
 				await tx.journal.update({

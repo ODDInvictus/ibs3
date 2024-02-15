@@ -13,8 +13,8 @@ export default z.object({
 			amount: z.number().int().min(0, 'Aantal mag niet negatief zijn'),
 			price: z
 				.number()
-				.min(0, 'Prijs mag niet negatief zijn')
-				.step(0.01, 'Prijs moet een geldig bedrag zijn'),
+				.step(0.01, 'Prijs moet een geldig bedrag zijn')
+				.refine((x) => x !== 0, 'Prijs moet een geldig bedrag zijn'),
 			description: z.string(),
 			ledger: z.number().int().min(1, 'Verplicht')
 		})

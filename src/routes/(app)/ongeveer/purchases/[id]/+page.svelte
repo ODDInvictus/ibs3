@@ -11,6 +11,7 @@
 <div class="top">
 	<div>
 		<h3>Gegevens</h3>
+		<!-- TODO use table -->
 		<div class="info">
 			<div>
 				<p>Referentie:</p>
@@ -91,6 +92,7 @@
 			display: grid;
 			width: fit-content;
 			gap: 1rem;
+			grid-template-columns: 1fr 1fr;
 		}
 	}
 

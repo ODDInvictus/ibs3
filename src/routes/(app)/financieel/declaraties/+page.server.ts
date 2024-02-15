@@ -1,7 +1,10 @@
 import db from '$lib/server/db';
+import { pagination } from '$lib/utils.js';
 import Decimal from 'decimal.js';
 
-export const load = async ({ locals }) => {
+export const load = async ({ locals, url }) => {
+	const { p, size } = pagination(url);
+
 	const declarations = await db.declarationData.findMany({
 		where: {
 			DeclaratedBy: {
@@ -28,7 +31,12 @@ export const load = async ({ locals }) => {
 					}
 				}
 			}
-		}
+		},
+		orderBy: {
+			createdAt: 'desc'
+		},
+		take: size,
+		skip: p * size
 	});
 
 	const data = declarations.map(
@@ -46,5 +54,5 @@ export const load = async ({ locals }) => {
 		})
 	);
 
-	return { declarations: data };
+	return { declarations: data, p, size };
 };

@@ -92,7 +92,7 @@ export const getJournalStatus = async (id: number) => {
 		new Decimal(0)
 	);
 
-	return total.lessThanOrEqualTo(paid) ? 'PAID' : 'UNPAID';
+	return total.eq(paid) ? 'PAID' : 'UNPAID';
 };
 
 /**
@@ -141,7 +141,7 @@ export async function applyTransaction({
 }
 
 /*
- * Creates a saldo transaction in the database. The balance is automatically changes. ID's are user ID's, not financial person ID's
+ * Creates a saldo transaction in the database. The balance is automatically changes. ID's are financial person ID's
  */
 export async function createTransaction({
 	giver,

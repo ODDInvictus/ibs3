@@ -6,11 +6,7 @@
 	import Pagination from '$lib/components/Pagination.svelte';
 
 	export let data: PageData;
-
-	let innerWidth: number;
 </script>
-
-<svelte:window bind:innerWidth />
 
 <Title title="Consumpties" />
 
@@ -51,6 +47,6 @@
 
 <Pagination size={data.size} p={data.p} url="/financieel/consumpties" />
 
-{#if innerWidth < 600}
-	<a href="/financieel" class="button mobile">Terug</a>
-{/if}
+<div class="ongeveer-nav">
+	<a href="/financieel">Terug</a>
+</div>

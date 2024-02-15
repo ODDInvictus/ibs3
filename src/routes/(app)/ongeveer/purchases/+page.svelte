@@ -34,7 +34,7 @@
 				<td>€ {total}</td>
 				<td><a href="/ongeveer/relations/{relationId}">{relationId} - {relation.name}</a></td>
 				<td>{date ? toDateString(new Date(date)) : ''}</td>
-				<td>{Number(paid) >= Number(total) ? 'Betaald' : 'Open'}</td>
+				<td>{Number(paid) === Number(total) ? 'Betaald' : 'Open'}</td>
 			</tr>
 		{/each}
 	</tbody>
