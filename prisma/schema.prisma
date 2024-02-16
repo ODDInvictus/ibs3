@@ -90,6 +90,7 @@ model User {
   PhotoTaggedIn           PhotoPersonTag[]          @relation("taggedInPhoto")
   PhotoTaggedBy           PhotoPersonTag[]          @relation("photoTaggedBy")
   CommentsMade            Comment[]
+  AccessToken             AccessToken[]
 }
 
 model Account {
@@ -116,6 +117,17 @@ model Session {
   userId       Int
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AccessToken {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lastUsed  DateTime @default(now())
+
+  token    String   @id @default(cuid())
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int
+  isActive Boolean  @default(true)
 }
 
 model Committee {
