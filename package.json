@@ -7,6 +7,12 @@
 		"dev:frontend": "vite dev --host 0.0.0.0",
 		"dev:email-templates": "npx sass --watch ./emails/scss/style-test.sass ./build/css/style-test.css",
 		"dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+		"test": "npm run test:before && npm run test:db && dotenv -e .env.test vitest --ui && npm run test:after",
+		"test:before": "docker compose up -d && npm run sleep",
+		"test:after": "docker compose down",
+		"test:sh": "bash ./test.sh",
+		"test:db": "dotenv -e .env.test npx prisma migrate deploy && npx prisma generate && dotenv -e .env.test npx prisma db seed --preview-feature",
+		"sleep": "node -e \"setTimeout(() => process.exit(0), 5000)\"",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -17,6 +23,9 @@
 		"mailhog": "docker run --rm -it -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog",
 		"data-migration:attending": "ts-node-esm ./prisma/migrations/20231228173512_attending/data-migration.ts"
 	},
+	"prisma": {
+		"seed": "ts-node-esm --transpile-only prisma/seed.ts"
+	},
 	"devDependencies": {
 		"@floating-ui/core": "^1.4.1",
 		"@iconify/json": "^2.2.47",
@@ -24,6 +33,8 @@
 		"@sveltejs/adapter-auto": "^2.1.0",
 		"@sveltejs/adapter-node": "^1.3.1",
 		"@sveltejs/kit": "^1.27.0",
+		"@testing-library/jest-dom": "^6.4.2",
+		"@testing-library/svelte": "^4.1.0",
 		"@types/express": "^4.17.17",
 		"@types/markdown-it": "^12.2.3",
 		"@types/markdown-it-emoji": "^2.0.2",
@@ -35,12 +46,16 @@
 		"@typescript-eslint/eslint-plugin": "^6.2.0",
 		"@typescript-eslint/parser": "^6.2.0",
 		"@vite-pwa/sveltekit": "^0.2.5",
+		"@vitest/ui": "^1.2.2",
 		"classnames": "^2.3.2",
 		"concurrently": "^7.6.0",
+		"cross-env": "^7.0.3",
+		"dotenv-cli": "^7.3.0",
 		"eslint": "^8.45.0",
 		"eslint-config-prettier": "^8.8.0",
 		"eslint-plugin-svelte": "^2.32.4",
 		"ioredis": "^5.3.2",
+		"jsdom": "^24.0.0",
 		"nodemon": "^3.0.1",
 		"postcss": "^8.4.31",
 		"postcss-load-config": "^4.0.1",
@@ -56,7 +71,8 @@
 		"tslib": "^2.4.1",
 		"typescript": "^5.1.6",
 		"unplugin-icons": "^0.16.1",
-		"vite": "^4.4.12"
+		"vite": "^4.4.12",
+		"vitest": "^1.2.2"
 	},
 	"type": "module",
 	"dependencies": {
