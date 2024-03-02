@@ -9,9 +9,8 @@
 
 <Title title="Inkoop" />
 
-<div class="links">
-	<a href="/ongeveer/purchases/create?type=INVOICE" class="button">Factuur inboeken</a>
-	<a href="/ongeveer/purchases/create?type=DECLARATION" class="button">Declaratie inboeken</a>
+<div class="ongeveer-nav">
+	<a href="/ongeveer/purchases/create?type=INVOICE">Factuur inboeken</a>
 </div>
 
 <h2>Facturen</h2>
@@ -39,12 +38,5 @@
 		{/each}
 	</tbody>
 </table>
-<Pagination p={data.p} size={data.size} url="/ongeveer/purchases" />
 
-<style lang="scss">
-	.links {
-		padding: 1rem 0;
-		display: flex;
-		gap: 1rem;
-	}
-</style>
+<Pagination p={data.p} size={data.size} url="/ongeveer/purchases" />

@@ -1,14 +1,35 @@
 <script lang="ts">
+	import { superForm } from 'sveltekit-superforms/client';
 	import type { PageData } from './$types';
-	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
+	import { onError, onResult } from '$lib/superforms/error';
+	import { matchTransactionSchema } from './matchTransaction';
 	import Title from '$lib/components/title.svelte';
-	import Form from '$lib/form/form.svelte';
-	import { page } from '$app/stores';
+	import SuperField from '$lib/superforms/SuperField.svelte';
+	import SuperSelect from '$lib/superforms/SuperSelect.svelte';
+	import Plus from '~icons/tabler/plus';
+	import Trashcan from '~icons/tabler/trash';
+	import Submit from '$lib/superforms/Submit.svelte';
+	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
 
 	export let data: PageData;
+
+	const formProps = superForm(data.form, {
+		validators: matchTransactionSchema,
+		onError,
+		onResult,
+		dataType: 'json'
+	});
+
+	const { form, enhance, errors } = formProps;
+
+	const relations: [string | number, string][] = data.financialPersons.map((fp) => [
+		fp.id,
+		fp.name
+	]);
 </script>
 
-<Title title={data.bankTransaction.ref ?? `Banktransactie ${data.bankTransaction.id}`} />
+<Title title={$form.ref ?? `Banktransactie ${$form.id}`} />
+
 <div class="info">
 	<div>
 		<h3>Gegevens</h3>
@@ -64,12 +85,119 @@
 	{/if}
 </div>
 
-<Form {...$page.data.form} />
+<form method="post" class="superform" use:enhance>
+	<SuperField type="text" {formProps} field="ref">Referentie</SuperField>
+	<SuperSelect {formProps} field="relation" options={relations}>Relatie</SuperSelect>
+	<hr />
+	<table>
+		<thead>
+			<th>Omschrijving</th>
+			<th>Hoeveelheid</th>
+			<th>Boekstuk</th>
+			<th>Voeg toe aan saldo</th>
+			<th />
+		</thead>
+		<tbody>
+			{#each $form.rows as _, i}
+				<tr>
+					<td>
+						<input
+							type="text"
+							class:has-error={$errors.rows?.[i]?.description}
+							bind:value={$form.rows[i].description}
+						/>
+					</td>
+					<td>
+						<input
+							type="number"
+							step="0.01"
+							class:has-error={$errors.rows?.[i]?.amount}
+							bind:value={$form.rows[i].amount}
+						/>
+					</td>
+					<td>
+						<select class:has-error={$errors.rows?.[i]?.journal} bind:value={$form.rows[i].journal}>
+							<option value="" selected />
+							{#each data.journals ?? [] as journal}
+								<option value={journal.id}>
+									{journal.id}{journal.ref ? ` - ${journal.ref}` : ''}
+								</option>
+							{/each}
+						</select>
+					</td>
+					<td>
+						<input
+							type="checkbox"
+							bind:checked={$form.rows[i].saldo}
+							class:has-error={$errors.rows?.[i]?.saldo}
+						/>
+					</td>
+					<td>
+						{#if i === $form.rows.length - 1}
+							<button
+								type="button"
+								on:click={() =>
+									($form.rows = [
+										...$form.rows,
+										{
+											amount: NaN,
+											description: '',
+											journal: undefined,
+											saldo: false
+										}
+									])}
+							>
+								<Plus />
+							</button>
+						{/if}
+						<button
+							type="button"
+							on:click={() => {
+								const filtered = [...$form.rows];
+								filtered.splice(i, 1);
+								$form.rows = filtered;
+							}}><Trashcan /></button
+						>
+					</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
 
-<style style="scss">
+	{#if $form.rows.length === 0}
+		<button
+			class="add-row"
+			type="button"
+			on:click={() => {
+				$form.rows = [
+					{
+						amount: NaN,
+						description: '',
+						journal: undefined,
+						saldo: false
+					}
+				];
+			}}
+		>
+			<Plus />
+		</button>
+	{/if}
+
+	<Submit {formProps}>Opslaan</Submit>
+</form>
+
+<style>
+	form table {
+		margin-bottom: 1rem;
+	}
+
 	.info {
 		display: flex;
 		padding: 1rem;
 		gap: 2rem;
+	}
+
+	.add-row {
+		margin-bottom: 1rem;
 	}
 </style>

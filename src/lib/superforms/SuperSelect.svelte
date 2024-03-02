@@ -13,7 +13,7 @@
 
 	export let formProps: SuperForm<ZodValidation<T>, unknown>;
 	export let field: FormPathLeaves<z.infer<T>>;
-	export let options: [string | number, string][] = [];
+	export let options: [string | number | undefined, string][] = [];
 
 	const { value, errors, constraints } = formFieldProxy(formProps, field);
 	const name = field.toString();
@@ -22,6 +22,9 @@
 <div class="input-group">
 	<Label {name} {constraints}><slot /></Label>
 	<select {name} bind:value={$value} class:has-error={$errors}>
+		{#if !$constraints?.required}
+			<option value={undefined} selected>-</option>
+		{/if}
 		{#each options as [value, option]}
 			<option {value}>{option}</option>
 		{/each}

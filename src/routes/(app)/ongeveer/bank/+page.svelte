@@ -5,12 +5,17 @@
 	import Check from '~icons/tabler/check';
 	import Dot from '~icons/tabler/point-filled';
 	import Cross from '~icons/tabler/x';
+	import Pagination from '$lib/components/Pagination.svelte';
 
 	export let data: PageData;
 </script>
 
-<Title title="Bank transactions" />
-<a href="/ongeveer/bank/upload" class="button">Upload bank transactions</a>
+<Title title="Banktransacties" />
+
+<div class="ongeveer-nav">
+	<a href="/ongeveer/bank/upload">Upload banktransacties</a>
+</div>
+
 <table>
 	<thead>
 		<tr>
@@ -22,6 +27,11 @@
 		</tr>
 	</thead>
 	<tbody>
+		{#if data.bankTransactions.length === 0}
+			<tr>
+				<td colspan="5">Geen banktransacties gevonden</td>
+			</tr>
+		{/if}
 		{#each data.bankTransactions as transaction}
 			<tr>
 				<td><a href="/ongeveer/bank/{transaction.id}">{transaction.id}</a></td>
@@ -46,8 +56,4 @@
 	</tbody>
 </table>
 
-<style>
-	table {
-		margin-top: 2rem;
-	}
-</style>
+<Pagination p={data.p} size={data.size} url="/ongeveer/bank" />

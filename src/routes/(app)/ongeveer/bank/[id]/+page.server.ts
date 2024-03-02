@@ -1,16 +1,23 @@
-import { error } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
+import { matchTransactionSchema } from './matchTransaction';
+import { redirect } from 'sveltekit-flash-message/server';
+import type { Actions } from './$types';
+import { authorization } from '$lib/ongeveer/utils';
+import { error, fail } from '@sveltejs/kit';
 import db from '$lib/server/db';
-import { matchForm } from './matchTransaction';
+import Decimal from 'decimal.js';
+import { getJournal } from '../../sales/[id]/getJournal';
+import { createTransaction } from '$lib/ongeveer/db';
+import { FINANCIAL_PERSON_IDS } from '$lib/constants';
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
-	if (Number.isNaN(id)) throw error(400, 'Invalid id');
+	if (!id) throw error(400);
 
 	const bankTransaction = await db.bankTransaction.findUnique({
 		where: { id },
 		include: {
-			Relation: true,
 			Transaction: {
 				include: {
 					TransactionMatchRow: {
@@ -20,29 +27,175 @@ export const load = (async ({ params }) => {
 						}
 					}
 				}
+			},
+			Relation: true
+		}
+	});
+
+	if (!bankTransaction) throw error(404);
+
+	const data = {
+		ref: bankTransaction.ref ?? undefined,
+		id: bankTransaction.id,
+		relation: bankTransaction.relationId ?? undefined,
+		rows: bankTransaction.Transaction.TransactionMatchRow.map((r) => {
+			return {
+				description: r.description ?? undefined,
+				amount: r.amount.toNumber(),
+				journal: r.journalId ?? undefined,
+				saldo: r.saldoTransactionId ? true : false
+			};
+		})
+	};
+
+	const form = await superValidate(data, matchTransactionSchema);
+
+	const financialPersons = await db.financialPerson.findMany({
+		select: {
+			id: true,
+			name: true
+		},
+		where: {
+			isActive: true,
+			// TODO: Add support for groups
+			type: {
+				in: ['USER', 'OTHER']
 			}
 		}
 	});
-	if (!bankTransaction) throw error(404, 'Bank transaction not found');
 
-	await matchForm.transform({
-		values: {
-			id: bankTransaction.id.toString(),
-			relation: bankTransaction.relationId?.toString(),
-			ref: bankTransaction.ref ?? '',
-			rows: (bankTransaction.Transaction.TransactionMatchRow ?? []).map((row) => ({
-				description: row.description ?? '',
-				amount: row.amount.toNumber(),
-				journal: row.journalId?.toString() ?? '',
-				saldo: !!row.SaldoTransaction
-			}))
-		}
-	});
+	const journals = await db.journal.findMany();
 
 	return {
-		bankTransaction: JSON.parse(JSON.stringify(bankTransaction)) as typeof bankTransaction,
-		form: matchForm.attributes
+		form,
+		financialPersons,
+		journals,
+		bankTransaction: JSON.parse(JSON.stringify(bankTransaction)) as typeof bankTransaction
 	};
 }) satisfies PageServerLoad;
 
-export const actions = matchForm.actions;
+export const actions = {
+	default: async (event) => {
+		const { request, locals } = event;
+		let warning: string | null = null;
+
+		/* Validations **/
+
+		if (!authorization(locals.roles)) return fail(403);
+		const form = await superValidate(request, matchTransactionSchema);
+		if (!form.valid) return fail(400, { form });
+
+		// Query bankTransaction from database
+		const bankTransaction = await db.bankTransaction.findUnique({
+			where: { id: form.data.id },
+			include: {
+				Transaction: {
+					include: {
+						TransactionMatchRow: true
+					}
+				}
+			}
+		});
+		if (!bankTransaction) return fail(404, { form });
+
+		// Check if there was already a saldo transaction created, if so throw an error
+		if (bankTransaction.Transaction.TransactionMatchRow.some((r) => r.saldoTransactionId)) {
+			return fail(400, {
+				...form,
+				message:
+					'Je kan deze banktransactie niet meer veranderen, omdat er bij deze transactie saldo is toegevoegd of afgehaald. Maak een handmatige transactie om dit op te lossen.'
+			});
+		}
+
+		// Check the matched amount
+		const matchedAmount = form.data.rows.reduce((acc, row) => {
+			return acc.add(row.amount);
+		}, new Decimal(0));
+
+		if (matchedAmount.greaterThan(bankTransaction.amount.abs())) {
+			return fail(400, {
+				message: 'Het gematchte bedrag is groter dan de banktransactie'
+			});
+		} else if (matchedAmount.lessThan(bankTransaction.amount.abs())) {
+			warning = 'Het gematchte bedrag is kleiner dan de banktransactie';
+		}
+
+		// Check if is matched more to a journal then allowed
+		for (const [i, row] of form.data.rows.entries()) {
+			if (!row.journal) continue;
+			const { journal, toPay } = await getJournal(row.journal);
+			if (!journal) return fail(404, form);
+			if (toPay < row.amount) {
+				return fail(400, {
+					form: {
+						...form,
+						errors: {
+							rows: {
+								[i]: {
+									journal: 'true'
+								}
+							}
+						}
+					},
+					message: `Je kan niet meer matchen dan openstaat op boekstuk ${journal.id} - ${journal.ref}`
+				});
+			}
+		}
+
+		/* Validations passed **/
+
+		// Reset mathch rows
+		await db.transactionMatchRow.deleteMany({
+			where: { transactionId: bankTransaction.transactionId }
+		});
+
+		// Create and match saldotransactions
+		for (const row of form.data.rows) {
+			if (!row.saldo) continue;
+			if (!form.data.relation) {
+				return fail(400, { ...form, message: 'Relatie is verplicht als je saldo wilt toevoegen' });
+			}
+			const saldoTransaction = await createTransaction({
+				giver: FINANCIAL_PERSON_IDS.INVICTUS,
+				receiver: form.data.relation,
+				amount: row.amount,
+				description: `Transactie vanuit banktransactie #${bankTransaction.id}: ${row.description}`
+			});
+			await db.transactionMatchRow.create({
+				data: {
+					transactionId: bankTransaction.transactionId,
+					saldoTransactionId: saldoTransaction.id,
+					amount: row.amount
+				}
+			});
+		}
+
+		// Match journals
+		await Promise.all(
+			form.data.rows.map((row) => {
+				if (!row.journal) return Promise.resolve(null);
+				return db.transactionMatchRow.create({
+					data: {
+						transactionId: bankTransaction.transactionId,
+						journalId: row.journal,
+						amount: row.amount
+					}
+				});
+			})
+		);
+
+		const flashMessage = warning
+			? ({
+					message: warning,
+					type: 'warning',
+					title: 'Waarschuwing'
+			  } as const)
+			: ({
+					message: 'Transactie gematcht',
+					type: 'success',
+					title: 'Succes'
+			  } as const);
+
+		throw redirect('/ongeveer/bank', flashMessage, event);
+	}
+} satisfies Actions;

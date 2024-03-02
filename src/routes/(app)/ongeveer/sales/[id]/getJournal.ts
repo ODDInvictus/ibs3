@@ -1,5 +1,5 @@
 import db from '$lib/server/db';
-import { error, redirect } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import Decimal from 'decimal.js';
 
 export const getJournal = async (id: number) => {

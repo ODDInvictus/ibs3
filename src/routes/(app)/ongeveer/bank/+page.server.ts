@@ -1,11 +1,16 @@
 import db from '$lib/server/db';
 import Decimal from 'decimal.js';
 import type { PageServerLoad } from './$types';
+import { pagination } from '$lib/utils';
 
-export const load = (async () => {
+export const load = (async ({ url }) => {
+	const { p, size } = pagination(url);
+
 	const bankTransactions = await db.bankTransaction.findMany({
 		orderBy: {
-			completedDate: 'desc'
+			Transaction: {
+				createdAt: 'desc'
+			}
 		},
 		select: {
 			completedDate: true,
@@ -18,7 +23,9 @@ export const load = (async () => {
 					TransactionMatchRow: true
 				}
 			}
-		}
+		},
+		take: size,
+		skip: p * size
 	});
 
 	enum statuses {
@@ -49,6 +56,8 @@ export const load = (async () => {
 	});
 
 	return {
-		bankTransactions: serialized
+		bankTransactions: serialized,
+		p,
+		size
 	};
 }) satisfies PageServerLoad;
