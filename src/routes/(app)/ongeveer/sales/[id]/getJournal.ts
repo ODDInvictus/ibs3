@@ -14,7 +14,11 @@ export const getJournal = async (id: number) => {
 					Ledger: true
 				}
 			},
-			TransactionMatchRow: true,
+			TransactionMatchRow: {
+				include: {
+					Transaction: true
+				}
+			},
 			relation: {
 				include: {
 					FinancialPersonDataOther: true,

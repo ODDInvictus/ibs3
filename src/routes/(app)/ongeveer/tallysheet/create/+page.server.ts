@@ -79,6 +79,7 @@ export const actions = {
 		const { locals, request } = event;
 		if (!authorization(locals.roles)) return fail(403);
 		const form = await superValidate(request, tallySheetSchema);
+		// TODO verwijder lege regels automagisch
 		if (!form.valid) return fail(400, { form });
 
 		const { grouped, productIds } = groupByPersonAndGetProducts(form.data.rows);

@@ -23,7 +23,12 @@ export const load = (async ({ params }) => {
 					firstName: true
 				}
 			},
-			Attachments: true
+			Attachments: true,
+			TransactionMatchRow: {
+				include: {
+					Transaction: true
+				}
+			}
 		}
 	});
 	if (!purchase) throw error(404, 'Aankoop niet gevonden');
@@ -38,20 +43,18 @@ export const load = (async ({ params }) => {
 			};
 		}) ?? [];
 
-	const serializedRows = purchase.Rows.map((row) => ({
+	const rows = purchase.Rows.map((row) => ({
 		...row,
 		total: row.price.mul(row.amount).toNumber(),
 		price: row.price.toNumber()
 	}));
 	return {
-		purchase: {
-			...purchase,
-			Rows: serializedRows,
-			total: purchase.Rows.reduce(
-				(acc, row) => acc.add(row.price.mul(row.amount)),
-				new Decimal(0)
-			).toNumber()
-		},
+		purchase: JSON.parse(JSON.stringify(purchase)) as typeof purchase,
+		rows,
+		total: purchase.Rows.reduce(
+			(acc, { price, amount }) => acc.add(price.mul(amount)),
+			new Decimal(0)
+		).toNumber(),
 		attachments
 	};
 }) satisfies PageServerLoad;

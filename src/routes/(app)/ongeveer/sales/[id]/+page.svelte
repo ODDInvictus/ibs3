@@ -114,7 +114,7 @@
 
 	<div class:bottom={data.invoice.date}>
 		<h2>Uitgesplitst</h2>
-		<table>
+		<table class="striped">
 			<thead>
 				<th>Omschrijving</th>
 				<th>Aantal</th>
@@ -138,6 +138,39 @@
 								-
 							{/if}
 						</td>
+					</tr>
+				{/each}
+				<tr>
+					<td><i>Totaal</i></td>
+					<td />
+					<td><i>{formatPrice(data.total)}</i></td>
+					<td colspan="2" />
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="bottom">
+		<h2>Gematchte transacties</h2>
+		<table class="striped">
+			<thead>
+				<th>Omschrijving</th>
+				<th>Transactie</th>
+				<th>Type</th>
+				<th>Bedrag</th>
+			</thead>
+			<tbody>
+				{#if data.invoice.TransactionMatchRow.length === 0}
+					<tr>
+						<td colspan="4">Nog niks gematcht</td>
+					</tr>
+				{/if}
+				{#each data.invoice.TransactionMatchRow as { amount, description, Transaction }}
+					<tr>
+						<td>{description}</td>
+						<td><a href="/ongeveer/transaction/{Transaction.id}">#{Transaction.id}</a></td>
+						<td>{Transaction.type === 'BANK' ? 'Bank' : 'Saldo'}</td>
+						<td>{formatPrice(amount)}</td>
 					</tr>
 				{/each}
 			</tbody>

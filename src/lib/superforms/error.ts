@@ -28,6 +28,7 @@ type onResult = (event: {
 }) => void;
 
 export const onResult = (({ result }) => {
+	console.log(result);
 	if (result.type == 'failure') {
 		toast({
 			title: `Error: ${result.status}`,

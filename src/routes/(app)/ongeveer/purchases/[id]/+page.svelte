@@ -8,6 +8,7 @@
 </script>
 
 <Title title="Aankoop" />
+
 <div class="top">
 	<div>
 		<h3>Gegevens</h3>
@@ -20,6 +21,7 @@
 				<p>Boekstuknummer:</p>
 				<p>Ingeboekt door:</p>
 				<p>Datum:</p>
+				<p>Type:</p>
 			</div>
 			<div>
 				<p>{data.purchase.ref ?? '-'}</p>
@@ -27,10 +29,12 @@
 				<p>{data.purchase.termsOfPayment} dagen</p>
 				<p>{data.purchase.id}</p>
 				<p>{data.purchase.Treasurer?.firstName ?? '-'}</p>
-				<p>{data.purchase.date ? formatDateHumanReadable(data.purchase.date) : '-'}</p>
+				<p>{data.purchase.date ? formatDateHumanReadable(new Date(data.purchase.date)) : '-'}</p>
+				<p>{data.purchase.type.toLocaleLowerCase()}</p>
 			</div>
 		</div>
 	</div>
+
 	<div>
 		<h3>Declaratie</h3>
 		<div class="info">
@@ -53,6 +57,8 @@
 		{/if}
 	</div>
 </div>
+
+<h2>Uitgesplitst</h2>
 <table class="striped">
 	<thead>
 		<th>Omschrijving</th>
@@ -62,7 +68,7 @@
 		<th>Totaal</th>
 	</thead>
 	<tbody>
-		{#each data.purchase.Rows as row}
+		{#each data.rows as row}
 			<tr>
 				<td>{row.description}</td>
 				<td><a href="/ongeveer/ledger/{row.ledgerId}">{row.ledgerId} - {row.Ledger.name}</a></td>
@@ -74,7 +80,7 @@
 		<tr>
 			<td colspan="3" />
 			<td><i>Totaal</i></td>
-			<td>{formatPrice(data.purchase.total)}</td>
+			<td>{formatPrice(data.total)}</td>
 		</tr>
 	</tbody>
 </table>
@@ -82,6 +88,31 @@
 <div class="actions">
 	<a class="button" href="/ongeveer/purchases/create?id={data.purchase.id}">Bewerken</a>
 </div>
+
+<h2>Gematchte transacties</h2>
+<table class="striped">
+	<thead>
+		<th>Omschrijving</th>
+		<th>Transactie</th>
+		<th>Type</th>
+		<th>Bedrag</th>
+	</thead>
+	<tbody>
+		{#if data.purchase.TransactionMatchRow.length === 0}
+			<tr>
+				<td colspan="4">Nog niks gematcht</td>
+			</tr>
+		{/if}
+		{#each data.purchase.TransactionMatchRow as { amount, description, Transaction }}
+			<tr>
+				<td>{description}</td>
+				<td><a href="/ongeveer/transaction/{Transaction.id}">#{Transaction.id}</a></td>
+				<td>{Transaction.type === 'BANK' ? 'Bank' : 'Saldo'}</td>
+				<td>{formatPrice(amount)}</td>
+			</tr>
+		{/each}
+	</tbody>
+</table>
 
 <style lang="scss">
 	.top {
@@ -97,12 +128,11 @@
 	}
 
 	.actions {
-		margin-top: 2rem;
+		margin: 2rem 0;
 	}
 
-	h3,
-	table {
-		margin: 0.5rem 0;
+	h2 {
+		margin-top: 1rem;
 	}
 
 	.button:hover {

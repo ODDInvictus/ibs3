@@ -6,9 +6,8 @@
 	import Title from '$lib/components/title.svelte';
 	import { superForm } from 'sveltekit-superforms/client';
 	import AutoComplete from 'simple-svelte-autocomplete';
-	import { onError } from '$lib/superforms/error';
+	import { onError, onResult } from '$lib/superforms/error';
 	import { tallySheetSchema } from './tallySheetSchema';
-	import { toast } from '$lib/notification';
 
 	export let data: PageData;
 
@@ -16,15 +15,7 @@
 		dataType: 'json',
 		validators: tallySheetSchema,
 		onError,
-		onResult: ({ result }) => {
-			if (result.type === 'error' || result.type === 'failure') {
-				toast({
-					type: 'danger',
-					message: 'Er is iets misgegaan',
-					title: result.status + ' ' + result.type
-				});
-			}
-		}
+		onResult
 	});
 	const { form, enhance, errors } = formProps;
 
@@ -67,11 +58,7 @@
 	const noType = (x: any) => x;
 </script>
 
-<!-- <SuperDebug data={$form} /> -->
-
 <Title title="Streeplijst verwerken" />
-
-<!-- {JSON.stringify($errors)} -->
 
 <form class="superform" method="POST" use:enhance>
 	<SuperField type="date" {formProps} field="start">Begin streeplijst</SuperField>
