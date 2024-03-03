@@ -28,17 +28,3 @@ export const UserRolesEmpty = {
 	[Roles.Admins]: false,
 	[Roles.FinanCie]: false
 };
-
-export const LEDGER_IDS = {
-	SALE_BEER: 4501,
-	SALE_FOOD: 4502,
-	SALE_OTHER: 4503,
-	DECLARATION_GENERIC: 3100,
-	DECLARATION_BEER: 3101,
-	DECLARATION_FOOD: 3102
-};
-
-// TODO huh dit was ineens 1 en vroeger 0
-export const FINANCIAL_PERSON_IDS = {
-	INVICTUS: 1
-};

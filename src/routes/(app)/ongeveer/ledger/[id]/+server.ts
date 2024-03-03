@@ -1,3 +1,4 @@
+import { getLedgerIds } from '$lib/ongeveer/db';
 import { authorization } from '$lib/ongeveer/utils';
 import db from '$lib/server/db';
 import type { RequestHandler } from './$types';
@@ -21,8 +22,13 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
 	if (!ledger) return new Response(null, { status: 404 });
 
-	if (ledger._count.JournalRows > 0) {
-		return new Response('Kan grootboek niet verwijderen, omdat hij niet leeg is', { status: 409 });
+	// if (ledger._count.JournalRows > 0) {
+	// 	return new Response('Kan grootboek niet verwijderen, omdat hij niet leeg is', { status: 409 });
+	// }
+
+	const defaultLedgers = await getLedgerIds();
+	if (Object.values(defaultLedgers).includes(ledgerId)) {
+		return new Response('Kan standaard grootboek niet verwijderen', { status: 409 });
 	}
 
 	await db.ledger.delete({ where: { id: ledgerId } });

@@ -188,3 +188,47 @@ export async function tallySheetIsProcessed(streeplijstId: number) {
 	}
 	return true;
 }
+
+/**
+ * Retrieves the Invictus financial person ID from the database.
+ * @returns The Invictus financial person ID.
+ * @throws An error if the Invictus financial person is not found.
+ */
+export async function getInvictusId() {
+	const id = (await db.financialPerson.findFirst({ where: { type: 'INVICTUS' } }))?.id;
+	if (!id) throw new Error('[ONGEVEER] Invictus financial person not found');
+	return id;
+}
+
+/**
+ * Retrieves the default ledger IDs from the database.
+ * @returns A record containing the ledger names as keys and their corresponding IDs as values.
+ * @throws Error if not all ledger IDs are found.
+ */
+export async function getLedgerIds() {
+	const names = [
+		'DEFAULT_DECLARATION_LEDGER',
+		'DEFAULT_SALE_BEER_LEDGER',
+		'DEFAULT_SALE_FOOD_LEDGER',
+		'DEFAULT_SALE_OTHER_LEDGER'
+	] as const;
+
+	const ids = await db.settings.findMany({
+		where: {
+			name: {
+				in: [...names]
+			}
+		},
+		select: {
+			name: true,
+			value: true
+		}
+	});
+	if (ids.length !== names.length) throw new Error('Not all ledger ids are found');
+
+	const res: Record<string, number> = {};
+	for (const name of names) {
+		res[name] = Number(ids.find((id) => id.name === name)!.value);
+	}
+	return res as Record<(typeof names)[number], number>;
+}

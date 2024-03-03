@@ -1,5 +1,4 @@
-import { FINANCIAL_PERSON_IDS } from '$lib/constants';
-import { createTransaction, getJournalStatus } from '$lib/ongeveer/db';
+import { createTransaction, getInvictusId, getJournalStatus } from '$lib/ongeveer/db';
 import { authorization } from '$lib/ongeveer/utils';
 import db from '$lib/server/db';
 import Decimal from 'decimal.js';
@@ -80,7 +79,7 @@ export const PATCH: RequestHandler = async ({ params, locals }) => {
 
 	try {
 		const transaction = await createTransaction({
-			giver: FINANCIAL_PERSON_IDS.INVICTUS,
+			giver: await getInvictusId(),
 			receiver: journal.relationId,
 			amount: toPay,
 			description: `Declaratie: ${journal.description}`

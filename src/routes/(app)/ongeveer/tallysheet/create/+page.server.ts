@@ -3,11 +3,11 @@ import type { PageServerLoad } from './$types';
 import { tallySheetSchema } from './tallySheetSchema';
 import db from '$lib/server/db';
 import { redirect } from 'sveltekit-flash-message/server';
-import { fail, type Actions, error } from '@sveltejs/kit';
+import { fail, type Actions } from '@sveltejs/kit';
 import { authorization } from '$lib/ongeveer/utils';
-import { LEDGER_IDS } from '$lib/constants';
 import type { ProductType } from '@prisma/client';
 import type { z } from 'zod';
+import { getLedgerIds } from '$lib/ongeveer/db';
 
 export const load = (async () => {
 	// Add 1 empty row
@@ -23,7 +23,8 @@ export const load = (async () => {
 	});
 
 	const financialPersons = await db.financialPerson.findMany({
-		where: { isActive: true },
+		// TODO: Add support for groups
+		where: { isActive: true, type: 'USER' },
 		select: {
 			id: true,
 			name: true,
@@ -62,14 +63,14 @@ function groupByPersonAndGetProducts(
 	};
 }
 
-function getLedger(productType: ProductType) {
+function getLedger(productType: ProductType, ledgers: Awaited<ReturnType<typeof getLedgerIds>>) {
 	switch (productType) {
 		case 'ALCOHOL':
-			return LEDGER_IDS.SALE_BEER;
+			return ledgers.DEFAULT_SALE_BEER_LEDGER;
 		case 'FOOD':
-			return LEDGER_IDS.SALE_FOOD;
+			return ledgers.DEFAULT_SALE_FOOD_LEDGER;
 		default:
-			return LEDGER_IDS.SALE_OTHER;
+			return ledgers.DEFAULT_SALE_OTHER_LEDGER;
 	}
 }
 
@@ -83,7 +84,7 @@ export const actions = {
 		const { grouped, productIds } = groupByPersonAndGetProducts(form.data.rows);
 
 		try {
-			const tallySheet = await db.streeplijst.create({
+			const tallySheetPromise = db.streeplijst.create({
 				data: {
 					notes: form.data.notes,
 					userId: locals.user.id,
@@ -92,9 +93,17 @@ export const actions = {
 				}
 			});
 
-			const products = await db.product.findMany({
+			const productsPromise = db.product.findMany({
 				where: { id: { in: productIds } }
 			});
+
+			const ledgersPromise = getLedgerIds();
+
+			const [tallySheet, products, ledgers] = await Promise.all([
+				tallySheetPromise,
+				productsPromise,
+				ledgersPromise
+			]);
 
 			await Promise.all(
 				Array.from(grouped.entries()).map(([financialPersonId, rows]) => {
@@ -118,7 +127,7 @@ export const actions = {
 											...row,
 											price: product.price,
 											description: product.name,
-											ledgerId: getLedger(product.productType)
+											ledgerId: getLedger(product.productType, ledgers)
 										};
 									})
 								}

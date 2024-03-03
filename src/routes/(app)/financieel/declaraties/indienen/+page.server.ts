@@ -6,7 +6,7 @@ import { redirect } from 'sveltekit-flash-message/server';
 import { env } from '$env/dynamic/private';
 import fs from 'fs';
 import db from '$lib/server/db';
-import { LEDGER_IDS } from '$lib/constants';
+import { getLedgerIds } from '$lib/ongeveer/db';
 
 export const load = (async () => {
 	const data = {
@@ -52,7 +52,7 @@ export const actions = {
 								{
 									amount: 1,
 									price,
-									ledgerId: LEDGER_IDS.DECLARATION_GENERIC,
+									ledgerId: (await getLedgerIds()).DEFAULT_DECLARATION_LEDGER,
 									description: product
 								}
 							]

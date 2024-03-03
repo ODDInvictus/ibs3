@@ -3,8 +3,8 @@ import type { RequestHandler } from './$types';
 import { authorization } from '$lib/ongeveer/utils';
 import db from '$lib/server/db';
 import Decimal from 'decimal.js';
-import { FINANCIAL_PERSON_IDS } from '$lib/constants';
 import { redirect } from 'sveltekit-flash-message/server';
+import { getInvictusId } from '$lib/ongeveer/db';
 
 export const GET: RequestHandler = async (event) => {
 	const { locals, params } = event;
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async (event) => {
 							},
 							to: {
 								connect: {
-									id: FINANCIAL_PERSON_IDS.INVICTUS
+									id: await getInvictusId()
 								}
 							}
 						},

@@ -8,8 +8,7 @@ import { error, fail } from '@sveltejs/kit';
 import db from '$lib/server/db';
 import Decimal from 'decimal.js';
 import { getJournal } from '../../sales/[id]/getJournal';
-import { createTransaction } from '$lib/ongeveer/db';
-import { FINANCIAL_PERSON_IDS } from '$lib/constants';
+import { createTransaction, getInvictusId } from '$lib/ongeveer/db';
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
@@ -156,7 +155,7 @@ export const actions = {
 				return fail(400, { ...form, message: 'Relatie is verplicht als je saldo wilt toevoegen' });
 			}
 			const saldoTransaction = await createTransaction({
-				giver: FINANCIAL_PERSON_IDS.INVICTUS,
+				giver: await getInvictusId(),
 				receiver: form.data.relation,
 				amount: row.amount,
 				description: `Transactie vanuit banktransactie #${bankTransaction.id}: ${row.description}`
