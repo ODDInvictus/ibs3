@@ -17,7 +17,7 @@
 <Title title={data.invoice.ref || 'Factuur'} />
 
 <main>
-	<table>
+	<table class="info">
 		<h2>Info</h2>
 		<tr>
 			<th>Factuurnummer</th>
@@ -111,6 +111,38 @@
 			<Invoice invoice={data.invoice} />
 		</div>
 	{/if}
+
+	<div class:bottom={data.invoice.date}>
+		<h2>Uitgesplitst</h2>
+		<table>
+			<thead>
+				<th>Omschrijving</th>
+				<th>Aantal</th>
+				<th>Prijs</th>
+				<th>Grootboek</th>
+				<th>Product</th>
+			</thead>
+			<tbody>
+				{#each data.invoice.Rows as row}
+					<tr>
+						<td>{row.description}</td>
+						<td>{row.amount}</td>
+						<td>{formatPrice(row.price)}</td>
+						<td>
+							<a href="/ongeveer/ledger/{row.Ledger.id}">{row.Ledger.id} - {row.Ledger.name}</a>
+						</td>
+						<td>
+							{#if row.Product}
+								<a href="/ongeveer/products/{row.Product.id}">{row.Product.name}</a>
+							{:else}
+								-
+							{/if}
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
 </main>
 
 <style lang="scss">
@@ -119,8 +151,9 @@
 		gap: 1rem;
 		margin-top: 1rem;
 		justify-content: space-evenly;
+		flex-wrap: wrap;
 
-		table {
+		table.info {
 			width: fit-content;
 			height: fit-content;
 
@@ -144,7 +177,8 @@
 			flex-direction: column;
 			gap: 1rem;
 			position: relative;
-			min-width: 400px;
+			min-width: 397px;
+			min-height: 624px;
 
 			a {
 				width: fit-content;
@@ -156,6 +190,10 @@
 				position: absolute;
 				top: 4rem;
 			}
+		}
+
+		.bottom {
+			width: 100%;
 		}
 	}
 </style>

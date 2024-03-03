@@ -45,11 +45,11 @@
 	</tr>
 	<tr>
 		<td>Created at</td>
-		<td>{formatDateTimeHumanReadable(data.product.createdAt)}</td>
+		<td>{formatDateTimeHumanReadable(new Date(data.product.createdAt))}</td>
 	</tr>
 	<tr>
 		<td>Updated at</td>
-		<td>{formatDateTimeHumanReadable(data.product.updatedAt)}</td>
+		<td>{formatDateTimeHumanReadable(new Date(data.product.updatedAt))}</td>
 	</tr>
 	<tr>
 		<td>isActive</td>

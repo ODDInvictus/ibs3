@@ -8,7 +8,12 @@ export const getJournal = async (id: number) => {
 	const journal = await db.journal.findUnique({
 		where: { id },
 		include: {
-			Rows: true,
+			Rows: {
+				include: {
+					Product: true,
+					Ledger: true
+				}
+			},
 			TransactionMatchRow: true,
 			relation: {
 				include: {

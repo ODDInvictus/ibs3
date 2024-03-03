@@ -3,6 +3,7 @@
 	import Title from '$lib/components/title.svelte';
 	import { formatPrice } from '$lib/textUtils';
 	import Pagination from '$lib/components/Pagination.svelte';
+	import { formatDateHumanReadable } from '$lib/dateUtils';
 
 	export let data: PageData;
 </script>
@@ -19,6 +20,7 @@
 	<thead>
 		<th>Factuur</th>
 		<th>Relatie</th>
+		<th>Verstuurdatum</th>
 		<th>Totaal</th>
 		<th>Status</th>
 	</thead>
@@ -38,6 +40,7 @@
 						{relationId} - {relation.name}
 					</a>
 				</td>
+				<td>{date ? formatDateHumanReadable(new Date(date)) : '-'}</td>
 				<td>{formatPrice(total)}</td>
 				<td>
 					<!-- Betaald status -->
