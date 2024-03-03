@@ -15,7 +15,8 @@ export const load = (async ({ locals, url }) => {
 				},
 				date: {
 					not: null
-				}
+				},
+				type: 'SALE'
 			}
 		},
 		include: {

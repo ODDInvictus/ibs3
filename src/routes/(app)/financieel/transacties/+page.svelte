@@ -19,8 +19,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each data.transactions as transaction}
-			{@const { price, description, from, to, Transaction, id } = transaction}
+		{#each data.transactions as { price, description, from, Transaction, id }}
 			{@const streeplijstId = Transaction.TransactionMatchRow.find(
 				(row) => row.Journal?.streeplijstId !== null
 			)?.Journal?.streeplijstId}
@@ -35,8 +34,7 @@
 				</td>
 				<td>
 					<a href="/financieel/transacties/{id}">
-						{from.id === data.financialPersonId ? '-' : '+'}
-						{formatMoney(price)}
+						{formatMoney(Number(price) * (from.id === data.financialPersonId ? -1 : 1))}
 					</a>
 				</td>
 			</tr>
