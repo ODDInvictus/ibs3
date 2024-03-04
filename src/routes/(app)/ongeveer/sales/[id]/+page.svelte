@@ -93,7 +93,7 @@
 					}}>Bewerken</button
 				>
 			{:else}
-				<a href="/ongeveer/sales/{data.invoice.id}/process">Process</a>
+				<a href="/ongeveer/sales/{data.invoice.id}/process">Verwerken</a>
 				<a href="/ongeveer/sales/create?id={data.invoice.id}">Bewerken</a>
 			{/if}
 			<DeleteButton

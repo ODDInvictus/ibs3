@@ -92,7 +92,7 @@
 	<table>
 		<thead>
 			<th>Omschrijving</th>
-			<th>Hoeveelheid</th>
+			<th>Bedrag</th>
 			<th>Boekstuk</th>
 			<th>Voeg toe aan saldo</th>
 			<th />

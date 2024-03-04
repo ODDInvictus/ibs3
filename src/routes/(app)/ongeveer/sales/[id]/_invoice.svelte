@@ -2,6 +2,7 @@
 	import { formatDateHumanReadable } from '$lib/dateUtils';
 	import { PUBLIC_IBAN as IBAN } from '$env/static/public';
 	import type Decimal from 'decimal.js';
+	import { formatPrice } from '$lib/textUtils';
 
 	export let invoice: {
 		id: number;
@@ -45,13 +46,13 @@
 					<p>T.a.v. {invoice.tav}</p>
 				{/if}
 				{#if invoice.relation.FinancialPersonDataOther}
-					<p>{invoice.relation.FinancialPersonDataOther.address}</p>
+					<p>{invoice.relation.FinancialPersonDataOther.address ?? ''}</p>
 					<p>
-						{invoice.relation.FinancialPersonDataOther.postalCode}
-						{invoice.relation.FinancialPersonDataOther.city}
+						{invoice.relation.FinancialPersonDataOther.postalCode ?? ''}
+						{invoice.relation.FinancialPersonDataOther.city ?? ''}
 					</p>
 				{:else if invoice.relation.FinancialPersonDataUser}
-					<p>{invoice.relation.FinancialPersonDataUser.user.personalEmail}</p>
+					<p>{invoice.relation.FinancialPersonDataUser.user.personalEmail ?? ''}</p>
 				{/if}
 			</div>
 			<div>
@@ -104,14 +105,16 @@
 						<tr>
 							<td>{row.description}</td>
 							<td>{row.amount}</td>
-							<td>€ {row.price}</td>
-							<td>€ {row.amount * Number(row.price)}</td>
+							<td>{formatPrice(row.price)}</td>
+							<td>{formatPrice(row.amount * Number(row.price))}</td>
 						</tr>
 					{/each}
 					<tr class="total">
 						<td /><td />
 						<td><i>Totaal</i></td>
-						<td>€ {invoice.Rows.reduce((t, row) => t + row.amount * Number(row.price), 0)}</td>
+						<td>
+							{formatPrice(invoice.Rows.reduce((t, row) => t + row.amount * Number(row.price), 0))}
+						</td>
 					</tr>
 				</tbody>
 			</table>
