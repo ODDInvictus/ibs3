@@ -11,10 +11,12 @@ import Decimal from 'decimal.js';
  */
 export const getJournals = async ({
 	type,
-	pagination
+	pagination,
+	open
 }: {
 	type?: JournalType | JournalType[];
 	pagination?: { p: number; size: number };
+	open?: boolean;
 }) => {
 	const journals = await db.journal.findMany({
 		where: {
@@ -39,11 +41,11 @@ export const getJournals = async ({
 			}
 		},
 		orderBy: { date: { sort: 'desc', nulls: 'first' } },
-		take: pagination?.size,
-		skip: pagination ? pagination.p * pagination.size : undefined
+		take: open ? undefined : pagination?.size,
+		skip: open ? undefined : pagination ? pagination.p * pagination.size : undefined
 	});
 
-	const journalsWithTotal = journals.map((journal) => {
+	let journalsWithTotal = journals.map((journal) => {
 		const total = journal.Rows.reduce(
 			(acc, row) => acc.add(row.price.mul(row.amount)),
 			new Decimal(0)
@@ -59,6 +61,16 @@ export const getJournals = async ({
 			paid: paid.toNumber()
 		};
 	});
+
+	if (open) {
+		journalsWithTotal = journalsWithTotal.filter((journal) => journal.total !== journal.paid);
+		if (pagination) {
+			journalsWithTotal = journalsWithTotal.slice(
+				pagination.p * pagination.size,
+				(pagination.p + 1) * pagination.size
+			);
+		}
+	}
 
 	return JSON.parse(JSON.stringify(journalsWithTotal)) as typeof journalsWithTotal;
 };

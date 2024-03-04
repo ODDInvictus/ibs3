@@ -11,6 +11,11 @@
 
 <div class="ongeveer-nav">
 	<a href="/ongeveer/purchases/create?type=INVOICE">Factuur inboeken</a>
+	{#if data.open}
+		<a href="/ongeveer/purchases">Laat alles zien</a>
+	{:else}
+		<a href="/ongeveer/purchases?open=1">Laat open zien</a>
+	{/if}
 </div>
 
 <h2>Facturen</h2>
