@@ -1,10 +1,13 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte';
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
+	import { toast } from '$lib/notification';
 	import { formatPrice } from '$lib/textUtils';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
+	let loading = false;
 </script>
 
 <Title title={data.product.name} />
@@ -12,6 +15,25 @@
 <div class="ongeveer-nav">
 	<a href="/ongeveer/products">Terug</a>
 	<a href="/ongeveer/products/create?id={data.product.id}">Bewerken</a>
+	<button
+		class="btn-danger"
+		on:click={async () => {
+			if (loading || !confirm('Weet je zeker dat je dit product wilt verwijderen?')) return;
+			loading = true;
+			const res = await fetch(`/ongeveer/products/${data.product.id}`, { method: 'DELETE' });
+			if (res.ok) {
+				location.href = '/ongeveer/products';
+			} else {
+				const message = await res.text();
+				toast({
+					type: 'danger',
+					message,
+					title: 'Error'
+				});
+				loading = false;
+			}
+		}}>Verwijderen</button
+	>
 </div>
 
 <table>

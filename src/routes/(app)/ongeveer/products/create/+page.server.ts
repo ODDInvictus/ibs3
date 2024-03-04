@@ -17,7 +17,10 @@ export const load = (async ({ url }) => {
 			}
 		});
 		if (!product) throw fail(404);
-		data = product;
+		data = {
+			...product,
+			price: product.price.toNumber()
+		};
 	}
 
 	const categories = await db.productCategory.findMany();

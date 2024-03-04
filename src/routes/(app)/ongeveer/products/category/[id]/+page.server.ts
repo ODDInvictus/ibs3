@@ -17,5 +17,9 @@ export const load = (async ({ params }) => {
 		}
 	});
 
-	return { catergory, products };
+	const productsSerialized = products.map((p) => {
+		return { ...p, price: p.price.toNumber() };
+	});
+
+	return { catergory, products: productsSerialized };
 }) satisfies PageServerLoad;

@@ -2,8 +2,11 @@
 	import type { PageData } from './$types';
 	import Title from '$lib/components/title.svelte';
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
+	import { toast } from '$lib/notification';
 
 	export let data: PageData;
+
+	let loading = false;
 </script>
 
 <Title title={data.catergory.name} />
@@ -11,6 +14,31 @@
 <div class="ongeveer-nav">
 	<a href="/ongeveer/products/category">Terug</a>
 	<a href="/ongeveer/products/category/create?id={data.catergory.id}">Bewerken</a>
+	<button
+		class="btn-danger"
+		on:click={async () => {
+			if (
+				loading ||
+				!confirm('Weet je zeker dat je deze categorie EN ALLE PRODUCTEN wilt verwijderen?')
+			)
+				return;
+			loading = true;
+			const res = await fetch(`/ongeveer/products/category/${data.catergory.id}`, {
+				method: 'DELETE'
+			});
+			if (res.ok) {
+				location.href = '/ongeveer/products/category';
+			} else {
+				const message = await res.text();
+				toast({
+					type: 'danger',
+					message,
+					title: 'Error'
+				});
+				loading = false;
+			}
+		}}>Verwijderen</button
+	>
 </div>
 
 <h2>Info</h2>
