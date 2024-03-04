@@ -63,6 +63,7 @@ export const load = (async ({ params }) => {
 		}
 	});
 
+	// TODO alleen journals die nog niet zijn gematcht
 	const journals = await db.journal.findMany();
 
 	return {
@@ -80,8 +81,8 @@ export const actions = {
 
 		/* Validations **/
 
-		if (!authorization(locals.roles)) return fail(403);
 		const form = await superValidate(request, matchTransactionSchema);
+		if (!authorization(locals.roles)) return fail(403, { form });
 		if (!form.valid) return fail(400, { form });
 
 		// Query bankTransaction from database

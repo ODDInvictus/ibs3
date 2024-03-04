@@ -105,7 +105,7 @@
 		{/if}
 		{#each data.purchase.TransactionMatchRow as { amount, description, Transaction }}
 			<tr>
-				<td>{description}</td>
+				<td>{description || '-'}</td>
 				<td><a href="/ongeveer/transaction/{Transaction.id}">#{Transaction.id}</a></td>
 				<td>{Transaction.type === 'BANK' ? 'Bank' : 'Saldo'}</td>
 				<td>{formatPrice(amount)}</td>

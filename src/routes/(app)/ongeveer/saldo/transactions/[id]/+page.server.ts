@@ -1,6 +1,8 @@
 import db from '$lib/server/db';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { getInvictusId } from '$lib/ongeveer/db';
+import Decimal from 'decimal.js';
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
@@ -16,20 +18,30 @@ export const load = (async ({ params }) => {
 			},
 			from: true,
 			to: true,
-			TransactionMatchRow: {
-				select: {
-					Transaction: {
-						select: {
-							id: true,
-							type: true
-						}
-					}
-				}
-			}
+			TransactionMatchRow: true
 		}
 	});
 
 	if (!transaction) throw error(404);
 
-	return { transaction: JSON.parse(JSON.stringify(transaction)) as typeof transaction };
+	const invictusId = await getInvictusId();
+	const shouldMatch = transaction.fromId === invictusId || transaction.toId === invictusId;
+
+	const totalMatched = transaction.Transaction.TransactionMatchRow.reduce(
+		(acc, row) => acc.add(row.amount),
+		new Decimal(0)
+	).add(transaction.TransactionMatchRow?.amount ?? 0);
+
+	const status = totalMatched.eq(transaction.price)
+		? 'done'
+		: totalMatched.eq(0)
+		? 'open'
+		: 'partial';
+
+	return {
+		transaction: JSON.parse(JSON.stringify(transaction)) as typeof transaction,
+		shouldMatch,
+		totalMatched: totalMatched.toNumber(),
+		status
+	};
 }) satisfies PageServerLoad;

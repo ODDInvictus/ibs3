@@ -120,7 +120,7 @@
 							<option value="" selected />
 							{#each data.journals ?? [] as journal}
 								<option value={journal.id}>
-									{journal.id}{journal.ref ? ` - ${journal.ref}` : ''}
+									{journal.id}{journal.ref ? ` - ${journal.ref}` : ''} ({journal.type.toLowerCase()})
 								</option>
 							{/each}
 						</select>

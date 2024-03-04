@@ -9,7 +9,7 @@
 	const { delayed } = formProps;
 </script>
 
-<button type="submit">
+<button {...$$restProps} type="submit">
 	{#if $delayed}
 		<LoaderElipses />
 	{:else}
