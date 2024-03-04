@@ -6,7 +6,7 @@ import { superValidate } from 'sveltekit-superforms/server';
 import { authorization } from '$lib/ongeveer/utils';
 import Decimal from 'decimal.js';
 import { redirect } from 'sveltekit-flash-message/server';
-import { getInvictusId } from '$lib/ongeveer/db';
+import { getInvictusId, getUnmatchedJournals } from '$lib/ongeveer/db';
 import type { Notification } from '$lib/notification';
 
 export const load = (async ({ params }) => {
@@ -44,8 +44,7 @@ export const load = (async ({ params }) => {
 	};
 	const form = await superValidate(data, matchSaldoTransaction);
 
-	// TODO alleen journals die nog niet zijn gematcht
-	const journals = await db.journal.findMany();
+	const journals = await getUnmatchedJournals();
 
 	return {
 		transaction: JSON.parse(JSON.stringify(transaction)) as typeof transaction,

@@ -8,7 +8,7 @@ import { error, fail } from '@sveltejs/kit';
 import db from '$lib/server/db';
 import Decimal from 'decimal.js';
 import { getJournal } from '../../sales/[id]/getJournal';
-import { createTransaction, getInvictusId } from '$lib/ongeveer/db';
+import { createTransaction, getInvictusId, getUnmatchedJournals } from '$lib/ongeveer/db';
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
@@ -63,8 +63,7 @@ export const load = (async ({ params }) => {
 		}
 	});
 
-	// TODO alleen journals die nog niet zijn gematcht
-	const journals = await db.journal.findMany();
+	const journals = await getUnmatchedJournals();
 
 	return {
 		form,

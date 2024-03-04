@@ -244,3 +244,41 @@ export async function getLedgerIds() {
 	}
 	return res as Record<(typeof names)[number], number>;
 }
+
+/**
+ * Retrieves a list of unmatched journals.
+ *
+ * @returns {Promise<Array<{ id: number, ref: string, type: string }>>} The list of unmatched journals, containing their id, ref, and type.
+ */
+export async function getUnmatchedJournals() {
+	let journals = await db.journal.findMany({
+		where: {
+			NOT: {
+				date: null
+			}
+		},
+		include: {
+			TransactionMatchRow: true,
+			Rows: true
+		},
+		orderBy: {
+			date: 'desc'
+		}
+	});
+	// Filter out journals that are already matched
+	journals = journals.filter((journal) => {
+		const total = journal.Rows.reduce(
+			(acc, row) => acc.add(row.price.mul(row.amount)),
+			new Decimal(0)
+		);
+		const matched = journal.TransactionMatchRow.reduce(
+			(acc, row) => acc.add(row.amount),
+			new Decimal(0)
+		);
+		return !total.eq(matched);
+	});
+
+	return journals.map(({ id, ref, type }) => {
+		return { id, ref, type };
+	});
+}
