@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { Field, FieldType } from './form-generator';
-	import Help from '~icons/tabler/help';
 	import { confirm } from '$lib/confirm';
 	import { toast } from '$lib/notification';
 	import Title from '$lib/components/title.svelte';
-	import { offset, flip, shift } from 'svelte-floating-ui/dom';
-	import { createFloatingActions } from 'svelte-floating-ui';
+	import FieldComponent from './_field.svelte';
+	import Label from './_label.svelte';
 
 	export let title: string;
 	export let shortTitle: string | undefined;
@@ -18,21 +17,11 @@
 	export let needsConfirmation: boolean;
 	export let confirmText = 'Weet je zeker dat je deze actie wilt uitvoeren?';
 
-	let tooltips = {};
-	let show = false;
-
-	const [floatingRef, floatingContent] = createFloatingActions({
-		strategy: 'absolute',
-		placement: 'left',
-		middleware: [offset(6), flip(), shift()]
-	});
-
 	let form: HTMLFormElement;
+	let generalError = '';
 
-	function updateErrors(errors: { field: string; message: string }[]) {
+	function updateErrors(errors: { field?: string; message: string }[]) {
 		const fields = form.querySelectorAll('.form-control');
-
-		console.log(fields);
 
 		// Loop over all fields
 		// data-name is the name of the field
@@ -40,6 +29,9 @@
 		fields.forEach((field) => {
 			const name = field.getAttribute('data-name')!;
 			const type = field.getAttribute('data-type')!;
+
+			// TODO errors in table
+			if (type === 'table') return;
 
 			// Find the error message for this field
 			const error = errors.find((e) => e.field === name);
@@ -59,9 +51,17 @@
 				errorElement.textContent = '';
 			}
 		});
+
+		// If there is a general error, show it
+		const general = errors.find((e) => !e.field);
+		if (general) {
+			generalError = general.message;
+		} else {
+			generalError = '';
+		}
 	}
 
-	async function enhanceForm({ cancel }) {
+	async function enhanceForm({ cancel }: { cancel: () => void; formData: any }) {
 		// First check if needsConfirmation is true
 		let confirmed = false;
 
@@ -84,7 +84,7 @@
 			await new Promise((resolve) => setTimeout(resolve, 50));
 		}
 
-		return async ({ result }) => {
+		return async ({ result }: any) => {
 			if (result.type === 'failure') {
 				// We know now that we have data.errors
 				const errors = result.data?.errors;
@@ -123,66 +123,37 @@
 
 	<form class="form-group" bind:this={form} method="POST" id={formId} use:enhance={enhanceForm}>
 		{#each fields as field}
-			<div class="form-control" data-name={field.name} data-type={field.type}>
-				<label for={field.name}>
-					{field.label}
-					{#if field.optional}
-						<span class="optional"> (optioneel) </span>
+			{#if field.type !== 'hidden'}
+				<div
+					class="form-control {field.type === 'table' ? 'form-control-table' : ''}"
+					data-name={field.name}
+					data-type={field.type}
+				>
+					{#if field.label}
+						<label for={field.name}>
+							<Label {field} />
+						</label>
 					{/if}
-					{#if field.description}
-						<i
-							role="tooltip"
-							class="description"
-							on:mouseenter={() => (show = true)}
-							on:mouseleave={() => (show = false)}
-						>
-							<span use:floatingRef>
-								<Help />
-							</span>
-						</i>
-						{#if show}
-							<div class="tooltip" use:floatingContent>
-								{field.description}
-							</div>
-						{/if}
-					{:else}
-						<div />
-					{/if}
-				</label>
-				{#if field.type === 'select'}
-					<select name={field.name} id={field.name}>
-						{#if !field.options}
-							<option value="">Geen opties</option>
-						{:else}
-							{#each field.options as option}
-								<option value={option.value}>{option.label}</option>
-							{/each}
-						{/if}
-					</select>
-				{:else if field.type === 'checkbox'}
-					<input type="checkbox" name={field.name} id={field.name} checked={Boolean(field.value)} />
-				{:else if field.type === 'textarea'}
-					<textarea
-						name={field.name}
-						id={field.name}
-						placeholder={field.placeholder}
-						value={field.value || ''}
-					/>
-				{:else}
-					<input
-						type={field.type}
-						name={field.name}
-						id={field.name}
-						placeholder={field.placeholder}
-						value={field.value || ''}
-					/>
-				{/if}
-				<p id="{field.name}-error" class="form-error" />
-			</div>
+					<FieldComponent {field} />
+				</div>
+			{:else}
+				<input type="hidden" name={field.name} value={field.value} />
+			{/if}
 		{/each}
-
 		<button type="submit">
 			{submitStr}
 		</button>
 	</form>
+	<p class="error">{generalError}</p>
 </div>
+
+<style>
+	.error {
+		color: red;
+		margin: 1rem 0;
+	}
+
+	.form-control-table {
+		grid-template-columns: 1fr;
+	}
+</style>

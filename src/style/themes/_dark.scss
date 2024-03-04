@@ -24,6 +24,12 @@
 	--color-form-focus: var(--color-primary);
 	--color-form-bg: #1b1b1bb9;
 
+  --color-primary-text: #c990ff;
+  --color-logo: var(--color-primary-text);
+
+  --color-warning: #96600E;
+  --color-danger: #842626;
+
 	.form-group {
 		label {
 			color: var(--color-text);
@@ -33,30 +39,19 @@
 	.ibs-error-page {
 		background-color: var(--color-bg-base);
 
-		color: #c990ff;
+		color: var(--color-primary-text);
 
 		code {
-			color: #c990ff;
+			color: var(--color-primary-text);
 		}
 	}
 
 	a,
 	button.btn-a {
-		color: #c990ff;
+		color: var(--color-primary-text);
 	}
 
-	a.button {
+	a.button, .ongeveer-nav a {
 		color: white;
-	}
-
-	.layout--navbar {
-		.logo {
-			svg {
-				path,
-				rect {
-					fill: #c990ff;
-				}
-			}
-		}
 	}
 }
