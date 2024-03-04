@@ -28,7 +28,7 @@
 		{#if data.invoices.length == 0}
 			<td colspan="4">Geen verkopen gevonden</td>
 		{/if}
-		{#each data.invoices as { id, ref, relationId, relation, total, date }}
+		{#each data.invoices as { id, ref, relationId, relation, date, total, paid }}
 			<tr>
 				<td>
 					<a href="/ongeveer/sales/{id}">
@@ -43,8 +43,9 @@
 				<td>{date ? formatDateHumanReadable(new Date(date)) : '-'}</td>
 				<td>{formatPrice(total)}</td>
 				<td>
-					<!-- Betaald status -->
-					{#if date}
+					{#if total == paid}
+						Betaald
+					{:else if date}
 						Open
 					{:else}
 						Concept
