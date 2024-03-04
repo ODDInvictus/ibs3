@@ -44,6 +44,21 @@ export const GET: RequestHandler = async (event) => {
 			return acc;
 		}, [] as { toPay: Decimal; journal: (typeof journals)[0] }[]);
 
+		// Find all journals that not have a date set
+		const journalsWithoutDate = journals.filter((journal) => !journal.date);
+
+		// Set date to now
+		await tx.journal.updateMany({
+			where: {
+				id: {
+					in: journalsWithoutDate.map((journal) => journal.id)
+				}
+			},
+			data: {
+				date: new Date()
+			}
+		});
+
 		// Create transactions to pay the journals
 		try {
 			await Promise.all(

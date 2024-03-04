@@ -117,7 +117,7 @@ export const actions = {
 							relationId: financialPersonId,
 							treasurerId: locals.user.id,
 							streeplijstId: tallySheet.id,
-							date: new Date(),
+							date: null,
 							type: 'SALE',
 							Rows: {
 								createMany: {
