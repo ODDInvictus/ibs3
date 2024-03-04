@@ -292,12 +292,11 @@ model Product {
   data        Json        @db.Json
 
   // Foreign keys
-  category    ProductCategory @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  Acquisition Acquisition[]
+  category   ProductCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
   // Een product kan niet worden verwijderd, wel uitgeschakeld
-  isActive    Boolean         @default(true)
-  JournalRow  JournalRow[]
+  isActive   Boolean         @default(true)
+  JournalRow JournalRow[]
 }
 
 enum FinancialPersonType {
@@ -332,7 +331,6 @@ model FinancialPerson {
 
   TransactionFrom     SaldoTransaction[] @relation("TransactionFrom")
   TransactionTo       SaldoTransaction[] @relation("TransactionTo")
-  Acquisition         Acquisition[]
   Journal             Journal[]
   BankTransactionFrom BankTransaction[]
   DeclarationData     DeclarationData[]
@@ -503,38 +501,12 @@ model Streeplijst {
   endDate   DateTime?
 
   // Wie heeft dit verwerkt
-  // TODO maakt dit niet optional
   treasurer User? @relation(fields: [userId], references: [id])
   userId    Int?
 
   notes String?
 
   sales Journal[]
-}
-
-// Een inkoop
-// Oke sorry voor deze naam maar Purchase vond ik te verwarrend met Sale
-model Acquisition {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  // Hoe veel van welk product zijn er gekocht
-  product   Product  @relation(fields: [productId], references: [id])
-  productId Int
-  amount    Int
-  price     Decimal  @db.Decimal(19, 4)
-
-  // Bonnetje
-  receipt String
-
-  purchaseLocation String
-
-  // Wie heeft er gekocht
-  person   FinancialPerson @relation(fields: [personId], references: [id])
-  personId Int
-
-  // Een inkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
-  isActive Boolean @default(true)
 }
 
 enum JournalType {
@@ -560,7 +532,6 @@ model Journal {
   Treasurer   User? @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
   treasurerId Int?
 
-  CreditNotes         CreditNote[]
   Attachments         JournalAttachments[]
   DeclarationData     DeclarationData?
   TransactionMatchRow TransactionMatchRow[]
@@ -624,15 +595,6 @@ model JournalAttachments {
 
   Journal   Journal? @relation(fields: [journalId], references: [id], onDelete: Cascade)
   journalId Int?
-}
-
-model CreditNote {
-  id          Int     @id @default(autoincrement())
-  description String?
-  amount      Decimal @db.Decimal(19, 4)
-
-  Journal   Journal @relation(fields: [journalId], references: [id], onDelete: Cascade)
-  journalId Int
 }
 
 //
