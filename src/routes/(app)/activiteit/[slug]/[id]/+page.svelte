@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { env } from '$env/dynamic/public';
 	import MapPin from '~icons/tabler/map-pin';
 	import Clock from '~icons/tabler/clock';
 	import Calendar from '~icons/tabler/calendar';
@@ -22,31 +21,27 @@
 
 	export let data: PageData;
 
+	const STATUS_ORDER: Record<string, number> = {
+		ATTENDING: 1,
+		UNSURE: 2,
+		NOT_ATTENDING: 3,
+		NO_RESPONSE: 4
+	};
+
 	const activity = data.activity;
-
-	let attending = $page.data.attending;
-	$: bij = attending.filter((a: any) => a.isAttending).map((a: any) => a.user);
-	$: unsure = attending
-		.filter((a: any) => {
-			if (bij.includes(a.user)) return false;
-
-			let cr = new Date(a.createdAt);
-			let ua = new Date(a.updatedAt);
-
-			cr.setMilliseconds(0);
-			ua.setMilliseconds(0);
-			cr.setSeconds(0);
-			ua.setSeconds(0);
-
-			return cr.getTime() === ua.getTime();
-		})
-		.map((a: any) => a.user);
-
-	$: notBij = attending
-		.map((a: any) => a.user)
-		.filter((u: any) => !bij.includes(u) && !unsure.includes(u));
+	let attending = sortAttending();
+	let changed = 0;
 
 	const nameWithoutMarkdown = stripMarkdown(activity.name);
+
+	$: if (changed > 0) {
+		console.log('huts');
+		attending = sortAttending();
+	}
+
+	function sortAttending() {
+		return data.attending.sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]);
+	}
 
 	function formatTime(time: string) {
 		const date = new Date(time);
@@ -84,11 +79,12 @@
 		});
 	}
 
-	async function setAttending(status: boolean) {
+	async function setAttending(status: string) {
 		// First check if the user is attending
-		const a = attending.find((a: any) => a.user.ldapId == $page.data.user.ldapId);
+		const a = attending.find((a: any) => a.user.ldapId == data.user.ldapId);
 
-		if (a.isAttending === status) {
+		// If a is undefined, then continue, since the backend will make it
+		if (a && a.status === status) {
 			// The user is already attending/not attending, so do nothing
 			return;
 		}
@@ -105,11 +101,36 @@
 			})
 		})
 			.then(() => {
+				let title, message;
+				let type: 'info' | 'success' | 'warning' | 'error' = 'info';
+
+				if (status === 'ATTENDING') {
+					title = 'Gezellig!';
+					message = 'Je aanwezigheid is opgeslagen';
+					type = 'success';
+				} else if (status === 'NOT_ATTENDING') {
+					title = 'Jammer!';
+					message = 'Je afwezigheid is opgeslagen';
+				} else {
+					title = 'Opgeslagen';
+					message = 'Vul je het later nog in?';
+				}
+
 				toast({
-					title: status ? 'Gezellig!' : 'Jammer!',
-					message: `Je  ${status ? 'aanwezigheid' : 'afwezigheid'} is opgeslagen`,
-					type: status ? 'success' : 'info'
+					title,
+					message,
+					type
 				});
+
+				// Update the attending status
+				if (!a) {
+					location.reload();
+					return;
+				}
+
+				a.status = status;
+				changed++;
+				sortAttending();
 			})
 			.catch((err) => {
 				toast({
@@ -119,10 +140,6 @@
 				});
 				console.error(err);
 			});
-
-		// Update the attending status
-		a.isAttending = status;
-		attending = attending;
 	}
 
 	function generateIcal() {
@@ -166,7 +183,10 @@
 			details: stripMarkdown(details),
 			location: activity.location?.name ?? 'Locatie nog onbekend',
 			sprop: `name:{{Invictus Bier Systeem}},website:${activityUrl}`,
-			add: bij.map((a: any) => a.email).join(','),
+			add: attending
+				.filter((a) => a.status === 'ATTENDING')
+				.map((a: any) => a.email)
+				.join(','),
 			dates
 		});
 
@@ -194,7 +214,7 @@
 					}}
 					alt={nameWithoutMarkdown}
 					src={activity.photo
-						? `/image/${activity.photo.filename}?size=500x250`
+						? `/image/${activity.photo.filename}?size=1000x500`
 						: `/image/favicon-512.png?static=true`}
 					onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
 				/>
@@ -262,19 +282,14 @@
 			<h2 class="ibs-card--title">Wie komen er allemaal?</h2>
 
 			<div class="ibs-card--buttons top">
-				<button on:click={async () => await setAttending(true)}>Ik ben 🐝</button>
-				<button on:click={async () => await setAttending(false)}>Ik ben niet 🐝</button>
+				<button on:click={async () => await setAttending('ATTENDING')}>Ik ben 🐝</button>
+				<button on:click={async () => await setAttending('UNSURE')}>Ik weet het nog niet</button>
+				<button on:click={async () => await setAttending('NOT_ATTENDING')}>Ik ben niet 🐝</button>
 			</div>
 
 			<div class="ibs-card--content users">
-				{#each bij as user}
-					<UserCard status="positive" {user} />
-				{/each}
-				{#each unsure as user}
-					<UserCard status="unsure" {user} />
-				{/each}
-				{#each notBij as user}
-					<UserCard status="negative" {user} />
+				{#each attending as a}
+					<UserCard status={a.status} user={a.user} />
 				{/each}
 			</div>
 		</div>

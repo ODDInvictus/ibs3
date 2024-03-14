@@ -27,6 +27,15 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
 
   if (!size) size = 'large'
 
+
+  let isStatic = url.searchParams.get('static') === 'true'
+
+  // Then get the file from the server
+
+  const agent = request.headers.get('user-agent')
+
+  const path = isStatic ? STATIC_FOLDER : UPLOAD_FOLDER
+
   try {
 
     if (filename.startsWith('id/')) {
@@ -46,9 +55,26 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
         return new Response('File not found', { status: 404 });
       }
 
-      if (size.includes('x')) {
-        photo.buffer = await resizeImage(photo.buffer, size)
+      if (agent && (agent.includes('Edg/') || agent.includes('Edge'))) {
+        if (size.includes('x')) {
+          const [width, height] = size.split('x')
+          photo.buffer = await sharp(photo.buffer)
+            .resize(parseInt(width), parseInt(height))
+            .jpeg({ mozjpeg: true, quality: 75 })
+            .toBuffer()
+        } else {
+          photo.buffer = await sharp(photo.buffer)
+            .jpeg({ mozjpeg: true, quality: 75 })
+            .toBuffer()
+        }
+
+        photo.contentType = 'image/jpeg'
+      } else {
+        if (size.includes('x')) {
+          photo.buffer = await resizeImage(photo.buffer, size)
+        }
       }
+
 
       setHeaders({
         'Content-Type': photo.contentType,
@@ -58,47 +84,48 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
       return new Response(photo.buffer)
     }
 
-    let isStatic = url.searchParams.get('static') === 'true'
-
-    // Then get the file from the server
-
-    const agent = request.headers.get('user-agent')
-
-    const path = isStatic ? STATIC_FOLDER : UPLOAD_FOLDER
-
-
     // Edge ondersteund geen AVIF om een of andere kut reden, dus zij krijgen JPEG
-    if (agent && (agent.includes('Edg/') || agent.includes('Edge'))) {
-      // Set headers to jpeg and cache for a whatever time is in the env.
-      setHeaders({
-        'Content-Type': 'image/jpeg',
-        'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
-      })
-      // First, check the cache
-      const cachedFile = await getImageFromCache(filename, 'jpeg-' + size)
+    // if (agent && (agent.includes('Edg/') || agent.includes('Edge'))) {
+    //   // Set headers to jpeg and cache for a whatever time is in the env.
+    //   setHeaders({
+    //     'Content-Type': 'image/jpeg',
+    //     'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
+    //   })
+    //   // First, check the cache
+    //   const cachedFile = await getImageFromCache(filename, 'jpeg-' + size)
 
-      if (cachedFile) {
-        return new Response(cachedFile)
-      }
+    //   if (cachedFile) {
+    //     return new Response(cachedFile)
+    //   }
 
-      // If the file is not in the cache, read it from disk
-      const photo = await readJpeg(path, filename, size)
+    //   // If the file is not in the cache, read it from disk
+    //   const photo = await readJpeg(path, filename, size)
 
-      // Cache the file
-      await cacheImage(filename, 'jpeg-' + size, photo)
+    //   // Cache the file
+    //   await cacheImage(filename, 'jpeg-' + size, photo)
 
-      return new Response(photo)
-    }
+    //   return new Response(photo)
+    // }
 
     // First check if we have the file in the cache
     const cachedFile = await redis.get(`file:${filename}:${size}`)
 
     if (cachedFile) {
-      const buf = Buffer.from(cachedFile, 'binary')
+      let buf = Buffer.from(cachedFile, 'binary')
+      let ct = 'image/avif'
+
+      if (agent && (agent.includes('Edg/') || agent.includes('Edge'))) {
+        buf = await sharp(buf)
+          .jpeg({ mozjpeg: true, quality: 75 })
+          .toBuffer()
+        ct = 'image/jpeg'
+      }
+
       setHeaders({
-        'Content-Type': 'image/jpeg',
+        'Content-Type': ct,
         'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
       })
+
       return new Response(buf);
     }
 
@@ -139,11 +166,19 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
       return new Response('File not found', { status: 404 });
     }
 
-
     redis.set(`file:${filename}:${size}`, buf.toString('binary'), 'EX', IMAGE_CACHE_TIME)
 
+    let contentType = 'image/avif'
+
+    if (agent && (agent.includes('Edg/') || agent.includes('Edge'))) {
+      buf = await sharp(buf)
+        .jpeg({ mozjpeg: true, quality: 75 })
+        .toBuffer()
+      contentType = 'image/jpeg'
+    }
+
     setHeaders({
-      'Content-Type': 'image/avif',
+      'Content-Type': contentType,
       'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
     })
     return new Response(buf);
@@ -158,7 +193,7 @@ async function readImage(path: string, name: string): Promise<Buffer> {
 }
 
 async function readJpeg(path: string, name: string, size: string | undefined): Promise<Buffer> {
-  const file = await fs.readFile(`${path}/${name}`)
+  const file = await fs.readFile(`${path}/${name}-large.avif`)
 
   if (size) {
     const [width, height] = size.split('x')

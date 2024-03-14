@@ -101,8 +101,9 @@ export async function uploadPhoto(args: UploadPhotoArgs, transactionClient?: any
   // Write the file to disk
   await fs.writeFile(`${uploadFolder}/${filenameOnDisk}.${extension}`, buf)
     .catch(err => {
+      photo = undefined
       console.error('------------------------------')
-      console.error(err)
+      console.error('[PHOTO-SAVE]' + err)
       console.error('------------------------------')
     })
 

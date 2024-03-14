@@ -109,7 +109,7 @@
 			toast({
 				title: 'Error',
 				message: 'Er is iets fout gegaan, probeer het later opnieuw',
-				type: 'error'
+				type: 'danger'
 			});
 			return;
 		}
@@ -129,10 +129,6 @@
 	};
 </script>
 
-<svelte:head>
-	<title>IBS :: Playlist</title>
-</svelte:head>
-
 <audio src="" bind:this={audioPlayer} />
 {#if !mounted}
 	<div class="load">
@@ -147,13 +143,18 @@
 {:else}
 	<content>
 		<div class="card">
-			<img
-				src={getSmallestImageAbove300(current.album.images).url}
-				alt={`${current.name} album cover`}
-			/>
+			<a href={`/playlist/${current.id}`}>
+				<img
+					src={getSmallestImageAbove300(current.album.images).url}
+					alt={`${current.name} album cover`}
+				/>
+			</a>
 			<div class="info">
 				<div class="top">
-					<p class={current.name.replace(' ', '').length > 30 ? 'slide' : ''}>{current.name}</p>
+					<a
+						class={current.name.replace(' ', '').length > 30 ? 'slide' : ''}
+						href={`/playlist/${current.id}`}>{current.name}</a
+					>
 					<p class={formatArtists(current.artists).length > 35 ? 'slide artists' : 'artists'}>
 						{formatArtists(current.artists)}
 					</p>
@@ -168,7 +169,7 @@
 			<div class="actions">
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<!-- svelte-ignore a11y-no-static-element-interactions -->
-				<i
+				<icon
 					class="dislike"
 					on:click={async () => {
 						if (!current) return;
@@ -176,11 +177,11 @@
 					}}
 				>
 					<svelte:component this={Cross} width="70" height="70" />
-				</i>
+				</icon>
 
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<!-- svelte-ignore a11y-no-static-element-interactions -->
-				<i
+				<icon
 					on:click={async () => {
 						await next();
 						if (!current) return;
@@ -188,11 +189,11 @@
 					}}
 				>
 					<Arrow width="50" height="50" />
-				</i>
+				</icon>
 
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<!-- svelte-ignore a11y-no-static-element-interactions -->
-				<i
+				<icon
 					class="like"
 					on:click={async () => {
 						if (!current) return;
@@ -201,7 +202,7 @@
 					}}
 				>
 					<Heart width="70" height="70" />
-				</i>
+				</icon>
 			</div>
 		</div>
 	</content>
@@ -221,22 +222,23 @@
 	.card {
 		transition: transform 0.2s ease-in-out;
 
-		&:has(i.like:active) {
+		&:has(icon.like:active) {
 			transform: rotate(5deg);
 		}
 
-		&:has(i.dislike:active) {
+		&:has(icon.dislike:active) {
 			transform: rotate(-5deg);
-		}
-
-		@media screen and (max-width: 640px) {
-			max-width: 300px;
 		}
 
 		max-width: 500px;
 
 		display: flex;
 		flex-direction: column;
+
+		img {
+			max-width: 400px;
+			width: calc(100vw - 32px);
+		}
 
 		.top {
 			font-size: 1.3rem;
@@ -279,7 +281,11 @@
 			justify-content: space-around;
 			align-items: center;
 
-			i:hover {
+			@media screen and (min-width: 640px) {
+				margin-top: 2rem;
+			}
+
+			icon:hover {
 				cursor: pointer;
 				opacity: 0.8;
 			}

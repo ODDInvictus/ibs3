@@ -1,9 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { env } from '$env/dynamic/public';
 	import Breadcrumps from '$lib/components/breadcrumps.svelte';
 	import Logo from '$lib/components/logo-v2-small-white.svelte';
 	import ProfileIcon from '$lib/components/profile-icon.svelte';
+	import { confirm } from '$lib/confirm';
+	import { signOut } from '@auth/sveltekit/client';
+
+	function logout() {
+		confirm({
+			title: 'Uitloggen?',
+			message: 'Weet je zeker dat je wil uitloggen?',
+			cb: (success) => {
+				if (success) signOut();
+			}
+		});
+	}
 </script>
 
 <div class="layout--topbar">
@@ -17,7 +28,7 @@
 		</a>
 	</div>
 
-	<div class="user">
+	<div class="user" on:click={logout}>
 		<div class="avatar">
 			<ProfileIcon
 				uid={$page.data.user.profilePictureId}

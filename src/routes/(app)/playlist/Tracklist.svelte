@@ -5,7 +5,7 @@
 	import HeartFilled from '~icons/tabler/heart-filled';
 	import { toast } from '$lib/notification';
 
-	export let search: string;
+	export let search = '';
 	export let tracks: SpotifyApi.TrackObjectFull[];
 	export let liked: string[];
 	export let playlist: string[];
@@ -118,7 +118,7 @@
 				{/if}
 			</div>
 			<div class="info">
-				<a class="title" href={track.external_urls.spotify} target="_blank">{track.name}</a>
+				<a class="title" href={`/playlist/${track.id}`}>{track.name}</a>
 				<p class="artists">{formatArtists(track.artists)}</p>
 			</div>
 		</li>
@@ -137,7 +137,7 @@
 			gap: 20px;
 
 			&.highlight {
-				$hightlight-color: var(--primary-light-color);
+				$hightlight-color: var(--color-primary);
 
 				background-color: $hightlight-color;
 				box-shadow: $hightlight-color -20px 0px 0px 5px, $hightlight-color 20px 0px 0px 5px;
@@ -185,7 +185,7 @@
 				white-space: nowrap;
 
 				a {
-					color: var(--text-color);
+					color: var(--color-text);
 				}
 
 				.artists {

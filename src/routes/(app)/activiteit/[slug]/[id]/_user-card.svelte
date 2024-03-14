@@ -1,12 +1,38 @@
 <script lang="ts">
 	import ProfileIcon from '$lib/components/profile-icon.svelte';
-	import type { User } from '@prisma/client';
+	import type { User, AttendingStatus } from '@prisma/client';
 
 	export let user: User;
-	export let status: 'positive' | 'negative' | 'unsure';
+	export let status: AttendingStatus;
+
+	const getStatus = () => {
+		switch (status) {
+			case 'ATTENDING':
+				return 'positive';
+			case 'NOT_ATTENDING':
+				return 'negative';
+			case 'UNSURE':
+				return 'unsure';
+			case 'NO_RESPONSE':
+				return 'no-response';
+		}
+	};
+
+	const statusTitle = () => {
+		switch (status) {
+			case 'ATTENDING':
+				return 'Bij!';
+			case 'NOT_ATTENDING':
+				return 'Niet bij :(';
+			case 'UNSURE':
+				return 'Weet het nog niet';
+			case 'NO_RESPONSE':
+				return 'Niet gereageerd :(';
+		}
+	};
 </script>
 
-<div class="user-card">
+<div class="user-card" title={statusTitle()}>
 	<div class="user-card-picture">
 		<ProfileIcon
 			height="50"
@@ -16,7 +42,13 @@
 		/>
 
 		<div class="status">
-			<div class="status-circle {status}" />
+			{#key status}
+				{#if status !== 'UNSURE'}
+					<div class="status-circle {getStatus()}" />
+				{:else}
+					<div class="status-circle unsure">?</div>
+				{/if}
+			{/key}
 		</div>
 	</div>
 
@@ -82,6 +114,15 @@
 		}
 
 		.unsure {
+			background-color: white;
+			text-align: center;
+			font-size: 0.8rem;
+			font-weight: 600;
+			line-height: 12px;
+			color: rgba(255, 0, 0, 0.733);
+		}
+
+		.no-response {
 			background-color: rgba(128, 128, 128, 0.842);
 		}
 
