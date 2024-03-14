@@ -90,6 +90,8 @@ model User {
   PhotoTaggedIn           PhotoPersonTag[]          @relation("taggedInPhoto")
   PhotoTaggedBy           PhotoPersonTag[]          @relation("photoTaggedBy")
   CommentsMade            Comment[]
+  Journal                 Journal[]
+  Streeplijst             Streeplijst[]
 }
 
 model Account {
@@ -255,14 +257,15 @@ model Attending {
 // Grootboek rekening
 model Ledger {
   // Administratieve gegevens
-  id          Int           @id
+  id          Int      @id
   name        String
   description String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isActive    Boolean  @default(true)
+
   // Foreign keys
-  Transaction Transaction[]
-  isActive    Boolean       @default(true)
+  JournalRows JournalRow[]
 }
 
 // Categorie waar een product onder kan vallen
@@ -289,7 +292,7 @@ model Product {
   updatedAt   DateTime @updatedAt
   name        String
   description String
-  price       Float
+  price       Decimal  @db.Decimal(19, 4)
 
   // Dit bepaald wat er in data kan staan
   productType ProductType @default(OTHER)
@@ -297,12 +300,11 @@ model Product {
   data        Json        @db.Json
 
   // Foreign keys
-  category    ProductCategory @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  Sale        Sale[]
-  Acquisition Acquisition[]
+  category   ProductCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
   // Een product kan niet worden verwijderd, wel uitgeschakeld
-  isActive    Boolean         @default(true)
+  isActive   Boolean         @default(true)
+  JournalRow JournalRow[]
 }
 
 enum FinancialPersonType {
@@ -323,24 +325,23 @@ model FinancialPerson {
   // Naam van het financiele persoon, denk aan "O.D.D. Invictus", "Meeborrel" of gewoon de naam van een lid
   name    String
   // Huidige saldo
-  balance Float  @default(0)
+  balance Decimal @default(0) @db.Decimal(19, 4)
 
   isActive Boolean @default(true)
 
   // Foreign keys
-  FinancialGroup               FinancialGroup[]
-  FinancialPersonDataUser      FinancialPersonDataUser[]
-  FinancialPersonDataCommittee FinancialPersonDataCommittee[]
-  FinancialPersonDataActivity  FinancialPersonDataActivity[]
-  FinancialPersonDataOther     FinancialPersonDataOther[]
+  FinancialGroup               FinancialGroup?
+  FinancialPersonDataUser      FinancialPersonDataUser?
+  FinancialPersonDataCommittee FinancialPersonDataCommittee?
+  FinancialPersonDataActivity  FinancialPersonDataActivity?
+  FinancialPersonDataOther     FinancialPersonDataOther?
   FinancialGroupPersonElement  FinancialGroupPersonElement[]
 
-  TransactionFrom Transaction[] @relation("TransactionFrom")
-  TransactionTo   Transaction[] @relation("TransactionTo")
-  Sale            Sale[]
-  Acquisition     Acquisition[]
-  Declaration     Declaration[]
-  Streeplijst     Streeplijst[]
+  TransactionFrom     SaldoTransaction[] @relation("TransactionFrom")
+  TransactionTo       SaldoTransaction[] @relation("TransactionTo")
+  Journal             Journal[]
+  BankTransactionFrom BankTransaction[]
+  DeclarationData     DeclarationData[]
 }
 
 // Extra data voor FinancialPerson, afhankelijk van FinancialPersonType
@@ -352,6 +353,7 @@ model FinancialPersonDataUser {
   personId Int             @id
   user     User            @relation(fields: [userId], references: [id])
   userId   Int
+  iban     String?
 }
 
 // FinancialPersonType.GROUP
@@ -399,51 +401,100 @@ model FinancialPersonDataCommittee {
 // Alleen gebruiken als het echt niet anders kan, en met duidelijke notities
 // denk aan pollo, 44 etc.
 model FinancialPersonDataOther {
-  person      FinancialPerson @relation(fields: [personId], references: [id])
+  person      FinancialPerson @relation(fields: [personId], references: [id], onDelete: Cascade)
   personId    Int             @id
-  name        String
-  description String
+  description String?
+  email       String?
+  address     String?
+  postalCode  String?
+  city        String?
+  iban        String?
+}
+
+enum TransactionType {
+  SALDO
+  BANK
 }
 
 model Transaction {
+  id        Int             @id @default(autoincrement())
+  type      TransactionType @default(SALDO)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @default(now()) @updatedAt
+
+  SaldoTransaction    SaldoTransaction?
+  BankTransaction     BankTransaction?
+  TransactionMatchRow TransactionMatchRow[]
+}
+
+// Een transactie wordt gematched aan een Journal,
+// maar een banktransactie kan ook gematched worden aan een saldo transactie
+// als iemand geld overmaakt voor zijn saldo.
+model TransactionMatchRow {
+  id          Int     @id @default(autoincrement())
+  description String?
+  amount      Decimal @db.Decimal(19, 4)
+
+  Transaction   Transaction @relation(fields: [transactionId], references: [id])
+  transactionId Int
+
+  SaldoTransaction   SaldoTransaction? @relation(fields: [saldoTransactionId], references: [id])
+  saldoTransactionId Int?              @unique
+
+  Journal   Journal? @relation(fields: [journalId], references: [id])
+  journalId Int?
+}
+
+model SaldoTransaction {
   // Administratieve gegevens
-  id          Int      @id @default(autoincrement())
-  ledger      Ledger?  @relation(fields: [ledgerId], references: [id])
-  ledgerId    Int?
+  id          Int     @id @default(autoincrement())
   description String
-  createdAt   DateTime @default(now())
   // Transactie gegevens
-  price       Float
+  price       Decimal @db.Decimal(19, 4)
 
   // Gebruikers
-
   from   FinancialPerson @relation(fields: [fromId], references: [id], name: "TransactionFrom")
   fromId Int
   to     FinancialPerson @relation(fields: [toId], references: [id], name: "TransactionTo")
   toId   Int
+
+  Transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  transactionId Int         @unique
+
+  TransactionMatchRow TransactionMatchRow?
 }
 
-// In een verkoop kan iemand x aantal producten kopen
-// Prijs voor verkoop wordt pas bepaald zodra de transactie aangemaakt wordt
-model Sale {
-  // Administratieve gegevens
-  id        Int             @id @default(autoincrement())
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  // Hoeveel van welk product zijn er gekocht
-  product   Product         @relation(fields: [productId], references: [id])
-  productId Int
-  amount    Int
-  // Wie heeft er gekocht
-  person    FinancialPerson @relation(fields: [personId], references: [id])
-  personId  Int
+enum BankTransactionType {
+  TOPUP
+  TRANSFER
+  CARD_PAYMENT
+}
 
-  // Link naar streeplijst (indien van toepassing)
-  streeplijst   Streeplijst? @relation(fields: [streeplijstId], references: [id])
-  streeplijstId Int?
+enum BankTransactionProduct {
+  Savings
+  Current
+}
 
-  // Een verkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
-  isActive Boolean @default(true)
+model BankTransaction {
+  id  Int     @id @default(autoincrement())
+  ref String?
+
+  // Data extracted from uploaded CSV
+  type          BankTransactionType
+  product       BankTransactionProduct
+  startedDate   DateTime
+  completedDate DateTime?
+  description   String
+  amount        Decimal                @db.Decimal(19, 4)
+  fee           Decimal                @db.Decimal(19, 4)
+
+  Relation   FinancialPerson? @relation(fields: [relationId], references: [id])
+  relationId Int?
+
+  Transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  transactionId Int         @unique
+
+  @@unique([type, product, startedDate, completedDate, description, amount, fee])
 }
 
 model Streeplijst {
@@ -452,69 +503,106 @@ model Streeplijst {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Wanneer is de streeplijst aangemaakt
-  date DateTime
+  // Wanneer is de streeplijst begonnen
+  startDate DateTime?
+  // Wanneer is de streeplijst afgelopen
+  endDate   DateTime?
 
   // Wie heeft dit verwerkt
-  person   FinancialPerson @relation(fields: [personId], references: [id])
-  personId Int
+  treasurer User? @relation(fields: [userId], references: [id])
+  userId    Int?
 
-  // Een streeplijst kan niet worden verwijdered, maar kan wel worden gedeactiveerd
-  isActive Boolean @default(true)
+  notes String?
 
-  // Foreign keys
-  Sale Sale[]
+  sales Journal[]
 }
 
-// Een inkoop
-// Oke sorry voor deze naam maar Purchase vond ik te verwarrend met Sale
-model Acquisition {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  // Hoe veel van welk product zijn er gekocht
-  product   Product  @relation(fields: [productId], references: [id])
-  productId Int
-  amount    Int
-  price     Float
-
-  // Bonnetje
-  receipt String
-
-  purchaseLocation String
-
-  // Wie heeft er gekocht
-  person   FinancialPerson @relation(fields: [personId], references: [id])
-  personId Int
-
-  // Een inkoop kan niet worden verwijdered, maar kan wel worden gedeactiveerd
-  isActive Boolean @default(true)
+enum JournalType {
+  SALE
+  PURCHASE
+  DECLARATION
 }
 
-// Een declaratie is een generiekere vorm van inkoop
-model Declaration {
-  id        Int             @id @default(autoincrement())
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
-  // Wie heeft er gekocht
-  person    FinancialPerson @relation(fields: [personId], references: [id])
-  personId  Int
+// Boekstuk
+model Journal {
+  id             Int          @id @default(autoincrement())
+  ref            String?
+  Rows           JournalRow[]
+  date           DateTime?    @db.Date
+  termsOfPayment Int // Aantal dagen
+  tav            String?
+  description    String?
+  type           JournalType
 
-  // Hoeveel wil iemand terug
-  price           Float
-  // Wat is de reden voor deze declaratie
+  relation   FinancialPerson @relation(fields: [relationId], references: [id])
+  relationId Int
+
+  Treasurer   User? @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
+  treasurerId Int?
+
+  Attachments         JournalAttachments[]
+  DeclarationData     DeclarationData?
+  TransactionMatchRow TransactionMatchRow[]
+  Streeplijst         Streeplijst?          @relation(fields: [streeplijstId], references: [id])
+  streeplijstId       Int?
+}
+
+enum DeclarationStatus {
+  ACCEPTED
+  DECLINED
+  PENDING
+}
+
+enum ReceiveMethod {
+  SALDO
+  ACCOUNT
+}
+
+model DeclarationData {
+  id              Int               @id @default(autoincrement())
+  // Hoe is dit betaald? (Eigen rekening, bank, contant)
+  methodOfPayment String            @default("Eigen rekening")
+  receiveMethod   ReceiveMethod     @default(SALDO)
+  status          DeclarationStatus @default(PENDING)
+  iban            String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  askedAmount     Decimal           @db.Decimal(19, 4)
   reason          String
-  // Hoe is dit betaald? (Eigen rekening, bank, contant, of Invictus bankrekening)
-  methodOfPayment String  @default("Eigen rekening")
-  // Bonnetje (link naar cdn)
-  receipt         String?
 
-  // Heeft de penningmeester dit goedgekeurd?
-  // Als dit niet is goedgekeurd wordt het ook niet omgezet naar een transactie
-  accepted Boolean @default(false)
-  // Heeft de penningmeester dit afgekeurd?
-  // Als dit is afgekeurd wordt het ook niet omgezet naar een transactie
-  denied   Boolean @default(false)
+  DeclaratedBy      FinancialPerson @relation(fields: [financialPersonId], references: [id])
+  financialPersonId Int
+
+  Journal   Journal? @relation(fields: [journalId], references: [id], onDelete: SetNull)
+  journalId Int?     @unique
+}
+
+// Een regel in een uitgaande factuur
+model JournalRow {
+  id          Int     @id @default(autoincrement())
+  amount      Int
+  // MySQL adviseerd 19, 4 voor geld
+  price       Decimal @db.Decimal(19, 4)
+  description String
+
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId Int?
+
+  Ledger   Ledger @relation(fields: [ledgerId], references: [id])
+  ledgerId Int
+
+  Journal   Journal @relation(fields: [journalId], references: [id], onDelete: Cascade)
+  journalId Int
+}
+
+model JournalAttachments {
+  id       Int    @id @default(autoincrement())
+  MIMEtype String
+  filename String @unique
+  size     Int // Bytes
+
+  Journal   Journal? @relation(fields: [journalId], references: [id], onDelete: Cascade)
+  journalId Int?
 }
 
 //

@@ -1,13 +1,11 @@
 import { shortLinkForm } from './form';
 
-export const load = (async ({ locals }) => {
+export const load = async ({ locals }) => {
+	await shortLinkForm.transform({ user: locals.user });
 
-  await shortLinkForm.transform(locals.user)
+	return {
+		form: shortLinkForm.attributes
+	};
+};
 
-  return {
-    form: shortLinkForm.attributes
-  }
-
-})
-
-export const actions = shortLinkForm.actions
+export const actions = shortLinkForm.actions;

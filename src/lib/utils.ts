@@ -8,35 +8,35 @@ import markdownItSup from 'markdown-it-sup';
 import markdownItIns from 'markdown-it-ins';
 import markdownItEmojis from 'markdown-it-emoji';
 // @ts-expect-error Geen types
-import markdownItArrow from 'markdown-it-smartarrows'
+import markdownItArrow from 'markdown-it-smartarrows';
 import markdownItKbd from 'markdown-it-kbd';
-import markdownItPlainText from 'markdown-it-plain-text'
+import markdownItPlainText from 'markdown-it-plain-text';
 
-import xss from 'xss'
-
+import xss from 'xss';
+import type Decimal from 'decimal.js';
 
 const md = new markdownIt({
 	linkify: true,
 	breaks: true
 })
-  .use(markdownItSub)
-  .use(markdownItSup)
-  .use(markdownItIns)
-  .use(markdownItEmojis)
-  .use(markdownItArrow)
-  .use(markdownItKbd)
-  .use(markdownItPlainText)
-  .disable(['image']);
+	.use(markdownItSub)
+	.use(markdownItSup)
+	.use(markdownItIns)
+	.use(markdownItEmojis)
+	.use(markdownItArrow)
+	.use(markdownItKbd)
+	.use(markdownItPlainText)
+	.disable(['image']);
 
 export function markdown(text: string | null | undefined): string | null {
-  if (text === null || text === undefined) return null;
-  return xss(md.renderInline(text))
+	if (text === null || text === undefined) return null;
+	return xss(md.renderInline(text));
 }
 
 export function stripMarkdown(text: string | undefined) {
-  if (text === null || text === undefined) return null;
-  md.render(text)
-  return (md as any).plainText
+	if (text === null || text === undefined) return null;
+	md.render(text);
+	return (md as any).plainText;
 }
 
 // Currently in dark mode?
@@ -154,4 +154,24 @@ export function generateRandomString(length: number) {
 	}
 
 	return text;
+}
+
+// https://stackoverflow.com/a/20732091/11198265
+export function formatFileSize(size: number) {
+	const i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+	return `${(size / Math.pow(1024, i)).toFixed(2)} ${['B', 'kB', 'MB', 'GB', 'TB'][i]}`;
+}
+
+export function pagination(url: URL) {
+	let p = Number(url.searchParams.get('p'));
+	if (Number.isNaN(p) || p < 0) p = 0;
+
+	let size = Number(url.searchParams.get('size'));
+	if (Number.isNaN(size) || size <= 0) size = 20;
+
+	return { p, size };
+}
+
+export function formatMoney(price: number | Decimal | String) {
+	return `€ ${Number(price).toFixed(2)}`;
 }

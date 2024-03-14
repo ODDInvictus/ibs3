@@ -52,10 +52,13 @@
 		"svelte-check": "^3.4.6",
 		"svelte-floating-ui": "^1.5.3",
 		"svelte-preprocess": "^5.0.4",
+		"sveltekit-flash-message": "^2.2.1",
+		"sveltekit-superforms": "^1.8.0",
 		"ts-node": "^10.9.1",
 		"tslib": "^2.4.1",
 		"typescript": "^5.1.6",
 		"unplugin-icons": "^0.16.1",
+		"zod": "^3.22.4",
 		"vite": "^4.4.12"
 	},
 	"type": "module",
@@ -64,8 +67,11 @@
 		"@prisma/client": "^5.0.0",
 		"@total-typescript/ts-reset": "^0.5.1",
 		"autoprefixer": "^10.4.14",
+		"csv-parser": "^3.0.0",
+		"decimal.js": "^10.4.3",
 		"dotenv": "^16.3.1",
 		"express": "^4.18.2",
+		"filereader": "^0.10.3",
 		"markdown-it": "^13.0.1",
 		"markdown-it-emoji": "^2.0.2",
 		"markdown-it-ins": "^3.0.1",
@@ -77,10 +83,11 @@
 		"next-auth": "^4.24.5",
 		"node-cache": "^5.1.2",
 		"sanitize-html": "^2.11.0",
+		"simple-svelte-autocomplete": "^2.5.2",
 		"sharp": "^0.32.6",
 		"spotify-web-api-node": "^5.0.2",
+		"stream-to-async-iterator": "^1.0.0",
 		"svelte-modals": "^1.2.1",
-		"xss": "^1.0.14",
-		"zod": "^3.22.3"
+		"xss": "^1.0.14"
 	}
 }

@@ -1,0 +1,10 @@
+{
+	"SuperField": {
+		"scope": "svelte",
+		"prefix": "sf",
+		"body": [
+			"<SuperField type=\"${1|text,textArea,number,date|}\" {formProps} field=\"$2\">$3</SuperField>$0"
+		],
+		"description": "Create super field component"
+	}
+}
