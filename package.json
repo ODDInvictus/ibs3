@@ -82,7 +82,7 @@
 		"markdown-it-sup": "^1.0.0",
 		"next-auth": "^4.24.5",
 		"node-cache": "^5.1.2",
-		"sanitize-html": "^2.11.0",
+		"sanitize-html": "^2.12.1",
 		"simple-svelte-autocomplete": "^2.5.2",
 		"sharp": "^0.32.6",
 		"spotify-web-api-node": "^5.0.2",
