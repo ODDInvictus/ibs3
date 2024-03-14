@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { formatDateHumanReadable } from '$lib/dateUtils';
-	import { PUBLIC_IBAN as IBAN } from '$env/static/public';
+	import { env } from '$env/dynamic/public';
 	import type Decimal from 'decimal.js';
 	import { formatPrice } from '$lib/textUtils';
 
@@ -123,10 +123,10 @@
 			Gelieve binnen {invoice.termsOfPayment} dagen het bedrag van {invoice.Rows.reduce(
 				(t, row) => t + row.amount * Number(row.price),
 				0
-			)} euro over te maken op rekeningnummer<br />{IBAN} t.n.v. N. Rotmensen onder vermelding van het
-			factuurnummer {invoice.id}.
+			)} euro over te maken op rekeningnummer<br />{env.PUBLIC_IBAN} t.n.v. N. Rotmensen onder vermelding
+			van het factuurnummer {invoice.id}.
 			<div class="bottom-bar">
-				<p>IBAN: {IBAN}</p>
+				<p>IBAN: {env.PUBLIC_IBAN}</p>
 				<p>Email: questor@oddinvictus.nl</p>
 			</div>
 		</footer>
