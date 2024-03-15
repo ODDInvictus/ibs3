@@ -6,7 +6,8 @@ import { superValidate } from 'sveltekit-superforms/server';
 import { authorization } from '$lib/ongeveer/utils';
 import schema from './relationSchema';
 
-export const load = (async ({ url }) => {
+export const load = (async (event) => {
+	const { url } = event;
 	const id = Number(url.searchParams.get('id'));
 
 	// Query the database for the relation if an id is provided
@@ -19,11 +20,23 @@ export const load = (async ({ url }) => {
 			select: {
 				id: true,
 				name: true,
-				FinancialPersonDataOther: true
+				FinancialPersonDataOther: true,
+				type: true
 			}
 		});
 
 		if (!relation) throw error(404);
+		if (relation.type !== 'OTHER') {
+			throw redirect(
+				`/ongeveer/relations/${id}`,
+				{
+					message: 'Je kan dit type relatie niet bewerken',
+					type: 'danger',
+					title: 'Error'
+				},
+				event
+			);
+		}
 	}
 
 	// Populate form with existing data if it exists

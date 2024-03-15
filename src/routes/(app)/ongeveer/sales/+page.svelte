@@ -26,7 +26,7 @@
 	</thead>
 	<tbody>
 		{#if data.invoices.length == 0}
-			<td colspan="4">Geen verkopen gevonden</td>
+			<td colspan="5">Geen verkopen gevonden</td>
 		{/if}
 		{#each data.invoices as { id, ref, relationId, relation, date, total, paid }}
 			<tr>
