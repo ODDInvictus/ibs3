@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types';
 import db from '$lib/server/db';
-import { ProductType } from '@prisma/client';
+import type { ProductType } from '@prisma/client';
 import { fail } from '@sveltejs/kit';
 import { authorization } from '$lib/ongeveer/utils';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -26,9 +26,11 @@ export const load = (async ({ url }) => {
 	const categories = await db.productCategory.findMany();
 	const form = await superValidate(data, productSchema);
 
+	const productTypes: ProductType[] = ['FOOD', 'ALCOHOL', 'OTHER'];
+
 	return {
 		categories,
-		productTypes: Object.values(ProductType),
+		productTypes,
 		form
 	};
 }) satisfies PageServerLoad;
