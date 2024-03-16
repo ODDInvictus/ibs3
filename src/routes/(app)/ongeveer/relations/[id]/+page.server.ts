@@ -14,7 +14,6 @@ export const load = (async ({ params }) => {
 				select: {
 					Journal: true,
 					BankTransactionFrom: true,
-					Acquisition: true,
 					TransactionFrom: true,
 					TransactionTo: true
 				}
