@@ -36,7 +36,7 @@
 		</table>
 	</div>
 	<div class="right">
-		<a class="button" href="/financieel/ledger/{data.ledger.id}/edit">Bewerken</a>
+		<a class="button" href="/ongeveer/ledger/{data.ledger.id}/edit">Bewerken</a>
 		<button
 			on:click={async () => {
 				const res = await fetch('', {
