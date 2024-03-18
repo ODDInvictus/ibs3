@@ -36,7 +36,13 @@ export async function verdubbelStrafbakken() {
 
   for (const [user, bakken] of count) {
     const limit = Number(process.env.STRAFBAKKEN_DOUBLE_LIMIT) || 50
-    const doubled = Math.min(bakken * 2, limit)
+    let doubled
+    if (bakken < 8) {
+      doubled = bakken * 2
+    } else {
+      doubled = Math.max(bakken + 1, Math.min(bakken * 2 * (1/(1+(bakken/limit))) + 3, limit))
+    }
+    Math.round(doubled)
 
     const extra = doubled - bakken
 
