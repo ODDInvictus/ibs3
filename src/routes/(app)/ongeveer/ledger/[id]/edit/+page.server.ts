@@ -12,7 +12,7 @@ export const load = (async ({ params, locals }) => {
 		include: {
 			_count: {
 				select: {
-					Transaction: true
+					JournalRows: true
 				}
 			}
 		}
@@ -21,10 +21,10 @@ export const load = (async ({ params, locals }) => {
 
 	await editForm.transform({
 		values: {
-			id: ledger.id.toString(),
+			id: ledger.id,
 			name: ledger.name,
 			description: ledger.description,
-			prevId: ledger.id.toString()
+			prevId: ledger.id
 		}
 	});
 
