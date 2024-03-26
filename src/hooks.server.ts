@@ -8,6 +8,7 @@ import prisma from '$lib/server/db';
 import { getCommittees, getRoles, getUser } from '$lib/server/userCache';
 import { notifyDiscordError } from '$lib/server/notifications/discord';
 import { Decimal } from 'decimal.js';
+import { client as Mongo } from '$lib/server/mongo';
 
 const authorization = (async ({ event, resolve }) => {
 	const url = event.url.pathname;
@@ -88,6 +89,9 @@ export const handleError = (async ({ error, event }) => {
 }) satisfies HandleServerError;
 
 // On start up
-(() => {
+await (async () => {
 	Decimal.set({ precision: 4 });
+
+	await Mongo.connect();
+	console.log('You successfully connected to MongoDB!');
 })();
