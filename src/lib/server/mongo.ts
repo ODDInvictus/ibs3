@@ -1,6 +1,5 @@
 import { GridFSBucket, MongoClient, ServerApiVersion } from 'mongodb';
 import { env } from '$env/dynamic/private';
-import { generateRandomString } from '$lib/utils';
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 export const client = new MongoClient(env.MONGO_URI, {
