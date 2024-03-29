@@ -10,15 +10,14 @@ export const client = new MongoClient(env.MONGO_URI, {
 	}
 });
 
-const db = client.db(env.MONGO_DB_NAME);
-export default db;
+export const mongo = client.db(env.MONGO_DB_NAME);
 
 // TODO covert to jpeg and compress (ffmpeg?)
 export async function uploadFile(
 	file: File,
 	opts: { toJpeg?: boolean; compression?: number } = {}
 ) {
-	const bucket = new GridFSBucket(db);
+	const bucket = new GridFSBucket(mongo);
 	const buffer = Buffer.from(await file.arrayBuffer());
 	// check if name already exists and generate a new one like 'name-2.jpeg'
 	let name = file.name;

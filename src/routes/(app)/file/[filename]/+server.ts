@@ -1,10 +1,10 @@
 import type { RequestHandler } from './$types';
-import Mongo from '$lib/server/mongo';
+import { mongo } from '$lib/server/mongo';
 import { GridFSBucket } from 'mongodb';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const filename = decodeURIComponent(params.filename);
-	const gfs = new GridFSBucket(Mongo, { bucketName: 'fs' });
+	const gfs = new GridFSBucket(mongo, { bucketName: 'fs' });
 	const cursor = gfs.find({ filename });
 	const doc = await cursor.next();
 	if (!doc) return new Response(null, { status: 404 });
