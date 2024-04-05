@@ -1,44 +1,44 @@
-import db from "$lib/server/db";
-import type { PageServerLoad } from "./$types";
+import db from '$lib/server/db'
+import type { PageServerLoad } from './$types'
 
 function getDateOfISOWeek(w: number, y: number) {
-  const simple = new Date(y, 0, 1 + (w - 1) * 7);
-  const dow = simple.getDay();
-  const ISOweekStart = simple;
-  if (dow <= 4) ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
-  else ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
-  return ISOweekStart;
+	const simple = new Date(y, 0, 1 + (w - 1) * 7)
+	const dow = simple.getDay()
+	const ISOweekStart = simple
+	if (dow <= 4) ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1)
+	else ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay())
+	return ISOweekStart
 }
 
 function getCurrentWeekNumber() {
-  const current = new Date();
-  const start = new Date(current.getFullYear(), 0, 1);
-  // @ts-expect-error
-  const days = Math.floor((current - start) / (24 * 60 * 60 * 1000));
-  return Math.ceil(days / 7);
+	const current = new Date()
+	const start = new Date(current.getFullYear(), 0, 1)
+	// @ts-expect-error
+	const days = Math.floor((current - start) / (24 * 60 * 60 * 1000))
+	return Math.ceil(days / 7)
 }
 
 export const load = (async ({ url }) => {
-  const week = url.searchParams.get("week");
-  let weekNumber = Number(week);
+	const week = url.searchParams.get('week')
+	let weekNumber = Number(week)
 
-  let dateStart = new Date("2003-04-14");
-  let dateEnd = new Date();
+	let dateStart = new Date('2003-04-14')
+	let dateEnd = new Date()
 
-  if (week !== null && week !== undefined && weekNumber <= 52 && weekNumber >= 0) {
-    const current = getCurrentWeekNumber();
-    if (weekNumber === 0) weekNumber = current;
+	if (week !== null && week !== undefined && weekNumber <= 52 && weekNumber >= 0) {
+		const current = getCurrentWeekNumber()
+		if (weekNumber === 0) weekNumber = current
 
-    const currentYear = new Date().getFullYear();
-    const year = current > weekNumber ? currentYear - 1 : currentYear;
-    dateStart = getDateOfISOWeek(weekNumber, year);
+		const currentYear = new Date().getFullYear()
+		const year = current > weekNumber ? currentYear - 1 : currentYear
+		dateStart = getDateOfISOWeek(weekNumber, year)
 
-    dateEnd.setDate(dateStart.getDate() + 7);
-  }
+		dateEnd.setDate(dateStart.getDate() + 7)
+	}
 
-  // Hoeren prisma kan deze query gewoon NIET.
-  return {
-    strafbakken: await db.$queryRaw`
+	// Hoeren prisma kan deze query gewoon NIET.
+	return {
+		strafbakken: await db.$queryRaw`
       SELECT u.nickname, u.firstname AS firstName, COUNT(s.id) AS count, u.id
       FROM User AS u, Strafbak AS s
       WHERE s.receiverId = u.id
@@ -48,9 +48,9 @@ export const load = (async ({ url }) => {
       GROUP BY u.id
       ORDER BY COUNT(s.id) DESC
     `,
-    week: week,
-  };
-}) satisfies PageServerLoad;
+		week: week,
+	}
+}) satisfies PageServerLoad
 
 // Deze approach werkt niet, want je mag geen select in een groupBy doen
 

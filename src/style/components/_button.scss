@@ -19,14 +19,15 @@ button {
 	color: var(--color-text-light);
 	background-color: var(--color-primary);
 
-  &[disabled], &.disabled {
-    cursor: not-allowed;
-    background-color: var(--color-disabled) !important;
+	&[disabled],
+	&.disabled {
+		cursor: not-allowed;
+		background-color: var(--color-disabled) !important;
 
-    &:hover {
-      text-decoration: none !important;
-    }
-  }
+		&:hover {
+			text-decoration: none !important;
+		}
+	}
 }
 
 a.button {
@@ -35,9 +36,9 @@ a.button {
 	text-decoration: none;
 	text-align: center;
 
-  &.disabled {
-    @extend button, [disabled]
-  }
+	&.disabled {
+		@extend button, [disabled];
+	}
 }
 
 label.button {

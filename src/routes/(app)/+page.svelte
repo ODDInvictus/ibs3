@@ -1,141 +1,138 @@
 <script lang="ts">
-	import knoppers from '$lib/assets/knoppers.png';
-	import { onDestroy, onMount } from 'svelte';
-	import { browser } from '$app/environment';
-	import { daysLeftTill, formatDateHumanReadable, toAge, toBirthday } from '$lib/dateUtils';
-	import { imagePreview } from '$lib/imagePreviewStore';
-	import { toast } from '$lib/notification';
-	import { markdown } from '$lib/utils';
-	import type { PageData } from './$types';
+	import knoppers from '$lib/assets/knoppers.png'
+	import { onDestroy, onMount } from 'svelte'
+	import { browser } from '$app/environment'
+	import { daysLeftTill, formatDateHumanReadable, toAge, toBirthday } from '$lib/dateUtils'
+	import { imagePreview } from '$lib/imagePreviewStore'
+	import { toast } from '$lib/notification'
+	import { markdown } from '$lib/utils'
+	import type { PageData } from './$types'
 
-	export let data: PageData;
+	export let data: PageData
 
 	/* Cookie clicker */
-	const localStorageKey = 'ibs::clicks';
-	let isClicking = false;
+	const localStorageKey = 'ibs::clicks'
+	let isClicking = false
 
-	let totalClicks = data.clicks?._sum?.amount ?? 0;
-	let sessionClicks = 0;
+	let totalClicks = data.clicks?._sum?.amount ?? 0
+	let sessionClicks = 0
 
-	$: satuationStyle = `filter: saturate(${Math.min(9, Math.max(1, sessionClicks / 100))})`;
+	$: satuationStyle = `filter: saturate(${Math.min(9, Math.max(1, sessionClicks / 100))})`
 
-	let timeout: NodeJS.Timeout | undefined = undefined;
-	let startTime: number;
+	let timeout: NodeJS.Timeout | undefined = undefined
+	let startTime: number
 
-	let record = data.topclicker?.amount;
-	let recordHolder = data.topclicker?.firstName;
+	let record = data.topclicker?.amount
+	let recordHolder = data.topclicker?.firstName
 	$: {
 		if (totalClicks > record) {
-			record = totalClicks;
-			recordHolder = 'jou';
+			record = totalClicks
+			recordHolder = 'jou'
 		}
 	}
 
 	async function cookieClick() {
 		if (isClicking) {
-			if (timeout) clearTimeout(timeout);
+			if (timeout) clearTimeout(timeout)
 		} else {
-			isClicking = true;
-			startTime = Date.now();
+			isClicking = true
+			startTime = Date.now()
 		}
 
-		sessionClicks++;
-		totalClicks++;
+		sessionClicks++
+		totalClicks++
 
 		timeout = setTimeout(async () => {
-			await endSession(startTime, sessionClicks);
-		}, 2 * 1000);
+			await endSession(startTime, sessionClicks)
+		}, 2 * 1000)
 	}
 
 	async function endSession(startTime: number, amount: number, endTime?: number) {
-		console.log('Posting ' + sessionClicks + ' clicks');
-		isClicking = false;
-		if (timeout) clearTimeout(timeout);
-		if (!amount) return;
+		console.log('Posting ' + sessionClicks + ' clicks')
+		isClicking = false
+		if (timeout) clearTimeout(timeout)
+		if (!amount) return
 
 		await fetch('', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ startTime, amount, endTime })
-		});
-		sessionClicks = 0;
+			body: JSON.stringify({ startTime, amount, endTime }),
+		})
+		sessionClicks = 0
 	}
 
 	onDestroy(() => {
-		if (!browser || !sessionClicks) return;
-		localStorage.setItem(
-			localStorageKey,
-			JSON.stringify({ startTime, sessionClicks, endTime: Date.now() })
-		);
-	});
+		if (!browser || !sessionClicks) return
+		localStorage.setItem(localStorageKey, JSON.stringify({ startTime, sessionClicks, endTime: Date.now() }))
+	})
 
 	onMount(async () => {
-		if (!browser) return;
+		if (!browser) return
 
-		const data = localStorage.getItem(localStorageKey);
-		if (!data) return;
+		const data = localStorage.getItem(localStorageKey)
+		if (!data) return
 
-		const { startTime, sessionClicks, endTime } = JSON.parse(data);
-		if (sessionClicks == 0) return;
-		totalClicks += sessionClicks;
-		localStorage.removeItem(localStorageKey);
-		await endSession(startTime, sessionClicks, endTime);
-	});
+		const { startTime, sessionClicks, endTime } = JSON.parse(data)
+		if (sessionClicks == 0) return
+		totalClicks += sessionClicks
+		localStorage.removeItem(localStorageKey)
+		await endSession(startTime, sessionClicks, endTime)
+	})
 
 	function activityImage(resize: boolean) {
-		let link = '';
+		let link = ''
 
 		if (data.activity) {
 			if (data.activity.photo) {
-				link = `/image/id/${data.activity.photo.id}&static=false`;
+				link = `/image/id/${data.activity.photo.id}&static=false`
 			} else {
-				link = `/image/logo${resize ? '' : '@2'}.png?static=true`;
+				link = `/image/logo${resize ? '' : '@2'}.png?static=true`
 			}
 		} else {
-			link = `/image/no-activity.jpeg?static=true`;
+			link = `/image/no-activity.jpeg?static=true`
 		}
 
 		if (resize) {
-			link += '&size=750x375';
+			link += '&size=750x375'
 		}
 
-		return link;
+		return link
 	}
 
 	function birthdayImage(resize: boolean) {
-		let link = '';
+		let link = ''
 
 		if (data.nextBirthday.profilePictureId) {
-			link = `/image/id/${data.nextBirthday.profilePictureId}?static=false`;
+			link = `/image/id/${data.nextBirthday.profilePictureId}?static=false`
 		} else {
-			link = `/image/no-birthday.jpeg?static=true`;
+			link = `/image/no-birthday.jpeg?static=true`
 		}
 
 		if (resize) {
-			link += '&size=750x375';
+			link += '&size=750x375'
 		}
 
-		return link;
+		return link
 	}
 
 	async function bij() {
-		fetch(`/activiteit/${data.activity?.id}/bij`, { method: 'POST' }).then((res) => {
+		fetch(`/activiteit/${data.activity?.id}/bij`, { method: 'POST' }).then(res => {
 			if (res.status !== 200) {
 				toast({
 					title: 'Oeps!',
 					message: 'Er ging iets mis bij het aanmelden voor de activiteit',
-					type: 'danger'
-				});
+					type: 'danger',
+				})
 			} else {
 				toast({
 					title: 'Gezellig!',
 					message: 'Je bent aangemeld voor de activiteit',
-					type: 'success'
-				});
+					type: 'success',
+				})
 			}
-		});
+		})
 	}
 </script>
 
@@ -156,7 +153,7 @@
 				alt={data.activity?.name ?? 'Geen activiteit gepland'}
 				on:click={() =>
 					imagePreview({
-						image: activityImage(false)
+						image: activityImage(false),
 					})}
 				src={activityImage(true)}
 			/>
@@ -212,15 +209,7 @@
 	<div class="ibs-card cookie-clicker">
 		<h2 class="ibs-card--title">Knoppers klikker</h2>
 		<div class="ibs-card--content">
-			<img
-				style={satuationStyle}
-				id="cookie"
-				role="button"
-				tabindex="0"
-				src={knoppers}
-				alt="knoppers"
-				on:click={cookieClick}
-			/>
+			<img style={satuationStyle} id="cookie" role="button" tabindex="0" src={knoppers} alt="knoppers" on:click={cookieClick} />
 			<div id="cookieStats">
 				<p>Totaal clicks: {totalClicks}</p>
 				{#if record && recordHolder}
@@ -233,11 +222,7 @@
 
 	<div class="ibs-card birthdays">
 		<div class="ibs-card--image">
-			<img
-				on:click={() => imagePreview({ image: birthdayImage(false) })}
-				src={birthdayImage(true)}
-				alt="⏳"
-			/>
+			<img on:click={() => imagePreview({ image: birthdayImage(false) })} src={birthdayImage(true)} alt="⏳" />
 		</div>
 		{#if daysLeftTill(data.nextBirthday.birthDate) > 0}
 			{@const birthday = data.nextBirthday.birthDate}

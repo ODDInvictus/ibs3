@@ -1,43 +1,43 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import { superForm } from 'sveltekit-superforms/client';
-	import { declatationSchema } from './declarationSchema';
-	import SuperField from '$lib/superforms/SuperField.svelte';
-	import SuperSelect from '$lib/superforms/SuperSelect.svelte';
-	import Submit from '$lib/superforms/Submit.svelte';
-	import SuperFileField from '$lib/superforms/SuperFileField.svelte';
-	import type { PageData } from './$types';
-	import { onError } from '$lib/superforms/error';
+	import Title from '$lib/components/title.svelte'
+	import { superForm } from 'sveltekit-superforms/client'
+	import { declatationSchema } from './declarationSchema'
+	import SuperField from '$lib/superforms/SuperField.svelte'
+	import SuperSelect from '$lib/superforms/SuperSelect.svelte'
+	import Submit from '$lib/superforms/Submit.svelte'
+	import SuperFileField from '$lib/superforms/SuperFileField.svelte'
+	import type { PageData } from './$types'
+	import { onError } from '$lib/superforms/error'
 
-	export let data: PageData;
+	export let data: PageData
 
 	const formProps = superForm(data.form, {
 		validators: declatationSchema,
 		onError,
-		onSubmit: () => (src = null)
-	});
+		onSubmit: () => (src = null),
+	})
 
-	const { enhance, form, message } = formProps;
+	const { enhance, form, message } = formProps
 
-	let files: FileList;
-	let src: string | null = null;
+	let files: FileList
+	let src: string | null = null
 
 	$: if (files) {
-		showImage();
+		showImage()
 	}
 
 	function showImage() {
-		if (!files || files.length === 0) return;
+		if (!files || files.length === 0) return
 
-		const file = files[0];
+		const file = files[0]
 
-		const reader = new FileReader();
+		const reader = new FileReader()
 
 		reader.onload = function (event) {
-			src = event.target?.result?.toString() ?? null;
-		};
+			src = event.target?.result?.toString() ?? null
+		}
 
-		reader.readAsDataURL(file);
+		reader.readAsDataURL(file)
 	}
 </script>
 
@@ -57,7 +57,7 @@
 		field="receiveMethod"
 		options={[
 			['SALDO', 'Saldo'],
-			['ACCOUNT', 'Rekening']
+			['ACCOUNT', 'Rekening'],
 		]}
 	>
 		Ontvangemethode

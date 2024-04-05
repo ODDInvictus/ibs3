@@ -1,7 +1,7 @@
-import prisma from '$lib/server/db';
-import db from '$lib/server/db';
-import type { JournalType } from '@prisma/client';
-import Decimal from 'decimal.js';
+import prisma from '$lib/server/db'
+import db from '$lib/server/db'
+import type { JournalType } from '@prisma/client'
+import Decimal from 'decimal.js'
 
 /**
  * Retrieves journals from the database based on the specified type.
@@ -12,144 +12,121 @@ import Decimal from 'decimal.js';
 export const getJournals = async ({
 	type,
 	pagination,
-	open
+	open,
 }: {
-	type?: JournalType | JournalType[];
-	pagination?: { p: number; size: number };
-	open?: boolean;
+	type?: JournalType | JournalType[]
+	pagination?: { p: number; size: number }
+	open?: boolean
 }) => {
 	const journals = await db.journal.findMany({
 		where: {
-			type: type ? (Array.isArray(type) ? { in: type } : type) : undefined
+			type: type ? (Array.isArray(type) ? { in: type } : type) : undefined,
 		},
 		include: {
 			Rows: {
 				select: {
 					amount: true,
-					price: true
-				}
+					price: true,
+				},
 			},
 			relation: {
 				select: {
-					name: true
-				}
+					name: true,
+				},
 			},
 			TransactionMatchRow: {
 				select: {
-					amount: true
-				}
-			}
+					amount: true,
+				},
+			},
 		},
 		orderBy: { date: { sort: 'desc', nulls: 'first' } },
 		take: open ? undefined : pagination?.size,
-		skip: open ? undefined : pagination ? pagination.p * pagination.size : undefined
-	});
+		skip: open ? undefined : pagination ? pagination.p * pagination.size : undefined,
+	})
 
-	let journalsWithTotal = journals.map((journal) => {
-		const total = journal.Rows.reduce(
-			(acc, row) => acc.add(row.price.mul(row.amount)),
-			new Decimal(0)
-		);
-		const paid = journal.TransactionMatchRow.reduce(
-			(acc, row) => acc.add(row.amount),
-			new Decimal(0)
-		);
+	let journalsWithTotal = journals.map(journal => {
+		const total = journal.Rows.reduce((acc, row) => acc.add(row.price.mul(row.amount)), new Decimal(0))
+		const paid = journal.TransactionMatchRow.reduce((acc, row) => acc.add(row.amount), new Decimal(0))
 
 		return {
 			...journal,
 			total: total.toNumber(),
-			paid: paid.toNumber()
-		};
-	});
+			paid: paid.toNumber(),
+		}
+	})
 
 	if (open) {
-		journalsWithTotal = journalsWithTotal.filter((journal) => journal.total !== journal.paid);
+		journalsWithTotal = journalsWithTotal.filter(journal => journal.total !== journal.paid)
 		if (pagination) {
-			journalsWithTotal = journalsWithTotal.slice(
-				pagination.p * pagination.size,
-				(pagination.p + 1) * pagination.size
-			);
+			journalsWithTotal = journalsWithTotal.slice(pagination.p * pagination.size, (pagination.p + 1) * pagination.size)
 		}
 	}
 
-	return JSON.parse(JSON.stringify(journalsWithTotal)) as typeof journalsWithTotal;
-};
+	return JSON.parse(JSON.stringify(journalsWithTotal)) as typeof journalsWithTotal
+}
 
 export const getRelations = async () => {
 	return await db.financialPerson.findMany({
-		where: { OR: [{ type: 'OTHER' }, { type: 'USER' }], isActive: true }
-	});
-};
+		where: { OR: [{ type: 'OTHER' }, { type: 'USER' }], isActive: true },
+	})
+}
 
 export const getLedgers = async () => {
-	return await db.ledger.findMany({ where: { isActive: true } });
-};
+	return await db.ledger.findMany({ where: { isActive: true } })
+}
 
 export const getJournalStatus = async (id: number) => {
 	const journal = await db.journal.findUnique({
 		where: { id },
 		include: {
 			TransactionMatchRow: true,
-			Rows: true
-		}
-	});
-	if (!journal) return null;
+			Rows: true,
+		},
+	})
+	if (!journal) return null
 
-	const total = journal.Rows.reduce(
-		(acc, row) => acc.add(row.price.mul(row.amount)),
-		new Decimal(0)
-	);
-	const paid = journal.TransactionMatchRow.reduce(
-		(acc, row) => acc.add(row.amount),
-		new Decimal(0)
-	);
+	const total = journal.Rows.reduce((acc, row) => acc.add(row.price.mul(row.amount)), new Decimal(0))
+	const paid = journal.TransactionMatchRow.reduce((acc, row) => acc.add(row.amount), new Decimal(0))
 
-	return total.eq(paid) ? 'PAID' : 'UNPAID';
-};
+	return total.eq(paid) ? 'PAID' : 'UNPAID'
+}
 
 /**
  * Applies a transaction by incrementing the balance of the receiver and decrementing the balance of the sender.
  * ID's are the ID's of the User, not Financial person.
  */
-export async function applyTransaction({
-	fromId,
-	toId,
-	price
-}: {
-	fromId: number;
-	toId: number;
-	price: number;
-}) {
-	return await prisma.$transaction(async (tx) => {
+export async function applyTransaction({ fromId, toId, price }: { fromId: number; toId: number; price: number }) {
+	return await prisma.$transaction(async tx => {
 		// Increment the balance of the receiver
-		await incrementBalance(toId, price);
+		await incrementBalance(toId, price)
 		// Decrement the balance of the sender
-		await incrementBalance(fromId, -price);
+		await incrementBalance(fromId, -price)
 
 		async function incrementBalance(userId: number, price: number) {
 			const fp = await tx.financialPerson.findUnique({
 				where: {
-					id: userId
-				}
-			});
-			if (!fp) throw new Error('FinancialPerson not found');
+					id: userId,
+				},
+			})
+			if (!fp) throw new Error('FinancialPerson not found')
 			if (fp.type === 'USER' || fp.type === 'INVICTUS') {
 				await tx.financialPerson.update({
 					where: {
-						id: fp.id
+						id: fp.id,
 					},
 					data: {
 						balance: {
-							increment: price
-						}
-					}
-				});
+							increment: price,
+						},
+					},
+				})
 			} else {
 				// TODO Add support for committee
-				throw new Error('Committee / others not supported yet');
+				throw new Error('Committee / others not supported yet')
 			}
 		}
-	});
+	})
 }
 
 /*
@@ -160,27 +137,27 @@ export async function createTransaction({
 	receiver,
 	amount,
 	description,
-	isManual
+	isManual,
 }: {
-	giver: number;
-	receiver: number;
-	amount: number | Decimal;
-	description: string;
-	isManual?: boolean;
+	giver: number
+	receiver: number
+	amount: number | Decimal
+	description: string
+	isManual?: boolean
 }) {
-	const transaction = await db.transaction.create();
+	const transaction = await db.transaction.create()
 	return await db.saldoTransaction.create({
 		data: {
 			fromId: giver,
 			toId: receiver,
 			price: amount,
 			description: `${isManual ?? true ? 'Handmatige transactie: ' : ''}${description}`,
-			transactionId: transaction.id
+			transactionId: transaction.id,
 		},
 		include: {
-			Transaction: true
-		}
-	});
+			Transaction: true,
+		},
+	})
 }
 
 /**
@@ -192,13 +169,13 @@ export async function tallySheetIsProcessed(streeplijstId: number) {
 		where: { streeplijstId },
 		include: {
 			TransactionMatchRow: true,
-			Rows: true
-		}
-	});
+			Rows: true,
+		},
+	})
 	for (const journal of journals) {
-		if ((await getJournalStatus(journal.id)) === 'UNPAID') return false;
+		if ((await getJournalStatus(journal.id)) === 'UNPAID') return false
 	}
-	return true;
+	return true
 }
 
 /**
@@ -207,9 +184,9 @@ export async function tallySheetIsProcessed(streeplijstId: number) {
  * @throws An error if the Invictus financial person is not found.
  */
 export async function getInvictusId() {
-	const id = (await db.financialPerson.findFirst({ where: { type: 'INVICTUS' } }))?.id;
-	if (!id) throw new Error('[ONGEVEER] Invictus financial person not found');
-	return id;
+	const id = (await db.financialPerson.findFirst({ where: { type: 'INVICTUS' } }))?.id
+	if (!id) throw new Error('[ONGEVEER] Invictus financial person not found')
+	return id
 }
 
 /**
@@ -218,31 +195,26 @@ export async function getInvictusId() {
  * @throws Error if not all ledger IDs are found.
  */
 export async function getLedgerIds() {
-	const names = [
-		'DEFAULT_DECLARATION_LEDGER',
-		'DEFAULT_SALE_BEER_LEDGER',
-		'DEFAULT_SALE_FOOD_LEDGER',
-		'DEFAULT_SALE_OTHER_LEDGER'
-	] as const;
+	const names = ['DEFAULT_DECLARATION_LEDGER', 'DEFAULT_SALE_BEER_LEDGER', 'DEFAULT_SALE_FOOD_LEDGER', 'DEFAULT_SALE_OTHER_LEDGER'] as const
 
 	const ids = await db.settings.findMany({
 		where: {
 			name: {
-				in: [...names]
-			}
+				in: [...names],
+			},
 		},
 		select: {
 			name: true,
-			value: true
-		}
-	});
-	if (ids.length !== names.length) throw new Error('Not all ledger ids are found');
+			value: true,
+		},
+	})
+	if (ids.length !== names.length) throw new Error('Not all ledger ids are found')
 
-	const res: Record<string, number> = {};
+	const res: Record<string, number> = {}
 	for (const name of names) {
-		res[name] = Number(ids.find((id) => id.name === name)!.value);
+		res[name] = Number(ids.find(id => id.name === name)!.value)
 	}
-	return res as Record<(typeof names)[number], number>;
+	return res as Record<(typeof names)[number], number>
 }
 
 /**
@@ -254,31 +226,25 @@ export async function getUnmatchedJournals() {
 	let journals = await db.journal.findMany({
 		where: {
 			NOT: {
-				date: null
-			}
+				date: null,
+			},
 		},
 		include: {
 			TransactionMatchRow: true,
-			Rows: true
+			Rows: true,
 		},
 		orderBy: {
-			date: 'desc'
-		}
-	});
+			date: 'desc',
+		},
+	})
 	// Filter out journals that are already matched
-	journals = journals.filter((journal) => {
-		const total = journal.Rows.reduce(
-			(acc, row) => acc.add(row.price.mul(row.amount)),
-			new Decimal(0)
-		);
-		const matched = journal.TransactionMatchRow.reduce(
-			(acc, row) => acc.add(row.amount),
-			new Decimal(0)
-		);
-		return !total.eq(matched);
-	});
+	journals = journals.filter(journal => {
+		const total = journal.Rows.reduce((acc, row) => acc.add(row.price.mul(row.amount)), new Decimal(0))
+		const matched = journal.TransactionMatchRow.reduce((acc, row) => acc.add(row.amount), new Decimal(0))
+		return !total.eq(matched)
+	})
 
 	return journals.map(({ id, ref, type }) => {
-		return { id, ref, type };
-	});
+		return { id, ref, type }
+	})
 }

@@ -1,6 +1,6 @@
 <script>
-	import Title from '$lib/components/title.svelte';
-	import knoppers from '$lib/assets/knoppers.png';
+	import Title from '$lib/components/title.svelte'
+	import knoppers from '$lib/assets/knoppers.png'
 </script>
 
 <Title title="Maluspunten" />

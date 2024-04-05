@@ -1,39 +1,39 @@
-import db from '$lib/server/db';
-import { pagination } from '$lib/utils';
-import type { PageServerLoad } from './$types';
+import db from '$lib/server/db'
+import { pagination } from '$lib/utils'
+import type { PageServerLoad } from './$types'
 
 export const load = (async ({ locals, url }) => {
-	const { p, size } = pagination(url);
+	const { p, size } = pagination(url)
 
 	const sales = await db.journalRow.findMany({
 		where: {
 			Journal: {
 				relation: {
 					FinancialPersonDataUser: {
-						userId: locals.user.id
-					}
+						userId: locals.user.id,
+					},
 				},
 				date: {
-					not: null
+					not: null,
 				},
-				type: 'SALE'
-			}
+				type: 'SALE',
+			},
 		},
 		include: {
-			Journal: true
+			Journal: true,
 		},
 		orderBy: {
 			Journal: {
-				date: 'desc'
-			}
+				date: 'desc',
+			},
 		},
 		take: size,
-		skip: p * size
-	});
+		skip: p * size,
+	})
 
 	return {
 		sales: JSON.parse(JSON.stringify(sales)) as typeof sales,
 		p,
-		size
-	};
-}) satisfies PageServerLoad;
+		size,
+	}
+}) satisfies PageServerLoad

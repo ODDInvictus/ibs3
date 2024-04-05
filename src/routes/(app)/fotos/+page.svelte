@@ -1,14 +1,14 @@
 <script lang="ts">
-	import Markdown from '$lib/components/Markdown.svelte';
-	import Title from '$lib/components/title.svelte';
-	import { imagePreview } from '$lib/imagePreviewStore';
-	import { activitySlug } from '$lib/textUtils';
-	import { markdown, stripMarkdown } from '$lib/utils';
-	import type { PageData } from './$types';
+	import Markdown from '$lib/components/Markdown.svelte'
+	import Title from '$lib/components/title.svelte'
+	import { imagePreview } from '$lib/imagePreviewStore'
+	import { activitySlug } from '$lib/textUtils'
+	import { markdown, stripMarkdown } from '$lib/utils'
+	import type { PageData } from './$types'
 
-	export let data: PageData;
+	export let data: PageData
 
-	let activityCount = 0;
+	let activityCount = 0
 </script>
 
 <Title title="Foto's" />
@@ -31,9 +31,7 @@
 
 		<div class="ibs-card--content">
 			{#if data.highlight}
-				<div
-					on:click={() => imagePreview({ image: `/image/${data.highlight.filename}?size=large` })}
-				>
+				<div on:click={() => imagePreview({ image: `/image/${data.highlight.filename}?size=large` })}>
 					<img src="/image/{data.highlight.filename}?size=medium" alt="Foto van de Dag" />
 				</div>
 				<p>Gemaakt door {data.highlight.name}</p>

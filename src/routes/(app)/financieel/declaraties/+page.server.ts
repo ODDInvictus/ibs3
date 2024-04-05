@@ -1,17 +1,17 @@
-import db from '$lib/server/db';
-import { pagination } from '$lib/utils.js';
-import Decimal from 'decimal.js';
+import db from '$lib/server/db'
+import { pagination } from '$lib/utils.js'
+import Decimal from 'decimal.js'
 
 export const load = async ({ locals, url }) => {
-	const { p, size } = pagination(url);
+	const { p, size } = pagination(url)
 
 	const declarations = await db.declarationData.findMany({
 		where: {
 			DeclaratedBy: {
 				FinancialPersonDataUser: {
-					userId: locals.user.id
-				}
-			}
+					userId: locals.user.id,
+				},
+			},
 		},
 		select: {
 			createdAt: true,
@@ -26,33 +26,29 @@ export const load = async ({ locals, url }) => {
 					Rows: {
 						select: {
 							price: true,
-							amount: true
-						}
-					}
-				}
-			}
+							amount: true,
+						},
+					},
+				},
+			},
 		},
 		orderBy: {
-			createdAt: 'desc'
+			createdAt: 'desc',
 		},
 		take: size,
-		skip: p * size
-	});
+		skip: p * size,
+	})
 
-	const data = declarations.map(
-		({ Journal, createdAt, methodOfPayment, status, askedAmount, id }) => ({
-			id,
-			date: createdAt,
-			methodOfPayment: methodOfPayment ?? null,
-			description: Journal?.description ?? null,
-			status,
-			total:
-				Journal?.Rows.reduce(
-					(acc, { price, amount }) => acc.add(new Decimal(price).mul(amount)),
-					new Decimal(0)
-				).toNumber() ?? askedAmount.toNumber()
-		})
-	);
+	const data = declarations.map(({ Journal, createdAt, methodOfPayment, status, askedAmount, id }) => ({
+		id,
+		date: createdAt,
+		methodOfPayment: methodOfPayment ?? null,
+		description: Journal?.description ?? null,
+		status,
+		total:
+			Journal?.Rows.reduce((acc, { price, amount }) => acc.add(new Decimal(price).mul(amount)), new Decimal(0)).toNumber() ??
+			askedAmount.toNumber(),
+	}))
 
-	return { declarations: data, p, size };
-};
+	return { declarations: data, p, size }
+}

@@ -1,27 +1,27 @@
-import db from '$lib/server/db';
-import type { PageServerLoad } from './$types';
+import db from '$lib/server/db'
+import type { PageServerLoad } from './$types'
 
 export const load = (async ({ locals }) => {
-	const userId = locals.user.id;
+	const userId = locals.user.id
 	return {
 		toReact: db.track.findMany({
 			where: {
 				inPlaylist: false,
 				likes: {
 					none: {
-						userId
-					}
-				}
+						userId,
+					},
+				},
 			},
 			orderBy: [
 				{
 					likes: {
-						_count: 'desc'
-					}
+						_count: 'desc',
+					},
 				},
 				{
-					createdAt: 'desc'
-				}
+					createdAt: 'desc',
+				},
 			],
 			select: {
 				id: true,
@@ -30,15 +30,15 @@ export const load = (async ({ locals }) => {
 						user: {
 							select: {
 								firstName: true,
-								nickname: true
-							}
-						}
+								nickname: true,
+							},
+						},
 					},
 					where: {
-						liked: true
-					}
-				}
-			}
-		})
-	};
-}) satisfies PageServerLoad;
+						liked: true,
+					},
+				},
+			},
+		}),
+	}
+}) satisfies PageServerLoad

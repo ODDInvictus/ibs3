@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import { formatPrice } from '$lib/textUtils';
-	import type { PageData } from './$types';
+	import Title from '$lib/components/title.svelte'
+	import { formatPrice } from '$lib/textUtils'
+	import type { PageData } from './$types'
 
-	export let data: PageData;
+	export let data: PageData
 
-	const personId = data.own?.personId;
+	const personId = data.own?.personId
 </script>
 
 <Title title="Saldo overzicht" />

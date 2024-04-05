@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { toast } from '$lib/notification';
-	import { prompt } from '$lib/prompt';
-	import { promptSelect } from '$lib/promptSelect';
-	import Edit from '~icons/tabler/edit';
+	import { page } from '$app/stores'
+	import { toast } from '$lib/notification'
+	import { prompt } from '$lib/prompt'
+	import { promptSelect } from '$lib/promptSelect'
+	import Edit from '~icons/tabler/edit'
 
-	const alias = $page.data.alias;
+	const alias = $page.data.alias
 
 	function edit() {
 		prompt({
@@ -13,34 +13,34 @@
 			message: 'Vul hier een geldig email adres in om de alias te veranderen',
 			cb: async (value: string) => {
 				// First check if the value is an email address
-				const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-				const match = re.test(value);
+				const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+				const match = re.test(value)
 
 				if (!match) {
 					return toast({
 						title: 'Oei!',
 						message: `${value} is geen geldig email adres`,
-						type: 'danger'
-					});
+						type: 'danger',
+					})
 				}
 
 				// Now we can tell the server to change the alias
 				await ajax({
 					id: alias.id,
 					type: 'custom',
-					address: value
-				});
-			}
-		});
+					address: value,
+				})
+			},
+		})
 	}
 
 	function editUser() {
 		let users = $page.data.users.map((u: any) => {
 			return {
 				name: `${u.firstName} ${u.lastName} (${u.email})`,
-				id: u.id
-			};
-		});
+				id: u.id,
+			}
+		})
 
 		promptSelect({
 			title: 'Bewerk alias',
@@ -51,41 +51,41 @@
 					return toast({
 						title: 'Oei!',
 						message: 'Geen gebruiker geselecteerd',
-						type: 'danger'
-					});
+						type: 'danger',
+					})
 
 				// Now get the ID
-				const uid = users.find((u: any) => u.name === value).id;
+				const uid = users.find((u: any) => u.name === value).id
 
 				// Now we can tell the server to change the alias
 				await ajax({
 					id: alias.id,
 					type: 'user',
-					uid
-				});
-			}
-		});
+					uid,
+				})
+			},
+		})
 	}
 
 	async function ajax(body: any) {
 		await fetch('', {
 			method: 'PUT',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(body)
-		}).then(async (res) => {
-			const obj = await res.json();
+			body: JSON.stringify(body),
+		}).then(async res => {
+			const obj = await res.json()
 			if (res.ok) {
-				location.reload();
+				location.reload()
 			} else {
 				toast({
 					title: 'Oei!',
 					message: obj.message,
-					type: 'danger'
-				});
+					type: 'danger',
+				})
 			}
-		});
+		})
 	}
 </script>
 

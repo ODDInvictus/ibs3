@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { env } from '$env/dynamic/public';
-	import InputFile from '$lib/components/input-file.svelte';
-	import Title from '$lib/components/title.svelte';
-	import type { PageData } from './$types.js';
+	import { page } from '$app/stores'
+	import { env } from '$env/dynamic/public'
+	import InputFile from '$lib/components/input-file.svelte'
+	import Title from '$lib/components/title.svelte'
+	import type { PageData } from './$types.js'
 
-	let member = $page.data.member;
+	let member = $page.data.member
 
 	const usedFields = [
 		'firstName',
@@ -22,29 +22,29 @@
 		'picture',
 		'id',
 		'isActive',
-		'personalEmail'
-	];
+		'personalEmail',
+	]
 
-	const fields = Object.keys(member).filter((key) => !usedFields.includes(key));
+	const fields = Object.keys(member).filter(key => !usedFields.includes(key))
 
 	function getAge(birthDate: Date) {
-		const today = new Date();
-		const age = today.getFullYear() - birthDate.getFullYear();
-		const m = today.getMonth() - birthDate.getMonth();
+		const today = new Date()
+		const age = today.getFullYear() - birthDate.getFullYear()
+		const m = today.getMonth() - birthDate.getMonth()
 		if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-			return age - 1;
+			return age - 1
 		}
-		return age;
+		return age
 	}
 
 	function toDate(date: string) {
-		if (!date) return undefined;
-		return new Date(date).toLocaleDateString('nl-NL');
+		if (!date) return undefined
+		return new Date(date).toLocaleDateString('nl-NL')
 	}
 
-	export let form;
+	export let form
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="{member.firstName} {member.lastName}" />

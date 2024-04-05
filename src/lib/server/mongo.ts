@@ -1,6 +1,6 @@
-import { GridFSBucket, MongoClient, ServerApiVersion } from 'mongodb';
-import { env } from '$env/dynamic/private';
-import sharp from 'sharp';
+import { GridFSBucket, MongoClient, ServerApiVersion } from 'mongodb'
+import { env } from '$env/dynamic/private'
+import sharp from 'sharp'
 
 /**
  * MongoDB client instance.
@@ -9,14 +9,14 @@ export const client = new MongoClient(env.MONGO_URI, {
 	serverApi: {
 		version: ServerApiVersion.v1,
 		strict: true,
-		deprecationErrors: true
-	}
-});
+		deprecationErrors: true,
+	},
+})
 
 /**
  * MongoDB database instance.
  */
-export const mongo = client.db(env.MONGO_DB_NAME);
+export const mongo = client.db(env.MONGO_DB_NAME)
 
 /**
  * Uploads a file to MongoDB GridFS.
@@ -34,40 +34,40 @@ export const mongo = client.db(env.MONGO_DB_NAME);
  */
 export async function uploadFile(
 	file: File,
-	opts: { quality?: number; compress?: boolean } = { compress: true, quality: 75 }
+	opts: { quality?: number; compress?: boolean } = { compress: true, quality: 75 },
 ): Promise<string> {
-	let buffer = Buffer.from(await file.arrayBuffer());
+	let buffer = Buffer.from(await file.arrayBuffer())
 
-	const compressableTypes = ['image/jpeg', 'image/png', 'image/avif', 'image/tiff', 'image/webp'];
-	let compressed = false;
+	const compressableTypes = ['image/jpeg', 'image/png', 'image/avif', 'image/tiff', 'image/webp']
+	let compressed = false
 	if (compressableTypes.includes(file.type) && opts.compress) {
 		try {
 			buffer = await sharp(buffer)
 				.jpeg({ mozjpeg: true, quality: opts.quality ?? 75 })
-				.toBuffer();
-			compressed = true;
+				.toBuffer()
+			compressed = true
 		} catch (err) {
-			console.error(err);
+			console.error(err)
 		}
 	}
 
-	const bucket = new GridFSBucket(mongo);
+	const bucket = new GridFSBucket(mongo)
 
-	let name = compressed ? file.name.replace(/\.\w+$/, '.jpeg') : file.name;
+	let name = compressed ? file.name.replace(/\.\w+$/, '.jpeg') : file.name
 
 	// check if name already exists and generate a new one like 'name-2.jpeg'
-	let i = 1;
+	let i = 1
 	while (await bucket.find({ filename: name }).hasNext()) {
-		name = `${name.replace(/\.\w+$/, '')}-${i++}.${name.split('.').pop()}`;
+		name = `${name.replace(/\.\w+$/, '')}-${i++}.${name.split('.').pop()}`
 	}
 
 	bucket
 		.openUploadStream(name, {
 			metadata: {
-				type: compressed ? 'image/jpeg' : file.type
-			}
+				type: compressed ? 'image/jpeg' : file.type,
+			},
 		})
-		.end(buffer);
+		.end(buffer)
 
-	return name;
+	return name
 }

@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public';
-	import type { PageData } from './$types';
-	import { formatDateHumanReadable } from '$lib/dateUtils';
-	import Title from '$lib/components/title.svelte';
-	import { formatMoney } from '$lib/utils';
+	import { env } from '$env/dynamic/public'
+	import type { PageData } from './$types'
+	import { formatDateHumanReadable } from '$lib/dateUtils'
+	import Title from '$lib/components/title.svelte'
+	import { formatMoney } from '$lib/utils'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="Declaratie #{data.declaration.id}" shortTitle="Declaratie" />
@@ -28,11 +28,7 @@
 			</tr>
 			<tr>
 				<th>Indien datum</th>
-				<td
-					>{data.declaration.date
-						? formatDateHumanReadable(new Date(data.declaration.date))
-						: '?'}</td
-				>
+				<td>{data.declaration.date ? formatDateHumanReadable(new Date(data.declaration.date)) : '?'}</td>
 			</tr>
 			<tr>
 				<th>Status</th>
@@ -55,10 +51,7 @@
 			{#each data.declaration.Attachments as attachment}
 				<!-- TODO niet image bestanden -->
 				<!-- TODO: @niels replace with new endpoint -->
-				<img
-					src="{env.PUBLIC_UPLOAD_URL}purchases/{attachment.filename}"
-					alt="Helaas is hier geen bonnetje voor geupload :("
-				/>
+				<img src="{env.PUBLIC_UPLOAD_URL}purchases/{attachment.filename}" alt="Helaas is hier geen bonnetje voor geupload :(" />
 			{/each}
 		</div>
 	{/if}

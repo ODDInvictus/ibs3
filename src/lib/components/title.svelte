@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { stripMarkdown, markdown as md } from '$lib/utils';
+	import { page } from '$app/stores'
+	import { stripMarkdown, markdown as md } from '$lib/utils'
 
-	export let title: string | undefined = '';
-	export let shortTitle: string | undefined = '';
-	export let underTitle: string | undefined = '';
-	export let markdown = false;
+	export let title: string | undefined = ''
+	export let shortTitle: string | undefined = ''
+	export let underTitle: string | undefined = ''
+	export let markdown = false
 
-	let ongeveer = $page.url.pathname.startsWith('/ongeveer');
+	let ongeveer = $page.url.pathname.startsWith('/ongeveer')
 </script>
 
 <svelte:head>

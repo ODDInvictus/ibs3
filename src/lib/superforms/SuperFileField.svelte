@@ -1,7 +1,7 @@
 <script lang="ts">
-	export let name: string;
-	export let files: FileList | undefined = undefined;
-	export let value = '';
+	export let name: string
+	export let files: FileList | undefined = undefined
+	export let value = ''
 </script>
 
 <div class="input-group">

@@ -1,31 +1,28 @@
 <script lang="ts">
-	import { superForm } from 'sveltekit-superforms/client';
-	import type { PageData } from './$types';
-	import { onError, onResult } from '$lib/superforms/error';
-	import { matchTransactionSchema } from './matchTransaction';
-	import Title from '$lib/components/title.svelte';
-	import SuperField from '$lib/superforms/SuperField.svelte';
-	import SuperSelect from '$lib/superforms/SuperSelect.svelte';
-	import Plus from '~icons/tabler/plus';
-	import Trashcan from '~icons/tabler/trash';
-	import Submit from '$lib/superforms/Submit.svelte';
-	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
+	import { superForm } from 'sveltekit-superforms/client'
+	import type { PageData } from './$types'
+	import { onError, onResult } from '$lib/superforms/error'
+	import { matchTransactionSchema } from './matchTransaction'
+	import Title from '$lib/components/title.svelte'
+	import SuperField from '$lib/superforms/SuperField.svelte'
+	import SuperSelect from '$lib/superforms/SuperSelect.svelte'
+	import Plus from '~icons/tabler/plus'
+	import Trashcan from '~icons/tabler/trash'
+	import Submit from '$lib/superforms/Submit.svelte'
+	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
 
-	export let data: PageData;
+	export let data: PageData
 
 	const formProps = superForm(data.form, {
 		validators: matchTransactionSchema,
 		onError,
 		onResult,
-		dataType: 'json'
-	});
+		dataType: 'json',
+	})
 
-	const { form, enhance, errors } = formProps;
+	const { form, enhance, errors } = formProps
 
-	const relations: [string | number, string][] = data.financialPersons.map((fp) => [
-		fp.id,
-		fp.name
-	]);
+	const relations: [string | number, string][] = data.financialPersons.map(fp => [fp.id, fp.name])
 </script>
 
 <Title title={$form.ref ?? `Banktransactie ${$form.id}`} />
@@ -46,9 +43,7 @@
 		<p>Amount: <b>{data.bankTransaction.amount}</b></p>
 		<p>Started date: {formatDateTimeHumanReadable(new Date(data.bankTransaction.startedDate))}</p>
 		<p>
-			Completed date: {data.bankTransaction.completedDate
-				? formatDateTimeHumanReadable(new Date(data.bankTransaction.completedDate))
-				: ''}
+			Completed date: {data.bankTransaction.completedDate ? formatDateTimeHumanReadable(new Date(data.bankTransaction.completedDate)) : ''}
 		</p>
 		<p>Description: {data.bankTransaction.description}</p>
 		<p>Type: {data.bankTransaction.type}</p>
@@ -56,7 +51,7 @@
 		<p>Fee: {data.bankTransaction.fee}</p>
 	</div>
 
-	{#if data.bankTransaction.Transaction.TransactionMatchRow.some((r) => r.Journal)}
+	{#if data.bankTransaction.Transaction.TransactionMatchRow.some(r => r.Journal)}
 		<div>
 			<h3>Boekstukken</h3>
 			{#each data.bankTransaction.Transaction.TransactionMatchRow as row}
@@ -69,7 +64,7 @@
 		</div>
 	{/if}
 
-	{#if data.bankTransaction.Transaction.TransactionMatchRow.some((r) => r.SaldoTransaction)}
+	{#if data.bankTransaction.Transaction.TransactionMatchRow.some(r => r.SaldoTransaction)}
 		<div>
 			<h3>Saldo transacties</h3>
 			{#each data.bankTransaction.Transaction.TransactionMatchRow as row}
@@ -101,19 +96,10 @@
 			{#each $form.rows as _, i}
 				<tr>
 					<td>
-						<input
-							type="text"
-							class:has-error={$errors.rows?.[i]?.description}
-							bind:value={$form.rows[i].description}
-						/>
+						<input type="text" class:has-error={$errors.rows?.[i]?.description} bind:value={$form.rows[i].description} />
 					</td>
 					<td>
-						<input
-							type="number"
-							step="0.01"
-							class:has-error={$errors.rows?.[i]?.amount}
-							bind:value={$form.rows[i].amount}
-						/>
+						<input type="number" step="0.01" class:has-error={$errors.rows?.[i]?.amount} bind:value={$form.rows[i].amount} />
 					</td>
 					<td>
 						<select class:has-error={$errors.rows?.[i]?.journal} bind:value={$form.rows[i].journal}>
@@ -126,11 +112,7 @@
 						</select>
 					</td>
 					<td>
-						<input
-							type="checkbox"
-							bind:checked={$form.rows[i].saldo}
-							class:has-error={$errors.rows?.[i]?.saldo}
-						/>
+						<input type="checkbox" bind:checked={$form.rows[i].saldo} class:has-error={$errors.rows?.[i]?.saldo} />
 					</td>
 					<td>
 						{#if i === $form.rows.length - 1}
@@ -143,8 +125,8 @@
 											amount: NaN,
 											description: '',
 											journal: undefined,
-											saldo: false
-										}
+											saldo: false,
+										},
 									])}
 							>
 								<Plus />
@@ -153,9 +135,9 @@
 						<button
 							type="button"
 							on:click={() => {
-								const filtered = [...$form.rows];
-								filtered.splice(i, 1);
-								$form.rows = filtered;
+								const filtered = [...$form.rows]
+								filtered.splice(i, 1)
+								$form.rows = filtered
 							}}><Trashcan /></button
 						>
 					</td>
@@ -174,9 +156,9 @@
 						amount: NaN,
 						description: '',
 						journal: undefined,
-						saldo: false
-					}
-				];
+						saldo: false,
+					},
+				]
 			}}
 		>
 			<Plus />

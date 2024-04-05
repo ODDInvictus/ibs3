@@ -1,45 +1,40 @@
 <script lang="ts">
-	import ProfileIcon from '$lib/components/profile-icon.svelte';
-	import type { User, AttendingStatus } from '@prisma/client';
+	import ProfileIcon from '$lib/components/profile-icon.svelte'
+	import type { User, AttendingStatus } from '@prisma/client'
 
-	export let user: User;
-	export let status: AttendingStatus;
+	export let user: User
+	export let status: AttendingStatus
 
 	const getStatus = () => {
 		switch (status) {
 			case 'ATTENDING':
-				return 'positive';
+				return 'positive'
 			case 'NOT_ATTENDING':
-				return 'negative';
+				return 'negative'
 			case 'UNSURE':
-				return 'unsure';
+				return 'unsure'
 			case 'NO_RESPONSE':
-				return 'no-response';
+				return 'no-response'
 		}
-	};
+	}
 
 	const statusTitle = () => {
 		switch (status) {
 			case 'ATTENDING':
-				return 'Bij!';
+				return 'Bij!'
 			case 'NOT_ATTENDING':
-				return 'Niet bij :(';
+				return 'Niet bij :('
 			case 'UNSURE':
-				return 'Weet het nog niet';
+				return 'Weet het nog niet'
 			case 'NO_RESPONSE':
-				return 'Niet gereageerd :(';
+				return 'Niet gereageerd :('
 		}
-	};
+	}
 </script>
 
 <div class="user-card" title={statusTitle()}>
 	<div class="user-card-picture">
-		<ProfileIcon
-			height="50"
-			width="50"
-			uid={user.profilePictureId}
-			name={user.firstName + ' ' + user.lastName}
-		/>
+		<ProfileIcon height="50" width="50" uid={user.profilePictureId} name={user.firstName + ' ' + user.lastName} />
 
 		<div class="status">
 			{#key status}

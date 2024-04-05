@@ -1,15 +1,15 @@
 <script lang="ts">
-	import ProfileIcon from '$lib/components/profile-icon.svelte';
+	import ProfileIcon from '$lib/components/profile-icon.svelte'
 
 	export let users: {
-		firstName: string;
-		lastName: string;
-		profilePictureId: number | null;
-		nickname: string | null;
-		id: number;
-	}[];
-	export let mode: 'likes' | 'dislikes' | undefined = undefined;
-	export let url: string = '/playlist/create';
+		firstName: string
+		lastName: string
+		profilePictureId: number | null
+		nickname: string | null
+		id: number
+	}[]
+	export let mode: 'likes' | 'dislikes' | undefined = undefined
+	export let url: string = '/playlist/create'
 </script>
 
 <div>
@@ -21,13 +21,7 @@
 		{#each users as user}
 			<li>
 				<a href={`${url}/${user.id}`}>
-					<ProfileIcon
-						uid={user.profilePictureId}
-						name={user.firstName + ' ' + user.lastName}
-						width="50"
-						height="50"
-						fixedWidth={true}
-					/>
+					<ProfileIcon uid={user.profilePictureId} name={user.firstName + ' ' + user.lastName} width="50" height="50" fixedWidth={true} />
 					<p>{user.nickname ?? user.firstName}</p>
 				</a>
 			</li>

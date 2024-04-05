@@ -1,50 +1,50 @@
 <script lang="ts">
-	import type { Field, FieldType } from './form-generator';
-	import Label from './_label.svelte';
-	import Trash from '~icons/tabler/trash';
-	import Plus from '~icons/tabler/plus';
-	import { onMount } from 'svelte';
+	import type { Field, FieldType } from './form-generator'
+	import Label from './_label.svelte'
+	import Trash from '~icons/tabler/trash'
+	import Plus from '~icons/tabler/plus'
+	import { onMount } from 'svelte'
 
-	export let field: Field<FieldType>;
+	export let field: Field<FieldType>
 
 	const addTableAndRow = (table: Field<'table'>, row: number, field: Field<FieldType>) => {
-		const f = { ...field };
+		const f = { ...field }
 
 		if (table.value) {
-			const rowValues = table.value[row];
+			const rowValues = table.value[row]
 			if (rowValues) {
-				const value = rowValues[f.name];
-				if (value) f.value = value;
+				const value = rowValues[f.name]
+				if (value) f.value = value
 			}
 		}
 
-		if (!f.name.startsWith('table-')) f.name = `table-${table.name}-${row}-${f.name}`;
-		return f;
-	};
+		if (!f.name.startsWith('table-')) f.name = `table-${table.name}-${row}-${f.name}`
+		return f
+	}
 
-	let rows: number[] = [];
-	let deleted: number[] = [];
+	let rows: number[] = []
+	let deleted: number[] = []
 
 	const getMaxRow = (rows: number[], deleted: number[]) => {
 		if (field.type === 'table') {
-			return Math.max(...rows.filter((row) => !deleted.includes(row)));
+			return Math.max(...rows.filter(row => !deleted.includes(row)))
 		}
-		return 0;
-	};
+		return 0
+	}
 
 	// TODO fix table.rows
-	let mounted = false;
-	$: if (field.type !== 'select' && field.type !== 'table') mounted = true;
+	let mounted = false
+	$: if (field.type !== 'select' && field.type !== 'table') mounted = true
 	onMount(() => {
 		if (field.type === 'table') {
-			delete field.rows;
+			delete field.rows
 			// @ts-expect-error
-			rows = Array.from(Array(field.value?.length || 1).keys());
+			rows = Array.from(Array(field.value?.length || 1).keys())
 		}
-		mounted = true;
-	});
+		mounted = true
+	})
 
-	const noType = (x: any) => x;
+	const noType = (x: any) => x
 </script>
 
 {#if mounted}
@@ -55,19 +55,12 @@
 			{:else}
 				<option disabled={!field.optional} selected value>Selecteer een optie</option>
 				{#each field.options as option}
-					<option selected={field.value == option.value} value={option.value}>{option.label}</option
-					>
+					<option selected={field.value == option.value} value={option.value}>{option.label}</option>
 				{/each}
 			{/if}
 		</select>
 	{:else if field.type === 'checkbox'}
-		<input
-			type="checkbox"
-			name={field.name}
-			id={field.name}
-			checked={Boolean(field.value)}
-			disabled={field.disabled}
-		/>
+		<input type="checkbox" name={field.name} id={field.name} checked={Boolean(field.value)} disabled={field.disabled} />
 	{:else if field.type === 'textarea'}
 		<textarea
 			name={field.name}

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import Decimal from 'decimal.js';
-	import type { PageData } from './$types';
-	import { formatMoney } from '$lib/utils';
-	import ShoppingCart from '~icons/tabler/shopping-cart';
-	import Coins from '~icons/tabler/coins';
-	import FileEuro from '~icons/tabler/file-euro';
-	import BasketPlus from '~icons/tabler/basket-plus';
+	import Title from '$lib/components/title.svelte'
+	import Decimal from 'decimal.js'
+	import type { PageData } from './$types'
+	import { formatMoney } from '$lib/utils'
+	import ShoppingCart from '~icons/tabler/shopping-cart'
+	import Coins from '~icons/tabler/coins'
+	import FileEuro from '~icons/tabler/file-euro'
+	import BasketPlus from '~icons/tabler/basket-plus'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="Financieel" />

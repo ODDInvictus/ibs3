@@ -4,12 +4,12 @@ export const LDAP_IDS = {
 	SENAAT: 'senaat',
 	COLOSSEUM: 'colosseum',
 	ADMINS: 'ibs-admins',
-	FINANCIE: 'financie'
-};
+	FINANCIE: 'financie',
+}
 
 export type UserRoles = {
-	[key in Roles]: boolean;
-};
+	[key in Roles]: boolean
+}
 
 export enum Roles {
 	Feuten = 'feuten',
@@ -17,7 +17,7 @@ export enum Roles {
 	Senaat = 'senaat',
 	Colosseum = 'colosseum',
 	Admins = 'ibs-admins',
-	FinanCie = 'financie'
+	FinanCie = 'financie',
 }
 
 export const UserRolesEmpty = {
@@ -26,5 +26,5 @@ export const UserRolesEmpty = {
 	[Roles.Senaat]: false,
 	[Roles.Colosseum]: false,
 	[Roles.Admins]: false,
-	[Roles.FinanCie]: false
-};
+	[Roles.FinanCie]: false,
+}

@@ -1,20 +1,16 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import Title from '$lib/components/title.svelte';
-	import { imagePreview } from '$lib/imagePreviewStore';
-	import type { PageData } from './$types';
+	import { goto } from '$app/navigation'
+	import Title from '$lib/components/title.svelte'
+	import { imagePreview } from '$lib/imagePreviewStore'
+	import type { PageData } from './$types'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 {#if !data.type}
 	<Title title="Album niet gevonden" />
 {:else}
-	<Title
-		markdown
-		title="{data.title} - Album"
-		underTitle="Tip: Klik op een foto om hem te vergroten"
-	/>
+	<Title markdown title="{data.title} - Album" underTitle="Tip: Klik op een foto om hem te vergroten" />
 	{@const photos = (data.type === 'activity' ? data.activity?.photos : data.photos) ?? []}
 
 	{#if photos.length === 0}

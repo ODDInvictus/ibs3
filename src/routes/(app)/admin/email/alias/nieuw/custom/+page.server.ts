@@ -1,7 +1,7 @@
-import type { PageServerLoad } from '../$types';
+import type { PageServerLoad } from '../$types'
 
 export const load = (async () => {
-  return {
-    domain: process.env.EMAIL_DOMAIN,
-  };
-}) satisfies PageServerLoad;
+	return {
+		domain: process.env.EMAIL_DOMAIN,
+	}
+}) satisfies PageServerLoad

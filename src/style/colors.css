@@ -15,12 +15,12 @@
 	--dark-highlight-color: #272d39;
 
 	--code-background-color: #272822;
-	--code-text-color:#f8f8f2;
+	--code-text-color: #f8f8f2;
 
 	--border-color: var(--grey-color);
 	--button-text-color: var(--light-color);
 
-  --logo-color: var(--primary-color);
+	--logo-color: var(--primary-color);
 }
 
 /* Dark mode root */
@@ -40,7 +40,7 @@
 	/* --shadow-color: rgba(var(--light-color), 0.5); */
 	--shadow-color: rgba(255, 255, 255, 0.1);
 
-  --logo-color: #c990ff;
+	--logo-color: #c990ff;
 }
 
 :root.light {
@@ -59,7 +59,7 @@
 	--text-color: var(--dark-color);
 	--background-focus-color: var(--light-color);
 	--seperator-color: var(--dark-color);
-	
+
 	--code-background-color: #ff21e5;
 	--code-text-color: #000;
 }

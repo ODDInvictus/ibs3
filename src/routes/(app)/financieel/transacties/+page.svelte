@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Title from '$lib/components/title.svelte';
-	import Pagination from '$lib/components/Pagination.svelte';
-	import { toDateString } from '$lib/dateUtils';
-	import { formatMoney } from '$lib/utils';
+	import type { PageData } from './$types'
+	import Title from '$lib/components/title.svelte'
+	import Pagination from '$lib/components/Pagination.svelte'
+	import { toDateString } from '$lib/dateUtils'
+	import { formatMoney } from '$lib/utils'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="Transacties" />
@@ -20,9 +20,7 @@
 	</thead>
 	<tbody>
 		{#each data.transactions as { price, description, from, Transaction, id }}
-			{@const streeplijstId = Transaction.TransactionMatchRow.find(
-				(row) => row.Journal?.streeplijstId !== null
-			)?.Journal?.streeplijstId}
+			{@const streeplijstId = Transaction.TransactionMatchRow.find(row => row.Journal?.streeplijstId !== null)?.Journal?.streeplijstId}
 			<tr>
 				<td>{toDateString(new Date(Transaction.createdAt))}</td>
 				<td>

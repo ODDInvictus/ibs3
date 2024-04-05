@@ -1,21 +1,21 @@
-import db from '$lib/server/db';
-import { createForm } from './createForm';
-import type { PageServerLoad } from './$types';
+import db from '$lib/server/db'
+import { createForm } from './createForm'
+import type { PageServerLoad } from './$types'
 
 export const load = (async () => {
-	await createForm.transform();
+	await createForm.transform()
 
 	return {
 		ledgers: db.ledger.findMany({
 			orderBy: {
-				id: 'asc'
+				id: 'asc',
 			},
 			where: {
-				isActive: true
-			}
+				isActive: true,
+			},
 		}),
-		form: createForm.attributes
-	};
-}) satisfies PageServerLoad;
+		form: createForm.attributes,
+	}
+}) satisfies PageServerLoad
 
-export const actions = createForm.actions;
+export const actions = createForm.actions

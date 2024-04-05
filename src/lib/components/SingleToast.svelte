@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
-	import InfoCircle from '~icons/tabler/info-circle';
-	import ExclamationCircle from '~icons/tabler/exclamation-circle';
-	import AlertCirlce from '~icons/tabler/alert-circle';
-	import CircleCheck from '~icons/tabler/circle-check';
+	import { fade } from 'svelte/transition'
+	import InfoCircle from '~icons/tabler/info-circle'
+	import ExclamationCircle from '~icons/tabler/exclamation-circle'
+	import AlertCirlce from '~icons/tabler/alert-circle'
+	import CircleCheck from '~icons/tabler/circle-check'
 
 	export let notification: {
-		type: string;
-		title: string;
-		message: string;
-	};
+		type: string
+		title: string
+		message: string
+	}
 </script>
 
 <div role="alert" class="notification {notification.type}" transition:fade>

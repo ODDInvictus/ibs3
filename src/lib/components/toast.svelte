@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { notifications } from '../notification';
-	import SingleToast from './SingleToast.svelte';
+	import { notifications } from '../notification'
+	import SingleToast from './SingleToast.svelte'
 </script>
 
 {#if $notifications}

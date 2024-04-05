@@ -1,6 +1,6 @@
 <script>
-	export let width = '174';
-	export let height = '174';
+	export let width = '174'
+	export let height = '174'
 </script>
 
 <svg {width} {height} viewBox="0 0 128 129" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -11,14 +11,7 @@
 		fill="url(#paint0_linear_1101_66)"
 	/>
 	<defs>
-		<linearGradient
-			id="paint0_linear_1101_66"
-			x1="23.1724"
-			y1="13.5057"
-			x2="108.138"
-			y2="116.494"
-			gradientUnits="userSpaceOnUse"
-		>
+		<linearGradient id="paint0_linear_1101_66" x1="23.1724" y1="13.5057" x2="108.138" y2="116.494" gradientUnits="userSpaceOnUse">
 			<stop stop-color="#6ECDE8" />
 			<stop offset="1" stop-color="#5FAEF5" />
 		</linearGradient>

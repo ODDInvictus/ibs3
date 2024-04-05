@@ -1,7 +1,7 @@
 import type { LayoutServerLoad } from './$types'
 
-export const load: LayoutServerLoad = async (event) => {
-	const session = await event.locals.getSession();
+export const load: LayoutServerLoad = async event => {
+	const session = await event.locals.getSession()
 	const currentRoute = event.route
 	const user = event.locals.user
 	const committees = event.locals.committees
@@ -13,6 +13,6 @@ export const load: LayoutServerLoad = async (event) => {
 		committees,
 		currentRoute,
 		roles,
-		theme: event.locals.theme
-	};
-};
+		theme: event.locals.theme,
+	}
+}

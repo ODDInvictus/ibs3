@@ -1,38 +1,38 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { LDAP_IDS } from '$lib/constants';
+	import { page } from '$app/stores'
+	import { LDAP_IDS } from '$lib/constants'
 
-	import { env } from '$env/dynamic/public';
+	import { env } from '$env/dynamic/public'
 	// import Logo from '$lib/components/logo-v2-small.svelte';
-	import Calendar from '~icons/tabler/calendar-bolt';
-	import InformationCircle from '~icons/tabler/info-circle';
-	import Beer from '~icons/tabler/beer';
-	import Users from '~icons/tabler/users';
-	import PigMoney from '~icons/tabler/pig-money';
-	import ShieldCheck from '~icons/tabler/shield-check';
-	import Settings from '~icons/tabler/settings';
-	import AccessibleOff from '~icons/tabler/accessible-off';
-	import Photo from '~icons/tabler/photo';
-	import Music from '~icons/tabler/music';
-	import Menu from '~icons/tabler/menu-2';
-	import X from '~icons/tabler/x';
-	import Equal from '~icons/tabler/equal';
-	import Revolut from '~icons/tabler/brand-revolut';
-	import Book from '~icons/tabler/book';
-	import People from '~icons/tabler/users';
-	import ArrowBarRight from '~icons/tabler/arrow-bar-right';
-	import ArrowBarLeft from '~icons/tabler/arrow-bar-to-left';
-	import MoodDollar from '~icons/tabler/mood-dollar';
-	import QuestionMark from '~icons/tabler/question-mark';
-	import Home from '~icons/tabler/home';
-	import ShoppingCart from '~icons/tabler/shopping-cart';
-	import OngeveerLogo from './_ongeveer-logo.svelte';
-	import IbsLogo from './_ibs-logo.svelte';
+	import Calendar from '~icons/tabler/calendar-bolt'
+	import InformationCircle from '~icons/tabler/info-circle'
+	import Beer from '~icons/tabler/beer'
+	import Users from '~icons/tabler/users'
+	import PigMoney from '~icons/tabler/pig-money'
+	import ShieldCheck from '~icons/tabler/shield-check'
+	import Settings from '~icons/tabler/settings'
+	import AccessibleOff from '~icons/tabler/accessible-off'
+	import Photo from '~icons/tabler/photo'
+	import Music from '~icons/tabler/music'
+	import Menu from '~icons/tabler/menu-2'
+	import X from '~icons/tabler/x'
+	import Equal from '~icons/tabler/equal'
+	import Revolut from '~icons/tabler/brand-revolut'
+	import Book from '~icons/tabler/book'
+	import People from '~icons/tabler/users'
+	import ArrowBarRight from '~icons/tabler/arrow-bar-right'
+	import ArrowBarLeft from '~icons/tabler/arrow-bar-to-left'
+	import MoodDollar from '~icons/tabler/mood-dollar'
+	import QuestionMark from '~icons/tabler/question-mark'
+	import Home from '~icons/tabler/home'
+	import ShoppingCart from '~icons/tabler/shopping-cart'
+	import OngeveerLogo from './_ongeveer-logo.svelte'
+	import IbsLogo from './_ibs-logo.svelte'
 
-	export let openMenu: () => void;
-	export let open: boolean;
+	export let openMenu: () => void
+	export let open: boolean
 
-	$: inOngeveer = $page.url.pathname.startsWith('/ongeveer');
+	$: inOngeveer = $page.url.pathname.startsWith('/ongeveer')
 </script>
 
 <nav class="layout--navbar">

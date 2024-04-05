@@ -1,15 +1,15 @@
-import { Form, type Field } from '$lib/form/form-generator';
-import { Roles } from '$lib/constants';
-import db from '$lib/server/db';
-import type { JournalRow } from '@prisma/client';
+import { Form, type Field } from '$lib/form/form-generator'
+import { Roles } from '$lib/constants'
+import db from '$lib/server/db'
+import type { JournalRow } from '@prisma/client'
 
 type row = {
-	amount: number;
-	price: number;
-	description: string;
-	ledgerId: string;
-	productId?: string;
-};
+	amount: number
+	price: number
+	description: string
+	ledgerId: string
+	productId?: string
+}
 
 /**
  * Creates sale invoice rows in the database.
@@ -18,9 +18,9 @@ type row = {
  * @returns A Promise that resolves when all the sale invoice rows have been created in the database.
  */
 const createInvoiceRows = async (rows: row[], invoiceId: number) => {
-	const rowInsertions: Promise<JournalRow>[] = [];
-	rows.forEach((row) => {
-		const productId = row.productId ? Number(row.productId) : undefined;
+	const rowInsertions: Promise<JournalRow>[] = []
+	rows.forEach(row => {
+		const productId = row.productId ? Number(row.productId) : undefined
 		rowInsertions.push(
 			db.journalRow.create({
 				data: {
@@ -29,28 +29,28 @@ const createInvoiceRows = async (rows: row[], invoiceId: number) => {
 					description: row.description,
 					ledgerId: Number(row.ledgerId),
 					productId,
-					journalId: invoiceId
-				}
-			})
-		);
-	});
+					journalId: invoiceId,
+				},
+			}),
+		)
+	})
 
-	await Promise.all(rowInsertions);
-};
+	await Promise.all(rowInsertions)
+}
 
 export const createInvoiceForm = new Form<{
-	termsOfPayment: number;
-	toId: string;
-	description?: string;
-	tav?: string;
-	reference?: string;
-	id?: string;
-	rows: row[];
+	termsOfPayment: number
+	toId: string
+	description?: string
+	tav?: string
+	reference?: string
+	id?: string
+	rows: row[]
 }>({
 	title: 'Factuur maken',
-	logic: async (data) => {
+	logic: async data => {
 		// id is an hidden input that is set when editing an invoice
-		const id = Number(data.id);
+		const id = Number(data.id)
 		try {
 			if (Number.isNaN(id)) {
 				const invoice = await db.journal.create({
@@ -61,18 +61,18 @@ export const createInvoiceForm = new Form<{
 						treasurerId: data.user.id,
 						description: data.description,
 						tav: data.tav,
-						type: 'SALE'
-					}
-				});
+						type: 'SALE',
+					},
+				})
 
-				await createInvoiceRows(data.rows, invoice.id);
+				await createInvoiceRows(data.rows, invoice.id)
 
 				return {
 					success: true,
 					message: 'Factuur aangemaakt, je wordt nu doorgestuurd.',
 					status: 201,
-					redirectTo: '/ongeveer/sales'
-				};
+					redirectTo: '/ongeveer/sales',
+				}
 			} else {
 				await db.journal.update({
 					where: { id },
@@ -82,30 +82,30 @@ export const createInvoiceForm = new Form<{
 						ref: data.reference,
 						treasurerId: data.user.id,
 						description: data.description,
-						tav: data.tav
-					}
-				});
+						tav: data.tav,
+					},
+				})
 
 				await db.journalRow.deleteMany({
-					where: { journalId: id }
-				});
+					where: { journalId: id },
+				})
 
-				await createInvoiceRows(data.rows, id);
+				await createInvoiceRows(data.rows, id)
 
 				return {
 					success: true,
 					message: 'Factuur opgeslagen',
 					status: 200,
-					redirectTo: `/ongeveer/sales`
-				};
+					redirectTo: `/ongeveer/sales`,
+				}
 			}
 		} catch (e: any) {
-			console.error(e);
+			console.error(e)
 			return {
 				success: false,
 				status: 500,
-				errors: [{ message: 'Er is iets misgegaan bij het aanmaken van de factuur' }]
-			};
+				errors: [{ message: 'Er is iets misgegaan bij het aanmaken van de factuur' }],
+			}
 		}
 	},
 	requiredRoles: [Roles.Admins, Roles.FinanCie, Roles.Senaat],
@@ -114,18 +114,18 @@ export const createInvoiceForm = new Form<{
 			label: 'Referentie',
 			name: 'reference',
 			type: 'text',
-			optional: true
+			optional: true,
 		} as Field<'text'>,
 		{
 			label: 'Omschrijving',
 			name: 'description',
 			type: 'text',
-			optional: true
+			optional: true,
 		} as Field<'text'>,
 		{
 			label: 'Betalingstermijn',
 			name: 'termsOfPayment',
-			type: 'number'
+			type: 'number',
 		} as Field<'number'>,
 		{
 			name: 'toId',
@@ -133,24 +133,24 @@ export const createInvoiceForm = new Form<{
 			label: 'Relatie',
 			getOptions: async () => {
 				const relations = await db.financialPerson.findMany({
-					where: { OR: [{ type: 'OTHER' }, { type: 'USER' }], isActive: true }
-				});
+					where: { OR: [{ type: 'OTHER' }, { type: 'USER' }], isActive: true },
+				})
 
-				return relations.map((relation) => ({
+				return relations.map(relation => ({
 					label: `${relation.id} - ${relation.name}`,
-					value: relation.id
-				}));
-			}
+					value: relation.id,
+				}))
+			},
 		} as Field<'select'>,
 		{
 			name: 'tav',
 			type: 'text',
 			label: 'T.a.v.',
-			optional: true
+			optional: true,
 		} as Field<'text'>,
 		{
 			name: 'id',
-			type: 'hidden'
+			type: 'hidden',
 		} as Field<'hidden'>,
 		{
 			type: 'table',
@@ -162,19 +162,19 @@ export const createInvoiceForm = new Form<{
 					type: 'number',
 					label: 'Aantal',
 					step: 1,
-					minValue: 0
+					minValue: 0,
 				} as Field<'number'>,
 				{
 					name: 'price',
 					type: 'number',
 					label: 'Prijs',
 					step: 0.01,
-					minValue: 0
+					minValue: 0,
 				} as Field<'number'>,
 				{
 					name: 'description',
 					type: 'text',
-					label: 'Omschrijving'
+					label: 'Omschrijving',
 				} as Field<'text'>,
 				{
 					name: 'ledgerId',
@@ -182,14 +182,14 @@ export const createInvoiceForm = new Form<{
 					label: 'Grootboek',
 					getOptions: async () => {
 						const ledgers = await db.ledger.findMany({
-							where: { isActive: true }
-						});
+							where: { isActive: true },
+						})
 
-						return ledgers.map((ledger) => ({
+						return ledgers.map(ledger => ({
 							label: `${ledger.id} - ${ledger.name}`,
-							value: ledger.id
-						}));
-					}
+							value: ledger.id,
+						}))
+					},
 				} as Field<'select'>,
 				{
 					name: 'productId',
@@ -198,18 +198,18 @@ export const createInvoiceForm = new Form<{
 					optional: true,
 					getOptions: async () => {
 						const products = await db.product.findMany({
-							where: { isActive: true }
-						});
+							where: { isActive: true },
+						})
 
-						return products.map((product) => ({
+						return products.map(product => ({
 							label: `${product.id} - ${product.name}`,
-							value: product.id
-						}));
-					}
-				} as Field<'select'>
-			]
-		} as Field<'table'>
+							value: product.id,
+						}))
+					},
+				} as Field<'select'>,
+			],
+		} as Field<'table'>,
 	],
 	formId: 'create-invoice-form',
-	submitStr: 'Opslaan'
-});
+	submitStr: 'Opslaan',
+})

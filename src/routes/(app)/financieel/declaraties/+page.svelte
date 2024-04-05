@@ -1,13 +1,13 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import type { PageData } from './$types';
-	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
-	import { formatPrice } from '$lib/textUtils';
-	import Pagination from '$lib/components/Pagination.svelte';
+	import Title from '$lib/components/title.svelte'
+	import type { PageData } from './$types'
+	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
+	import { formatPrice } from '$lib/textUtils'
+	import Pagination from '$lib/components/Pagination.svelte'
 
-	export let data: PageData;
+	export let data: PageData
 
-	let innerWidth: number;
+	let innerWidth: number
 </script>
 
 <svelte:window bind:innerWidth />

@@ -1,16 +1,16 @@
-import db from '$lib/server/db';
-import Decimal from 'decimal.js';
-import type { PageServerLoad } from './$types';
-import { pagination } from '$lib/utils';
+import db from '$lib/server/db'
+import Decimal from 'decimal.js'
+import type { PageServerLoad } from './$types'
+import { pagination } from '$lib/utils'
 
 export const load = (async ({ url }) => {
-	const { p, size } = pagination(url);
+	const { p, size } = pagination(url)
 
 	const bankTransactions = await db.bankTransaction.findMany({
 		orderBy: {
 			Transaction: {
-				createdAt: 'desc'
-			}
+				createdAt: 'desc',
+			},
 		},
 		select: {
 			completedDate: true,
@@ -20,44 +20,37 @@ export const load = (async ({ url }) => {
 			ref: true,
 			Transaction: {
 				select: {
-					TransactionMatchRow: true
-				}
-			}
+					TransactionMatchRow: true,
+				},
+			},
 		},
 		take: size,
-		skip: p * size
-	});
+		skip: p * size,
+	})
 
 	enum statuses {
 		UNMATCHED = 'UNMATCHED',
 		MATCHED = 'MATCHED',
-		PARTIAL = 'PARTIAL'
+		PARTIAL = 'PARTIAL',
 	}
 
-	const serialized = bankTransactions.map((t) => {
-		const matchSum = t.Transaction.TransactionMatchRow.reduce(
-			(acc, r) => acc.add(r.amount),
-			new Decimal(0)
-		).abs();
-		const amount = t.amount.abs();
-		const status = matchSum.eq(0)
-			? statuses.UNMATCHED
-			: amount.eq(matchSum)
-			? statuses.MATCHED
-			: statuses.PARTIAL;
+	const serialized = bankTransactions.map(t => {
+		const matchSum = t.Transaction.TransactionMatchRow.reduce((acc, r) => acc.add(r.amount), new Decimal(0)).abs()
+		const amount = t.amount.abs()
+		const status = matchSum.eq(0) ? statuses.UNMATCHED : amount.eq(matchSum) ? statuses.MATCHED : statuses.PARTIAL
 		return {
 			completedDate: t.completedDate,
 			description: t.description,
 			id: t.id,
 			ref: t.ref,
 			amount: t.amount.toNumber(),
-			status
-		};
-	});
+			status,
+		}
+	})
 
 	return {
 		bankTransactions: serialized,
 		p,
-		size
-	};
-}) satisfies PageServerLoad;
+		size,
+	}
+}) satisfies PageServerLoad

@@ -1,33 +1,33 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Title from '$lib/components/title.svelte';
-	import { superForm } from 'sveltekit-superforms/client';
-	import { onError, onResult } from '$lib/superforms/error';
-	import { matchSaldoTransaction } from './matchSaldoTransaction';
-	import Plus from '~icons/tabler/plus';
-	import Trashcan from '~icons/tabler/trash';
-	import { toast } from '$lib/notification';
-	import Submit from '$lib/superforms/Submit.svelte';
-	import { formatPrice } from '$lib/textUtils';
+	import type { PageData } from './$types'
+	import Title from '$lib/components/title.svelte'
+	import { superForm } from 'sveltekit-superforms/client'
+	import { onError, onResult } from '$lib/superforms/error'
+	import { matchSaldoTransaction } from './matchSaldoTransaction'
+	import Plus from '~icons/tabler/plus'
+	import Trashcan from '~icons/tabler/trash'
+	import { toast } from '$lib/notification'
+	import Submit from '$lib/superforms/Submit.svelte'
+	import { formatPrice } from '$lib/textUtils'
 
-	export let data: PageData;
+	export let data: PageData
 
 	const formProps = superForm(data.form, {
 		onError,
 		onResult,
 		validators: matchSaldoTransaction,
-		dataType: 'json'
-	});
-	const { form, errors, enhance } = formProps;
+		dataType: 'json',
+	})
+	const { form, errors, enhance } = formProps
 
 	function addRow() {
-		console.log('addRow');
+		console.log('addRow')
 		if (data.journals.length === 0) {
 			return toast({
 				title: 'Geen boekstukken',
 				message: 'Voeg eerst een boekstuk toe',
-				type: 'danger'
-			});
+				type: 'danger',
+			})
 		}
 
 		$form.rows = [
@@ -35,9 +35,9 @@
 			{
 				amount: NaN,
 				description: '',
-				journal: data.journals[0].id
-			}
-		];
+				journal: data.journals[0].id,
+			},
+		]
 	}
 </script>
 
@@ -66,19 +66,10 @@
 			{#each $form.rows as _, i}
 				<tr>
 					<td>
-						<input
-							type="text"
-							class:has-error={$errors.rows?.[i]?.description}
-							bind:value={$form.rows[i].description}
-						/>
+						<input type="text" class:has-error={$errors.rows?.[i]?.description} bind:value={$form.rows[i].description} />
 					</td>
 					<td>
-						<input
-							type="number"
-							step="0.01"
-							class:has-error={$errors.rows?.[i]?.amount}
-							bind:value={$form.rows[i].amount}
-						/>
+						<input type="number" step="0.01" class:has-error={$errors.rows?.[i]?.amount} bind:value={$form.rows[i].amount} />
 					</td>
 					<td>
 						<select class:has-error={$errors.rows?.[i]?.journal} bind:value={$form.rows[i].journal}>
@@ -98,9 +89,9 @@
 						<button
 							type="button"
 							on:click={() => {
-								const filtered = [...$form.rows];
-								filtered.splice(i, 1);
-								$form.rows = filtered;
+								const filtered = [...$form.rows]
+								filtered.splice(i, 1)
+								$form.rows = filtered
 							}}><Trashcan /></button
 						>
 					</td>

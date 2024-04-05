@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import Title from '$lib/components/title.svelte';
+	import { page } from '$app/stores'
+	import Title from '$lib/components/title.svelte'
 </script>
 
 <Title title="Oei! Activiteit {$page.params.id} niet gevonden." shortTitle="Pagina niet gevonden" />

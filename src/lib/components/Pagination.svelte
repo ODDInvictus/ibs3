@@ -1,8 +1,8 @@
 <script lang="ts">
-	export let size: number;
-	export let p: number;
-	export let sizes = [10, 20, 30, 50, 100];
-	export let url: string;
+	export let size: number
+	export let p: number
+	export let sizes = [10, 20, 30, 50, 100]
+	export let url: string
 </script>
 
 <div class="nav">

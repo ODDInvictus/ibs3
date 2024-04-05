@@ -1,11 +1,11 @@
 @use './components/button';
 
 .ongeveer-nav {
-  display: flex;
-  margin-bottom: 1rem;
-  gap: 1rem;
+	display: flex;
+	margin-bottom: 1rem;
+	gap: 1rem;
 
-  a {
-    @extend a, .button;
-  }
+	a {
+		@extend a, .button;
+	}
 }

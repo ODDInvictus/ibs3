@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { string } from 'zod';
+	import { string } from 'zod'
 
-	export let name: string;
-	export let id: string;
-	export let accept: string = '*/*';
-	let files: FileList | null;
+	export let name: string
+	export let id: string
+	export let accept: string = '*/*'
+	let files: FileList | null
 </script>
 
 <div class="input-file {$$props.class ?? ''}">

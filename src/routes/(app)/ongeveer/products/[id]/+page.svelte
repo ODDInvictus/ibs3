@@ -1,13 +1,13 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
-	import { toast } from '$lib/notification';
-	import { formatPrice } from '$lib/textUtils';
-	import type { PageData } from './$types';
+	import Title from '$lib/components/title.svelte'
+	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
+	import { toast } from '$lib/notification'
+	import { formatPrice } from '$lib/textUtils'
+	import type { PageData } from './$types'
 
-	export let data: PageData;
+	export let data: PageData
 
-	let loading = false;
+	let loading = false
 </script>
 
 <Title title={data.product.name} />
@@ -18,19 +18,19 @@
 	<button
 		class="btn-danger"
 		on:click={async () => {
-			if (loading || !confirm('Weet je zeker dat je dit product wilt verwijderen?')) return;
-			loading = true;
-			const res = await fetch(`/ongeveer/products/${data.product.id}`, { method: 'DELETE' });
+			if (loading || !confirm('Weet je zeker dat je dit product wilt verwijderen?')) return
+			loading = true
+			const res = await fetch(`/ongeveer/products/${data.product.id}`, { method: 'DELETE' })
 			if (res.ok) {
-				location.href = '/ongeveer/products';
+				location.href = '/ongeveer/products'
 			} else {
-				const message = await res.text();
+				const message = await res.text()
 				toast({
 					type: 'danger',
 					message,
-					title: 'Error'
-				});
-				loading = false;
+					title: 'Error',
+				})
+				loading = false
 			}
 		}}>Verwijderen</button
 	>

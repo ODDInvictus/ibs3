@@ -1,39 +1,39 @@
 <script lang="ts">
-	import { formatDateHumanReadable } from '$lib/dateUtils';
-	import { env } from '$env/dynamic/public';
-	import type Decimal from 'decimal.js';
-	import { formatPrice } from '$lib/textUtils';
+	import { formatDateHumanReadable } from '$lib/dateUtils'
+	import { env } from '$env/dynamic/public'
+	import type Decimal from 'decimal.js'
+	import { formatPrice } from '$lib/textUtils'
 
 	export let invoice: {
-		id: number;
+		id: number
 		relation: {
-			id: number;
-			name: string;
+			id: number
+			name: string
 			FinancialPersonDataOther?: {
-				address?: string | null;
-				postalCode?: string | null;
-				city?: string | null;
-			} | null;
+				address?: string | null
+				postalCode?: string | null
+				city?: string | null
+			} | null
 			FinancialPersonDataUser?: {
 				user: {
-					personalEmail?: string | null;
-				};
-			} | null;
-		};
-		tav?: string | null;
-		date?: Date | null;
-		termsOfPayment: number;
-		description?: string | null;
+					personalEmail?: string | null
+				}
+			} | null
+		}
+		tav?: string | null
+		date?: Date | null
+		termsOfPayment: number
+		description?: string | null
 		Rows: {
-			description: string;
-			amount: number;
-			price: number | Decimal;
-		}[];
+			description: string
+			amount: number
+			price: number | Decimal
+		}[]
 		Treasurer?: {
-			firstName: string;
-			lastName: string;
-		} | null;
-	};
+			firstName: string
+			lastName: string
+		} | null
+	}
 </script>
 
 <div id="invoice">
@@ -120,11 +120,8 @@
 			</table>
 		</div>
 		<footer>
-			Gelieve binnen {invoice.termsOfPayment} dagen het bedrag van {invoice.Rows.reduce(
-				(t, row) => t + row.amount * Number(row.price),
-				0
-			)} euro over te maken op rekeningnummer<br />{env.PUBLIC_IBAN} t.n.v. N. Rotmensen onder vermelding
-			van het factuurnummer {invoice.id}.
+			Gelieve binnen {invoice.termsOfPayment} dagen het bedrag van {invoice.Rows.reduce((t, row) => t + row.amount * Number(row.price), 0)} euro
+			over te maken op rekeningnummer<br />{env.PUBLIC_IBAN} t.n.v. N. Rotmensen onder vermelding van het factuurnummer {invoice.id}.
 			<div class="bottom-bar">
 				<p>IBAN: {env.PUBLIC_IBAN}</p>
 				<p>Email: questor@oddinvictus.nl</p>

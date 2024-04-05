@@ -1,56 +1,56 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import MapPin from '~icons/tabler/map-pin';
-	import Clock from '~icons/tabler/clock';
-	import Calendar from '~icons/tabler/calendar';
-	import CalendarPlus from '~icons/tabler/calendar-plus';
-	import Edit from '~icons/tabler/edit';
-	import UsersGroup from '~icons/tabler/users-group';
-	import ExternalLink from '~icons/tabler/external-link';
-	import AccessibleOff from '~icons/tabler/accessible-off';
-	import UserCard from './_user-card.svelte';
-	import { generateICal, stripMarkdown } from '$lib/utils';
-	import { toast } from '$lib/notification';
-	import { markdown } from '$lib/utils';
-	import Title from '$lib/components/title.svelte';
-	import { imagePreview } from '$lib/imagePreviewStore';
-	import type { PageData } from './$types';
-	import { enhance } from '$app/forms';
-	import ProfileIcon from '$lib/components/profile-icon.svelte';
-	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
+	import { page } from '$app/stores'
+	import MapPin from '~icons/tabler/map-pin'
+	import Clock from '~icons/tabler/clock'
+	import Calendar from '~icons/tabler/calendar'
+	import CalendarPlus from '~icons/tabler/calendar-plus'
+	import Edit from '~icons/tabler/edit'
+	import UsersGroup from '~icons/tabler/users-group'
+	import ExternalLink from '~icons/tabler/external-link'
+	import AccessibleOff from '~icons/tabler/accessible-off'
+	import UserCard from './_user-card.svelte'
+	import { generateICal, stripMarkdown } from '$lib/utils'
+	import { toast } from '$lib/notification'
+	import { markdown } from '$lib/utils'
+	import Title from '$lib/components/title.svelte'
+	import { imagePreview } from '$lib/imagePreviewStore'
+	import type { PageData } from './$types'
+	import { enhance } from '$app/forms'
+	import ProfileIcon from '$lib/components/profile-icon.svelte'
+	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
 
-	export let data: PageData;
+	export let data: PageData
 
 	const STATUS_ORDER: Record<string, number> = {
 		ATTENDING: 1,
 		UNSURE: 2,
 		NOT_ATTENDING: 3,
-		NO_RESPONSE: 4
-	};
+		NO_RESPONSE: 4,
+	}
 
-	const activity = data.activity;
-	let attending = sortAttending();
-	let changed = 0;
+	const activity = data.activity
+	let attending = sortAttending()
+	let changed = 0
 
-	const nameWithoutMarkdown = stripMarkdown(activity.name);
+	const nameWithoutMarkdown = stripMarkdown(activity.name)
 
 	$: if (changed > 0) {
-		console.log('huts');
-		attending = sortAttending();
+		console.log('huts')
+		attending = sortAttending()
 	}
 
 	function sortAttending() {
-		return data.attending.sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]);
+		return data.attending.sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status])
 	}
 
 	function formatTime(time: string) {
-		const date = new Date(time);
-		return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+		const date = new Date(time)
+		return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
 	}
 
 	function formatDate(time: string, endTime: string) {
-		const date = new Date(time);
-		const end = new Date(endTime);
+		const date = new Date(time)
+		const end = new Date(endTime)
 
 		// If the activity is longer than 12 hours, show the end date
 		if (end.getTime() - date.getTime() > 12 * 60 * 60 * 1000) {
@@ -59,92 +59,92 @@
 					weekday: 'long',
 					day: 'numeric',
 					month: 'long',
-					year: 'numeric'
+					year: 'numeric',
 				}) +
 				' - ' +
 				end.toLocaleDateString('nl-NL', {
 					weekday: 'long',
 					day: 'numeric',
 					month: 'long',
-					year: 'numeric'
+					year: 'numeric',
 				})
-			);
+			)
 		}
 
 		return date.toLocaleDateString('nl-NL', {
 			weekday: 'long',
 			day: 'numeric',
 			month: 'long',
-			year: 'numeric'
-		});
+			year: 'numeric',
+		})
 	}
 
 	async function setAttending(status: string) {
 		// First check if the user is attending
-		const a = attending.find((a: any) => a.user.ldapId == data.user.ldapId);
+		const a = attending.find((a: any) => a.user.ldapId == data.user.ldapId)
 
 		// If a is undefined, then continue, since the backend will make it
 		if (a && a.status === status) {
 			// The user is already attending/not attending, so do nothing
-			return;
+			return
 		}
 
 		// Send a request to the server to update the attending status
 		await fetch('', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
 				status,
-				activityId: activity.id
-			})
+				activityId: activity.id,
+			}),
 		})
 			.then(() => {
-				let title, message;
-				let type: 'info' | 'success' | 'warning' | 'error' = 'info';
+				let title, message
+				let type: 'info' | 'success' | 'warning' | 'error' = 'info'
 
 				if (status === 'ATTENDING') {
-					title = 'Gezellig!';
-					message = 'Je aanwezigheid is opgeslagen';
-					type = 'success';
+					title = 'Gezellig!'
+					message = 'Je aanwezigheid is opgeslagen'
+					type = 'success'
 				} else if (status === 'NOT_ATTENDING') {
-					title = 'Jammer!';
-					message = 'Je afwezigheid is opgeslagen';
+					title = 'Jammer!'
+					message = 'Je afwezigheid is opgeslagen'
 				} else {
-					title = 'Opgeslagen';
-					message = 'Vul je het later nog in?';
+					title = 'Opgeslagen'
+					message = 'Vul je het later nog in?'
 				}
 
 				toast({
 					title,
 					message,
-					type
-				});
+					type,
+				})
 
 				// Update the attending status
 				if (!a) {
-					location.reload();
-					return;
+					location.reload()
+					return
 				}
 
-				a.status = status;
-				changed++;
-				sortAttending();
+				a.status = status
+				changed++
+				sortAttending()
 			})
-			.catch((err) => {
+			.catch(err => {
 				toast({
 					title: 'Oei!',
 					message: 'Er ging iets mis bij het opslaan van je aanwezigheid',
-					type: 'danger'
-				});
-				console.error(err);
-			});
+					type: 'danger',
+				})
+				console.error(err)
+			})
 	}
 
 	function generateIcal() {
-		const startTime = new Date(activity.startTime);
-		const endTime = new Date(activity.endTime);
+		const startTime = new Date(activity.startTime)
+		const endTime = new Date(activity.endTime)
 		const ical = generateICal({
 			title: activity.name,
 			eventId: activity.id.toString(),
@@ -152,30 +152,30 @@
 			location: activity.location?.name,
 			startTime,
 			endTime,
-			url: window.location.href
-		});
+			url: window.location.href,
+		})
 
 		// now let's save the file
-		const downloadLink = document.createElement('a');
-		downloadLink.href = ical;
-		downloadLink.download = `ibs-activiteit-${activity.id}.ical`;
-		document.body.appendChild(downloadLink);
-		downloadLink.click();
-		document.body.removeChild(downloadLink);
+		const downloadLink = document.createElement('a')
+		downloadLink.href = ical
+		downloadLink.download = `ibs-activiteit-${activity.id}.ical`
+		document.body.appendChild(downloadLink)
+		downloadLink.click()
+		document.body.removeChild(downloadLink)
 	}
 
 	function generateGCal() {
-		const activityUrl = $page.data.domain + '/activiteit/' + activity.id;
-		let details = activity.description;
-		details += `<br/><br/>Ben jij ook bij? <a href="${activityUrl}">Klik dan hier!</a>`;
-		if (activity.url) details += `<br /><br/> Meer informatie <a href="${activity.url}">hier</a>`;
+		const activityUrl = $page.data.domain + '/activiteit/' + activity.id
+		let details = activity.description
+		details += `<br/><br/>Ben jij ook bij? <a href="${activityUrl}">Klik dan hier!</a>`
+		if (activity.url) details += `<br /><br/> Meer informatie <a href="${activity.url}">hier</a>`
 
-		const start = new Date(activity.startTime).toISOString().replace(/-|:|\.\d\d\d/g, '');
-		const end = new Date(activity.endTime).toISOString().replace(/-|:|\.\d\d\d/g, '');
+		const start = new Date(activity.startTime).toISOString().replace(/-|:|\.\d\d\d/g, '')
+		const end = new Date(activity.endTime).toISOString().replace(/-|:|\.\d\d\d/g, '')
 
-		const dates = `${start}/${end}`;
+		const dates = `${start}/${end}`
 
-		const uri = new URL('https://calendar.google.com/calendar/render');
+		const uri = new URL('https://calendar.google.com/calendar/render')
 		const search = new URLSearchParams({
 			text: nameWithoutMarkdown,
 			action: 'TEMPLATE',
@@ -184,15 +184,15 @@
 			location: activity.location?.name ?? 'Locatie nog onbekend',
 			sprop: `name:{{Invictus Bier Systeem}},website:${activityUrl}`,
 			add: attending
-				.filter((a) => a.status === 'ATTENDING')
+				.filter(a => a.status === 'ATTENDING')
 				.map((a: any) => a.email)
 				.join(','),
-			dates
-		});
+			dates,
+		})
 
-		uri.search = search.toString();
+		uri.search = search.toString()
 
-		window.open(uri.toString());
+		window.open(uri.toString())
 	}
 </script>
 
@@ -208,14 +208,12 @@
 					on:click={() => {
 						if (activity.photo) {
 							imagePreview({
-								image: `/image/${activity.photo.filename}`
-							});
+								image: `/image/${activity.photo.filename}`,
+							})
 						}
 					}}
 					alt={nameWithoutMarkdown}
-					src={activity.photo
-						? `/image/${activity.photo.filename}?size=1000x500`
-						: `/image/favicon-512.png?static=true`}
+					src={activity.photo ? `/image/${activity.photo.filename}?size=1000x500` : `/image/favicon-512.png?static=true`}
 					onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
 				/>
 			</div>
@@ -302,24 +300,24 @@
 					method="POST"
 					use:enhance={() => {
 						return ({ result, update }) => {
-							let title = 'Reactie plaatsen mislukt';
-							let type = 'danger';
+							let title = 'Reactie plaatsen mislukt'
+							let type = 'danger'
 
 							if (result.status === 200) {
-								title = 'Succes';
-								type = 'success';
+								title = 'Succes'
+								type = 'success'
 
 								// @ts-expect-error Ja weet je, ik snap dat je dit niet leuk vind, maar je doet het er maar mee typescript
-								data.activity.comments = [...data.activity.comments, result.data.comment];
+								data.activity.comments = [...data.activity.comments, result.data.comment]
 							}
 
 							toast({
 								title,
 								message: result.data.message,
-								type
-							});
-							update();
-						};
+								type,
+							})
+							update()
+						}
 					}}
 				>
 					<input type="text" name="comment" placeholder="Typ een reactie..." />
@@ -330,17 +328,10 @@
 					{@const u = comment.commenter}
 					<div class="ibs-comment">
 						<div class="ibs-comment--icon">
-							<ProfileIcon
-								uid={u.profilePictureId}
-								name={u.firstName + ' ' + u.lastName}
-								height={50}
-								width={50}
-							/>
+							<ProfileIcon uid={u.profilePictureId} name={u.firstName + ' ' + u.lastName} height={50} width={50} />
 						</div>
 						<div class="ibs-comment--content">
-							<a href="/leden/{u.ldapId}" class="ibs-comment--content--name"
-								>{u.firstName} {u.lastName}</a
-							>
+							<a href="/leden/{u.ldapId}" class="ibs-comment--content--name">{u.firstName} {u.lastName}</a>
 							<p class="ibs-comment--content--date">
 								{formatDateTimeHumanReadable(comment.updatedAt)}
 							</p>

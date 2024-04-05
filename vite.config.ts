@@ -1,5 +1,5 @@
-import { sveltekit } from '@sveltejs/kit/vite';
-import type { UserConfig } from 'vite';
+import { sveltekit } from '@sveltejs/kit/vite'
+import type { UserConfig } from 'vite'
 import Icons from 'unplugin-icons/vite'
 import { SvelteKitPWA } from '@vite-pwa/sveltekit'
 
@@ -23,25 +23,25 @@ const config: UserConfig = {
 							cacheName: 'microsoft-cache',
 							expiration: {
 								maxEntries: 10,
-								maxAgeSeconds: 60 * 60 * 24 * 365 // 365 days
+								maxAgeSeconds: 60 * 60 * 24 * 365, // 365 days
 							},
 							cacheableResponse: {
-								statuses: [0, 200]
-							}
-						}
-					}
-				]
+								statuses: [0, 200],
+							},
+						},
+					},
+				],
 			},
 			manifest: {
 				name: 'Invictus Bier Systeem',
 				short_name: 'IBS',
-				description: "Invictus Bier Systeem is het websysteem voor alles Invictus",
+				description: 'Invictus Bier Systeem is het websysteem voor alles Invictus',
 				theme_color: '#551b8a',
 				display: 'standalone',
 				display_override: ['standalone', 'minimal-ui', 'fullscreen'],
 				start_url: '/',
 				launch_handler: {
-					client_mode: 'navigate-new'
+					client_mode: 'navigate-new',
 				},
 				icons: [
 					{
@@ -54,10 +54,10 @@ const config: UserConfig = {
 						sizes: '768x768',
 						type: 'image/png',
 					},
-				]
-			}
+				],
+			},
 		}),
-	]
-};
+	],
+}
 
-export default config;
+export default config

@@ -1,13 +1,13 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import Submit from '$lib/superforms/Submit.svelte';
-	import { onError } from '$lib/superforms/error';
-	import { superForm } from 'sveltekit-superforms/client';
-	import type { PageData } from './$types';
-	import SuperFileField from '$lib/superforms/SuperFileField.svelte';
-	import { toast } from '$lib/notification';
+	import Title from '$lib/components/title.svelte'
+	import Submit from '$lib/superforms/Submit.svelte'
+	import { onError } from '$lib/superforms/error'
+	import { superForm } from 'sveltekit-superforms/client'
+	import type { PageData } from './$types'
+	import SuperFileField from '$lib/superforms/SuperFileField.svelte'
+	import { toast } from '$lib/notification'
 
-	export let data: PageData;
+	export let data: PageData
 
 	const formProps = superForm(data.form, {
 		onError,
@@ -16,19 +16,19 @@
 				toast({
 					title: 'File upload succesvol',
 					message: `${result.data?.name} is opgeslagen`,
-					type: 'success'
-				});
+					type: 'success',
+				})
 			} else {
 				toast({
 					message: 'File upload failed',
 					title: 'Error',
-					type: 'danger'
-				});
+					type: 'danger',
+				})
 			}
-		}
-	});
+		},
+	})
 
-	const { enhance } = formProps;
+	const { enhance } = formProps
 </script>
 
 <Title title="File upload" />

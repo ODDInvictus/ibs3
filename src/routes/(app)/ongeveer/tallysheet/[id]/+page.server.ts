@@ -1,36 +1,36 @@
-import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
-import db from '$lib/server/db';
-import { tallySheetIsProcessed } from '$lib/ongeveer/db';
+import { error } from '@sveltejs/kit'
+import type { PageServerLoad } from './$types'
+import db from '$lib/server/db'
+import { tallySheetIsProcessed } from '$lib/ongeveer/db'
 
 export const load = (async ({ params }) => {
-	const id = Number(params.id);
-	if (Number.isNaN(id)) throw error(400);
+	const id = Number(params.id)
+	if (Number.isNaN(id)) throw error(400)
 
 	const tallySheet = await db.streeplijst.findUnique({
 		where: { id },
 		include: {
 			treasurer: {
 				select: {
-					firstName: true
-				}
+					firstName: true,
+				},
 			},
 			sales: {
 				include: {
 					Rows: true,
 					relation: {
 						select: {
-							name: true
-						}
-					}
-				}
-			}
-		}
-	});
+							name: true,
+						},
+					},
+				},
+			},
+		},
+	})
 
-	if (!tallySheet) throw error(404);
+	if (!tallySheet) throw error(404)
 
-	const isProcessed = await tallySheetIsProcessed(id);
+	const isProcessed = await tallySheetIsProcessed(id)
 
-	return { tallySheet: JSON.parse(JSON.stringify(tallySheet)) as typeof tallySheet, isProcessed };
-}) satisfies PageServerLoad;
+	return { tallySheet: JSON.parse(JSON.stringify(tallySheet)) as typeof tallySheet, isProcessed }
+}) satisfies PageServerLoad
