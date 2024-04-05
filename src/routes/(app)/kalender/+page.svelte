@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import { markdown } from '$lib/utils';
-	import type { PageData } from './$types';
+	import Title from '$lib/components/title.svelte'
+	import { markdown } from '$lib/utils'
+	import type { PageData } from './$types'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="Kalender" />
@@ -41,7 +41,7 @@
 				<p class="activity-time">
 					{new Date(activity.startTime).toLocaleTimeString('nl-NL', {
 						hour: '2-digit',
-						minute: '2-digit'
+						minute: '2-digit',
 					})} @ {activity.location?.name ?? 'Nog niet bepaald'}
 				</p>
 				<a href="/activiteit/{activity.id}">Meer informatie</a>

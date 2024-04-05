@@ -1,26 +1,23 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import { markdown } from '$lib/utils';
-	import type { sbUserPageData } from '../types';
+	import Title from '$lib/components/title.svelte'
+	import { markdown } from '$lib/utils'
+	import type { sbUserPageData } from '../types'
 
-	export let data: sbUserPageData;
+	export let data: sbUserPageData
 
 	const formatName = (names: { nickname: string | null; firstName: string }) => {
-		let unformattedName = names.nickname || names.firstName;
-		return unformattedName[0].toUpperCase() + unformattedName.slice(1).toLowerCase();
-	};
+		let unformattedName = names.nickname || names.firstName
+		return unformattedName[0].toUpperCase() + unformattedName.slice(1).toLowerCase()
+	}
 
 	$: name = formatName({
 		nickname: data.strafbakken.nickname,
-		firstName: data.strafbakken.firstName
-	});
+		firstName: data.strafbakken.firstName,
+	})
 </script>
 
 <main>
-	<Title
-		title="{name} zijn {data.strafbakken.StrafbakReceived.length} strafbakken"
-		shortTitle="{name} - Strafbakken"
-	/>
+	<Title title="{name} zijn {data.strafbakken.StrafbakReceived.length} strafbakken" shortTitle="{name} - Strafbakken" />
 	<div class="table-container">
 		<table class="striped">
 			<thead>

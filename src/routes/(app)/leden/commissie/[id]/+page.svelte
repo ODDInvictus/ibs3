@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import Title from '$lib/components/title.svelte';
-	let committee = $page.data.committee;
+	import { page } from '$app/stores'
+	import Title from '$lib/components/title.svelte'
+	let committee = $page.data.committee
 </script>
 
 <Title title={committee.name} shortTitle="{committee.name} - Commissies" />

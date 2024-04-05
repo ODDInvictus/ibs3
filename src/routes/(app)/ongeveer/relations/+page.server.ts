@@ -1,22 +1,22 @@
-import db from '$lib/server/db';
-import type { PageServerLoad } from './$types';
+import db from '$lib/server/db'
+import type { PageServerLoad } from './$types'
 
 export const load = (async () => {
 	return {
 		relations: db.financialPerson.findMany({
 			where: {
 				type: 'OTHER',
-				isActive: true
+				isActive: true,
 			},
 			select: {
 				FinancialPersonDataOther: {
 					select: {
-						description: true
-					}
+						description: true,
+					},
 				},
 				id: true,
-				name: true
-			}
-		})
-	};
-}) satisfies PageServerLoad;
+				name: true,
+			},
+		}),
+	}
+}) satisfies PageServerLoad

@@ -1,22 +1,22 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Title from '$lib/components/title.svelte';
-	import { intProxy, superForm } from 'sveltekit-superforms/client';
-	import Submit from '$lib/superforms/Submit.svelte';
-	import SuperField from '$lib/superforms/SuperField.svelte';
-	import { categorySchema } from './categorySchema';
-	import { onError } from '$lib/superforms/error';
+	import type { PageData } from './$types'
+	import Title from '$lib/components/title.svelte'
+	import { intProxy, superForm } from 'sveltekit-superforms/client'
+	import Submit from '$lib/superforms/Submit.svelte'
+	import SuperField from '$lib/superforms/SuperField.svelte'
+	import { categorySchema } from './categorySchema'
+	import { onError } from '$lib/superforms/error'
 
-	export let data: PageData;
+	export let data: PageData
 
 	const formProps = superForm(data.form, {
 		// Zod schema for client side validation
 		validators: categorySchema,
 		// Error handeler for thrown errors (403, 500 etc.)
-		onError
-	});
-	const { form, enhance } = formProps;
-	const idProxy = intProxy(form, 'id');
+		onError,
+	})
+	const { form, enhance } = formProps
+	const idProxy = intProxy(form, 'id')
 </script>
 
 <Title title="Categorie {data.id ? 'berwerken' : 'aanmaken'}" />

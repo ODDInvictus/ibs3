@@ -1,37 +1,31 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Title from '$lib/components/title.svelte';
-	import { toast } from '$lib/notification';
+	import type { PageData } from './$types'
+	import Title from '$lib/components/title.svelte'
+	import { toast } from '$lib/notification'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="Relaties" />
 
 <div class="ongeveer-nav">
-	<a
-		href="/ongeveer/relations/create?id={data.relation.id}"
-		class:disabled={data.relation.type !== 'OTHER'}
-	>
-		Bewerk
-	</a>
+	<a href="/ongeveer/relations/create?id={data.relation.id}" class:disabled={data.relation.type !== 'OTHER'}> Bewerk </a>
 
 	<button
 		on:click={async () => {
 			const res = await fetch('', {
-				method: 'PATCH'
-			});
+				method: 'PATCH',
+			})
 
 			if (res.ok) {
-				if (data.relation) data.relation.isActive = !data.relation.isActive;
-				else window.location.reload();
+				if (data.relation) data.relation.isActive = !data.relation.isActive
+				else window.location.reload()
 			} else {
 				toast({
 					title: res.statusText,
-					message:
-						(await res.text()) || 'Er is iets misgegaan bij het uitschakelen van de relatie.',
-					type: 'danger'
-				});
+					message: (await res.text()) || 'Er is iets misgegaan bij het uitschakelen van de relatie.',
+					type: 'danger',
+				})
 			}
 		}}>{data.relation.isActive ? 'Uitschakelen' : 'Inschakelen'}</button
 	>
@@ -39,18 +33,17 @@
 	<button
 		on:click={async () => {
 			const res = await fetch('', {
-				method: 'DELETE'
-			});
-			if (res.ok) window.location.href = '/ongeveer/relations';
+				method: 'DELETE',
+			})
+			if (res.ok) window.location.href = '/ongeveer/relations'
 			else
 				toast({
 					title: res.statusText,
 					message: (await res.text()) || 'Er is iets misgegaan bij het verwijderen van de relatie.',
-					type: 'danger'
-				});
+					type: 'danger',
+				})
 		}}
-		disabled={Object.values(data.relation._count).some((count) => count > 0) ||
-			data.relation.type !== 'OTHER'}
+		disabled={Object.values(data.relation._count).some(count => count > 0) || data.relation.type !== 'OTHER'}
 	>
 		Verwijder
 	</button>

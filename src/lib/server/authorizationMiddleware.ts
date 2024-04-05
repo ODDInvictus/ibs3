@@ -6,41 +6,41 @@ const USER_COMMITTEES = [LDAP_IDS.FEUTEN, LDAP_IDS.MEMBERS]
 const MEMBER_COMMITTEES = [LDAP_IDS.MEMBERS]
 
 export function authFinance(locals: App.Locals): [boolean, string[]] {
-  if (!locals.committees) return [false, FINANCE_COMMITTEES]
+	if (!locals.committees) return [false, FINANCE_COMMITTEES]
 
-  for (const committee of locals.committees) {
-    if (FINANCE_COMMITTEES.includes(committee.ldapId)) return [true, FINANCE_COMMITTEES]
-  }
+	for (const committee of locals.committees) {
+		if (FINANCE_COMMITTEES.includes(committee.ldapId)) return [true, FINANCE_COMMITTEES]
+	}
 
-  return [false, FINANCE_COMMITTEES]
+	return [false, FINANCE_COMMITTEES]
 }
 
 export function authAdmin(locals: App.Locals): [boolean, string[]] {
-  if (!locals.committees) return [false, ADMIN_COMMITTEES]
+	if (!locals.committees) return [false, ADMIN_COMMITTEES]
 
-  for (const committee of locals.committees) {
-    if (ADMIN_COMMITTEES.includes(committee.ldapId)) return [true, ADMIN_COMMITTEES]
-  }
+	for (const committee of locals.committees) {
+		if (ADMIN_COMMITTEES.includes(committee.ldapId)) return [true, ADMIN_COMMITTEES]
+	}
 
-  return [false, ADMIN_COMMITTEES]
+	return [false, ADMIN_COMMITTEES]
 }
 
 export function authUser(locals: App.Locals): [boolean, string[]] {
-  if (!locals.committees) return [false, USER_COMMITTEES]
+	if (!locals.committees) return [false, USER_COMMITTEES]
 
-  for (const committee of locals.committees) {
-    if (USER_COMMITTEES.includes(committee.ldapId)) return [true, USER_COMMITTEES]
-  }
+	for (const committee of locals.committees) {
+		if (USER_COMMITTEES.includes(committee.ldapId)) return [true, USER_COMMITTEES]
+	}
 
-  return [false, USER_COMMITTEES]
+	return [false, USER_COMMITTEES]
 }
 
 export function authMember(locals: App.Locals): [boolean, string[]] {
-  if (!locals.committees) return [false, MEMBER_COMMITTEES]
+	if (!locals.committees) return [false, MEMBER_COMMITTEES]
 
-  for (const committee of locals.committees) {
-    if (MEMBER_COMMITTEES.includes(committee.ldapId)) return [true, MEMBER_COMMITTEES]
-  }
+	for (const committee of locals.committees) {
+		if (MEMBER_COMMITTEES.includes(committee.ldapId)) return [true, MEMBER_COMMITTEES]
+	}
 
-  return [false, MEMBER_COMMITTEES]
+	return [false, MEMBER_COMMITTEES]
 }

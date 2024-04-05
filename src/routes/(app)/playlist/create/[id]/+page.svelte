@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Tracklist from '../../Tracklist.svelte';
-	import Title from '$lib/components/title.svelte';
+	import type { PageData } from './$types'
+	import Tracklist from '../../Tracklist.svelte'
+	import Title from '$lib/components/title.svelte'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 {#if !data.playlistUser}

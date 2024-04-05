@@ -1,35 +1,35 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import { toast } from '$lib/notification';
-	import { prompt } from '$lib/prompt';
-	import { confirm } from '$lib/confirm';
-	import Section from './_section.svelte';
-	import { promptSelect } from '$lib/promptSelect';
-	import InformationCircle from '~icons/tabler/info-circle';
-	import { promptCheckbox } from '$lib/promptCheckbox';
-	import { onMount } from 'svelte';
-	import Table from '$lib/components/table.svelte';
-	import InputFile from '$lib/components/input-file.svelte';
+	import Title from '$lib/components/title.svelte'
+	import { toast } from '$lib/notification'
+	import { prompt } from '$lib/prompt'
+	import { confirm } from '$lib/confirm'
+	import Section from './_section.svelte'
+	import { promptSelect } from '$lib/promptSelect'
+	import InformationCircle from '~icons/tabler/info-circle'
+	import { promptCheckbox } from '$lib/promptCheckbox'
+	import { onMount } from 'svelte'
+	import Table from '$lib/components/table.svelte'
+	import InputFile from '$lib/components/input-file.svelte'
 
 	function testToast(toastType: 'success' | 'danger' | 'warning' | 'info') {
 		toast({
 			title: `Dit is een ${toastType} toast!`,
 			message: 'Je kan hier allerlei dingen in zetten!',
-			type: toastType
-		});
+			type: toastType,
+		})
 	}
 
-	let contents = '';
+	let contents = ''
 
 	onMount(() => {
-		const sections = document.querySelectorAll('section');
+		const sections = document.querySelectorAll('section')
 
-		sections.forEach((section) => {
+		sections.forEach(section => {
 			contents += `
 				<a href="#${section.id}">${section.id}</a>
-			`;
-		});
-	});
+			`
+		})
+	})
 </script>
 
 <Title
@@ -69,8 +69,8 @@
 				<th><code>.mt-[1-20]</code></th>
 				<td><code>margin-top: [i * 0.25]rem;</code></td>
 				<td>
-					Net zoals in tailwind, bestaan er een boel margin helpers. <code>.mt-4</code> staat voor margin-top:
-					1rem; Je kan ipv mt ook [mb|ml|mr|mx|my|m] gebruiken
+					Net zoals in tailwind, bestaan er een boel margin helpers. <code>.mt-4</code> staat voor margin-top: 1rem; Je kan ipv mt ook [mb|ml|mr|mx|my|m]
+					gebruiken
 				</td>
 			</tr>
 
@@ -85,9 +85,7 @@
 	<h3>Tooltips</h3>
 
 	<p>
-		Voor tooltips gebruiken we <a href="https://github.com/fedorovvvv/svelte-floating-ui"
-			>svelte-floating-ui</a
-		>
+		Voor tooltips gebruiken we <a href="https://github.com/fedorovvvv/svelte-floating-ui">svelte-floating-ui</a>
 	</p>
 	<p>
 		Je moet daarvoor een div hebben met de class <code>.tooltip</code>, zie
@@ -129,9 +127,8 @@
 		<tbody>
 			<tr>
 				<td
-					>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur rem sit harum
-					veritatis illum provident molestiae, quia earum inventore alias dicta corporis officiis
-					consectetur ratione sapiente eos temporibus adipisci quis?</td
+					>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur rem sit harum veritatis illum provident molestiae, quia
+					earum inventore alias dicta corporis officiis consectetur ratione sapiente eos temporibus adipisci quis?</td
 				>
 				<td>38</td>
 			</tr>
@@ -200,19 +197,19 @@
 		rows={[
 			['1', 'Niels', '38'],
 			['2', 'Naut', '50'],
-			['3', 'Daniel', '12']
+			['3', 'Daniel', '12'],
 		]}
 		actions={[
 			{
 				type: 'edit',
 				action: () => {},
-				title: 'Bewerken'
+				title: 'Bewerken',
 			},
 			{
 				type: 'delete',
 				action: () => {},
-				title: 'Verwijderen'
-			}
+				title: 'Verwijderen',
+			},
 		]}
 		columns={['Naam', 'Strafbakken', 'Acties']}
 	/>
@@ -227,9 +224,8 @@
 		<img class="ibs-card--image" src="https://picsum.photos/500/200" alt="plaatje" />
 		<h2 class="ibs-card--title">Card met plaatje en tekst</h2>
 		<p class="ibs-card--content">
-			Het is het best als je plaatje 5:2 is, anders wordt er een stuk afgeknipt. Lorem ipsum dolor
-			sit amet consectetur adipisicing elit. Rem fugit quis, officiis perferendis voluptates saepe
-			sapiente voluptas ea dolores cumque omnis vel quibusdam,
+			Het is het best als je plaatje 5:2 is, anders wordt er een stuk afgeknipt. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+			Rem fugit quis, officiis perferendis voluptates saepe sapiente voluptas ea dolores cumque omnis vel quibusdam,
 		</p>
 	</div>
 
@@ -239,8 +235,8 @@
 			<p>Iets wat handig is om te onthouden is dat deze subclasses niet verplicht zijn.</p>
 			<br />
 			<p>
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem fugit quis, officiis
-				perferendis voluptates saepe sapiente voluptas ea dolores cumque omnis vel quibusdam,
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem fugit quis, officiis perferendis voluptates saepe sapiente voluptas ea
+				dolores cumque omnis vel quibusdam,
 			</p>
 		</div>
 
@@ -263,9 +259,7 @@
 		<p class="ibs-card--row">Zonder icon</p>
 		<p class="ibs-card--row">Zonder icon</p>
 
-		<p class="ibs-card--content">
-			Gebruik ook altijd content als je rows gebruikt! Daarnaast, row komt eerst
-		</p>
+		<p class="ibs-card--content">Gebruik ook altijd content als je rows gebruikt! Daarnaast, row komt eerst</p>
 	</div>
 </Section>
 
@@ -343,12 +337,8 @@
 <Section title="Toasts" noGeneration>
 	<button class="btn-info" on:click={() => testToast('info')}> Klik voor info toast </button>
 	<button class="btn-danger" on:click={() => testToast('danger')}> Klik voor danger toast </button>
-	<button class="btn-warning" on:click={() => testToast('warning')}>
-		Klik voor warning toast
-	</button>
-	<button class="btn-success" on:click={() => testToast('success')}>
-		Klik voor success toast
-	</button>
+	<button class="btn-warning" on:click={() => testToast('warning')}> Klik voor warning toast </button>
+	<button class="btn-success" on:click={() => testToast('success')}> Klik voor success toast </button>
 </Section>
 
 <Section title="Confirm, Prompt, Select, etc." noGeneration>
@@ -358,7 +348,7 @@
 			prompt({
 				title: 'Dit is een prompt',
 				message: 'Dit is een prompt message',
-				cb: async () => {}
+				cb: async () => {},
 			})}
 	>
 		Klik hier voor prompt()
@@ -370,7 +360,7 @@
 			confirm({
 				title: 'Dit is een confirm',
 				message: 'Dit is een confirm message',
-				cb: async () => {}
+				cb: async () => {},
 			})}
 	>
 		Klik hier voor confirm()
@@ -383,7 +373,7 @@
 				title: 'Dit is een promptSelect',
 				message: 'Dit is een promptSelect message',
 				options: ['option 1', 'option 2', 'option 3'],
-				cb: async () => {}
+				cb: async () => {},
 			})}
 	>
 		Klik hier voor promptSelect()
@@ -396,7 +386,7 @@
 				title: 'Dit is een promptCheckbox',
 				message: 'Dit is een promptCheckbox message',
 				value: true,
-				cb: async () => {}
+				cb: async () => {},
 			})}
 	>
 		Klik hier voor promptCheckbox()

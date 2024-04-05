@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Title from '$lib/components/title.svelte';
-	import { formatDateHumanReadable, formatDateTimeHumanReadable } from '$lib/dateUtils';
+	import type { PageData } from './$types'
+	import Title from '$lib/components/title.svelte'
+	import { formatDateHumanReadable, formatDateTimeHumanReadable } from '$lib/dateUtils'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="Streeplijst #{data.tallySheet.id}" />
@@ -30,19 +30,11 @@
 	</tr>
 	<tr>
 		<td>Begin datum</td>
-		<td
-			>{data.tallySheet.startDate
-				? formatDateHumanReadable(new Date(data.tallySheet.startDate))
-				: '-'}</td
-		>
+		<td>{data.tallySheet.startDate ? formatDateHumanReadable(new Date(data.tallySheet.startDate)) : '-'}</td>
 	</tr>
 	<tr>
 		<td>Eind datum</td>
-		<td
-			>{data.tallySheet.endDate
-				? formatDateHumanReadable(new Date(data.tallySheet.endDate))
-				: '-'}</td
-		>
+		<td>{data.tallySheet.endDate ? formatDateHumanReadable(new Date(data.tallySheet.endDate)) : '-'}</td>
 	</tr>
 	<tr>
 		<td>Verwerkt</td>

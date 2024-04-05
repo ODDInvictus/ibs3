@@ -2,7 +2,7 @@
 	// @ts-nocheck
 
 	function back() {
-		history.back();
+		history.back()
 	}
 </script>
 

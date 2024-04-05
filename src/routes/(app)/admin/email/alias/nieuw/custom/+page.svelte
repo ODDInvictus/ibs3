@@ -1,38 +1,38 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import Title from '$lib/components/title.svelte';
-	import { toast } from '$lib/notification';
+	import { page } from '$app/stores'
+	import Title from '$lib/components/title.svelte'
+	import { toast } from '$lib/notification'
 
-	let email = '';
-	let alias = '';
+	let email = ''
+	let alias = ''
 
 	async function submit() {
 		await fetch('', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ email, alias })
+			body: JSON.stringify({ email, alias }),
 		})
-			.then((b) => b.json())
-			.then((res) => {
+			.then(b => b.json())
+			.then(res => {
 				if (res.success) {
 					toast({
 						title: 'Gelukt!',
 						message: res.message,
-						type: 'success'
-					});
+						type: 'success',
+					})
 					setTimeout(() => {
-						location.href = '/admin/email/alias';
-					}, 3000);
+						location.href = '/admin/email/alias'
+					}, 3000)
 				} else {
 					toast({
 						title: 'Oei!',
 						message: res.message,
-						type: 'danger'
-					});
+						type: 'danger',
+					})
 				}
-			});
+			})
 	}
 </script>
 

@@ -1,20 +1,20 @@
 <script lang="ts">
-	import Edit from '~icons/tabler/edit';
-	import Delete from '~icons/tabler/circle-x';
-	import Add from '~icons/tabler/plus';
-	import Revert from '~icons/tabler/arrow-back-up';
+	import Edit from '~icons/tabler/edit'
+	import Delete from '~icons/tabler/circle-x'
+	import Add from '~icons/tabler/plus'
+	import Revert from '~icons/tabler/arrow-back-up'
 
 	type Action = {
-		type: 'edit' | 'delete' | 'add' | 'revert';
-		action: (id: string) => void;
-		title?: string;
-	};
+		type: 'edit' | 'delete' | 'add' | 'revert'
+		action: (id: string) => void
+		title?: string
+	}
 
 	// Eerste element in row is de id
-	export let rows: string[][] = [];
-	export let columns: string[] = [];
-	export let actions: Action[] = [];
-	export let tableId = 'custom-table';
+	export let rows: string[][] = []
+	export let columns: string[] = []
+	export let actions: Action[] = []
+	export let tableId = 'custom-table'
 </script>
 
 <table id={tableId} class={$$props.class}>

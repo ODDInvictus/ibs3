@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const tallySheetSchema = z.object({
 	notes: z.string().optional(),
@@ -9,8 +9,8 @@ export const tallySheetSchema = z.object({
 			z.object({
 				amount: z.number().int().min(1),
 				productId: z.number().int(),
-				financialPersonId: z.number().int()
-			})
+				financialPersonId: z.number().int(),
+			}),
 		)
-		.min(1)
-});
+		.min(1),
+})

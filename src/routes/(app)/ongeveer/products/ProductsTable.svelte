@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let products: { id: number; name: string }[] = [];
+	export let products: { id: number; name: string }[] = []
 </script>
 
 <table class="small">

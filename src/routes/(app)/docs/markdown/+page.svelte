@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import Title from '$lib/components/title.svelte';
-	import Row from './Row.svelte';
+	import { page } from '$app/stores'
+	import Title from '$lib/components/title.svelte'
+	import Row from './Row.svelte'
 
 	const examples = [
 		'*schuingedrukt*',
@@ -15,8 +15,8 @@
 		`[strafbakken](${$page.data.url}/strafbakken)`,
 		':)  :clap:',
 		'20^e^ H~2~O',
-		'\\*geen markdown* *wel markdown*'
-	];
+		'\\*geen markdown* *wel markdown*',
+	]
 </script>
 
 <Title title="Markdown" />
@@ -33,9 +33,7 @@
 	</tbody>
 </table>
 
-<a
-	href="https://gist.githubusercontent.com/roachhd/1f029bd4b50b8a524f3c/raw/baf369946a4f0d9127fcccef5581d6c34f39f0dc/README.md"
->
+<a href="https://gist.githubusercontent.com/roachhd/1f029bd4b50b8a524f3c/raw/baf369946a4f0d9127fcccef5581d6c34f39f0dc/README.md">
 	Een lijst met alle emoji-codes zijn hier te vinden
 </a>
 

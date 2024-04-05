@@ -1,66 +1,66 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount } from 'svelte'
 
 	onMount(() => {
-		if (noGeneration) return;
+		if (noGeneration) return
 
-		const items = document.querySelectorAll(`.elements-${title} > *`) as NodeListOf<HTMLElement>;
+		const items = document.querySelectorAll(`.elements-${title} > *`) as NodeListOf<HTMLElement>
 		// const code = document.querySelector(`.code-${title} code`) as HTMLElement;
-		const table = document.querySelector(`.items-${title}`) as HTMLElement;
+		const table = document.querySelector(`.items-${title}`) as HTMLElement
 
-		items.forEach((item) => {
-			removeClasses(item);
+		items.forEach(item => {
+			removeClasses(item)
 			// if the item has children, add newlines to all children
 			if (item.children.length > 0) {
-				item.innerHTML = item.innerHTML.replace(/</g, '\n<');
+				item.innerHTML = item.innerHTML.replace(/</g, '\n<')
 
-				item.querySelectorAll('*').forEach((child) => {
-					removeClasses(child);
-				});
+				item.querySelectorAll('*').forEach(child => {
+					removeClasses(child)
+				})
 			}
 
-			const html = item.outerHTML;
-			const svgRegex = new RegExp(/<svg.*<\/svg>/gms);
-			const commentRegex = new RegExp(/\<\!\-\-.*\-\-\>/gms);
-			const svelteRegex1 = new RegExp(/data-svelte.*\"/gm);
+			const html = item.outerHTML
+			const svgRegex = new RegExp(/<svg.*<\/svg>/gms)
+			const commentRegex = new RegExp(/\<\!\-\-.*\-\-\>/gms)
+			const svelteRegex1 = new RegExp(/data-svelte.*\"/gm)
 
-			let text = html;
-			text = text.replaceAll(svelteRegex1, '');
-			text = text.replaceAll(svgRegex, '"icon"');
-			text = text.replaceAll(commentRegex, '');
+			let text = html
+			text = text.replaceAll(svelteRegex1, '')
+			text = text.replaceAll(svgRegex, '"icon"')
+			text = text.replaceAll(commentRegex, '')
 
-			const tr = document.createElement('tr');
-			const tdCode = document.createElement('td');
-			const tdElement = document.createElement('td');
-			const code = document.createElement('code');
+			const tr = document.createElement('tr')
+			const tdCode = document.createElement('td')
+			const tdElement = document.createElement('td')
+			const code = document.createElement('code')
 
-			code.innerText = text;
-			tdCode.appendChild(code);
+			code.innerText = text
+			tdCode.appendChild(code)
 
-			tdElement.innerHTML = html;
+			tdElement.innerHTML = html
 
-			tr.appendChild(tdCode);
-			tr.appendChild(tdElement);
+			tr.appendChild(tdCode)
+			tr.appendChild(tdElement)
 
-			table.appendChild(tr);
-		});
-	});
+			table.appendChild(tr)
+		})
+	})
 
 	function removeClasses(element: Element) {
-		element.classList.forEach((c) => {
+		element.classList.forEach(c => {
 			if (c.startsWith('s-')) {
-				element.classList.remove(c);
+				element.classList.remove(c)
 			}
-		});
+		})
 
 		if (element.classList.length === 0) {
 			// Remove the class=""
-			element.removeAttribute('class');
+			element.removeAttribute('class')
 		}
 	}
 
-	export let title: string;
-	export let noGeneration = false;
+	export let title: string
+	export let noGeneration = false
 </script>
 
 <section id={title}>

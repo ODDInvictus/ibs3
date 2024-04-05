@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Title from '$lib/components/title.svelte';
-	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
-	import { formatPrice } from '$lib/textUtils';
+	import type { PageData } from './$types'
+	import Title from '$lib/components/title.svelte'
+	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
+	import { formatPrice } from '$lib/textUtils'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title={data.transaction ? 'Transactie' : 'Niet gevonden'} />

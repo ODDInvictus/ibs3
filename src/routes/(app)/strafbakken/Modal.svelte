@@ -1,24 +1,24 @@
 <script lang="ts">
-	import { closeModal } from 'svelte-modals';
-	import { enhance } from '$app/forms';
+	import { closeModal } from 'svelte-modals'
+	import { enhance } from '$app/forms'
 
-	export let submitted = false;
+	export let submitted = false
 
-	export let isOpen: boolean;
-	export let username: string;
-	export let uid: number;
-	export let changeCount: (index: number, n: number) => void;
-	export let index: number;
+	export let isOpen: boolean
+	export let username: string
+	export let uid: number
+	export let changeCount: (index: number, n: number) => void
+	export let index: number
 
 	let status = {
 		bar: '',
-		btn: ''
-	};
+		btn: '',
+	}
 
-	import { markdown } from '$lib/utils';
-	import Markdown from '$lib/components/Markdown.svelte';
-	let reason = '';
-	$: reasonMarkdown = markdown(reason);
+	import { markdown } from '$lib/utils'
+	import Markdown from '$lib/components/Markdown.svelte'
+	let reason = ''
+	$: reasonMarkdown = markdown(reason)
 </script>
 
 {#if isOpen}
@@ -28,25 +28,25 @@
 				<h2>{username} verdient een bak!</h2>
 				<form
 					method="POST"
-					use:enhance={(event) => {
+					use:enhance={event => {
 						return async ({ result }) => {
 							// Zet de strafbakken weer 1 terug als het mislukt is de bak uit de delen.
 							if (result.type === 'failure' || result.type === 'error') {
-								changeCount(index, -1);
-								status.btn = 'error';
-								status.bar += ' error';
+								changeCount(index, -1)
+								status.btn = 'error'
+								status.bar += ' error'
 							}
-						};
+						}
 					}}
-					on:submit={(e) => {
-						if (submitted) return e.preventDefault();
-						submitted = true;
-						status.btn = 'active';
-						status.bar = 'active';
-						changeCount(index, 1);
+					on:submit={e => {
+						if (submitted) return e.preventDefault()
+						submitted = true
+						status.btn = 'active'
+						status.bar = 'active'
+						changeCount(index, 1)
 						setTimeout(() => {
-							closeModal();
-						}, 1000);
+							closeModal()
+						}, 1000)
 					}}
 				>
 					<p>Reden:</p>
@@ -124,40 +124,20 @@
 			font-size: 0.875rem;
 			text-align: center;
 			padding: 0.625rem 1.25rem;
-			background: linear-gradient(
-				90deg,
-				rgba(144, 97, 249, 1) 0%,
-				rgba(126, 58, 242, 1) 50%,
-				rgba(108, 43, 217, 1) 100%
-			);
+			background: linear-gradient(90deg, rgba(144, 97, 249, 1) 0%, rgba(126, 58, 242, 1) 50%, rgba(108, 43, 217, 1) 100%);
 			border-radius: 0.5rem;
 			transition: all 1s linear;
 
 			&.active {
-				background: linear-gradient(
-					180deg,
-					rgb(0, 255, 0) 0%,
-					rgb(20, 230, 20) 50%,
-					rgb(40, 200, 40) 100%
-				) !important;
+				background: linear-gradient(180deg, rgb(0, 255, 0) 0%, rgb(20, 230, 20) 50%, rgb(40, 200, 40) 100%) !important;
 			}
 
 			&.error {
-				background: linear-gradient(
-					180deg,
-					rgb(255, 0, 0) 0%,
-					rgb(230, 20, 20) 50%,
-					rgb(200, 40, 40) 100%
-				) !important;
+				background: linear-gradient(180deg, rgb(255, 0, 0) 0%, rgb(230, 20, 20) 50%, rgb(200, 40, 40) 100%) !important;
 			}
 
 			&:hover {
-				background: linear-gradient(
-					180deg,
-					rgba(144, 97, 249, 1) 0%,
-					rgba(126, 58, 242, 1) 50%,
-					rgba(108, 43, 217, 1) 100%
-				);
+				background: linear-gradient(180deg, rgba(144, 97, 249, 1) 0%, rgba(126, 58, 242, 1) 50%, rgba(108, 43, 217, 1) 100%);
 			}
 		}
 

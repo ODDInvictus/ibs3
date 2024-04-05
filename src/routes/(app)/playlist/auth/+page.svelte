@@ -1,55 +1,55 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import Title from '$lib/components/title.svelte';
-	import Login from './Login.svelte';
-	import { onMount } from 'svelte';
-	import { toast } from '$lib/notification';
-	import { goto } from '$app/navigation';
-	import Loader from '$lib/components/Loader.svelte';
-	import Copy from '~icons/tabler/Copy.svelte';
+	import { page } from '$app/stores'
+	import Title from '$lib/components/title.svelte'
+	import Login from './Login.svelte'
+	import { onMount } from 'svelte'
+	import { toast } from '$lib/notification'
+	import { goto } from '$app/navigation'
+	import Loader from '$lib/components/Loader.svelte'
+	import Copy from '~icons/tabler/Copy.svelte'
 
-	const searchParams = $page.url.searchParams;
+	const searchParams = $page.url.searchParams
 	const tokens: {
-		access_token: string;
-		refresh_token: string;
-		expires_in: number;
-	} | null = searchParams.has('data') ? JSON.parse(searchParams.get('data')!) : null;
-	const error = searchParams.get('error');
+		access_token: string
+		refresh_token: string
+		expires_in: number
+	} | null = searchParams.has('data') ? JSON.parse(searchParams.get('data')!) : null
+	const error = searchParams.get('error')
 
-	let mounted = false;
+	let mounted = false
 
 	onMount(() => {
 		if (error)
 			toast({
 				title: 'Error',
 				message: error,
-				type: 'error'
-			});
+				type: 'error',
+			})
 
 		if (tokens) {
-			goto('/playlist/auth');
+			goto('/playlist/auth')
 		}
 
-		mounted = true;
-	});
+		mounted = true
+	})
 
 	const syncPlaylist = async () => {
 		try {
-			const res = await fetch('/playlist', { method: 'PUT' });
-			if (!res.ok) throw new Error();
+			const res = await fetch('/playlist', { method: 'PUT' })
+			if (!res.ok) throw new Error()
 			toast({
 				type: 'success',
 				message: 'De playlist is gesynchroniseerd',
-				title: 'Success'
-			});
+				title: 'Success',
+			})
 		} catch (error) {
 			toast({
 				type: 'error',
 				message: 'De playlist kon niet gesynchroniseerd worden',
-				title: 'Error'
-			});
+				title: 'Error',
+			})
 		}
-	};
+	}
 </script>
 
 <Title title="Playlist" />
@@ -62,12 +62,12 @@
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div
 				on:click={() => {
-					navigator.clipboard.writeText(tokens.refresh_token);
+					navigator.clipboard.writeText(tokens.refresh_token)
 					toast({
 						title: 'Copied',
 						message: 'Refresh token copied to clipboard',
-						type: 'success'
-					});
+						type: 'success',
+					})
 				}}
 			>
 				<p>Copy to clipboard</p>

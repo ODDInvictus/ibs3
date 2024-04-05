@@ -12,17 +12,8 @@
 		stroke-linecap="round"
 	/>
 	<path d="M214 126V111" class="stroke-logo" stroke-width="4" stroke-linecap="round" />
-	<path
-		d="M205 104V124C205 125 205.7 126.1 206.5 126.5"
-		class="stroke-logo"
-		stroke-width="4"
-		stroke-linecap="round"
-	/>
-	<path
-		d="M163 111V121C163 128.5 177.5 128 177.5 121V111C177.5 103 163 103 163 111Z"
-		class="stroke-logo"
-		stroke-width="4"
-	/>
+	<path d="M205 104V124C205 125 205.7 126.1 206.5 126.5" class="stroke-logo" stroke-width="4" stroke-linecap="round" />
+	<path d="M163 111V121C163 128.5 177.5 128 177.5 121V111C177.5 103 163 103 163 111Z" class="stroke-logo" stroke-width="4" />
 	<path
 		d="M186 126V114.5M186 111V114.5M186 114.5C187 113.167 189.6 110.5 192 110.5C195 110.5 197 113 197 114.5C197 117.3 197 123.5 197 126"
 		class="stroke-logo"

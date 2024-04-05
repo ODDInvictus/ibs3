@@ -1,20 +1,20 @@
 <script lang="ts">
-	import { signOut } from '@auth/sveltekit/client';
+	import { signOut } from '@auth/sveltekit/client'
 
-	export let showMenu: boolean = false;
+	export let showMenu: boolean = false
 
 	function logOut() {
-		signOut();
+		signOut()
 	}
 
 	function isDarkMode(): boolean {
-		return !!document.querySelector(':root')?.classList.contains('dark');
+		return !!document.querySelector(':root')?.classList.contains('dark')
 	}
 
 	function toggleColor() {
 		// TODO: logic for feuten (dont toggle if feut)
-		document.querySelector(':root')?.classList.toggle('dark');
-		document.querySelector(':root')?.classList.toggle('light');
+		document.querySelector(':root')?.classList.toggle('dark')
+		document.querySelector(':root')?.classList.toggle('light')
 	}
 </script>
 
@@ -22,16 +22,10 @@
 	<div class="menu">
 		<div id="pointer" />
 
-		<button class="menu-item" on:click={() => toggleColor()}
-			>{isDarkMode() ? 'Light mode' : 'Dark mode'}</button
-		>
+		<button class="menu-item" on:click={() => toggleColor()}>{isDarkMode() ? 'Light mode' : 'Dark mode'}</button>
 		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/leden/ik">Profiel</a>
-		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/financieel"
-			>Streeplijst</a
-		>
-		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/instellingen"
-			>Instellingen</a
-		>
+		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/financieel">Streeplijst</a>
+		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/instellingen">Instellingen</a>
 
 		<hr />
 

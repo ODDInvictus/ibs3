@@ -1,37 +1,37 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import { onError } from '$lib/superforms/error';
-	import { productSchema } from './productSchema';
-	import { intProxy, superForm } from 'sveltekit-superforms/client';
-	import SuperField from '$lib/superforms/SuperField.svelte';
-	import SuperSelect from '$lib/superforms/SuperSelect.svelte';
-	import Submit from '$lib/superforms/Submit.svelte';
-	import Title from '$lib/components/title.svelte';
+	import type { PageData } from './$types'
+	import { onError } from '$lib/superforms/error'
+	import { productSchema } from './productSchema'
+	import { intProxy, superForm } from 'sveltekit-superforms/client'
+	import SuperField from '$lib/superforms/SuperField.svelte'
+	import SuperSelect from '$lib/superforms/SuperSelect.svelte'
+	import Submit from '$lib/superforms/Submit.svelte'
+	import Title from '$lib/components/title.svelte'
 
 	function mapProductType(productType: string) {
 		switch (productType) {
 			case 'ALCOHOL':
-				return 'Alcohol-houdend';
+				return 'Alcohol-houdend'
 			case 'FOOD':
-				return 'Etenswaren';
+				return 'Etenswaren'
 			case 'OTHER':
-				return 'Anders';
+				return 'Anders'
 			default:
-				return productType;
+				return productType
 		}
 	}
 
-	export let data: PageData;
+	export let data: PageData
 
 	const formProps = superForm(data.form, {
 		// Zod schema for client side validation
 		validators: productSchema,
 		// Error handeler for thrown errors (403, 500 etc.)
-		onError
-	});
-	const { form, enhance } = formProps;
+		onError,
+	})
+	const { form, enhance } = formProps
 
-	const idProxy = intProxy(form, 'id');
+	const idProxy = intProxy(form, 'id')
 </script>
 
 <Title title="Product aanmaken" />
@@ -42,16 +42,9 @@
 	<SuperField {formProps} field="description">Beschrijving</SuperField>
 	<SuperField type="number" {formProps} field="price">Prijs</SuperField>
 
-	<SuperSelect
-		{formProps}
-		field="categoryId"
-		options={data.categories.map(({ id, name }) => [id, name])}>Categorie</SuperSelect
-	>
+	<SuperSelect {formProps} field="categoryId" options={data.categories.map(({ id, name }) => [id, name])}>Categorie</SuperSelect>
 
-	<SuperSelect
-		{formProps}
-		field="productType"
-		options={data.productTypes.map((productType) => [productType, mapProductType(productType)])}
+	<SuperSelect {formProps} field="productType" options={data.productTypes.map(productType => [productType, mapProductType(productType)])}
 		>Product Type</SuperSelect
 	>
 

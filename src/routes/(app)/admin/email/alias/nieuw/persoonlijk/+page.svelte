@@ -1,46 +1,45 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import Title from '$lib/components/title.svelte';
-	import { toast } from '$lib/notification';
+	import { page } from '$app/stores'
+	import Title from '$lib/components/title.svelte'
+	import { toast } from '$lib/notification'
 
-	let user = -1;
-	let alias = '';
+	let user = -1
+	let alias = ''
 
 	async function submit() {
 		await fetch('', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ user, alias })
+			body: JSON.stringify({ user, alias }),
 		})
-			.then((b) => b.json())
-			.then((res) => {
+			.then(b => b.json())
+			.then(res => {
 				if (res.success) {
 					toast({
 						title: 'Gelukt!',
 						message: res.message,
-						type: 'success'
-					});
+						type: 'success',
+					})
 					setTimeout(() => {
-						location.href = '/admin/email/alias';
-					}, 3000);
+						location.href = '/admin/email/alias'
+					}, 3000)
 				} else {
 					toast({
 						title: 'Oei!',
 						message: res.message,
-						type: 'danger'
-					});
+						type: 'danger',
+					})
 				}
-			});
+			})
 	}
 </script>
 
 <Title title="Nieuwe persoonlijke alias" shortTitle="Persoonlijke alias" />
 
 <p>
-	Op deze pagina kan je een nieuwe persoonlijke alias maken. Deze alias mapt dan van een IBS
-	gebruiker naar een @{$page.data.domain} email adres.
+	Op deze pagina kan je een nieuwe persoonlijke alias maken. Deze alias mapt dan van een IBS gebruiker naar een @{$page.data.domain} email adres.
 </p>
 
 <form id="new-alias-form">

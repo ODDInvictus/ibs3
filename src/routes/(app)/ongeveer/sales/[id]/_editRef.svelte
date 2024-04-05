@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Form from '$lib/form/form.svelte';
+	import Form from '$lib/form/form.svelte'
 
-	export let form: any;
+	export let form: any
 </script>
 
 <div class="modal" role="dialog">

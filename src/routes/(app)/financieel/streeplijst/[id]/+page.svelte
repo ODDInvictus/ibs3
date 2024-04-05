@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Title from '$lib/components/title.svelte';
-	import { formatDateHumanReadable } from '$lib/dateUtils';
-	import { formatMoney } from '$lib/utils';
-	import Back from '$lib/components/Back.svelte';
+	import type { PageData } from './$types'
+	import Title from '$lib/components/title.svelte'
+	import { formatDateHumanReadable } from '$lib/dateUtils'
+	import { formatMoney } from '$lib/utils'
+	import Back from '$lib/components/Back.svelte'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="Streeplijst #{data.tallySheet.id}" />

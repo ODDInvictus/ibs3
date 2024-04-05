@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Writable } from 'svelte/store';
-	import type { InputConstraint } from 'sveltekit-superforms';
+	import type { Writable } from 'svelte/store'
+	import type { InputConstraint } from 'sveltekit-superforms'
 
-	export let constraints: Writable<InputConstraint | undefined> | undefined = undefined;
-	export let name: string;
+	export let constraints: Writable<InputConstraint | undefined> | undefined = undefined
+	export let name: string
 </script>
 
 <label for={name}>

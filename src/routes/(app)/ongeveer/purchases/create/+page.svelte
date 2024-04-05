@@ -1,65 +1,65 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import { intProxy, superForm } from 'sveltekit-superforms/client';
-	import type { PageData } from './$types';
-	import SuperField from '$lib/superforms/SuperField.svelte';
-	import SuperSelect from '$lib/superforms/SuperSelect.svelte';
-	import validators from './pruchaseSchema';
-	import { onError } from '$lib/superforms/error';
-	import Submit from '$lib/superforms/Submit.svelte';
-	import DeleteButton from '$lib/ongeveer/DeleteButton.svelte';
-	import { formatFileSize, formatMoney } from '$lib/utils';
-	import Attatchment from '$lib/ongeveer/Attatchment.svelte';
-	import Plus from '~icons/tabler/plus';
-	import Trashcan from '~icons/tabler/trash';
-	import { toast } from '$lib/notification';
+	import Title from '$lib/components/title.svelte'
+	import { intProxy, superForm } from 'sveltekit-superforms/client'
+	import type { PageData } from './$types'
+	import SuperField from '$lib/superforms/SuperField.svelte'
+	import SuperSelect from '$lib/superforms/SuperSelect.svelte'
+	import validators from './pruchaseSchema'
+	import { onError } from '$lib/superforms/error'
+	import Submit from '$lib/superforms/Submit.svelte'
+	import DeleteButton from '$lib/ongeveer/DeleteButton.svelte'
+	import { formatFileSize, formatMoney } from '$lib/utils'
+	import Attatchment from '$lib/ongeveer/Attatchment.svelte'
+	import Plus from '~icons/tabler/plus'
+	import Trashcan from '~icons/tabler/trash'
+	import { toast } from '$lib/notification'
 
-	export let data: PageData;
+	export let data: PageData
 
 	const formProps = superForm(data.form, {
 		dataType: 'json',
 		validators,
 		onError,
 		onSubmit: ({ formData }) => {
-			formData.set('toDelete', JSON.stringify(toDelete));
-		}
-	});
+			formData.set('toDelete', JSON.stringify(toDelete))
+		},
+	})
 
-	const { form, errors, enhance, tainted } = formProps;
+	const { form, errors, enhance, tainted } = formProps
 
-	const idProxy = intProxy(form, 'id');
+	const idProxy = intProxy(form, 'id')
 
-	let attatchments: FileList;
-	let previews: { src: string; MIMEtype: string; size: string; name: string }[] = data.attachments;
+	let attatchments: FileList
+	let previews: { src: string; MIMEtype: string; size: string; name: string }[] = data.attachments
 
 	$: if (attatchments) {
-		showAttatchments();
+		showAttatchments()
 	}
 
 	function showAttatchments() {
-		if (!attatchments || attatchments.length === 0) return;
-		previews = data.attachments.filter((attatchment) => !toDelete.includes(attatchment.name));
+		if (!attatchments || attatchments.length === 0) return
+		previews = data.attachments.filter(attatchment => !toDelete.includes(attatchment.name))
 
 		for (const attatchment of attatchments) {
-			const reader = new FileReader();
+			const reader = new FileReader()
 
-			reader.onload = (event) => {
+			reader.onload = event => {
 				previews = [
 					...previews,
 					{
 						src: event.target?.result?.toString() ?? '',
 						MIMEtype: attatchment.type,
 						size: formatFileSize(attatchment.size),
-						name: attatchment.name
-					}
-				];
-			};
+						name: attatchment.name,
+					},
+				]
+			}
 
-			reader.readAsDataURL(attatchment);
+			reader.readAsDataURL(attatchment)
 		}
 	}
 
-	let toDelete: string[] = [];
+	let toDelete: string[] = []
 </script>
 
 <Title title="Aankoop boeking" />
@@ -73,18 +73,14 @@
 
 	<SuperField type="number" {formProps} field="termsOfPayment">Betalingstermijn</SuperField>
 
-	<SuperSelect
-		{formProps}
-		field="relation"
-		options={data.relations.map(({ id, name }) => [id, name])}>Relatie</SuperSelect
-	>
+	<SuperSelect {formProps} field="relation" options={data.relations.map(({ id, name }) => [id, name])}>Relatie</SuperSelect>
 
 	<SuperSelect
 		{formProps}
 		field="type"
 		options={[
 			['PURCHASE', 'Aankoop'],
-			['DECLARATION', 'Declaratie']
+			['DECLARATION', 'Declaratie'],
 		]}>Type</SuperSelect
 	>
 
@@ -96,11 +92,7 @@
 		</div>
 		<div class="input-group">
 			<label for="">Ontvangmethode</label>
-			<input
-				type="text"
-				disabled
-				value={data.declarationData.receiveMethod === 'SALDO' ? 'Saldo' : 'Bankrekening'}
-			/>
+			<input type="text" disabled value={data.declarationData.receiveMethod === 'SALDO' ? 'Saldo' : 'Bankrekening'} />
 		</div>
 		{#if data.declarationData.iban}
 			<div class="input-group">
@@ -133,34 +125,16 @@
 			{#each $form.rows as _, i}
 				<tr>
 					<td>
-						<input
-							type="text"
-							class:has-error={$errors.rows?.[i]?.description}
-							bind:value={$form.rows[i].description}
-						/>
+						<input type="text" class:has-error={$errors.rows?.[i]?.description} bind:value={$form.rows[i].description} />
 					</td>
 					<td>
-						<input
-							type="number"
-							class:has-error={$errors.rows?.[i]?.amount}
-							bind:value={$form.rows[i].amount}
-							step="1"
-						/>
+						<input type="number" class:has-error={$errors.rows?.[i]?.amount} bind:value={$form.rows[i].amount} step="1" />
 					</td>
 					<td>
-						<input
-							type="number"
-							class:has-error={$errors.rows?.[i]?.price}
-							bind:value={$form.rows[i].price}
-							step="0.01"
-						/>
+						<input type="number" class:has-error={$errors.rows?.[i]?.price} bind:value={$form.rows[i].price} step="0.01" />
 					</td>
 					<td>
-						<select
-							name="ledger"
-							class:has-error={$errors.rows?.[i]?.ledger}
-							bind:value={$form.rows[i].ledger}
-						>
+						<select name="ledger" class:has-error={$errors.rows?.[i]?.ledger} bind:value={$form.rows[i].ledger}>
 							{#each data.ledgers ?? [] as ledger}
 								<option value={ledger.id}>{ledger.name}</option>
 							{/each}
@@ -168,14 +142,7 @@
 					</td>
 					<td>
 						{#if i === $form.rows.length - 1}
-							<button
-								type="button"
-								on:click={() =>
-									($form.rows = [
-										...$form.rows,
-										{ description: '', amount: 0, price: 0, ledger: 0 }
-									])}
-							>
+							<button type="button" on:click={() => ($form.rows = [...$form.rows, { description: '', amount: 0, price: 0, ledger: 0 }])}>
 								<Plus />
 							</button>
 						{/if}
@@ -183,9 +150,9 @@
 							<button
 								type="button"
 								on:click={() => {
-									const filtered = [...$form.rows];
-									filtered.splice(i, 1);
-									$form.rows = filtered;
+									const filtered = [...$form.rows]
+									filtered.splice(i, 1)
+									$form.rows = filtered
 								}}><Trashcan /></button
 							>
 						{/if}
@@ -207,32 +174,30 @@
 							return toast({
 								title: 'Wijzigingen',
 								message: 'Sla de wijzigingen eerst op',
-								type: 'danger'
-							});
+								type: 'danger',
+							})
 						}
 
-						if (!confirm('Weet je zeker dat je deze declaratie wilt goedkeuren?')) return;
+						if (!confirm('Weet je zeker dat je deze declaratie wilt goedkeuren?')) return
 
 						const res = await fetch(`/ongeveer/purchases/${$idProxy}`, {
-							method: 'PATCH'
-						});
+							method: 'PATCH',
+						})
 						if (res.ok) {
-							location.href = '/ongeveer/purchases';
+							location.href = '/ongeveer/purchases'
 						} else {
 							toast({
 								title: res.statusText,
 								message: await res.text(),
-								type: 'danger'
-							});
+								type: 'danger',
+							})
 						}
 					}}>Goedkeuren en transactie maken</button
 				>
 			{/if}
 			{#if $idProxy}
 				<DeleteButton
-					url={`/ongeveer/purchases/${$idProxy}${
-						data.declarationData?.status === 'PENDING' ? '?type=declaration' : ''
-					}`}
+					url={`/ongeveer/purchases/${$idProxy}${data.declarationData?.status === 'PENDING' ? '?type=declaration' : ''}`}
 					redirect="/ongeveer/purchases"
 					confirmMessage="Weet je zeker dat je dit boekstuk wilt verwijderen?"
 					text={data.declarationData?.status === 'PENDING' ? 'Afwijzen en verwijderen' : undefined}

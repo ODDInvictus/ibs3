@@ -1,33 +1,33 @@
-import { Form, type Field } from '$lib/form/form-generator';
-import db from '$lib/server/db';
-import { Roles } from '$lib/constants';
+import { Form, type Field } from '$lib/form/form-generator'
+import db from '$lib/server/db'
+import { Roles } from '$lib/constants'
 
 export const editForm = new Form<{
-	id: number;
-	name: string;
-	description: string;
-	prevId: number;
+	id: number
+	name: string
+	description: string
+	prevId: number
 }>({
 	title: 'Grooteboekrekening aanpassen',
-	logic: async (data) => {
+	logic: async data => {
 		try {
 			await db.ledger.update({
 				where: {
-					id: Number(data.prevId)
+					id: Number(data.prevId),
 				},
 				data: {
 					id: data.id,
 					name: data.name,
-					description: data.description
-				}
-			});
+					description: data.description,
+				},
+			})
 
 			return {
 				success: true,
 				message: 'De grootboekrekening is aangepast, je wordt doorgestuurd',
 				status: 200,
-				redirectTo: `/ongeveer/ledger/${data.id}`
-			};
+				redirectTo: `/ongeveer/ledger/${data.id}`,
+			}
 		} catch (e: any) {
 			if (e.code === 'P2002') {
 				return {
@@ -35,17 +35,17 @@ export const editForm = new Form<{
 					errors: [
 						{
 							field: 'id',
-							message: 'Deze ID is al in gebruik'
-						}
+							message: 'Deze ID is al in gebruik',
+						},
 					],
-					status: 400
-				};
+					status: 400,
+				}
 			} else {
 				return {
 					success: false,
 					status: 500,
-					errors: [{ message: 'Er is iets misgegaan bij het aanmaken van de grootboekrekening' }]
-				};
+					errors: [{ message: 'Er is iets misgegaan bij het aanmaken van de grootboekrekening' }],
+				}
 			}
 		}
 	},
@@ -54,23 +54,23 @@ export const editForm = new Form<{
 		{
 			label: 'ID',
 			name: 'id',
-			type: 'number'
+			type: 'number',
 		} as Field<'number'>,
 		{
 			label: 'Naam',
 			name: 'name',
-			type: 'text'
+			type: 'text',
 		} as Field<'text'>,
 		{
 			label: 'Beschrijving',
 			name: 'description',
-			type: 'textarea'
+			type: 'textarea',
 		} as Field<'textarea'>,
 		{
 			name: 'prevId',
-			type: 'hidden'
-		} as Field<'hidden'>
+			type: 'hidden',
+		} as Field<'hidden'>,
 	],
 	formId: 'edit-ledger-form',
-	submitStr: 'Opslaan'
-});
+	submitStr: 'Opslaan',
+})

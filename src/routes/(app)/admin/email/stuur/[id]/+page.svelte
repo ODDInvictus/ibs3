@@ -1,14 +1,11 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
-	import Title from '$lib/components/title.svelte';
-	import { toast } from '$lib/notification';
+	import { enhance } from '$app/forms'
+	import { page } from '$app/stores'
+	import Title from '$lib/components/title.svelte'
+	import { toast } from '$lib/notification'
 </script>
 
-<Title
-	title="Email versturen"
-	underTitle="Hier kan je een email versturen naar het door jou geselecteerde adres"
-/>
+<Title title="Email versturen" underTitle="Hier kan je een email versturen naar het door jou geselecteerde adres" />
 
 <form
 	class="form-group"
@@ -20,19 +17,19 @@
 				toast({
 					title: 'Email verstuurd',
 					message: 'De email is succesvol verstuurd. Je wordt zo teruggestuurd',
-					type: 'success'
-				});
+					type: 'success',
+				})
 				setTimeout(() => {
-					window.location.href = '/admin/email/alias';
-				}, 1000);
+					window.location.href = '/admin/email/alias'
+				}, 1000)
 			} else {
 				toast({
 					title: 'Oeps',
 					message: result.data.message,
-					type: 'danger'
-				});
+					type: 'danger',
+				})
 			}
-		};
+		}
 	}}
 >
 	<div class="form-control">

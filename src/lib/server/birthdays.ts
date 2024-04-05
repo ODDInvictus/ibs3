@@ -2,7 +2,7 @@ import db from '$lib/server/db'
 import type { User } from '@prisma/client'
 
 export async function getBirthdaysThisMonth(): Promise<User[]> {
-  return await db.$queryRaw`
+	return await db.$queryRaw`
     SELECT *
     FROM User
     WHERE birthDate IS NOT null
@@ -12,7 +12,7 @@ export async function getBirthdaysThisMonth(): Promise<User[]> {
 }
 
 export async function getBirthdaysInOrder(): Promise<User[]> {
-  return await db.$queryRaw`
+	return await db.$queryRaw`
     SELECT *
     FROM User
     WHERE isActive = 1
@@ -27,7 +27,7 @@ export async function getBirthdaysInOrder(): Promise<User[]> {
 }
 
 export async function getNextBirthdayInLine(): Promise<User> {
-  const q = await db.$queryRaw`
+	const q = (await db.$queryRaw`
     SELECT *
     FROM User
     WHERE isActive = 1
@@ -39,6 +39,6 @@ export async function getNextBirthdayInLine(): Promise<User> {
                 CONCAT(YEAR(CURDATE()) + 1, '-', LPAD(MONTH(birthDate), 2, '0'), '-', LPAD(DAY(birthDate), 2, '0'))
         END ASC
     LIMIT 1;
-  ` as User[]
-  return q[0]
+  `) as User[]
+	return q[0]
 }

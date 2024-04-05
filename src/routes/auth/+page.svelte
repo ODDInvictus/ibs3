@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { signIn } from '@auth/sveltekit/client';
-	import Logo from '$lib/components/logo-v2-small.svelte';
-	import LogoBig from '$lib/components/logo-v2.svelte';
-	import Login from '~icons/tabler/login.svg';
-	import OAuth from '~icons/tabler/brand-oauth.svg';
-	import Register from '~icons/tabler/bookmark-edit.svg';
-	import { env } from '$env/dynamic/public';
+	import { signIn } from '@auth/sveltekit/client'
+	import Logo from '$lib/components/logo-v2-small.svelte'
+	import LogoBig from '$lib/components/logo-v2.svelte'
+	import Login from '~icons/tabler/login.svg'
+	import OAuth from '~icons/tabler/brand-oauth.svg'
+	import Register from '~icons/tabler/bookmark-edit.svg'
+	import { env } from '$env/dynamic/public'
 
-	let selection = 'login';
+	let selection = 'login'
 </script>
 
 <main>

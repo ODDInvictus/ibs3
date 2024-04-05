@@ -1,28 +1,28 @@
 <script lang="ts">
-	import Plus from '~icons/tabler/plus';
-	import Minus from '~icons/tabler/minus';
-	import Modal from './Modal.svelte';
-	import { openModal } from 'svelte-modals';
-	import type { sbUser } from './types';
+	import Plus from '~icons/tabler/plus'
+	import Minus from '~icons/tabler/minus'
+	import Modal from './Modal.svelte'
+	import { openModal } from 'svelte-modals'
+	import type { sbUser } from './types'
 
-	export let data: sbUser[];
-	export let longestName: string | null;
+	export let data: sbUser[]
+	export let longestName: string | null
 
 	const trekBak = (id: number, index: number) => {
-		changeCount(index, -1);
+		changeCount(index, -1)
 		fetch('/strafbakken', {
 			method: 'DELETE',
 			body: JSON.stringify({
-				user: id
-			})
+				user: id,
+			}),
 		}).catch(() => {
-			changeCount(index, 1);
-		});
-	};
+			changeCount(index, 1)
+		})
+	}
 
 	const changeCount = (index: number, n: number) => {
-		data[index]._count.StrafbakReceived += n;
-	};
+		data[index]._count.StrafbakReceived += n
+	}
 </script>
 
 <table class="not-full-width">
@@ -48,15 +48,12 @@
 								username: user.nickname || user.firstName,
 								uid: user.id,
 								changeCount,
-								index: i
+								index: i,
 							})}
 					>
 						<i><Plus /></i>
 					</button>
-					<button
-						class="btn-a"
-						on:click={user._count.StrafbakReceived ? () => trekBak(user.id, i) : null}
-					>
+					<button class="btn-a" on:click={user._count.StrafbakReceived ? () => trekBak(user.id, i) : null}>
 						<i class={user._count.StrafbakReceived ? '' : 'none'}><Minus /></i>
 					</button>
 				</div>

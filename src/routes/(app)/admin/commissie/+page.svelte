@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import CircleX from '~icons/tabler/circle-x';
-	import CirclePlus from '~icons/tabler/circle-plus';
-	import FilePencil from '~icons/tabler/file-pencil';
-	import { addMember, removeMember, renameCommittee, deleteCommittee } from './functions';
-	import Title from '$lib/components/title.svelte';
+	import { page } from '$app/stores'
+	import CircleX from '~icons/tabler/circle-x'
+	import CirclePlus from '~icons/tabler/circle-plus'
+	import FilePencil from '~icons/tabler/file-pencil'
+	import { addMember, removeMember, renameCommittee, deleteCommittee } from './functions'
+	import Title from '$lib/components/title.svelte'
 </script>
 
 <Title title="Commissie beheer" />
@@ -51,26 +51,14 @@
 				</td>
 				<td class="actions">
 					<div class="buttons">
-						<button
-							class="btn-a"
-							title="Naam wijzigen"
-							on:click={() => renameCommittee(committee.id, committee.name)}
-						>
+						<button class="btn-a" title="Naam wijzigen" on:click={() => renameCommittee(committee.id, committee.name)}>
 							<FilePencil />
 						</button>
-						<button
-							class="btn-a"
-							title="Lid toevoegen"
-							on:click={() => addMember($page.data.users, committee.id, committee.name)}
-						>
+						<button class="btn-a" title="Lid toevoegen" on:click={() => addMember($page.data.users, committee.id, committee.name)}>
 							<CirclePlus />
 						</button>
 
-						<button
-							class="btn-a"
-							title="Commissie verwijderen"
-							on:click={() => deleteCommittee(committee.id)}
-						>
+						<button class="btn-a" title="Commissie verwijderen" on:click={() => deleteCommittee(committee.id)}>
 							<CircleX />
 						</button>
 					</div>

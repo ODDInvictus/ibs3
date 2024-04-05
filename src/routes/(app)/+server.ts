@@ -1,49 +1,49 @@
-import db from '$lib/server/db';
-import { getUser } from '$lib/server/userCache';
-import { error } from '@sveltejs/kit';
+import db from '$lib/server/db'
+import { getUser } from '$lib/server/userCache'
+import { error } from '@sveltejs/kit'
 
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types.js'
 
-export const POST: RequestHandler = async (event) => {
-	const { request, locals } = event;
+export const POST: RequestHandler = async event => {
+	const { request, locals } = event
 
 	// Probeer de user te vinden als dat niet lukt om de een of andere reden, dan is het onsuccesvol
-	let userId: number | undefined = locals.user?.id;
+	let userId: number | undefined = locals.user?.id
 	if (!userId) {
-		const session = await locals.getSession();
-		const user = await getUser(session);
-		userId = user?.id;
+		const session = await locals.getSession()
+		const user = await getUser(session)
+		userId = user?.id
 	}
 	if (!userId)
 		throw error(400, {
-			message: 'User ID not found'
-		});
+			message: 'User ID not found',
+		})
 
 	const {
 		startTime,
 		amount,
-		endTime
+		endTime,
 	}: {
-		startTime: number;
-		amount: number;
-		endTime?: number;
-	} = await request.json();
+		startTime: number
+		amount: number
+		endTime?: number
+	} = await request.json()
 	if (Number.isNaN(startTime) || Number.isNaN(amount))
 		throw error(400, {
-			message: 'No startTime or sessionClicks'
-		});
+			message: 'No startTime or sessionClicks',
+		})
 
 	function isValidDate(d: any) {
 		// @ts-ignore
-		return d instanceof Date && !isNaN(d);
+		return d instanceof Date && !isNaN(d)
 	}
 
-	const startTimeDate = new Date(startTime);
-	if (!isValidDate(startTimeDate)) throw error(400);
+	const startTimeDate = new Date(startTime)
+	if (!isValidDate(startTimeDate)) throw error(400)
 
 	// @ts-ignore
-	let endTimeDate = new Date(endTime);
-	if (!isValidDate(endTimeDate)) endTimeDate = new Date();
+	let endTimeDate = new Date(endTime)
+	if (!isValidDate(endTimeDate)) endTimeDate = new Date()
 
 	try {
 		await db.clickSession.create({
@@ -51,16 +51,15 @@ export const POST: RequestHandler = async (event) => {
 				userId,
 				amount,
 				startTime: startTimeDate,
-				endTime: endTimeDate
-			}
-		});
+				endTime: endTimeDate,
+			},
+		})
 	} catch (error: any) {
-		console.error(error);
-		throw error(500);
+		console.error(error)
+		throw error(500)
 	}
 
 	return new Response(null, {
-		status: 201
-	});
-};
-
+		status: 201,
+	})
+}

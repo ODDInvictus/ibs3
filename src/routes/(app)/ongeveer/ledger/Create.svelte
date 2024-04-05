@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Form from '$lib/form/form.svelte';
-	import { page } from '$app/stores';
+	import Form from '$lib/form/form.svelte'
+	import { page } from '$app/stores'
 </script>
 
 <div class="modal" role="dialog">

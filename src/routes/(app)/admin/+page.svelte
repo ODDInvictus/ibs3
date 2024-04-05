@@ -1,5 +1,5 @@
 <script>
-	import Title from '$lib/components/title.svelte';
+	import Title from '$lib/components/title.svelte'
 </script>
 
 <Title title="Invictus Bier Systeem beheer" shortTitle="Admin" />

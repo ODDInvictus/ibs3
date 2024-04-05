@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Title from '$lib/components/title.svelte';
-	import { formatDateHumanReadable, formatDateTimeHumanReadable } from '$lib/dateUtils';
-	import Check from '~icons/tabler/check';
-	import Cross from '~icons/tabler/x';
-	import Pagination from '$lib/components/Pagination.svelte';
+	import type { PageData } from './$types'
+	import Title from '$lib/components/title.svelte'
+	import { formatDateHumanReadable, formatDateTimeHumanReadable } from '$lib/dateUtils'
+	import Check from '~icons/tabler/check'
+	import Cross from '~icons/tabler/x'
+	import Pagination from '$lib/components/Pagination.svelte'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="Streeplijst" />

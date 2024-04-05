@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Pagination from '$lib/components/Pagination.svelte';
-	import Title from '$lib/components/title.svelte';
-	import { formatDateTimeHumanReadable } from '$lib/dateUtils';
-	import type { PageData } from './$types';
+	import Pagination from '$lib/components/Pagination.svelte'
+	import Title from '$lib/components/title.svelte'
+	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
+	import type { PageData } from './$types'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <div id="root">

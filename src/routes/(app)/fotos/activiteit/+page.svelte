@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import { formatDateMonthYear } from '$lib/dateUtils';
-	import { activitySlug } from '$lib/textUtils';
-	import { markdown, stripMarkdown } from '$lib/utils';
-	import type { PageData } from './$types';
+	import Title from '$lib/components/title.svelte'
+	import { formatDateMonthYear } from '$lib/dateUtils'
+	import { activitySlug } from '$lib/textUtils'
+	import { markdown, stripMarkdown } from '$lib/utils'
+	import type { PageData } from './$types'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="Foto's van activiteiten" underTitle="Selecteer het fotoalbum dat je wil bekijken" />

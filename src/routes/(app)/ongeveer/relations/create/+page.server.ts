@@ -1,41 +1,41 @@
-import db from '$lib/server/db';
-import { error, fail } from '@sveltejs/kit';
-import { redirect } from 'sveltekit-flash-message/server';
-import type { PageServerLoad } from './$types';
-import { superValidate } from 'sveltekit-superforms/server';
-import { authorization } from '$lib/ongeveer/utils';
-import schema from './relationSchema';
+import db from '$lib/server/db'
+import { error, fail } from '@sveltejs/kit'
+import { redirect } from 'sveltekit-flash-message/server'
+import type { PageServerLoad } from './$types'
+import { superValidate } from 'sveltekit-superforms/server'
+import { authorization } from '$lib/ongeveer/utils'
+import schema from './relationSchema'
 
-export const load = (async (event) => {
-	const { url } = event;
-	const id = Number(url.searchParams.get('id'));
+export const load = (async event => {
+	const { url } = event
+	const id = Number(url.searchParams.get('id'))
 
 	// Query the database for the relation if an id is provided
-	let relation = null;
+	let relation = null
 	if (id) {
 		relation = await db.financialPerson.findUnique({
 			where: {
-				id
+				id,
 			},
 			select: {
 				id: true,
 				name: true,
 				FinancialPersonDataOther: true,
-				type: true
-			}
-		});
+				type: true,
+			},
+		})
 
-		if (!relation) throw error(404);
+		if (!relation) throw error(404)
 		if (relation.type !== 'OTHER') {
 			throw redirect(
 				`/ongeveer/relations/${id}`,
 				{
 					message: 'Je kan dit type relatie niet bewerken',
 					type: 'danger',
-					title: 'Error'
+					title: 'Error',
 				},
-				event
-			);
+				event,
+			)
 		}
 	}
 
@@ -49,26 +49,26 @@ export const load = (async (event) => {
 				address: relation.FinancialPersonDataOther?.address ?? undefined,
 				postalCode: relation.FinancialPersonDataOther?.postalCode ?? undefined,
 				city: relation.FinancialPersonDataOther?.city ?? undefined,
-				email: relation.FinancialPersonDataOther?.email ?? undefined
+				email: relation.FinancialPersonDataOther?.email ?? undefined,
 		  }
-		: {};
+		: {}
 
-	const form = await superValidate(data, schema);
+	const form = await superValidate(data, schema)
 
-	return { form };
-}) satisfies PageServerLoad;
+	return { form }
+}) satisfies PageServerLoad
 
 export const actions = {
-	default: async (event) => {
-		const { request, locals } = event;
-		const form = await superValidate(request, schema);
+	default: async event => {
+		const { request, locals } = event
+		const form = await superValidate(request, schema)
 
-		if (!authorization(locals.roles)) throw error(403);
+		if (!authorization(locals.roles)) throw error(403)
 		// If there is inavlid data, return the form with the errors
-		if (!form.valid) return fail(400, { form });
+		if (!form.valid) return fail(400, { form })
 
-		const { name, description, iban, address, postalCode, city, email } = form.data;
-		const id = Number(form.data.id);
+		const { name, description, iban, address, postalCode, city, email } = form.data
+		const id = Number(form.data.id)
 
 		try {
 			const data = {
@@ -77,8 +77,8 @@ export const actions = {
 				address,
 				postalCode,
 				city,
-				email
-			};
+				email,
+			}
 
 			// If there is no id, we are creating a new relation
 			if (Number.isNaN(id)) {
@@ -87,10 +87,10 @@ export const actions = {
 						name,
 						type: 'OTHER',
 						FinancialPersonDataOther: {
-							create: data
-						}
-					}
-				});
+							create: data,
+						},
+					},
+				})
 			} else {
 				// If there is an id, we are editing an existing relation
 				await db.financialPerson.update({
@@ -98,14 +98,14 @@ export const actions = {
 					data: {
 						name,
 						FinancialPersonDataOther: {
-							update: data
-						}
-					}
-				});
+							update: data,
+						},
+					},
+				})
 			}
 		} catch (e: any) {
-			console.error(e);
-			throw error(500, 'Er is iets misgegaan, probeer het later opnieuw');
+			console.error(e)
+			throw error(500, 'Er is iets misgegaan, probeer het later opnieuw')
 		}
 		// Redirect with custom redirect that shows flash message
 		throw redirect(
@@ -113,9 +113,9 @@ export const actions = {
 			{
 				message: `Relatie ${id ? 'aangepast' : 'aangemaakt'}`,
 				type: 'success',
-				title: 'Succes'
+				title: 'Succes',
 			},
-			event
-		);
-	}
-};
+			event,
+		)
+	},
+}

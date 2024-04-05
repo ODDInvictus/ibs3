@@ -1,28 +1,26 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import { editTallySheetSchema } from './editTallySheetSchema';
-	import Title from '$lib/components/title.svelte';
-	import { superForm } from 'sveltekit-superforms/client';
-	import { onError } from '$lib/superforms/error';
-	import SuperField from '$lib/superforms/SuperField.svelte';
-	import Submit from '$lib/superforms/Submit.svelte';
-	import { toast } from '$lib/notification';
+	import type { PageData } from './$types'
+	import { editTallySheetSchema } from './editTallySheetSchema'
+	import Title from '$lib/components/title.svelte'
+	import { superForm } from 'sveltekit-superforms/client'
+	import { onError } from '$lib/superforms/error'
+	import SuperField from '$lib/superforms/SuperField.svelte'
+	import Submit from '$lib/superforms/Submit.svelte'
+	import { toast } from '$lib/notification'
 
-	export let data: PageData;
+	export let data: PageData
 
 	const formProps = superForm(data.form, {
 		validators: editTallySheetSchema,
-		onError
-	});
-	const { enhance } = formProps;
+		onError,
+	})
+	const { enhance } = formProps
 </script>
 
 <Title title="Streeplijst bewerken" />
 
 <p>
-	Je kan alleen de info veranderen, om de streeplijst te veranderen ga je naar <a
-		href="/ongeveer/sales">verkoop</a
-	>
+	Je kan alleen de info veranderen, om de streeplijst te veranderen ga je naar <a href="/ongeveer/sales">verkoop</a>
 	en pas je de boekstukken aan.
 </p>
 <br />
@@ -44,15 +42,15 @@
 			on:click={async () => {
 				// TODO: Zeg in confirm hoeveel boekstukken er zijn ofz
 				if (confirm('Weet je zeker dat je deze streeplijst wilt verwijderen?')) {
-					const res = await fetch('', { method: 'DELETE' });
+					const res = await fetch('', { method: 'DELETE' })
 					if (res.ok) {
-						location.href = '/ongeveer/tallysheet';
+						location.href = '/ongeveer/tallysheet'
 					} else {
 						toast({
 							type: 'danger',
 							message: 'Er is iets fout gegaan bij het verwijderen van de streeplijst',
-							title: res.status + ' ' + res.statusText
-						});
+							title: res.status + ' ' + res.statusText,
+						})
 					}
 				}
 			}}>Verwijderen</button

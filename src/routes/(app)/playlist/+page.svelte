@@ -1,96 +1,94 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import type { PageServerData } from './$types';
-	import Title from '$lib/components/title.svelte';
-	import Heart from '$lib/components/icons/Heart.svelte';
-	import Cross from '$lib/components/icons/Cross.svelte';
-	import Arrow from '$lib/components/icons/Arrow.svelte';
-	import Loader from '$lib/components/Loader.svelte';
-	import { toast } from '$lib/notification';
-	import { env } from '$env/dynamic/public';
+	import { onMount } from 'svelte'
+	import type { PageServerData } from './$types'
+	import Title from '$lib/components/title.svelte'
+	import Heart from '$lib/components/icons/Heart.svelte'
+	import Cross from '$lib/components/icons/Cross.svelte'
+	import Arrow from '$lib/components/icons/Arrow.svelte'
+	import Loader from '$lib/components/Loader.svelte'
+	import { toast } from '$lib/notification'
+	import { env } from '$env/dynamic/public'
 
-	export let data: PageServerData;
+	export let data: PageServerData
 
-	const { PUBLIC_MIN_LIKES } = env;
-	const MIN_LIKES = Number.isNaN(Number(PUBLIC_MIN_LIKES)) ? 4 : Number(PUBLIC_MIN_LIKES);
+	const { PUBLIC_MIN_LIKES } = env
+	const MIN_LIKES = Number.isNaN(Number(PUBLIC_MIN_LIKES)) ? 4 : Number(PUBLIC_MIN_LIKES)
 
-	let current: SpotifyApi.SingleTrackResponse | undefined = undefined;
-	let tracks: SpotifyApi.SingleTrackResponse[] = [];
-	let skipped: SpotifyApi.SingleTrackResponse[] = [];
-	let audioPlayer: HTMLAudioElement;
-	let previewSrc = '';
+	let current: SpotifyApi.SingleTrackResponse | undefined = undefined
+	let tracks: SpotifyApi.SingleTrackResponse[] = []
+	let skipped: SpotifyApi.SingleTrackResponse[] = []
+	let audioPlayer: HTMLAudioElement
+	let previewSrc = ''
 
-	let mounted = false;
+	let mounted = false
 
 	onMount(async () => {
-		if (data.toReact.length == 0) return (mounted = true);
+		if (data.toReact.length == 0) return (mounted = true)
 
 		try {
-			current = await fetchNextTrack();
-			previewSrc = current.preview_url ?? '';
+			current = await fetchNextTrack()
+			previewSrc = current.preview_url ?? ''
 
-			const toLoad = Math.min(3, data.toReact.length);
+			const toLoad = Math.min(3, data.toReact.length)
 			for (let i = 0; i < toLoad; i++) {
-				tracks = [...tracks, await fetchNextTrack()];
+				tracks = [...tracks, await fetchNextTrack()]
 			}
 		} catch (error: any) {
 			toast({
 				title: 'Error',
 				message: 'Error tijdens het ophalen van de eerste track',
-				type: 'danger'
-			});
+				type: 'danger',
+			})
 		}
 
-		mounted = true;
-	});
+		mounted = true
+	})
 
 	const fetchNextTrack = async () => {
-		const next = data.toReact.shift();
-		if (!next) throw new Error('Geen tracks meer om te laden');
+		const next = data.toReact.shift()
+		if (!next) throw new Error('Geen tracks meer om te laden')
 
-		const res: SpotifyApi.SingleTrackResponse | undefined = await (
-			await fetch(`/playlist?id=${next.id}`)
-		).json();
-		if (!res) throw new Error('Error tijdens het ophalen van de volgende track');
+		const res: SpotifyApi.SingleTrackResponse | undefined = await (await fetch(`/playlist?id=${next.id}`)).json()
+		if (!res) throw new Error('Error tijdens het ophalen van de volgende track')
 
 		// @ts-ignore
-		res.likes = next.likes;
-		return res;
-	};
+		res.likes = next.likes
+		return res
+	}
 
 	const getSmallestImageAbove300 = (images: SpotifyApi.ImageObject[]): SpotifyApi.ImageObject => {
-		let smallestImage = images[0];
+		let smallestImage = images[0]
 		for (const image of images) {
-			if (image.width! > 300 && image.width! < smallestImage.width!) smallestImage = image;
+			if (image.width! > 300 && image.width! < smallestImage.width!) smallestImage = image
 		}
-		return smallestImage;
-	};
+		return smallestImage
+	}
 
 	$: if (audioPlayer && mounted) {
-		if (previewSrc == '') audioPlayer.pause();
+		if (previewSrc == '') audioPlayer.pause()
 		else {
-			audioPlayer.src = previewSrc;
-			audioPlayer.play();
+			audioPlayer.src = previewSrc
+			audioPlayer.play()
 		}
 	}
 
 	const formatArtists = (artists: SpotifyApi.ArtistObjectSimplified[]) => {
-		return artists.map((artist) => artist.name).join(', ');
-	};
+		return artists.map(artist => artist.name).join(', ')
+	}
 
 	const next = async () => {
-		if (tracks.length > 0) current = tracks.shift();
+		if (tracks.length > 0) current = tracks.shift()
 		else {
-			const nextSkipped = skipped.shift();
-			if (!nextSkipped || nextSkipped.id === current?.id) current = undefined;
-			else current = nextSkipped;
+			const nextSkipped = skipped.shift()
+			if (!nextSkipped || nextSkipped.id === current?.id) current = undefined
+			else current = nextSkipped
 		}
 
-		audioPlayer.pause();
-		previewSrc = '';
-		if (current?.preview_url) previewSrc = current.preview_url;
-		if (data.toReact.length) tracks = [...tracks, await fetchNextTrack()];
-	};
+		audioPlayer.pause()
+		previewSrc = ''
+		if (current?.preview_url) previewSrc = current.preview_url
+		if (data.toReact.length) tracks = [...tracks, await fetchNextTrack()]
+	}
 
 	const react = async (track: SpotifyApi.SingleTrackResponse, liked: boolean) => {
 		try {
@@ -99,34 +97,34 @@
 				body: JSON.stringify({
 					trackId: track.id,
 					liked,
-					trackUri: track.uri
-				})
-			});
+					trackUri: track.uri,
+				}),
+			})
 
-			skipped = [...skipped.filter((t) => t.id !== track.id)];
+			skipped = [...skipped.filter(t => t.id !== track.id)]
 		} catch (error) {
-			console.error(error);
+			console.error(error)
 			toast({
 				title: 'Error',
 				message: 'Er is iets fout gegaan, probeer het later opnieuw',
-				type: 'danger'
-			});
-			return;
+				type: 'danger',
+			})
+			return
 		}
 
 		// @ts-expect-error
-		const likes: { user: { firstName: string; nickname?: string } }[] = track.likes;
+		const likes: { user: { firstName: string; nickname?: string } }[] = track.likes
 
-		if (!liked || likes.length !== MIN_LIKES - 1) return;
+		if (!liked || likes.length !== MIN_LIKES - 1) return
 
 		toast({
 			title: 'Nieuw hitje',
 			message: `${track.name} is toegevoegd aan de playlist dankzij ${
-				likes.map((like) => like.user.nickname ?? like.user.firstName).join(', ') + ' en jij!'
+				likes.map(like => like.user.nickname ?? like.user.firstName).join(', ') + ' en jij!'
 			}`,
-			type: 'success'
-		});
-	};
+			type: 'success',
+		})
+	}
 </script>
 
 <audio src="" bind:this={audioPlayer} />
@@ -144,26 +142,18 @@
 	<content>
 		<div class="card">
 			<a href={`/playlist/${current.id}`}>
-				<img
-					src={getSmallestImageAbove300(current.album.images).url}
-					alt={`${current.name} album cover`}
-				/>
+				<img src={getSmallestImageAbove300(current.album.images).url} alt={`${current.name} album cover`} />
 			</a>
 			<div class="info">
 				<div class="top">
-					<a
-						class={current.name.replace(' ', '').length > 30 ? 'slide' : ''}
-						href={`/playlist/${current.id}`}>{current.name}</a
-					>
+					<a class={current.name.replace(' ', '').length > 30 ? 'slide' : ''} href={`/playlist/${current.id}`}>{current.name}</a>
 					<p class={formatArtists(current.artists).length > 35 ? 'slide artists' : 'artists'}>
 						{formatArtists(current.artists)}
 					</p>
 				</div>
 			</div>
 			<div class="links">
-				<a href={current.external_urls.spotify} target="_blank" rel="noopener noreferrer"
-					>Open in Spotify</a
-				>
+				<a href={current.external_urls.spotify} target="_blank" rel="noopener noreferrer">Open in Spotify</a>
 				<a href="/playlist/zoek">Nieuwe track</a>
 			</div>
 			<div class="actions">
@@ -172,8 +162,8 @@
 				<icon
 					class="dislike"
 					on:click={async () => {
-						if (!current) return;
-						await Promise.all([react(current, false), next()]);
+						if (!current) return
+						await Promise.all([react(current, false), next()])
 					}}
 				>
 					<svelte:component this={Cross} width="70" height="70" />
@@ -183,9 +173,9 @@
 				<!-- svelte-ignore a11y-no-static-element-interactions -->
 				<icon
 					on:click={async () => {
-						await next();
-						if (!current) return;
-						skipped = [...skipped, current];
+						await next()
+						if (!current) return
+						skipped = [...skipped, current]
 					}}
 				>
 					<Arrow width="50" height="50" />
@@ -196,9 +186,9 @@
 				<icon
 					class="like"
 					on:click={async () => {
-						if (!current) return;
+						if (!current) return
 
-						await Promise.all([react(current, true), next()]);
+						await Promise.all([react(current, true), next()])
 					}}
 				>
 					<Heart width="70" height="70" />
