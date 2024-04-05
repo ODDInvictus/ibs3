@@ -13,7 +13,7 @@ export const load = (async ({ locals }) => {
 		activities = await db.activity.findMany({
 			orderBy: [
 				{
-					endTime: 'asc',
+					startTime: 'asc',
 				},
 			],
 			where: {
@@ -35,7 +35,7 @@ export const load = (async ({ locals }) => {
 		activities = await db.activity.findMany({
 			orderBy: [
 				{
-					endTime: 'asc',
+					startTime: 'asc',
 				},
 			],
 			where: {
