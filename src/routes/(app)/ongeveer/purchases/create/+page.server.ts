@@ -6,8 +6,6 @@ import { error, fail } from '@sveltejs/kit'
 import { getJournalStatus, getLedgers, getRelations } from '$lib/ongeveer/db'
 import schema from './pruchaseSchema'
 import { redirect } from 'sveltekit-flash-message/server'
-import { env as publicEnv } from '$env/dynamic/public'
-import { env as privateEnv } from '$env/dynamic/private'
 import { formatFileSize } from '$lib/utils'
 import { deleteFile, uploadFile } from '$lib/server/mongo'
 
