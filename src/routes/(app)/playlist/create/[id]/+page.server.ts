@@ -57,7 +57,8 @@ export const load = (async ({ params, url, locals }) => {
 			},
 			select: {
 				firstName: true,
-				nickname: true
+				nickname: true,
+				id: true
 			}
 		}),
 		liked: (
