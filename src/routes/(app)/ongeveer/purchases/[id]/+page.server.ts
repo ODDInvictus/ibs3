@@ -2,7 +2,6 @@ import db from '$lib/server/db'
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import Decimal from 'decimal.js'
-import { env } from '$env/dynamic/public'
 import { formatFileSize } from '$lib/utils'
 
 export const load = (async ({ params }) => {
@@ -37,9 +36,9 @@ export const load = (async ({ params }) => {
 		purchase?.Attachments?.map(attatchment => {
 			return {
 				MIMEtype: attatchment.MIMEtype,
-				src: `${env.PUBLIC_UPLOAD_URL}purchases/${attatchment.filename}`,
+				src: `/file/${attatchment.filename}`,
 				size: formatFileSize(attatchment.size),
-				name: attatchment.filename,
+				filename: attatchment.filename,
 			}
 		}) ?? []
 
