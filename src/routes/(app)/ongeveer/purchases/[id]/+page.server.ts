@@ -37,7 +37,7 @@ export const load = (async ({ params }) => {
 		purchase?.Attachments?.map((attatchment) => {
 			return {
 				MIMEtype: attatchment.MIMEtype,
-				src: `${env.PUBLIC_UPLOAD_URL}purchases/${attatchment.filename}`,
+				src: `/file/${attatchment.filename}`,
 				size: formatFileSize(attatchment.size),
 				name: attatchment.filename
 			};

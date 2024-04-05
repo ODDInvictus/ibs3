@@ -30,7 +30,12 @@
 	const idProxy = intProxy(form, 'id');
 
 	let attatchments: FileList;
-	let previews: { src: string; MIMEtype: string; size: string; name: string }[] = data.attachments;
+	let previews: {
+		MIMEtype: string;
+		size: string;
+		filename: string;
+		src?: string;
+	}[] = data.attachments;
 
 	$: if (attatchments) {
 		showAttatchments();
@@ -38,7 +43,7 @@
 
 	function showAttatchments() {
 		if (!attatchments || attatchments.length === 0) return;
-		previews = data.attachments.filter((attatchment) => !toDelete.includes(attatchment.name));
+		previews = data.attachments.filter((attatchment) => !toDelete.includes(attatchment.filename));
 
 		for (const attatchment of attatchments) {
 			const reader = new FileReader();
@@ -47,10 +52,10 @@
 				previews = [
 					...previews,
 					{
-						src: event.target?.result?.toString() ?? '',
 						MIMEtype: attatchment.type,
 						size: formatFileSize(attatchment.size),
-						name: attatchment.name
+						filename: attatchment.name,
+						src: event.target?.result?.toString() ?? ''
 					}
 				];
 			};

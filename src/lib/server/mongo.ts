@@ -35,7 +35,7 @@ export const mongo = client.db(env.MONGO_DB_NAME);
 export async function uploadFile(
 	file: File,
 	opts: { quality?: number; compress?: boolean } = { compress: true, quality: 75 }
-): Promise<string> {
+) {
 	let buffer = Buffer.from(await file.arrayBuffer());
 
 	const compressableTypes = ['image/jpeg', 'image/png', 'image/avif', 'image/tiff', 'image/webp'];
@@ -61,13 +61,24 @@ export async function uploadFile(
 		name = `${name.replace(/\.\w+$/, '')}-${i++}.${name.split('.').pop()}`;
 	}
 
+	const type = compressed ? 'image/jpeg' : file.type;
 	bucket
 		.openUploadStream(name, {
-			metadata: {
-				type: compressed ? 'image/jpeg' : file.type
-			}
+			metadata: { type }
 		})
 		.end(buffer);
 
-	return name;
+	return { name, type, size: buffer.length };
+}
+
+/**
+ * Deletes a file from the MongoDB GridFS bucket.
+ * @param filename - The name of the file to be deleted.
+ * @returns A Promise that resolves when the file is successfully deleted.
+ */
+export async function deleteFile(filename: string): Promise<void> {
+	const bucket = new GridFSBucket(mongo, { bucketName: 'fs' });
+	const file = await bucket.find({ filename }).next();
+	if (!file) return;
+	await bucket.delete(file._id);
 }

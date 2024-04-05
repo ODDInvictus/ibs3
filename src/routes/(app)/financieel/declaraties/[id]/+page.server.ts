@@ -1,4 +1,5 @@
 import db from '$lib/server/db';
+import { formatFileSize } from '$lib/utils.js';
 import { error } from '@sveltejs/kit';
 import Decimal from 'decimal.js';
 
@@ -26,17 +27,17 @@ export const load = async ({ params, locals }) => {
 		methodOfPayment: declaration.methodOfPayment,
 		description: declaration.reason,
 		status: declaration.status,
-		message: declaration.message,
 		total:
 			declaration.Journal?.Rows.reduce(
 				(acc, { price, amount }) => acc.add(new Decimal(price).mul(amount)),
 				new Decimal(0)
 			).toNumber() ?? declaration.askedAmount.toNumber(),
 		Attachments:
-			declaration.Journal?.Attachments.map(({ id, filename, MIMEtype }) => ({
+			declaration.Journal?.Attachments.map(({ id, filename, MIMEtype, size }) => ({
 				id,
 				filename,
-				MIMEtype
+				MIMEtype,
+				size: formatFileSize(size)
 			})) ?? []
 	};
 
