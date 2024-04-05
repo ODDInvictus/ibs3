@@ -95,7 +95,6 @@
 		"xss": "^1.0.14"
 	},
 	"lint-staged": {
-		"*.js": "eslint --cache --fix",
-		"*.{js,css,md}": "prettier --write"
+		"*.{js,svelte,ts,css,md,scss}": "prettier --write"
 	}
 }
