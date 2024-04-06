@@ -21,7 +21,7 @@
 
 		toast({
 			type: $flash.type,
-			title: $flash.type,
+			title: $flash.title,
 			message: $flash.message,
 		})
 
