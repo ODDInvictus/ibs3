@@ -7,7 +7,7 @@
 		"dev:frontend": "vite dev --host 0.0.0.0",
 		"dev:email-templates": "npx sass --watch ./emails/scss/style-test.sass ./build/css/style-test.css",
 		"dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-		"build": "vite build",
+		"build": "IBS3_BUILDING=true vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",

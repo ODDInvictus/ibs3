@@ -1,8 +1,9 @@
 import { LDAP_IDS } from '$lib/constants'
 import { applyTransaction } from '$lib/ongeveer/db'
 import { PrismaClient, type User } from '@prisma/client'
+import { env } from '$env/dynamic/private'
 
-const prisma = new PrismaClient().$extends({
+const prisma = env.IBS3_BUILDING === 'true' ? null : new PrismaClient().$extends({
 	query: {
 		saldoTransaction: {
 			async create({ args, query }) {
@@ -43,7 +44,7 @@ const prisma = new PrismaClient().$extends({
 })
 
 async function getCommitteeMembers(ldapId: string): Promise<User[]> {
-	const cm = await prisma.committeeMember.findMany({
+	const cm = await prisma!.committeeMember.findMany({
 		where: {
 			committee: {
 				ldapId,
@@ -65,4 +66,5 @@ export async function getMembers(): Promise<User[]> {
 	return await getCommitteeMembers(LDAP_IDS.MEMBERS)
 }
 
-export default prisma
+export default prisma!
+// export default prisma!

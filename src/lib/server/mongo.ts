@@ -5,7 +5,7 @@ import sharp from 'sharp'
 /**
  * MongoDB client instance.
  */
-export const client = new MongoClient(env.MONGO_URI, {
+export const client = env.IBS3_BUILDING === 'true' ? undefined : new MongoClient(env.MONGO_URI, {
 	serverApi: {
 		version: ServerApiVersion.v1,
 		strict: true,
@@ -16,7 +16,8 @@ export const client = new MongoClient(env.MONGO_URI, {
 /**
  * MongoDB database instance.
  */
-export const mongo = client.db(env.MONGO_DB_NAME)
+export const mongo = env.IBS3_BUILDING === 'true' ? undefined : client?.db(env.MONGO_DB_NAME)
+
 
 /**
  * Uploads a file to MongoDB GridFS.
@@ -51,7 +52,7 @@ export async function uploadFile(
 		}
 	}
 
-	const bucket = new GridFSBucket(mongo)
+	const bucket = new GridFSBucket(mongo!)
 
 	let name = compressed ? file.name.replace(/\.\w+$/, '.jpeg') : file.name
 
