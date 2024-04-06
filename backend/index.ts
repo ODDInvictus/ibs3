@@ -2,8 +2,6 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cron from 'node-cron'
-import { syncEmail } from './email'
-import { syncLDAPUsers } from './ldap'
 import { verdubbelStrafbakken } from './strafbakken'
 import { prisma } from './prisma'
 import { newActivitiyNotification } from './notifications'
@@ -39,8 +37,11 @@ app.post('/email/send', async (req, res) => {
 	// Now return to the client
 	res.sendStatus(200)
 
+	console.log(`Attempted to send an email to ${to} with subject ${subject}`)
+	console.log('Skipping...')
+
 	// Send email
-	await sendCustomEmail({ subject, to, from, text, toName, fromName, senderFirstName })
+	// await sendCustomEmail({ subject, to, from, text, toName, fromName, senderFirstName })
 })
 
 app.listen(port, async () => {
@@ -87,15 +88,10 @@ app.listen(port, async () => {
   CRONJOBS
 */
 
-// Sync LDAP every day at 6:00
-const cronLdap = process.env.CRONTAB_LDAP || '0 6 * * *'
-console.log('[CRONTAB]', 'LDAP sync running at', cronLdap)
-cron.schedule(cronLdap, syncLDAPUsers)
-
 // Sync email every day at 7:00
-const cronEmail = process.env.CRONTAB_EMAIL || '0 7 * * *'
-console.log('[CRONTAB]', 'Email sync running at', cronEmail)
-cron.schedule(cronEmail, syncEmail)
+// const cronEmail = process.env.CRONTAB_EMAIL || '0 7 * * *'
+// console.log('[CRONTAB]', 'Email sync running at', cronEmail)
+// cron.schedule(cronEmail, syncEmail)
 
 // Verdubbel strafbakken every first of the month at 0:00
 const cronStrafbakken = process.env.CRONTAB_STRAFBAKKEN || '0 0 1 * *'
