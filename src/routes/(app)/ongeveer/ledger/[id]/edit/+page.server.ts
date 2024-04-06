@@ -5,7 +5,7 @@ import { editForm } from './editForm'
 
 export const load = (async ({ params, locals }) => {
 	const id = Number(params.id)
-	if (Number.isNaN(id)) throw error(404, 'Not found')
+	if (Number.isNaN(id)) throw error(404, 'Grootboek niet gevonden')
 
 	const ledger = await db.ledger.findUnique({
 		where: { id },
@@ -17,7 +17,7 @@ export const load = (async ({ params, locals }) => {
 			},
 		},
 	})
-	if (!ledger) throw error(404, 'Not found')
+	if (!ledger) throw error(404, 'Grootboek niet gevonden')
 
 	await editForm.transform({
 		values: {

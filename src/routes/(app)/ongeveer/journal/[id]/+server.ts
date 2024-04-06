@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types'
 
 export const GET: RequestHandler = async ({ params }) => {
 	const id = Number(params.id)
-	if (Number.isNaN(id)) throw error(400, 'Invalid id')
+	if (Number.isNaN(id)) throw error(400, 'Ongeldige ID')
 
 	const journal = await db.journal.findUnique({
 		where: { id },

@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types'
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id)
-	if (Number.isNaN(id)) throw error(400, 'Invalid id')
+	if (Number.isNaN(id)) throw error(400, 'Ongeldige ID')
 
 	const relation = await db.financialPerson.findUnique({
 		where: { id },

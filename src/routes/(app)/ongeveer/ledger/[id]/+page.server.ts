@@ -6,7 +6,7 @@ import Decimal from 'decimal.js'
 
 export const load = (async ({ params, url }) => {
 	const id = Number(params.id)
-	if (Number.isNaN(id)) throw error(404, 'Not found')
+	if (Number.isNaN(id)) throw error(404, 'Niet gevonden')
 
 	const { p, size } = pagination(url)
 
@@ -26,7 +26,7 @@ export const load = (async ({ params, url }) => {
 		},
 	})
 
-	if (!ledger) throw error(404, 'Not found')
+	if (!ledger) throw error(404, 'Grootboek niet gevonden')
 
 	// Get the balance of the ledger
 	const balance = ledger.JournalRows.reduce((acc, { price, amount, Journal }) => {

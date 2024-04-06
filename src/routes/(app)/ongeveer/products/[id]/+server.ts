@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types'
 
 export const DELETE: RequestHandler = async ({ params }) => {
 	const id = Number(params.id)
-	if (!id) throw new Error('Invalid id')
+	if (!id) throw new Error('Ongeldige ID')
 
 	const product = await db.product.findUnique({
 		where: { id },
