@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { promptStore } from '$lib/prompt';
+	import { promptStore } from '$lib/prompt'
 
-	let value: string = '';
+	let value: string = ''
 
 	$: {
-		const prompt = $promptStore;
+		const prompt = $promptStore
 		if (prompt && prompt.title !== '' && prompt.message !== '') {
-			const dialog = document.querySelector('#prompt-dialog') as HTMLDialogElement;
-			dialog?.showModal();
+			const dialog = document.querySelector('#prompt-dialog') as HTMLDialogElement
+			dialog?.showModal()
 		}
 	}
 
 	async function action(confirm: boolean) {
-		const dialog = document.querySelector('#prompt-dialog') as HTMLDialogElement;
+		const dialog = document.querySelector('#prompt-dialog') as HTMLDialogElement
 		if (confirm) {
-			await $promptStore.cb(value);
-			value = '';
+			await $promptStore.cb(value)
+			value = ''
 		}
-		dialog?.close();
+		dialog?.close()
 	}
 </script>
 

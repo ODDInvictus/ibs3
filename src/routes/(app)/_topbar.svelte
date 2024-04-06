@@ -1,19 +1,19 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import Breadcrumps from '$lib/components/breadcrumps.svelte';
-	import Logo from '$lib/components/logo-v2-small-white.svelte';
-	import ProfileIcon from '$lib/components/profile-icon.svelte';
-	import { confirm } from '$lib/confirm';
-	import { signOut } from '@auth/sveltekit/client';
+	import { page } from '$app/stores'
+	import Breadcrumps from '$lib/components/breadcrumps.svelte'
+	import Logo from '$lib/components/logo-v2-small-white.svelte'
+	import ProfileIcon from '$lib/components/profile-icon.svelte'
+	import { confirm } from '$lib/confirm'
+	import { signOut } from '@auth/sveltekit/client'
 
 	function logout() {
 		confirm({
 			title: 'Uitloggen?',
 			message: 'Weet je zeker dat je wil uitloggen?',
-			cb: (success) => {
-				if (success) signOut();
-			}
-		});
+			cb: success => {
+				if (success) signOut()
+			},
+		})
 	}
 </script>
 
@@ -30,10 +30,7 @@
 
 	<div class="user" on:click={logout}>
 		<div class="avatar">
-			<ProfileIcon
-				uid={$page.data.user.profilePictureId}
-				name={`${$page.data.user.firstName} ${$page.data.user.lastName}`}
-			/>
+			<ProfileIcon uid={$page.data.user.profilePictureId} name={`${$page.data.user.firstName} ${$page.data.user.lastName}`} />
 		</div>
 		<div class="name">
 			{$page.data.user.firstName}

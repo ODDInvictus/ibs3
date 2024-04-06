@@ -1,28 +1,21 @@
 <script lang="ts">
-	import { imagePreviewStore } from '$lib/imagePreviewStore';
+	import { imagePreviewStore } from '$lib/imagePreviewStore'
 
-	let dialog: HTMLDialogElement;
+	let dialog: HTMLDialogElement
 
 	$: {
 		if ($imagePreviewStore && $imagePreviewStore.image !== '') {
-			dialog?.showModal();
+			dialog?.showModal()
 		}
 	}
 
 	function close() {
-		dialog?.close();
+		dialog?.close()
 	}
 </script>
 
 <!-- svelte-ignore a11y-positive-tabindex -->
-<dialog
-	id="image-preview-dialog"
-	class="prompt"
-	bind:this={dialog}
-	on:click={close}
-	role="button"
-	tabindex="1"
->
+<dialog id="image-preview-dialog" class="prompt" bind:this={dialog} on:click={close} role="button" tabindex="1">
 	<div class="img"><img src={$imagePreviewStore.image} alt="img-preview" /></div>
 </dialog>
 

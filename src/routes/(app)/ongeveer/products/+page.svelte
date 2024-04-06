@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Title from '$lib/components/title.svelte';
-	import ProductsTable from './ProductsTable.svelte';
+	import type { PageData } from './$types'
+	import Title from '$lib/components/title.svelte'
+	import ProductsTable from './ProductsTable.svelte'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="Producten" />

@@ -1,17 +1,17 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Invoice from './_invoice.svelte';
-	import Title from '$lib/components/title.svelte';
-	import Pencil from '~icons/tabler/Pencil';
-	import EditRef from './_editRef.svelte';
-	import { openModal } from 'svelte-modals';
-	import { formatDateHumanReadable } from '$lib/dateUtils';
-	import { formatPrice } from '$lib/textUtils';
-	import DeleteButton from '$lib/ongeveer/DeleteButton.svelte';
-	import { toast } from '$lib/notification';
-	import { tick } from 'svelte';
+	import type { PageData } from './$types'
+	import Invoice from './_invoice.svelte'
+	import Title from '$lib/components/title.svelte'
+	import Pencil from '~icons/tabler/Pencil'
+	import EditRef from './_editRef.svelte'
+	import { openModal } from 'svelte-modals'
+	import { formatDateHumanReadable } from '$lib/dateUtils'
+	import { formatPrice } from '$lib/textUtils'
+	import DeleteButton from '$lib/ongeveer/DeleteButton.svelte'
+	import { toast } from '$lib/notification'
+	import { tick } from 'svelte'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title={data.invoice.ref || 'Factuur'} />
@@ -32,7 +32,7 @@
 				<i
 					on:click={() =>
 						openModal(EditRef, {
-							form: data.form
+							form: data.form,
 						})}
 				>
 					<Pencil color="#777" class="pointer" />
@@ -88,8 +88,8 @@
 						toast({
 							message: 'Je kan deze factuur niet meer bewerken',
 							type: 'danger',
-							title: 'Niet toegestaan'
-						});
+							title: 'Niet toegestaan',
+						})
 					}}>Bewerken</button
 				>
 			{:else}

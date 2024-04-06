@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Title from '$lib/components/title.svelte';
-	import { formatPrice } from '$lib/textUtils';
-	import Pagination from '$lib/components/Pagination.svelte';
-	import { formatDateHumanReadable } from '$lib/dateUtils';
+	import type { PageData } from './$types'
+	import Title from '$lib/components/title.svelte'
+	import { formatPrice } from '$lib/textUtils'
+	import Pagination from '$lib/components/Pagination.svelte'
+	import { formatDateHumanReadable } from '$lib/dateUtils'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title="Verkoop overzicht" />

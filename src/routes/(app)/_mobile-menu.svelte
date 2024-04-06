@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { LDAP_IDS } from '$lib/constants';
-	import { env } from '$env/dynamic/public';
-	import InformationCircle from '~icons/tabler/info-circle';
-	import Users from '~icons/tabler/users';
-	import PigMoney from '~icons/tabler/pig-money';
-	import ShieldCheck from '~icons/tabler/shield-check';
-	import Settings from '~icons/tabler/settings';
-	import AccessibleOff from '~icons/tabler/accessible-off';
+	import { page } from '$app/stores'
+	import { LDAP_IDS } from '$lib/constants'
+	import { env } from '$env/dynamic/public'
+	import InformationCircle from '~icons/tabler/info-circle'
+	import Users from '~icons/tabler/users'
+	import PigMoney from '~icons/tabler/pig-money'
+	import ShieldCheck from '~icons/tabler/shield-check'
+	import Settings from '~icons/tabler/settings'
+	import AccessibleOff from '~icons/tabler/accessible-off'
 </script>
 
 <div class="inner">

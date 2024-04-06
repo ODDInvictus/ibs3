@@ -1,44 +1,44 @@
 <script lang="ts">
-	import Navbar from './_navbar.svelte';
-	import Topbar from './_topbar.svelte';
-	import Toast from '$lib/components/toast.svelte';
-	import Confirm from '$lib/components/confirm.svelte';
-	import Prompt from '$lib/components/prompt.svelte';
-	import PromptSelect from '$lib/components/prompt-select.svelte';
-	import PromptCheckbox from '$lib/components/prompt-checkbox.svelte';
-	import ImagePreview from '$lib/components/image-popup.svelte';
-	import { afterNavigate } from '$app/navigation';
-	import { Modals, closeModal } from 'svelte-modals';
-	import MobileMenu from './_mobile-menu.svelte';
-	import { getFlash } from 'sveltekit-flash-message';
-	import { page } from '$app/stores';
-	import { toast } from '$lib/notification';
+	import Navbar from './_navbar.svelte'
+	import Topbar from './_topbar.svelte'
+	import Toast from '$lib/components/toast.svelte'
+	import Confirm from '$lib/components/confirm.svelte'
+	import Prompt from '$lib/components/prompt.svelte'
+	import PromptSelect from '$lib/components/prompt-select.svelte'
+	import PromptCheckbox from '$lib/components/prompt-checkbox.svelte'
+	import ImagePreview from '$lib/components/image-popup.svelte'
+	import { afterNavigate } from '$app/navigation'
+	import { Modals, closeModal } from 'svelte-modals'
+	import MobileMenu from './_mobile-menu.svelte'
+	import { getFlash } from 'sveltekit-flash-message'
+	import { page } from '$app/stores'
+	import { toast } from '$lib/notification'
 
-	const flash = getFlash(page);
+	const flash = getFlash(page)
 
-	flash.subscribe(($flash) => {
-		if (!$flash) return;
+	flash.subscribe($flash => {
+		if (!$flash) return
 
 		toast({
 			type: $flash.type,
 			title: $flash.type,
-			message: $flash.message
-		});
+			message: $flash.message,
+		})
 
-		flash.set(undefined);
-	});
+		flash.set(undefined)
+	})
 
 	afterNavigate(() => {
 		// Reset scroll position on layout--container-slot
-		const slot = document.querySelector('.layout--container');
+		const slot = document.querySelector('.layout--container')
 
-		if (slot) slot.scrollTop = 0;
+		if (slot) slot.scrollTop = 0
 
-		open = false;
-	});
+		open = false
+	})
 
-	let open = false;
-	const openMenu = () => (open = !open);
+	let open = false
+	const openMenu = () => (open = !open)
 </script>
 
 <main class="layout--main">

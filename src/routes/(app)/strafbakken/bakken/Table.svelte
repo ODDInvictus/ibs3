@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { bakkenUser } from '../types';
+	import type { bakkenUser } from '../types'
 
-	export let data: bakkenUser[];
-	export let longestName: string | null;
+	export let data: bakkenUser[]
+	export let longestName: string | null
 
 	const formatName = (names: { nickname: string | null; firstName: string }) => {
-		let unformattedName = names.nickname || names.firstName;
-		return unformattedName[0].toUpperCase() + unformattedName.slice(1).toLowerCase();
-	};
+		let unformattedName = names.nickname || names.firstName
+		return unformattedName[0].toUpperCase() + unformattedName.slice(1).toLowerCase()
+	}
 </script>
 
 <table class="not-full-width">

@@ -1,51 +1,51 @@
 <script lang="ts">
-	import Pause from '~icons/tabler/playerPauseFilled';
-	import Play from '~icons/tabler/playerPlayFilled';
-	import Heart from '~icons/tabler/heart';
-	import HeartFilled from '~icons/tabler/heart-filled';
-	import { toast } from '$lib/notification';
+	import Pause from '~icons/tabler/playerPauseFilled'
+	import Play from '~icons/tabler/playerPlayFilled'
+	import Heart from '~icons/tabler/heart'
+	import HeartFilled from '~icons/tabler/heart-filled'
+	import { toast } from '$lib/notification'
 
-	export let search = '';
-	export let tracks: SpotifyApi.TrackObjectFull[];
-	export let liked: string[];
-	export let playlist: string[];
+	export let search = ''
+	export let tracks: SpotifyApi.TrackObjectFull[]
+	export let liked: string[]
+	export let playlist: string[]
 
 	const getSmallestImage = (images: SpotifyApi.ImageObject[]) => {
 		return images.reduce((smallest, image) => {
-			if (image.height! < smallest.height! && image.width! < smallest.width!) return image;
-			return smallest;
-		}, images[0]);
-	};
+			if (image.height! < smallest.height! && image.width! < smallest.width!) return image
+			return smallest
+		}, images[0])
+	}
 
 	const formatArtists = (artists: SpotifyApi.ArtistObjectSimplified[]) => {
-		return artists.map((artist) => artist.name).join(', ');
-	};
+		return artists.map(artist => artist.name).join(', ')
+	}
 
-	let previewSrc = '';
-	let audioPlayer: HTMLAudioElement;
+	let previewSrc = ''
+	let audioPlayer: HTMLAudioElement
 
 	$: {
 		if (audioPlayer) {
-			audioPlayer.src = previewSrc;
-			audioPlayer.play();
+			audioPlayer.src = previewSrc
+			audioPlayer.play()
 		}
 	}
 
-	let hovering = '';
+	let hovering = ''
 
-	$: onChange(search);
+	$: onChange(search)
 	const onChange = (...args: any[]) => {
-		if (audioPlayer) audioPlayer.pause();
-		previewSrc = '';
-	};
+		if (audioPlayer) audioPlayer.pause()
+		previewSrc = ''
+	}
 
 	const toggleLike = async (track: SpotifyApi.TrackObjectFull) => {
-		let isLiked = false;
+		let isLiked = false
 		if (liked.includes(track.id)) {
-			liked = liked.filter((id) => id !== track.id);
+			liked = liked.filter(id => id !== track.id)
 		} else {
-			liked = [...liked, track.id];
-			isLiked = true;
+			liked = [...liked, track.id]
+			isLiked = true
 		}
 
 		try {
@@ -54,17 +54,17 @@
 				body: JSON.stringify({
 					trackId: track.id,
 					liked: isLiked,
-					trackUri: track.uri
-				})
-			});
+					trackUri: track.uri,
+				}),
+			})
 		} catch (error: any) {
 			toast({
 				title: 'Error',
 				message: error,
-				type: 'error'
-			});
+				type: 'error',
+			})
 		}
-	};
+	}
 </script>
 
 <audio src={previewSrc} bind:this={audioPlayer} />
@@ -74,7 +74,7 @@
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div
 				on:click={async () => {
-					await toggleLike(track);
+					await toggleLike(track)
 				}}
 				role="button"
 				tabindex="0"
@@ -91,13 +91,13 @@
 				role="button"
 				tabindex="0"
 				on:click={() => {
-					hovering = 'een trigger zodat svelte het weer snapt';
-					hovering = track.preview_url ?? '';
+					hovering = 'een trigger zodat svelte het weer snapt'
+					hovering = track.preview_url ?? ''
 					if (track.preview_url === previewSrc) {
-						if (audioPlayer.paused) audioPlayer.play();
-						else audioPlayer.pause();
+						if (audioPlayer.paused) audioPlayer.play()
+						else audioPlayer.pause()
 					} else {
-						if (track.preview_url) previewSrc = track.preview_url;
+						if (track.preview_url) previewSrc = track.preview_url
 					}
 				}}
 				class={`${track.preview_url ? 'clickable' : ''}`}

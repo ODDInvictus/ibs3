@@ -1,22 +1,19 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import Title from '$lib/components/title.svelte';
+	import { page } from '$app/stores'
+	import Title from '$lib/components/title.svelte'
 
 	function formatDate(dateString: string) {
-		const date = new Date(dateString);
+		const date = new Date(dateString)
 
-		const hour = ('0' + date.getHours()).slice(-2);
-		const minute = ('0' + date.getMinutes()).slice(-2);
+		const hour = ('0' + date.getHours()).slice(-2)
+		const minute = ('0' + date.getMinutes()).slice(-2)
 
-		return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${hour}:${minute}`;
+		return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${hour}:${minute}`
 	}
 </script>
 
 <div>
-	<Title
-		title="Maluspunten"
-		underTitle="Op deze pagina kan je zien wat de feuten allemaal hebben uitgespookt"
-	/>
+	<Title title="Maluspunten" underTitle="Op deze pagina kan je zien wat de feuten allemaal hebben uitgespookt" />
 
 	<div class="center m-4">
 		<a href="/maluspunten/uitdelen">

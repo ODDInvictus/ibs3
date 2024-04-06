@@ -1,16 +1,16 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Invoice from '../_invoice.svelte';
-	import { onMount } from 'svelte';
+	import type { PageData } from './$types'
+	import Invoice from '../_invoice.svelte'
+	import { onMount } from 'svelte'
 
-	export let data: PageData;
+	export let data: PageData
 
 	onMount(() => {
-		window.document.close();
-		window.focus();
-		window.print();
-		window.close();
-	});
+		window.document.close()
+		window.focus()
+		window.print()
+		window.close()
+	})
 </script>
 
 <svelte:head>

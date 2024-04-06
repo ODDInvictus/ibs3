@@ -1,6 +1,6 @@
 <script>
-	import { env } from '$env/dynamic/public';
-	import Title from '$lib/components/title.svelte';
+	import { env } from '$env/dynamic/public'
+	import Title from '$lib/components/title.svelte'
 </script>
 
 <Title title="Over IBS" />

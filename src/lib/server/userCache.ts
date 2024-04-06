@@ -1,14 +1,13 @@
 import NodeCache from 'node-cache'
 import prisma from '$lib/server/db'
-import type { Session } from 'next-auth';
-import type { Committee, User } from '@prisma/client';
-import { UserRolesEmpty, Roles, type UserRoles } from '$lib/constants';
+import type { Session } from 'next-auth'
+import type { Committee, User } from '@prisma/client'
+import { UserRolesEmpty, Roles, type UserRoles } from '$lib/constants'
 
 // Keep user records for 24 hours
 const cache = new NodeCache({ stdTTL: 60 * 60 * 24 })
 
 export const getUser = async (session: Session | null): Promise<User | null> => {
-
 	if (!session || !session.user || !session.user.email) {
 		return null
 	}
@@ -19,16 +18,32 @@ export const getUser = async (session: Session | null): Promise<User | null> => 
 
 	const user = await prisma.user.findFirst({
 		where: {
-			email: session.user.email
-		}
+			email: session.user.email,
+		},
 	})
 
 	if (user) {
-		cache.set(user.email, user);
+		cache.set(user.email, user)
 	}
 
 	return user
-};
+}
+
+export const getUserTest = async (userId: number): Promise<User> => {
+	const user = await prisma.user.findFirst({
+		where: {
+			id: userId,
+		},
+	})
+
+	if (user) {
+		cache.set(user.email, user)
+	} else {
+		throw new Error('User not found')
+	}
+
+	return user
+}
 
 export const invalidateUser = (email: string) => {
 	cache.del(email)
@@ -48,21 +63,20 @@ export const getCommittees = async (user: User | null): Promise<Committee[] | nu
 	try {
 		const members = await prisma.committeeMember.findMany({
 			where: {
-				userId: user.id
-			}
+				userId: user.id,
+			},
 		})
 
 		const committees = await prisma.committee.findMany({
 			where: {
 				id: {
-					in: members.map(member => member.committeeId)
-				}
-			}
+					in: members.map(member => member.committeeId),
+				},
+			},
 		})
 
 		cache.set(token, committees)
 		return committees
-
 	} catch (e) {
 		console.error(e)
 		return null

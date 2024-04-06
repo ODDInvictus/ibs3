@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { promptCheckboxStore } from '$lib/promptCheckbox';
+	import { promptCheckboxStore } from '$lib/promptCheckbox'
 
-	let currentValue = false;
+	let currentValue = false
 
 	$: {
-		const prompt = $promptCheckboxStore;
+		const prompt = $promptCheckboxStore
 		if (prompt && prompt.title !== '' && prompt.message !== '') {
-			const dialog = document.querySelector('#prompt-checkbox-dialog') as HTMLDialogElement;
-			dialog?.showModal();
+			const dialog = document.querySelector('#prompt-checkbox-dialog') as HTMLDialogElement
+			dialog?.showModal()
 		}
 	}
 
 	async function action(confirm: boolean) {
-		const dialog = document.querySelector('#prompt-checkbox-dialog') as HTMLDialogElement;
+		const dialog = document.querySelector('#prompt-checkbox-dialog') as HTMLDialogElement
 		if (confirm) {
-			await $promptCheckboxStore.cb(currentValue);
-			currentValue = false;
+			await $promptCheckboxStore.cb(currentValue)
+			currentValue = false
 		}
-		dialog?.close();
+		dialog?.close()
 	}
 </script>
 
@@ -30,9 +30,9 @@
 		<input
 			type="checkbox"
 			checked={$promptCheckboxStore.value}
-			on:change={(e) => {
+			on:change={e => {
 				// @ts-expect-error
-				return (currentValue = e.target?.value === 'on');
+				return (currentValue = e.target?.value === 'on')
 			}}
 		/>
 	</div>

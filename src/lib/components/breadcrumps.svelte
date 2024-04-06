@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { breadcrumbStore, generateBreadcrumbs } from '$lib/breadcrumbStore';
-	import { markdown } from '$lib/utils';
-	import ChevronRight from '~icons/tabler/chevron-right';
+	import { page } from '$app/stores'
+	import { breadcrumbStore, generateBreadcrumbs } from '$lib/breadcrumbStore'
+	import { markdown } from '$lib/utils'
+	import ChevronRight from '~icons/tabler/chevron-right'
 
-	$: generateBreadcrumbs($page.route.id ?? $page.url.pathname, $page.url.pathname);
+	$: generateBreadcrumbs($page.route.id ?? $page.url.pathname, $page.url.pathname)
 </script>
 
 <nav>

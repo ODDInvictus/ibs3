@@ -1,223 +1,223 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import type { PageData } from './$types';
-	import EditIcon from '~icons/tabler/edit.svelte';
-	import ArrowBackUp from '~icons/tabler/arrow-back-up.svelte';
-	import SaveIcon from '~icons/tabler/device-floppy.svelte';
-	import TagIcon from '~icons/tabler/bookmark-plus.svelte';
-	import CirclePlus from '~icons/tabler/circle-plus.svelte';
-	import UserPlus from '~icons/tabler/user-plus.svelte';
-	import CalenderPlus from '~icons/tabler/calendar-plus.svelte';
-	import WarningIcon from '~icons/tabler/alert-triangle.svelte';
-	import { prompt } from '$lib/prompt';
-	import { toast } from '$lib/notification';
-	import { imagePreview } from '$lib/imagePreviewStore';
-	import { stripMarkdown } from '$lib/utils';
-	import { getDutchMonth, toDateString } from '$lib/dateUtils';
-	import { goto } from '$app/navigation';
+	import Title from '$lib/components/title.svelte'
+	import type { PageData } from './$types'
+	import EditIcon from '~icons/tabler/edit.svelte'
+	import ArrowBackUp from '~icons/tabler/arrow-back-up.svelte'
+	import SaveIcon from '~icons/tabler/device-floppy.svelte'
+	import TagIcon from '~icons/tabler/bookmark-plus.svelte'
+	import CirclePlus from '~icons/tabler/circle-plus.svelte'
+	import UserPlus from '~icons/tabler/user-plus.svelte'
+	import CalenderPlus from '~icons/tabler/calendar-plus.svelte'
+	import WarningIcon from '~icons/tabler/alert-triangle.svelte'
+	import { prompt } from '$lib/prompt'
+	import { toast } from '$lib/notification'
+	import { imagePreview } from '$lib/imagePreviewStore'
+	import { stripMarkdown } from '$lib/utils'
+	import { getDutchMonth, toDateString } from '$lib/dateUtils'
+	import { goto } from '$app/navigation'
 
-	export let data: PageData;
+	export let data: PageData
 
 	type Field = {
-		field: string;
-		value: string;
-	};
+		field: string
+		value: string
+	}
 
-	let editFields: Record<number, Field> = {};
+	let editFields: Record<number, Field> = {}
 
 	function edit(field: string, photo: number) {
 		if (editFields[photo] && editFields[photo].field === field) {
 			// Discard edit
-			editFields[photo].field = '';
-			editFields[photo].value = '';
+			editFields[photo].field = ''
+			editFields[photo].value = ''
 		} else {
 			// Start edit
 			editFields[photo] = {
 				field: field,
-				value: ''
-			};
+				value: '',
+			}
 		}
 	}
 
 	async function removeTag(photoId: number, tagId: number) {
 		if (tagId == -1) {
-			alert('Oei! Dat kan nog niet');
-			return;
+			alert('Oei! Dat kan nog niet')
+			return
 		}
 
-		const p = data.photos.find((p) => p.id === photoId);
+		const p = data.photos.find(p => p.id === photoId)
 
 		p?.tags.splice(
-			p.tags.findIndex((t) => t.photoTag.id === tagId),
-			1
-		);
+			p.tags.findIndex(t => t.photoTag.id === tagId),
+			1,
+		)
 
 		const body = await fetch('', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ type: 'remove_tag', tag: tagId, photo: photoId })
-		}).then((res) => res.json());
+			body: JSON.stringify({ type: 'remove_tag', tag: tagId, photo: photoId }),
+		}).then(res => res.json())
 
 		if (body.status !== 200) {
 			toast({
 				title: 'Tag verwijderen mislukt!',
 				message: body.message,
-				type: 'danger'
-			});
-			return;
+				type: 'danger',
+			})
+			return
 		}
 
 		// @ts-expect-error Kan gewoon niet piepen
-		data.photos = data.photos.map((photo) => {
+		data.photos = data.photos.map(photo => {
 			if (photo.id === photoId) {
-				return p;
+				return p
 			} else {
-				return photo;
+				return photo
 			}
-		});
+		})
 	}
 
 	async function createTag(newTag: string, photoId: number) {
 		const tag = await fetch('', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ type: 'new_tag', tag: newTag })
-		}).catch((err) => {
+			body: JSON.stringify({ type: 'new_tag', tag: newTag }),
+		}).catch(err => {
 			toast({
 				title: 'Oei!',
 				message: err.message,
-				type: 'danger'
-			});
-		});
+				type: 'danger',
+			})
+		})
 
 		if (tag) {
 			// Now add it to the local options
-			const res = await tag.json();
-			data.tags = [...data.tags, res.data];
+			const res = await tag.json()
+			data.tags = [...data.tags, res.data]
 
 			const body = await fetch('', {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
 					type: 'save_change',
 					value: res.data.id,
 					photo: photoId,
-					field: 'tags'
-				})
-			}).then((res) => res.json());
+					field: 'tags',
+				}),
+			}).then(res => res.json())
 
 			if (body.status !== 200) {
 				toast({
 					title: 'Tag toevoegen mislukt!',
 					message: body.message,
-					type: 'danger'
-				});
-				return;
+					type: 'danger',
+				})
+				return
 			}
 
 			// And add it to the photo
-			data.photos = data.photos.map((p) => {
+			data.photos = data.photos.map(p => {
 				if (p.id === photoId) {
-					const photoTag = data.tags.find((t) => t.id === res.data.id);
+					const photoTag = data.tags.find(t => t.id === res.data.id)
 
-					const tag = { photoTag };
+					const tag = { photoTag }
 
-					const tags = p.tags;
+					const tags = p.tags
 					// @ts-expect-error Ja ja
-					tags.push(tag);
+					tags.push(tag)
 
-					p.tags = tags;
+					p.tags = tags
 				}
-				return p;
-			});
+				return p
+			})
 
-			editFields[photoId].field = '';
-			editFields[photoId].value = '';
+			editFields[photoId].field = ''
+			editFields[photoId].value = ''
 
 			toast({
 				title: 'Gelukt!',
 				message: 'De tag is aangemaakt',
-				type: 'success'
-			});
+				type: 'success',
+			})
 		}
 	}
 
 	async function addTag(photoId: number) {
-		const tagId = parseInt(editFields[photoId].value);
+		const tagId = parseInt(editFields[photoId].value)
 
 		if (isNaN(tagId) || tagId == -1 || tagId == -2) {
-			editFields[photoId].field = '';
-			editFields[photoId].value = '';
-			return;
+			editFields[photoId].field = ''
+			editFields[photoId].value = ''
+			return
 		}
 
 		const body = await fetch('', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ type: 'save_change', value: tagId, photo: photoId, field: 'tags' })
-		}).then((res) => res.json());
+			body: JSON.stringify({ type: 'save_change', value: tagId, photo: photoId, field: 'tags' }),
+		}).then(res => res.json())
 
 		if (body.status !== 200) {
 			toast({
 				title: 'Tag toevoegen mislukt!',
 				message: body.message,
-				type: 'danger'
-			});
-			return;
+				type: 'danger',
+			})
+			return
 		}
 
-		data.photos = data.photos.map((p) => {
+		data.photos = data.photos.map(p => {
 			if (p.id === photoId) {
-				const photoTag = data.tags.find((t) => t.id === tagId);
+				const photoTag = data.tags.find(t => t.id === tagId)
 
-				const tag = { photoTag };
+				const tag = { photoTag }
 
-				const tags = p.tags;
+				const tags = p.tags
 				// @ts-expect-error Ja ja
-				tags.push(tag);
+				tags.push(tag)
 
-				p.tags = tags;
+				p.tags = tags
 			}
-			return p;
-		});
+			return p
+		})
 
-		editFields[photoId].field = '';
-		editFields[photoId].value = '';
+		editFields[photoId].field = ''
+		editFields[photoId].value = ''
 	}
 
 	async function save(field: string, photo: number) {
-		const value = editFields[photo].value;
+		const value = editFields[photo].value
 
 		if (!value) {
-			editFields[photo].field = '';
-			return;
+			editFields[photo].field = ''
+			return
 		}
 
 		const res = await fetch('', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ type: 'save_change', field: field, value: value, photo: photo })
-		});
+			body: JSON.stringify({ type: 'save_change', field: field, value: value, photo: photo }),
+		})
 
-		const body = await res.json();
+		const body = await res.json()
 
 		if (body.status !== 200) {
 			toast({
 				title: 'Opslaan mislukt',
 				message: body.message,
-				type: 'danger'
-			});
-			return;
+				type: 'danger',
+			})
+			return
 		}
 
 		// find the photo
@@ -226,77 +226,77 @@
 				// @ts-ignore
 				switch (field) {
 					case 'date':
-						p.date = new Date(value);
-						break;
+						p.date = new Date(value)
+						break
 					case 'name':
 						// @ts-expect-error kan gewoon
-						p.creator = data.photoCreators.find((c) => c.id === parseInt(value));
-						break;
+						p.creator = data.photoCreators.find(c => c.id === parseInt(value))
+						break
 					case 'description':
-						p.description = value;
-						break;
+						p.description = value
+						break
 					case 'people':
-						const newArr: any[] = [];
+						const newArr: any[] = []
 
-						(value as unknown as string[]).forEach((personSelected) => {
-							const person = data.people.find((p) => p.ldapId === personSelected);
+						;(value as unknown as string[]).forEach(personSelected => {
+							const person = data.people.find(p => p.ldapId === personSelected)
 
-							newArr.push({ user: person });
-							p.peopleTagged = newArr;
-						});
-						break;
+							newArr.push({ user: person })
+							p.peopleTagged = newArr
+						})
+						break
 					case 'activity':
-						const a = data.activities.find((a) => a.id === parseInt(value));
+						const a = data.activities.find(a => a.id === parseInt(value))
 						// @ts-expect-error kan gewoon
-						p.activity = a;
-						p.date = a?.startTime!;
-						break;
+						p.activity = a
+						p.date = a?.startTime!
+						break
 				}
 			}
 		}
 
-		editFields[photo].field = '';
-		editFields[photo].value = '';
+		editFields[photo].field = ''
+		editFields[photo].value = ''
 	}
 
-	let linkAllPhotosToActivity = false;
-	let selectedActivityAll = data.activities[0].id;
+	let linkAllPhotosToActivity = false
+	let selectedActivityAll = data.activities[0].id
 
 	async function saveActivity() {
 		if (linkAllPhotosToActivity) {
-			const activity = data.activities.find((a) => a.id === selectedActivityAll);
+			const activity = data.activities.find(a => a.id === selectedActivityAll)
 
-			if (!activity) return;
+			if (!activity) return
 
-			const photos = data.photos.map((p) => p.id);
+			const photos = data.photos.map(p => p.id)
 
 			const body = await fetch('', {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json'
+					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ type: 'multiple_activities', photos, value: activity.id })
-			}).then((res) => res.json());
+				body: JSON.stringify({ type: 'multiple_activities', photos, value: activity.id }),
+			}).then(res => res.json())
 
 			if (body.status !== 200) {
 				toast({
 					title: 'Opslaan mislukt',
 					message: body.message,
-					type: 'danger'
-				});
-				return;
+					type: 'danger',
+				})
+				return
 			}
 
-			data.photos = data.photos.map((photo) => {
-				photo.date = activity.startTime;
-				photo.activity = activity;
-				return photo;
-			});
+			data.photos = data.photos.map(photo => {
+				photo.date = activity.startTime
+				photo.activity = activity
+				return photo
+			})
 		}
 	}
 
 	function back() {
-		goto('/fotos');
+		goto('/fotos')
 	}
 </script>
 
@@ -316,9 +316,7 @@
 			<select bind:value={selectedActivityAll}>
 				{#each data.activities as activity}
 					<option value={activity.id}
-						>{`${stripMarkdown(activity.name)} (${getDutchMonth(
-							activity.endTime
-						)} ${activity.endTime.getFullYear()})`}</option
+						>{`${stripMarkdown(activity.name)} (${getDutchMonth(activity.endTime)} ${activity.endTime.getFullYear()})`}</option
 					>
 				{/each}
 			</select>
@@ -354,10 +352,10 @@
 								<td>
 									<select
 										value={photo.creator?.id}
-										on:change={(e) => {
+										on:change={e => {
 											if (e) {
 												// @ts-ignore
-												editFields[photo.id].value = e.target?.value;
+												editFields[photo.id].value = e.target?.value
 											}
 										}}
 									>
@@ -392,10 +390,10 @@
 									<input
 										type="date"
 										value={photo.date?.toISOString().substring(0, 10)}
-										on:change={(e) => {
+										on:change={e => {
 											if (e) {
 												// @ts-ignore
-												editFields[photo.id].value = e.target?.value;
+												editFields[photo.id].value = e.target?.value
 											}
 										}}
 									/>
@@ -427,10 +425,10 @@
 								<td>
 									<textarea
 										value={photo.description}
-										on:change={(e) => {
+										on:change={e => {
 											if (e) {
 												// @ts-ignore
-												editFields[photo.id].value = e.target?.value;
+												editFields[photo.id].value = e.target?.value
 											}
 										}}
 									/>
@@ -457,27 +455,25 @@
 						<tr>
 							<td>Tags</td>
 							{#if editFields[photo.id] && editFields[photo.id].field === 'tags'}
-								{@const tags = data.tags.filter(
-									(t) => photo.tags.find((pt) => pt.photoTag.id === t.id) === undefined
-								)}
+								{@const tags = data.tags.filter(t => photo.tags.find(pt => pt.photoTag.id === t.id) === undefined)}
 								<td>
 									<select
 										value={-1}
-										on:change={(e) => {
+										on:change={e => {
 											if (e) {
 												// @ts-expect-error Bestaat gewoon
 												if (e.target?.value == -2) {
 													prompt({
 														title: 'Nieuwe tag',
 														message: 'Wat is de naam van de nieuwe tag?',
-														cb: async (newTag) => {
-															await createTag(newTag, photo.id);
-														}
-													});
+														cb: async newTag => {
+															await createTag(newTag, photo.id)
+														},
+													})
 												}
 
 												// @ts-ignore
-												editFields[photo.id].value = e.target?.value;
+												editFields[photo.id].value = e.target?.value
 											}
 										}}
 									>
@@ -501,11 +497,8 @@
 									{#if photo.tags && photo.tags.length > 0}
 										{#each photo.tags as tag}
 											<!-- svelte-ignore a11y-click-events-have-key-events -->
-											<span
-												role="button"
-												tabindex="0"
-												on:click={() => removeTag(photo.id, tag.photoTag.id)}
-												class="ibs-chip removable">{tag.photoTag.name}</span
+											<span role="button" tabindex="0" on:click={() => removeTag(photo.id, tag.photoTag.id)} class="ibs-chip removable"
+												>{tag.photoTag.name}</span
 											>
 										{/each}
 									{:else}
@@ -525,23 +518,21 @@
 								<td>
 									<select
 										multiple
-										on:change={(e) => {
+										on:change={e => {
 											if (e) {
 												// @ts-expect-error Kijk heel grappig, maar SvelteKit ondersteund dus geen TS hiero, dus we doen het ermaar mee
-												const selectedElements = Array.from(e.target?.selectedOptions ?? []);
+												const selectedElements = Array.from(e.target?.selectedOptions ?? [])
 
 												// @ts-expect-error Idem dito
-												const selection = selectedElements.map((el) => el.value);
+												const selection = selectedElements.map(el => el.value)
 
 												// @ts-expect-error Idem dito
-												editFields[photo.id].value = selection;
+												editFields[photo.id].value = selection
 											}
 										}}
 									>
 										{#each data.people as person}
-											{@const selected =
-												photo.peopleTagged.find((pt) => pt.user.ldapId === person.ldapId) !==
-												undefined}
+											{@const selected = photo.peopleTagged.find(pt => pt.user.ldapId === person.ldapId) !== undefined}
 											<option {selected} value={person.ldapId}>{person.firstName}</option>
 										{/each}
 									</select>
@@ -556,9 +547,7 @@
 								</td>
 							{:else}
 								<td>
-									{photo.peopleTagged.length === 0
-										? 'Geen mensen getagd'
-										: photo.peopleTagged.map((p) => p.user.firstName).join(', ')}
+									{photo.peopleTagged.length === 0 ? 'Geen mensen getagd' : photo.peopleTagged.map(p => p.user.firstName).join(', ')}
 								</td>
 								<td>
 									<button class="btn-a" on:click={() => edit('people', photo.id)}>
@@ -573,22 +562,20 @@
 								<td>
 									<select
 										value={photo.activity?.id ?? -1}
-										on:change={(e) => {
+										on:change={e => {
 											if (e) {
 												// @ts-expect-error Bestaat gewoon
-												if (e.target?.value == -1) return;
+												if (e.target?.value == -1) return
 
 												// @ts-ignore
-												editFields[photo.id].value = e.target?.value;
+												editFields[photo.id].value = e.target?.value
 											}
 										}}
 									>
 										<option value={-1}>Selecteer een activiteit</option>
 										{#each data.activities as activity}
 											<option value={activity.id}
-												>{`${stripMarkdown(activity.name)} (${getDutchMonth(
-													activity.endTime
-												)} ${activity.endTime.getFullYear()})`}</option
+												>{`${stripMarkdown(activity.name)} (${getDutchMonth(activity.endTime)} ${activity.endTime.getFullYear()})`}</option
 											>
 										{/each}
 									</select>
@@ -614,11 +601,7 @@
 				</table>
 			</div>
 			<div class="photo">
-				<div
-					role="button"
-					tabindex="0"
-					on:click={() => imagePreview({ image: `/image/id/${photo.id}?size=original` })}
-				>
+				<div role="button" tabindex="0" on:click={() => imagePreview({ image: `/image/id/${photo.id}?size=original` })}>
 					<img src="/image/id/{photo.id}?size=original" alt="Foto van {photo.creator?.name}" />
 				</div>
 			</div>

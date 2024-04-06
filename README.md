@@ -51,7 +51,7 @@ Een cronjob is een functie die elke x tijd draait. Zo'n functie kan je maken in 
 
 ```ts
 //            crontab    , functie
-cron.schedule('1 * * * *', syncLDAPUsers);
+cron.schedule('1 * * * *', syncLDAPUsers)
 // Deze functie wordt elk hele uur uitgevoerd (10:00, 11:00, 12:00) etc
 ```
 

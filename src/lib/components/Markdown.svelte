@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import InfoCircle from '~icons/tabler/info-circle';
+	import { goto } from '$app/navigation'
+	import InfoCircle from '~icons/tabler/info-circle'
 
-	export let text: string;
-	let className: string;
-	export { className as class };
+	export let text: string
+	let className: string
+	export { className as class }
 </script>
 
 <main class={className}>

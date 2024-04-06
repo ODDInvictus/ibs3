@@ -1,42 +1,42 @@
 <script lang="ts">
-	import { applyAction, enhance } from '$app/forms';
-	import { page } from '$app/stores';
-	import type { ActionData } from './$types';
-	import InfoCircle from '~icons/tabler/info-circle';
-	import { markdown } from '$lib/utils';
-	import Markdown from '$lib/components/Markdown.svelte';
-	import Title from '$lib/components/title.svelte';
-	import InputFile from '$lib/components/input-file.svelte';
+	import { applyAction, enhance } from '$app/forms'
+	import { page } from '$app/stores'
+	import type { ActionData } from './$types'
+	import InfoCircle from '~icons/tabler/info-circle'
+	import { markdown } from '$lib/utils'
+	import Markdown from '$lib/components/Markdown.svelte'
+	import Title from '$lib/components/title.svelte'
+	import InputFile from '$lib/components/input-file.svelte'
 
-	const activity = $page.data.activity;
-	const activityTime = $page.data.times;
+	const activity = $page.data.activity
+	const activityTime = $page.data.times
 
 	function setEndDate() {
-		const startDate = document.getElementById('startDate') as HTMLInputElement;
-		const endDate = document.getElementById('endDate') as HTMLInputElement;
+		const startDate = document.getElementById('startDate') as HTMLInputElement
+		const endDate = document.getElementById('endDate') as HTMLInputElement
 
-		if (!endDate.value || endDate.value < startDate.value) endDate.value = startDate.value;
+		if (!endDate.value || endDate.value < startDate.value) endDate.value = startDate.value
 	}
 
 	function handleErrors() {
 		if (form?.errors) {
 			for (const error of form.errors) {
-				const element = document.getElementById('' + error.field) as HTMLInputElement;
-				element.classList.add('activity-create-error');
+				const element = document.getElementById('' + error.field) as HTMLInputElement
+				element.classList.add('activity-create-error')
 			}
 
 			// Scroll to top
-			window.scrollTo(0, 0);
+			window.scrollTo(0, 0)
 		}
 	}
 
-	export let form: ActionData;
+	export let form: ActionData
 
-	let name = activity?.name || '';
-	$: nameMarkdown = markdown(name);
+	let name = activity?.name || ''
+	$: nameMarkdown = markdown(name)
 
-	let description = activity?.description || '';
-	$: descriptionMarkdown = markdown(description);
+	let description = activity?.description || ''
+	$: descriptionMarkdown = markdown(description)
 </script>
 
 <Title title="Nieuwe activiteit aanmaken" shortTitle="Nieuwe Activiteit" />
@@ -68,9 +68,9 @@
 	enctype="multipart/form-data"
 	use:enhance={({ data }) => {
 		return async ({ result }) => {
-			await applyAction(result);
-			handleErrors();
-		};
+			await applyAction(result)
+			handleErrors()
+		}
 	}}
 >
 	<label for="name">Naam <span>(markdown)</span></label>
@@ -90,13 +90,7 @@
 	</div>
 
 	<label for="startDate">Begin datum</label>
-	<input
-		type="date"
-		name="startDate"
-		id="startDate"
-		on:change={setEndDate}
-		value={activityTime?.startDate ?? ''}
-	/>
+	<input type="date" name="startDate" id="startDate" on:change={setEndDate} value={activityTime?.startDate ?? ''} />
 
 	<label for="startTime">Begin tijd</label>
 	<input type="time" name="startTime" id="startTime" value={activityTime?.startTime ?? ''} />

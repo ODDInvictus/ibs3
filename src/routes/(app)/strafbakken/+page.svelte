@@ -1,20 +1,20 @@
 <script lang="ts">
-	import { Modals, closeModal } from 'svelte-modals';
-	import Table from './Table.svelte';
-	import type { sbPageData } from './types';
-	import Title from '$lib/components/title.svelte';
+	import { Modals, closeModal } from 'svelte-modals'
+	import Table from './Table.svelte'
+	import type { sbPageData } from './types'
+	import Title from '$lib/components/title.svelte'
 
-	export let data: sbPageData;
+	export let data: sbPageData
 
-	const middleIndex = Math.ceil(data.strafbakken.length / 2);
-	let width: number;
+	const middleIndex = Math.ceil(data.strafbakken.length / 2)
+	let width: number
 
 	// Get the longest name
-	let longestName = '';
-	data.strafbakken.forEach((user) => {
-		let name = user.nickname ?? user.firstName;
-		if (name.length > longestName.length) longestName = name;
-	});
+	let longestName = ''
+	data.strafbakken.forEach(user => {
+		let name = user.nickname ?? user.firstName
+		if (name.length > longestName.length) longestName = name
+	})
 </script>
 
 <svelte:window bind:innerWidth={width} />
@@ -27,16 +27,11 @@
 			<Table data={data.strafbakken} longestName={null} />
 		{:else}
 			<Table data={data.strafbakken.slice().splice(0, middleIndex)} {longestName} />
-			<Table
-				data={data.strafbakken.slice().splice(middleIndex, data.strafbakken.length - 1)}
-				{longestName}
-			/>
+			<Table data={data.strafbakken.slice().splice(middleIndex, data.strafbakken.length - 1)} {longestName} />
 		{/if}
 	</div>
 	<div class="link">
-		<a href="/strafbakken/bakken" class="button" data-sveltekit-preload-data="hover">
-			Hoeveel heeft iedereen al getrokken?
-		</a>
+		<a href="/strafbakken/bakken" class="button" data-sveltekit-preload-data="hover"> Hoeveel heeft iedereen al getrokken? </a>
 	</div>
 </main>
 

@@ -1,26 +1,25 @@
 <script lang="ts">
-	import { promptSelectStore } from '$lib/promptSelect';
+	import { promptSelectStore } from '$lib/promptSelect'
 
-	const opts = $promptSelectStore.options;
+	const opts = $promptSelectStore.options
 
-	let value: string =
-		opts.length > 0 ? (typeof opts[0] === 'string' ? opts[0] : opts[0].value) : '';
+	let value: string = opts.length > 0 ? (typeof opts[0] === 'string' ? opts[0] : opts[0].value) : ''
 
 	$: {
-		const prompt = $promptSelectStore;
+		const prompt = $promptSelectStore
 		if (prompt && prompt.title !== '' && prompt.message !== '') {
-			const dialog = document.querySelector('#prompt-select-dialog') as HTMLDialogElement;
-			dialog?.showModal();
+			const dialog = document.querySelector('#prompt-select-dialog') as HTMLDialogElement
+			dialog?.showModal()
 		}
 	}
 
 	async function action(confirm: boolean) {
-		const dialog = document.querySelector('#prompt-select-dialog') as HTMLDialogElement;
+		const dialog = document.querySelector('#prompt-select-dialog') as HTMLDialogElement
 		if (confirm) {
-			await $promptSelectStore.cb(value);
-			value = '';
+			await $promptSelectStore.cb(value)
+			value = ''
 		}
-		dialog?.close();
+		dialog?.close()
 	}
 </script>
 

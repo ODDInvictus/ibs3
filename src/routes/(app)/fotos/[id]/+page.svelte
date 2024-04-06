@@ -1,124 +1,123 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import ProfileIcon from '$lib/components/profile-icon.svelte';
-	import Title from '$lib/components/title.svelte';
-	import { formatDateHumanReadable, formatDateTimeHumanReadable } from '$lib/dateUtils';
-	import { imagePreview } from '$lib/imagePreviewStore';
-	import { toast } from '$lib/notification';
-	import { promptSelect } from '$lib/promptSelect';
-	import { confirm } from '$lib/confirm';
-	import type { PageData } from './$types';
-	import Star from '~icons/tabler/star';
+	import { enhance } from '$app/forms'
+	import ProfileIcon from '$lib/components/profile-icon.svelte'
+	import Title from '$lib/components/title.svelte'
+	import { formatDateHumanReadable, formatDateTimeHumanReadable } from '$lib/dateUtils'
+	import { imagePreview } from '$lib/imagePreviewStore'
+	import { toast } from '$lib/notification'
+	import { promptSelect } from '$lib/promptSelect'
+	import { confirm } from '$lib/confirm'
+	import type { PageData } from './$types'
+	import Star from '~icons/tabler/star'
 
-	export let data: PageData;
+	export let data: PageData
 
-	let rating = data.avgRating ?? 0;
-	let starHovered = rating;
+	let rating = data.avgRating ?? 0
+	let starHovered = rating
 
 	async function rate() {
-		let newRating = starHovered;
+		let newRating = starHovered
 
 		await fetch('', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
 				type: 'rating',
-				rating: newRating
-			})
+				rating: newRating,
+			}),
 		})
-			.then((res) => res.json())
-			.then((res) => {
+			.then(res => res.json())
+			.then(res => {
 				if (res.success) {
-					rating = newRating;
-					starHovered = newRating;
-					data.avgRating = res.data;
+					rating = newRating
+					starHovered = newRating
+					data.avgRating = res.data
 				} else {
 					toast({
 						title: 'Opslaan mislukt',
 						message: res.message,
-						type: 'danger'
-					});
+						type: 'danger',
+					})
 				}
-			});
+			})
 	}
 
 	async function tag() {
 		await promptSelect({
 			title: 'Tag toevoegen',
 			message: 'Selecteer een tag',
-			options: (data.tags || []).map((tag) => ({
+			options: (data.tags || []).map(tag => ({
 				key: tag.name,
-				value: String(tag.id)
+				value: String(tag.id),
 			})),
-			cb: async (val) => {
-				if (!val) return;
+			cb: async val => {
+				if (!val) return
 
-				console.log(val);
+				console.log(val)
 
 				await fetch('', {
 					method: 'POST',
 					headers: {
-						'Content-Type': 'application/json'
+						'Content-Type': 'application/json',
 					},
 					body: JSON.stringify({
 						type: 'tag',
-						tag: val
-					})
+						tag: val,
+					}),
 				})
-					.then((res) => res.json())
-					.then((res) => {
+					.then(res => res.json())
+					.then(res => {
 						if (res.success) {
-							if (data.photo && data.photo.tags) data.photo.tags = [res.data, ...data.photo?.tags];
-							data.tags = data.tags?.filter((t) => {
-								return t.id !== res.data.photoTag.id;
-							});
+							if (data.photo && data.photo.tags) data.photo.tags = [res.data, ...data.photo?.tags]
+							data.tags = data.tags?.filter(t => {
+								return t.id !== res.data.photoTag.id
+							})
 						} else {
 							toast({
 								title: 'Opslaan mislukt',
 								message: res.message,
-								type: 'danger'
-							});
+								type: 'danger',
+							})
 						}
-					});
-			}
-		});
+					})
+			},
+		})
 	}
 
 	async function removeTag(tid: number) {
 		await confirm({
 			title: 'Tag verwijderen',
 			message: 'Weet je zeker dat je deze tag wilt verwijderen?',
-			cb: async (val) => {
+			cb: async val => {
 				if (val) {
 					fetch('', {
 						method: 'POST',
 						headers: {
-							'Content-Type': 'application/json'
+							'Content-Type': 'application/json',
 						},
 						body: JSON.stringify({
 							type: 'remove-tag',
-							tag: tid
-						})
+							tag: tid,
+						}),
 					})
-						.then((res) => res.json())
-						.then((res) => {
+						.then(res => res.json())
+						.then(res => {
 							if (res.success) {
-								if (data.photo && data.photo.tags)
-									data.photo.tags = data.photo?.tags.filter((t) => t.photoTag.id !== tid) ?? [];
-								if (data.tags) data.tags = [...data.tags, res.data];
+								if (data.photo && data.photo.tags) data.photo.tags = data.photo?.tags.filter(t => t.photoTag.id !== tid) ?? []
+								if (data.tags) data.tags = [...data.tags, res.data]
 							} else {
 								toast({
 									title: 'Opslaan mislukt',
 									message: res.message,
-									type: 'danger'
-								});
+									type: 'danger',
+								})
 							}
-						});
+						})
 				}
-			}
-		});
+			},
+		})
 	}
 </script>
 
@@ -126,9 +125,7 @@
 	<Title title="Foto niet gevonden" />
 {:else}
 	<Title
-		shortTitle={!data.photo.description
-			? `Foto ${data.photo.id}`
-			: `${data.photo.description} - Foto`}
+		shortTitle={!data.photo.description ? `Foto ${data.photo.id}` : `${data.photo.description} - Foto`}
 		title={data.photo.description ? `${data.photo.description}` : `Foto ${data.photo.id}`}
 	/>
 
@@ -198,9 +195,7 @@
 				<a href="?quality=groot" class="btn-a">FHD</a>
 				<a href="?quality=origineel" class="btn-a">Origineel</a>
 			</div>
-			<small>
-				Met rechtermuisknop -> opslaan kan je deze downloaden in de geselecteerde kwaliteit
-			</small>
+			<small> Met rechtermuisknop -> opslaan kan je deze downloaden in de geselecteerde kwaliteit </small>
 
 			<div class="comment-container">
 				<hr />
@@ -211,24 +206,24 @@
 					method="POST"
 					use:enhance={() => {
 						return ({ result, update }) => {
-							let title = 'Reactie plaatsen mislukt';
-							let type = 'danger';
+							let title = 'Reactie plaatsen mislukt'
+							let type = 'danger'
 
 							if (result.status === 200) {
-								title = 'Succes';
-								type = 'success';
+								title = 'Succes'
+								type = 'success'
 
 								// @ts-expect-error Ja weet je, ik snap dat je dit niet leuk vind, maar je doet het er maar mee typescript
-								data.photo.comments = [...data.photo.comments, result.data.comment];
+								data.photo.comments = [...data.photo.comments, result.data.comment]
 							}
 
 							toast({
 								title,
 								message: result.data.message,
-								type
-							});
-							update();
-						};
+								type,
+							})
+							update()
+						}
 					}}
 				>
 					<input type="text" name="comment" placeholder="Typ een reactie..." />
@@ -239,17 +234,10 @@
 					{@const u = comment.commenter}
 					<div class="ibs-comment">
 						<div class="ibs-comment--icon">
-							<ProfileIcon
-								uid={u.profilePictureId}
-								name={u.firstName + ' ' + u.lastName}
-								height={50}
-								width={50}
-							/>
+							<ProfileIcon uid={u.profilePictureId} name={u.firstName + ' ' + u.lastName} height={50} width={50} />
 						</div>
 						<div class="ibs-comment--content">
-							<a href="/leden/{u.ldapId}" class="ibs-comment--content--name"
-								>{u.firstName} {u.lastName}</a
-							>
+							<a href="/leden/{u.ldapId}" class="ibs-comment--content--name">{u.firstName} {u.lastName}</a>
 							<p class="ibs-comment--content--date">
 								{formatDateTimeHumanReadable(comment.updatedAt)}
 							</p>
@@ -264,7 +252,7 @@
 			<img
 				on:click={() =>
 					imagePreview({
-						image: data.photoUrl ?? ''
+						image: data.photoUrl ?? '',
 					})}
 				src={data.photoUrl}
 				alt="Foto {data.photo.id}"

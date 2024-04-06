@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export default z.object({
 	id: z.number().int().optional(),
@@ -14,10 +14,10 @@ export default z.object({
 			price: z
 				.number()
 				.step(0.01, 'Prijs moet een geldig bedrag zijn')
-				.refine((x) => x !== 0, 'Prijs moet een geldig bedrag zijn'),
+				.refine(x => x !== 0, 'Prijs moet een geldig bedrag zijn'),
 			description: z.string(),
-			ledger: z.number().int().min(1, 'Verplicht')
+			ledger: z.number().int().min(1, 'Verplicht'),
 		})
 		.array()
-		.min(1, 'Er moet minimaal 1 regel zijn')
-});
+		.min(1, 'Er moet minimaal 1 regel zijn'),
+})

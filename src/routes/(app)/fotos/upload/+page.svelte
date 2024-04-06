@@ -1,55 +1,55 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
-	import Title from '$lib/components/title.svelte';
-	import { imagePreview } from '$lib/imagePreviewStore';
-	import './style.scss';
-	import type { PageData } from './$types';
-	import { toast } from '$lib/notification';
-	import { string } from 'zod';
+	import { enhance } from '$app/forms'
+	import { page } from '$app/stores'
+	import Title from '$lib/components/title.svelte'
+	import { imagePreview } from '$lib/imagePreviewStore'
+	import './style.scss'
+	import type { PageData } from './$types'
+	import { toast } from '$lib/notification'
+	import { string } from 'zod'
 
-	export let data: PageData;
+	export let data: PageData
 
-	let creator: string = data.user.ldapId;
+	let creator: string = data.user.ldapId
 
-	let input: HTMLInputElement;
-	let previewContainer: HTMLDivElement;
-	let submit: HTMLButtonElement;
+	let input: HTMLInputElement
+	let previewContainer: HTMLDivElement
+	let submit: HTMLButtonElement
 
-	let images: FileList | null;
+	let images: FileList | null
 
 	function onChange() {
-		images = input.files;
+		images = input.files
 	}
 
 	function removeImages() {
-		window.location.reload();
+		window.location.reload()
 	}
 
 	function removeImage(name: string) {
-		if (!images) return;
+		if (!images) return
 
 		if (images && images.length === 1) {
-			input.value = '';
-			images = null;
-			return;
+			input.value = ''
+			images = null
+			return
 		}
 
-		let arr = Array.from(images);
+		let arr = Array.from(images)
 
 		for (const f of arr) {
-			console.log(f, name);
+			console.log(f, name)
 			if (f.name === name) {
-				arr = arr.filter((file) => file.name !== name);
-				break;
+				arr = arr.filter(file => file.name !== name)
+				break
 			}
 		}
-		const dt = new DataTransfer();
+		const dt = new DataTransfer()
 
-		arr.forEach((f) => dt.items.add(f));
+		arr.forEach(f => dt.items.add(f))
 
-		input.files = dt.files;
-		images = dt.files;
+		input.files = dt.files
+		images = dt.files
 	}
 </script>
 
@@ -66,37 +66,28 @@
 	enctype="multipart/form-data"
 	use:enhance={() => {
 		// Disable the button
-		submit.disabled = true;
-		submit.classList.add('btn-disabled');
+		submit.disabled = true
+		submit.classList.add('btn-disabled')
 
 		return ({ result, update }) => {
 			if (result.type === 'failure') {
-				const msg = result.data?.message ?? 'Er is iets misgegaan';
+				const msg = result.data?.message ?? 'Er is iets misgegaan'
 
 				toast({
 					title: 'Fotos uploaden mislukt',
 					// @ts-ignore
 					message: msg,
-					type: 'danger'
-				});
+					type: 'danger',
+				})
 			} else {
-				update();
+				update()
 			}
-		};
+		}
 	}}
 >
 	<div class="buttons">
 		<label class="button btn-info" for="fotos">Selecteer fotos</label>
-		<input
-			bind:this={input}
-			on:change={onChange}
-			accept="image/*"
-			type="file"
-			id="fotos"
-			name="fotos"
-			multiple
-			required
-		/>
+		<input bind:this={input} on:change={onChange} accept="image/*" type="file" id="fotos" name="fotos" multiple required />
 		<button class="btn-danger" type="reset" on:click={removeImages}>Reset</button>
 		<button class="btn-primary" type="submit" bind:this={submit}>Upload</button>
 		{#if submit && submit.disabled}
@@ -117,13 +108,7 @@
 		</select>
 
 		{#if creator === 'other'}
-			<input
-				type="text"
-				id="creator"
-				name="creator-other"
-				placeholder="Voor- en achternaam"
-				required
-			/>
+			<input type="text" id="creator" name="creator-other" placeholder="Voor- en achternaam" required />
 		{/if}
 	</div>
 </form>

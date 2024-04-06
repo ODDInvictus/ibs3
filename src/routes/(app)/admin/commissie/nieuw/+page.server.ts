@@ -1,13 +1,11 @@
-import { newCommitteeForm } from './form';
+import { newCommitteeForm } from './form'
 
-export const load = (async () => {
+export const load = async () => {
+	await newCommitteeForm.transform()
 
-  await newCommitteeForm.transform()
-
-  return {
-    form: newCommitteeForm.attributes
-  }
-
-})
+	return {
+		form: newCommitteeForm.attributes,
+	}
+}
 
 export const actions = newCommitteeForm.actions

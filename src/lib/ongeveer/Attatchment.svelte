@@ -1,14 +1,14 @@
 <script lang="ts">
 	export let previews: {
-		src: string;
-		MIMEtype: string;
-		size: string;
-		name: string;
-	}[] = [];
-	export let toDelete: string[] = [];
-	export let noDelete = false;
+		src: string
+		MIMEtype: string
+		size: string
+		name: string
+	}[] = []
+	export let toDelete: string[] = []
+	export let noDelete = false
 
-	let selected = 0;
+	let selected = 0
 </script>
 
 <div class="preview">
@@ -16,16 +16,14 @@
 		{#each previews as preview, i}
 			<button class="nav-item btn-secondary" class:selected={selected === i} type="button">
 				<span on:click={() => (selected = i)} class="select">
-					{preview.name.match(/^purchase-\d+-.*/)
-						? preview.name.split('-').slice(2).join('-')
-						: preview.name}
+					{preview.name.match(/^purchase-\d+-.*/) ? preview.name.split('-').slice(2).join('-') : preview.name}
 				</span>
 				{#if !noDelete}
 					<span
 						on:click={() => {
-							toDelete = [...toDelete, previews[i].name];
-							previews = previews.filter((_, j) => j !== i);
-							selected = 0;
+							toDelete = [...toDelete, previews[i].name]
+							previews = previews.filter((_, j) => j !== i)
+							selected = 0
 						}}
 					>
 						x
@@ -40,9 +38,7 @@
 	{:else if previews[selected].MIMEtype === 'application/pdf'}
 		<iframe src={previews[selected].src} title={previews[selected].name} />
 	{:else}
-		<a href={previews[selected].src} download={previews[selected].name} class="button download">
-			Download
-		</a>
+		<a href={previews[selected].src} download={previews[selected].name} class="button download"> Download </a>
 	{/if}
 </div>
 

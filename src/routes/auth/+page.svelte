@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { signIn } from '@auth/sveltekit/client';
-	import Logo from '$lib/components/logo-v2-small.svelte';
-	import LogoBig from '$lib/components/logo-v2.svelte';
-	import Login from '~icons/tabler/login.svg';
-	import OAuth from '~icons/tabler/brand-oauth.svg';
-	import Register from '~icons/tabler/bookmark-edit.svg';
-	import { env } from '$env/dynamic/public';
+	import { signIn } from '@auth/sveltekit/client'
+	import Logo from '$lib/components/logo-v2-small.svelte'
+	import LogoBig from '$lib/components/logo-v2.svelte'
+	import Login from '~icons/tabler/login.svg'
+	import OAuth from '~icons/tabler/brand-oauth.svg'
+	import Register from '~icons/tabler/bookmark-edit.svg'
+	import { env } from '$env/dynamic/public'
 
-	let selection = 'login';
+	let selection = 'login'
 </script>
 
 <main>
@@ -18,12 +18,6 @@
 				<LogoBig />
 				<div class="spacer" />
 				<div class="buttons">
-					<button on:click={() => signIn('authentik')}>
-						<i>
-							<OAuth />
-						</i>
-						Login met Authentik
-					</button>
 
 					<button on:click={() => (selection = 'login')}>
 						<i><Login /></i>
@@ -44,10 +38,19 @@
 			<div class="ibs-card">
 				{#if selection === 'login'}
 					<h1>Login</h1>
-					<p>Werkt nog niet; Gebruik Authentik</p>
-					<input name="username" type="text" placeholder="gebruikersnaam" />
-					<input name="password" type="password" placeholder="wachtwoord" />
-					<button>Login</button>
+					<p>Welkom bij Invictus Bier Systeem! </p>
+					<button on:click={() => signIn('authentik')}>
+						<i>
+							<OAuth />
+						</i>
+						Login met Authentik
+					</button>
+					<button on:click={() => window.location.href = "https://www.youtube.com/watch?v=ENXvZ9YRjbo"}>
+						<i>
+							<Login />
+						</i>
+						Backdoor
+					</button>
 				{:else if selection === 'register'}
 					<h1>Registreer</h1>
 					<p>Gebruik de code die je hebt gekregen</p>

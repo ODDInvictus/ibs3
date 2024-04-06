@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageData } from './$types'
 
-	import Title from '$lib/components/title.svelte';
-	import { formatDateHumanReadable } from '$lib/dateUtils';
-	import { toast } from '$lib/notification';
-	import { formatPrice } from '$lib/textUtils';
-	import Decimal from 'decimal.js';
-	import Pagination from '$lib/components/Pagination.svelte';
+	import Title from '$lib/components/title.svelte'
+	import { formatDateHumanReadable } from '$lib/dateUtils'
+	import { toast } from '$lib/notification'
+	import { formatPrice } from '$lib/textUtils'
+	import Decimal from 'decimal.js'
+	import Pagination from '$lib/components/Pagination.svelte'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 <Title title={data.ledger?.name ?? 'Niet gevonden'} />
@@ -36,22 +36,22 @@
 		</table>
 	</div>
 	<div class="right">
-		<a class="button" href="/financieel/ledger/{data.ledger.id}/edit">Bewerken</a>
+		<a class="button" href="/ongeveer/ledger/{data.ledger.id}/edit">Bewerken</a>
 		<button
 			on:click={async () => {
 				const res = await fetch('', {
-					method: 'PATCH'
-				});
+					method: 'PATCH',
+				})
 
 				if (res.ok) {
-					if (data.ledger) data.ledger.isActive = !data.ledger.isActive;
-					else window.location.reload();
+					if (data.ledger) data.ledger.isActive = !data.ledger.isActive
+					else window.location.reload()
 				} else {
 					toast({
 						title: res.statusText,
 						message: 'Er is iets misgegaan bij het uitschakelen van het grootboek.',
-						type: 'danger'
-					});
+						type: 'danger',
+					})
 				}
 			}}>{data.ledger.isActive ? 'Uitschakelen' : 'Inschakelen'}</button
 		>
@@ -59,21 +59,21 @@
 			class="btn-danger"
 			disabled={!data.canDelete}
 			on:click={async () => {
-				const confirmed = confirm('Weet je zeker dat je dit grootboek wilt verwijderen?');
-				if (!confirmed) return;
+				const confirmed = confirm('Weet je zeker dat je dit grootboek wilt verwijderen?')
+				if (!confirmed) return
 
 				const res = await fetch('', {
-					method: 'DELETE'
-				});
+					method: 'DELETE',
+				})
 
 				if (res.ok) {
-					window.location.href = '/ongeveer/ledger';
+					window.location.href = '/ongeveer/ledger'
 				} else {
 					toast({
 						title: res.statusText,
 						message: await res.text(),
-						type: 'danger'
-					});
+						type: 'danger',
+					})
 				}
 			}}>Verwijder</button
 		>

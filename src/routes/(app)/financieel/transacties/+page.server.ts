@@ -1,28 +1,28 @@
-import db from '$lib/server/db';
-import { pagination } from '$lib/utils';
-import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import db from '$lib/server/db'
+import { pagination } from '$lib/utils'
+import { error } from '@sveltejs/kit'
+import type { PageServerLoad } from './$types'
 
 export const load = (async ({ locals, url }) => {
-	const { p, size } = pagination(url);
+	const { p, size } = pagination(url)
 
 	const financialPersonIds = await db.financialPerson.findMany({
 		where: {
 			FinancialPersonDataUser: {
-				userId: locals.user.id
-			}
+				userId: locals.user.id,
+			},
 		},
 		select: {
-			id: true
-		}
-	});
+			id: true,
+		},
+	})
 
 	if (financialPersonIds.length > 1) {
-		throw error(500, 'Meerdere financiële personen gevonden voor user #' + locals.user.id);
+		throw error(500, 'Meerdere financiële personen gevonden voor user #' + locals.user.id)
 	}
 
 	if (financialPersonIds.length === 0) {
-		throw error(500, 'Geen financiële persoon gevonden voor user #' + locals.user.id);
+		throw error(500, 'Geen financiële persoon gevonden voor user #' + locals.user.id)
 	}
 
 	const transactions = await db.saldoTransaction.findMany({
@@ -31,18 +31,18 @@ export const load = (async ({ locals, url }) => {
 				{
 					to: {
 						FinancialPersonDataUser: {
-							userId: locals.user.id
-						}
-					}
+							userId: locals.user.id,
+						},
+					},
 				},
 				{
 					from: {
 						FinancialPersonDataUser: {
-							userId: locals.user.id
-						}
-					}
-				}
-			]
+							userId: locals.user.id,
+						},
+					},
+				},
+			],
 		},
 		include: {
 			Transaction: {
@@ -52,37 +52,37 @@ export const load = (async ({ locals, url }) => {
 						select: {
 							Journal: {
 								select: {
-									streeplijstId: true
-								}
-							}
-						}
-					}
-				}
+									streeplijstId: true,
+								},
+							},
+						},
+					},
+				},
 			},
 			from: {
 				select: {
-					id: true
-				}
+					id: true,
+				},
 			},
 			to: {
 				select: {
-					id: true
-				}
-			}
+					id: true,
+				},
+			},
 		},
 		orderBy: {
 			Transaction: {
-				createdAt: 'desc'
-			}
+				createdAt: 'desc',
+			},
 		},
 		take: size,
-		skip: p * size
-	});
+		skip: p * size,
+	})
 
 	return {
 		transactions: JSON.parse(JSON.stringify(transactions)) as typeof transactions,
 		p,
 		size,
-		financialPersonId: financialPersonIds[0].id
-	};
-}) satisfies PageServerLoad;
+		financialPersonId: financialPersonIds[0].id,
+	}
+}) satisfies PageServerLoad

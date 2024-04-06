@@ -1,18 +1,18 @@
 <script lang="ts">
-	import { confirmStore } from '$lib/confirm';
+	import { confirmStore } from '$lib/confirm'
 
 	$: {
-		const c = $confirmStore;
+		const c = $confirmStore
 		if (c && c.title !== '' && c.message !== '') {
-			const dialog = document.querySelector('#confirm-dialog') as HTMLDialogElement;
-			dialog?.showModal();
+			const dialog = document.querySelector('#confirm-dialog') as HTMLDialogElement
+			dialog?.showModal()
 		}
 	}
 
 	async function action(confirm: boolean) {
-		const dialog = document.querySelector('#confirm-dialog') as HTMLDialogElement;
-		await $confirmStore.cb(confirm);
-		dialog?.close();
+		const dialog = document.querySelector('#confirm-dialog') as HTMLDialogElement
+		await $confirmStore.cb(confirm)
+		dialog?.close()
 	}
 </script>
 

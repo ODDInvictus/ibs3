@@ -17,7 +17,7 @@ npm run build
 
 echo
 echo Docker container genereren
-docker build -t ghcr.io/oddinvictus/ibs3:$1 -f new.Dockerfile .
+docker build -t ghcr.io/oddinvictus/ibs3:$1 .
 
 if [ -z ${2+x} ];
 then

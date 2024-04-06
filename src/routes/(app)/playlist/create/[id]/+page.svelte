@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import Tracklist from '../../Tracklist.svelte';
-	import Title from '$lib/components/title.svelte';
+	import type { PageData } from './$types'
+	import Tracklist from '../../Tracklist.svelte'
+	import Title from '$lib/components/title.svelte'
 
-	export let data: PageData;
+	export let data: PageData
 </script>
 
 {#if !data.playlistUser}
@@ -18,11 +18,11 @@
 		<Tracklist tracks={data.tracks} liked={data.liked} playlist={data.playlist} />
 		<div class="pagination">
 			{#if data.page > 1}
-				<a href={`/playlist/create/${data.user.id}?p=${data.page - 1}`}>{data.page - 1}</a>
+				<a href={`/playlist/create/${data.playlistUser.id}?p=${data.page - 1}`}>{data.page - 1}</a>
 			{/if}
 			<p>{data.page}</p>
 			{#if data.page < data.maxPage}
-				<a href={`/playlist/create/${data.user.id}?p=${data.page + 1}`}>{data.page + 1}</a>
+				<a href={`/playlist/create/${data.playlistUser.id}?p=${data.page + 1}`}>{data.page + 1}</a>
 			{/if}
 		</div>
 	{/if}

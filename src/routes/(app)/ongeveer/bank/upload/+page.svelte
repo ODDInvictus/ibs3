@@ -1,57 +1,57 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { toast } from '$lib/notification';
+	import { enhance } from '$app/forms'
+	import { toast } from '$lib/notification'
 
-	let files: FileList | undefined;
-	let keys: string[] = [];
-	let transactions: string[][] = [];
+	let files: FileList | undefined
+	let keys: string[] = []
+	let transactions: string[][] = []
 
 	const handleNewFile = async () => {
 		if (!files || files.length === 0) {
-			keys = [];
-			transactions = [];
-			return;
+			keys = []
+			transactions = []
+			return
 		}
-		const file = files[0];
-		const json = csvToJSON(await file.text());
-		keys = json.shift() ?? [];
-		transactions = json;
-	};
+		const file = files[0]
+		const json = csvToJSON(await file.text())
+		keys = json.shift() ?? []
+		transactions = json
+	}
 
 	const csvToJSON = (csv: string) => {
-		const data = csv.split('\n');
-		const keys = data.shift()?.split(',') ?? [];
-		const transactions: string[][] = [];
+		const data = csv.split('\n')
+		const keys = data.shift()?.split(',') ?? []
+		const transactions: string[][] = []
 		for (const row of data) {
-			transactions.push(row.split(','));
+			transactions.push(row.split(','))
 		}
-		return [keys, ...transactions];
-	};
+		return [keys, ...transactions]
+	}
 </script>
 
 <form
 	method="POST"
 	use:enhance={() => {
-		const confirmed = confirm('Weet je zeker dat je deze transacties wilt opslaan?');
-		if (!confirmed) return;
+		const confirmed = confirm('Weet je zeker dat je deze transacties wilt opslaan?')
+		if (!confirmed) return
 
 		return ({ result }) => {
 			if (result.type === 'success') {
 				toast({
 					title: 'Gelukt!',
 					message: 'Bank transacties succesvol opgeslagen',
-					type: 'success'
-				});
-				files = undefined;
-				handleNewFile();
+					type: 'success',
+				})
+				files = undefined
+				handleNewFile()
 			} else {
 				toast({
 					title: result.status?.toString() || 'Error',
 					message: 'Er is iets misgegaan',
-					type: 'danger'
-				});
+					type: 'danger',
+				})
 			}
-		};
+		}
 	}}
 	enctype="multipart/form-data"
 >

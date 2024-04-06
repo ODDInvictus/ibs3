@@ -1,94 +1,86 @@
 <script lang="ts">
-	import Title from '$lib/components/title.svelte';
-	import UserList from '../UserList.svelte';
-	import { env } from '$env/dynamic/public';
-	import { browser } from '$app/environment';
-	import Play from '~icons/tabler/playerPlayFilled';
-	import Pause from '~icons/tabler/playerPauseFilled';
-	import BrandSpotify from '~icons/tabler/brandSpotify';
-	import BrandWhatsapp from '~icons/tabler/brandWhatsapp';
-	import Like from '~icons/tabler/thumbUp';
-	import LikeFilled from '~icons/tabler/thumbUpFilled';
-	import Dislike from '~icons/tabler/thumbDown';
-	import DislikeFilled from '~icons/tabler/thumbDownFilled';
-	import { toast } from '$lib/notification';
+	import Title from '$lib/components/title.svelte'
+	import UserList from '../UserList.svelte'
+	import { env } from '$env/dynamic/public'
+	import { browser } from '$app/environment'
+	import Play from '~icons/tabler/playerPlayFilled'
+	import Pause from '~icons/tabler/playerPauseFilled'
+	import BrandSpotify from '~icons/tabler/brandSpotify'
+	import BrandWhatsapp from '~icons/tabler/brandWhatsapp'
+	import Like from '~icons/tabler/thumbUp'
+	import LikeFilled from '~icons/tabler/thumbUpFilled'
+	import Dislike from '~icons/tabler/thumbDown'
+	import DislikeFilled from '~icons/tabler/thumbDownFilled'
+	import { toast } from '$lib/notification'
 
-	const MIN_LIKES = Number.isNaN(Number(env.PUBLIC_MIN_LIKES)) ? 4 : Number(env.PUBLIC_MIN_LIKES);
+	const MIN_LIKES = Number.isNaN(Number(env.PUBLIC_MIN_LIKES)) ? 4 : Number(env.PUBLIC_MIN_LIKES)
 
-	export let data;
+	export let data
 
-	let likes = data.reactions?.likes?.filter((r) => r.liked)?.map((r) => r.user) ?? [];
-	let dislikes = data.reactions?.likes?.filter((r) => !r.liked)?.map((r) => r.user) ?? [];
+	let likes = data.reactions?.likes?.filter(r => r.liked)?.map(r => r.user) ?? []
+	let dislikes = data.reactions?.likes?.filter(r => !r.liked)?.map(r => r.user) ?? []
 
 	const getSmallestImageAbove110px = (images: SpotifyApi.ImageObject[]) => {
 		return images.reduce((smallest, image) => {
-			if (
-				image.height! < smallest.height! &&
-				image.width! < smallest.width! &&
-				image.height! >= 110 &&
-				image.width! >= 110
-			)
-				return image;
-			return smallest;
-		}, images[0]);
-	};
+			if (image.height! < smallest.height! && image.width! < smallest.width! && image.height! >= 110 && image.width! >= 110) return image
+			return smallest
+		}, images[0])
+	}
 
 	const getDaysSince = (date: Date) => {
-		const diff = Math.floor((new Date().getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-		return diff === 1 ? `${diff} dag` : `${diff} dagen`;
-	};
+		const diff = Math.floor((new Date().getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
+		return diff === 1 ? `${diff} dag` : `${diff} dagen`
+	}
 
 	const generateWhatsappUrl = () => {
-		if (!browser || !data.track) return '';
+		if (!browser || !data.track) return ''
 
 		return `https://api.whatsapp.com/send?text=${encodeURIComponent(
 			`Wat vind je van ${data.track.body.name} van ${data.track.body.artists
-				.map((a) => a.name)
-				.join(' en ')} voor in de Invictus playlist?\n\n${window.location.href}`
-		)}`;
-	};
+				.map(a => a.name)
+				.join(' en ')} voor in de Invictus playlist?\n\n${window.location.href}`,
+		)}`
+	}
 
 	const react = async (liked: boolean) => {
-		if (!data.track) return;
+		if (!data.track) return
 
 		if (liked) {
-			if (likes.find((l) => l.id === data.user.id)) return;
-			dislikes = dislikes.filter((d) => d.id !== data.user.id);
-			likes = [...likes, data.user];
+			if (likes.find(l => l.id === data.user.id)) return
+			dislikes = dislikes.filter(d => d.id !== data.user.id)
+			likes = [...likes, data.user]
 
 			if (likes.length === MIN_LIKES) {
 				toast({
 					title: 'Nieuw hitje',
-					message: `${data.track.body.name} van ${data.track.body.artists
-						.map((a) => a.name)
-						.join(' en ')} is toegevoegd aan de playlist!}`,
-					type: 'success'
-				});
+					message: `${data.track.body.name} van ${data.track.body.artists.map(a => a.name).join(' en ')} is toegevoegd aan de playlist!}`,
+					type: 'success',
+				})
 
-				data.reactions!.inPlaylist = true;
-				data.reactions!.updatedAt = new Date();
+				data.reactions!.inPlaylist = true
+				data.reactions!.updatedAt = new Date()
 			}
 		} else {
-			if (dislikes.find((d) => d.id === data.user.id)) return;
-			likes = likes.filter((l) => l.id !== data.user.id);
-			dislikes = [...dislikes, data.user];
+			if (dislikes.find(d => d.id === data.user.id)) return
+			likes = likes.filter(l => l.id !== data.user.id)
+			dislikes = [...dislikes, data.user]
 		}
 
 		await fetch(`/playlist`, {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
 				liked,
 				trackId: data.track.body.id,
-				trackUri: data.track.body.uri
-			})
-		});
-	};
+				trackUri: data.track.body.uri,
+			}),
+		})
+	}
 
-	let player: HTMLAudioElement;
-	let isPaused = true;
+	let player: HTMLAudioElement
+	let isPaused = true
 </script>
 
 {#if data.error}
@@ -123,8 +115,8 @@
 					{#if isPaused}
 						<button
 							on:click={() => {
-								isPaused = false;
-								player.play();
+								isPaused = false
+								player.play()
 							}}
 						>
 							<Play color="#551b8a" height="2rem" width="2rem" />
@@ -132,8 +124,8 @@
 					{:else}
 						<button
 							on:click={() => {
-								isPaused = true;
-								player.pause();
+								isPaused = true
+								player.pause()
 							}}
 						>
 							<Pause color="#551b8a" height="2rem" width="2rem" />
@@ -146,7 +138,7 @@
 		</div>
 		<div class="links">
 			<button on:click={async () => await react(true)} class="link">
-				{#if likes.find((l) => l.id === data.user.id)}
+				{#if likes.find(l => l.id === data.user.id)}
 					<LikeFilled color="white" />
 				{:else}
 					<Like color="white" />
@@ -154,19 +146,14 @@
 				<p>{likes.length}</p>
 			</button>
 			<button on:click={async () => await react(false)} class="link">
-				{#if dislikes.find((d) => d.id === data.user.id)}
+				{#if dislikes.find(d => d.id === data.user.id)}
 					<DislikeFilled color="white" />
 				{:else}
 					<Dislike color="white" />
 				{/if}
 				<p>{dislikes.length}</p>
 			</button>
-			<a
-				href={data.track.body.external_urls.spotify}
-				target="_blank"
-				rel="noopener noreferrer"
-				class="link"
-			>
+			<a href={data.track.body.external_urls.spotify} target="_blank" rel="noopener noreferrer" class="link">
 				<BrandSpotify color="white" />
 				<p>Open</p>
 			</a>

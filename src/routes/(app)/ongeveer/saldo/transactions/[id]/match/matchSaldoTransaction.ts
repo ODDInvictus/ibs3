@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const matchSaldoTransaction = z.object({
 	rows: z.array(
@@ -7,8 +7,8 @@ export const matchSaldoTransaction = z.object({
 			amount: z
 				.number()
 				.step(0.01)
-				.refine((x) => x != 0),
-			journal: z.number().int()
-		})
-	)
-});
+				.refine(x => x != 0),
+			journal: z.number().int(),
+		}),
+	),
+})

@@ -1,32 +1,31 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import Edit from '~icons/tabler/edit';
-	import CircleX from '~icons/tabler/circle-x';
-	import InfoCircle from '~icons/tabler/info-circle';
-	import Send from '~icons/tabler/send';
-	import { toast } from '$lib/notification';
-	import { confirm } from '$lib/confirm';
-	import { goto } from '$app/navigation';
-	import MailPlus from '~icons/tabler/mail-plus';
-	import Title from '$lib/components/title.svelte';
+	import { page } from '$app/stores'
+	import Edit from '~icons/tabler/edit'
+	import CircleX from '~icons/tabler/circle-x'
+	import InfoCircle from '~icons/tabler/info-circle'
+	import Send from '~icons/tabler/send'
+	import { toast } from '$lib/notification'
+	import { confirm } from '$lib/confirm'
+	import { goto } from '$app/navigation'
+	import MailPlus from '~icons/tabler/mail-plus'
+	import Title from '$lib/components/title.svelte'
 
-	const domain = $page.data.domain;
+	const domain = $page.data.domain
 
 	function info() {
 		toast({
 			title: 'Niks aan te doen',
-			message:
-				'Deze worden automatisch aangemaakt voor commissies. Deze aliassen zijn niet te verwijderen.',
-			type: 'info'
-		});
+			message: 'Deze worden automatisch aangemaakt voor commissies. Deze aliassen zijn niet te verwijderen.',
+			type: 'info',
+		})
 	}
 
 	function userInfo() {
 		toast({
 			title: 'Niks aan te doen',
 			message: 'Dit zijn de email adressen van de leden. Deze zijn niet te verwijderen.',
-			type: 'info'
-		});
+			type: 'info',
+		})
 	}
 
 	function deleteAlias(id: number) {
@@ -36,44 +35,41 @@
 			cb: async (success: boolean) => {
 				if (success) {
 					await fetch(location.pathname + '?id=' + id, {
-						method: 'DELETE'
-					}).then(async (res) => {
-						const obj = await res.json();
+						method: 'DELETE',
+					}).then(async res => {
+						const obj = await res.json()
 						if (res.ok) {
 							toast({
 								title: 'Gelukt!',
 								message: obj.message,
-								type: 'success'
-							});
-							location.reload();
+								type: 'success',
+							})
+							location.reload()
 						} else {
 							toast({
 								title: 'Oei!',
 								message: obj.message,
-								type: 'danger'
-							});
+								type: 'danger',
+							})
 						}
-					});
+					})
 				}
-			}
-		});
+			},
+		})
 	}
 
 	function editAlias(id: number) {
-		goto('/admin/email/alias/' + id);
+		goto('/admin/email/alias/' + id)
 	}
 
 	function sendMail(alias: string) {
-		goto('/admin/email/stuur/' + alias);
+		goto('/admin/email/stuur/' + alias)
 	}
 </script>
 
 <Title title="Email aliassen" />
 
-<p>
-	Welkom op de alias pagina! Alle acties die hier ondernomen worden worden binnen 24 uur verwerkt
-	door de backend.
-</p>
+<p>Welkom op de alias pagina! Alle acties die hier ondernomen worden worden binnen 24 uur verwerkt door de backend.</p>
 
 <div class="table-wrapper">
 	<table class="small">

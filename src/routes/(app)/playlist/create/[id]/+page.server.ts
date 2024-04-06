@@ -1,50 +1,49 @@
-import db from '$lib/server/db';
-import spotify, { refreshToken } from '$lib/server/spotify';
-import { error, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import db from '$lib/server/db'
+import spotify, { refreshToken } from '$lib/server/spotify'
+import { error, redirect } from '@sveltejs/kit'
+import type { PageServerLoad } from './$types'
 
 export const load = (async ({ params, url, locals }) => {
-	const uid = Number(params.id);
-	if (Number.isNaN(uid)) throw redirect(300, '/playlist');
+	const uid = Number(params.id)
+	if (Number.isNaN(uid)) throw redirect(300, '/playlist')
 
-	let page = Number(new URLSearchParams(url.search).get('p'));
-	if (Number.isNaN(page) || page < 1) page = 1;
+	let page = Number(new URLSearchParams(url.search).get('p'))
+	if (Number.isNaN(page) || page < 1) page = 1
 
-	const PAGE_SIZE = 25;
+	const PAGE_SIZE = 25
 
 	const trackCountReq = db.trackReaction.count({
 		where: {
 			liked: true,
-			userId: uid
-		}
-	});
+			userId: uid,
+		},
+	})
 
 	const tracksReq = db.trackReaction.findMany({
 		where: {
 			liked: true,
-			userId: uid
+			userId: uid,
 		},
 		skip: PAGE_SIZE * (page - 1),
-		take: PAGE_SIZE
-	});
+		take: PAGE_SIZE,
+	})
 
-	const [tracks, trackCount] = await Promise.all([tracksReq, trackCountReq]);
+	const [tracks, trackCount] = await Promise.all([tracksReq, trackCountReq])
 
-	if (tracks.length === 0 && page > 1)
-		throw redirect(300, `/playlist/create/${uid}?p=${Math.floor(trackCount / PAGE_SIZE) + 1}`);
+	if (tracks.length === 0 && page > 1) throw redirect(300, `/playlist/create/${uid}?p=${Math.floor(trackCount / PAGE_SIZE) + 1}`)
 
-	let res: SpotifyApi.TrackObjectFull[] = [];
+	let res: SpotifyApi.TrackObjectFull[] = []
 	if (tracks.length > 0) {
-		const trackIds = tracks.map((track) => track.trackId);
+		const trackIds = tracks.map(track => track.trackId)
 		try {
-			res = (await spotify.getTracks(trackIds)).body.tracks;
+			res = (await spotify.getTracks(trackIds)).body.tracks
 		} catch (e) {
-			await refreshToken();
+			await refreshToken()
 			try {
-				res = (await spotify.getTracks(trackIds)).body.tracks;
+				res = (await spotify.getTracks(trackIds)).body.tracks
 			} catch (e) {
-				console.error(e);
-				throw error(500, 'Failed to get tracks from Spotify');
+				console.error(e)
+				throw error(500, 'Failed to get tracks from Spotify')
 			}
 		}
 	}
@@ -53,35 +52,36 @@ export const load = (async ({ params, url, locals }) => {
 		tracks: res,
 		playlistUser: db.user.findUnique({
 			where: {
-				id: uid
+				id: uid,
 			},
 			select: {
 				firstName: true,
-				nickname: true
-			}
+				nickname: true,
+				id: true,
+			},
 		}),
 		liked: (
 			await db.trackReaction.findMany({
 				where: {
 					userId: locals.user.id,
-					liked: true
+					liked: true,
 				},
 				select: {
-					trackId: true
-				}
+					trackId: true,
+				},
 			})
-		).map((reaction) => reaction.trackId),
+		).map(reaction => reaction.trackId),
 		playlist: (
 			await db.track.findMany({
 				where: {
-					inPlaylist: true
+					inPlaylist: true,
 				},
 				select: {
-					id: true
-				}
+					id: true,
+				},
 			})
-		).map((track) => track.id),
+		).map(track => track.id),
 		page,
-		maxPage: Math.floor(trackCount / PAGE_SIZE) - 1
-	};
-}) satisfies PageServerLoad;
+		maxPage: Math.floor(trackCount / PAGE_SIZE) - 1,
+	}
+}) satisfies PageServerLoad

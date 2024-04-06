@@ -1,13 +1,13 @@
 import { writable } from 'svelte/store'
 
 type ImagePreview = {
-  image: string
+	image: string
 }
 
 export const imagePreviewStore = writable<ImagePreview>({
-  image: ''
+	image: '',
 })
 
 export function imagePreview(i: ImagePreview) {
-  imagePreviewStore.set(i)
+	imagePreviewStore.set(i)
 }
