@@ -29,6 +29,22 @@ export const getUser = async (session: Session | null): Promise<User | null> => 
 	return user
 }
 
+export const getUserTest = async (userId: number): Promise<User> => {
+	const user = await prisma.user.findFirst({
+		where: {
+			id: userId,
+		},
+	})
+
+	if (user) {
+		cache.set(user.email, user)
+	} else {
+		throw new Error('User not found')
+	}
+
+	return user
+}
+
 export const invalidateUser = (email: string) => {
 	cache.del(email)
 }
