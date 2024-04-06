@@ -6,6 +6,7 @@ node_modules
 .env
 .env.*
 !.env.example
+!.env.test
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 static/upload/
@@ -144,3 +145,7 @@ dist
 .pnp.*
 
 upload
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

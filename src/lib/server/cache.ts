@@ -1,8 +1,9 @@
 import Redis from 'ioredis'
+import { env } from '$env/dynamic/private'
 
 const redis = new Redis({
-	port: 6379,
-	host: process.env.REDIS_HOST ?? 'localhost',
+	port: Number(env.REDIS_PORT ?? 6379),
+	host: env.REDIS_HOST ?? 'localhost',
 	maxRetriesPerRequest: 3,
 	lazyConnect: true,
 	retryStrategy: times => {
