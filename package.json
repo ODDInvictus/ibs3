@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev:backend": "nodemon --watch backend -e ts --exec \"ts-node-esm ./backend/index.ts\"",
+    "dev:backend": "nodemon --watch backend -e ts --exec \"ts-node ./backend/index.ts\"",
     "dev:frontend": "vite dev --host 0.0.0.0",
     "dev:email-templates": "npx sass --watch ./emails/scss/style-test.sass ./build/css/style-test.css",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
