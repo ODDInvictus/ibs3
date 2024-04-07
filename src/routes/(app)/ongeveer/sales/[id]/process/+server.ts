@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types'
 
 export const GET: RequestHandler = async ({ params }) => {
 	const id = Number(params.id)
-	if (isNaN(id)) throw error(400, 'Ongeldige ID')
+	if (isNaN(id)) error(400, 'Ongeldige ID')
 
 	// Update the journal date to the current date
 	const journal = await db.journal.update({
@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ params }) => {
 		data: { date: new Date() },
 	})
 
-	if (!journal) throw error(404, `Grootboek #${id} niet gevonden`)
+	if (!journal) error(404, `Grootboek #${id} niet gevonden`)
 
-	throw redirect(301, `/ongeveer/sales/${id}`)
+	redirect(301, `/ongeveer/sales/${id}`)
 }

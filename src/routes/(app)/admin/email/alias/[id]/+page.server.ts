@@ -30,7 +30,7 @@ export const load = (async ({ params }) => {
 		},
 	})
 
-	if (!alias) throw error(404, 'Alias niet gevonden')
+	if (!alias) error(404, 'Alias niet gevonden')
 
 	let type = ''
 	let users: { id: number; firstName: string; lastName: string; email: string }[] = []

@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit'
 import Decimal from 'decimal.js'
 
 export const getJournal = async (id: number) => {
-	if (Number.isNaN(id)) throw error(400)
+	if (Number.isNaN(id)) error(400)
 
 	const journal = await db.journal.findUnique({
 		where: { id },
@@ -38,7 +38,7 @@ export const getJournal = async (id: number) => {
 		},
 	})
 
-	if (!journal) throw error(404)
+	if (!journal) error(404)
 
 	const total = journal.Rows.reduce((acc, row) => acc.add(row.price.mul(row.amount)), new Decimal(0))
 	const paid = journal.TransactionMatchRow.reduce((acc, row) => acc.add(row.amount), new Decimal(0))

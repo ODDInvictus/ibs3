@@ -28,7 +28,7 @@ export const load = (async event => {
 				DeclarationData: true,
 			},
 		})
-		if (!purchase) throw error(404)
+		if (!purchase) error(404)
 		if (purchase.type === 'SALE')
 			throw redirect(
 				`/ongeveer/sales/${purchase.id}`,
@@ -55,13 +55,13 @@ export const load = (async event => {
 					description: row.description,
 					ledger: row.ledgerId,
 				})),
-		  }
+			}
 		: {
 				rows: [{ amount: 1, price: 0, description: '', ledger: 0 }],
 				termsOfPayment: 30,
 				type: (type ?? 'PURCHASE') as PurchaseType,
 				date: new Date(),
-		  }
+			}
 
 	const form = await superValidate(data, schema)
 
@@ -106,7 +106,7 @@ export const actions: Actions = {
 		const formData = await request.formData()
 		const form = await superValidate(formData, schema)
 
-		if (!authorization(locals.roles)) throw error(403)
+		if (!authorization(locals.roles)) error(403)
 		if (!form.valid) return fail(400, { form })
 
 		const attachments = formData.getAll('attachments') as File[]
@@ -117,11 +117,11 @@ export const actions: Actions = {
 
 		if (id) {
 			const status = await getJournalStatus(id)
-			if (!status) throw error(404)
+			if (!status) error(404)
 
 			// TODO make if posible to change irrelevant fields
 			if (status === 'PAID')
-				throw error(409, {
+				error(409, {
 					message: 'Deze factuur is al gematched, unmatch de transactie voordat je de aankoop kan wijzigen',
 				})
 		}
@@ -203,7 +203,7 @@ export const actions: Actions = {
 			}
 		} catch (e) {
 			console.error(e)
-			throw error(500)
+			error(500)
 		}
 
 		// Write files to disk
@@ -218,7 +218,7 @@ export const actions: Actions = {
 			}
 		} catch (e) {
 			console.error(e)
-			throw error(500)
+			error(500)
 		}
 
 		// Delete files from disk
@@ -229,7 +229,7 @@ export const actions: Actions = {
 				fs.unlinkSync(`${privateEnv.UPLOAD_FOLDER}/purchases/${file}`)
 			} catch (e) {
 				console.error(e)
-				throw error(500)
+				error(500)
 			}
 		}
 

@@ -99,8 +99,7 @@ export const DELETE = (async ({ request, locals }) => {
 
 export const POST = (async ({ request, locals }) => {
 	const [authorized, committees] = authAdmin(locals)
-	if (!authorized)
-		throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
+	if (!authorized) error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
 
 	const body = await request.json()
 
@@ -142,8 +141,7 @@ export const POST = (async ({ request, locals }) => {
 
 export const PUT = (async ({ request, locals }) => {
 	const [authorized, committees] = authAdmin(locals)
-	if (!authorized)
-		throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
+	if (!authorized) error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
 
 	const body = await request.json()
 

@@ -14,8 +14,8 @@ export const load = (async ({ url }) => {
 				Rows: true,
 			},
 		})
-		if (!invoice) throw error(404)
-		if (invoice.date) throw redirect(300, `/ongeveer/sales/${invoice.id}`)
+		if (!invoice) error(404)
+		if (invoice.date) redirect(300, `/ongeveer/sales/${invoice.id}`)
 
 		await createInvoiceForm.transform({
 			values: {

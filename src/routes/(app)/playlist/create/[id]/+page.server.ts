@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types'
 
 export const load = (async ({ params, url, locals }) => {
 	const uid = Number(params.id)
-	if (Number.isNaN(uid)) throw redirect(300, '/playlist')
+	if (Number.isNaN(uid)) redirect(300, '/playlist')
 
 	let page = Number(new URLSearchParams(url.search).get('p'))
 	if (Number.isNaN(page) || page < 1) page = 1
@@ -30,7 +30,7 @@ export const load = (async ({ params, url, locals }) => {
 
 	const [tracks, trackCount] = await Promise.all([tracksReq, trackCountReq])
 
-	if (tracks.length === 0 && page > 1) throw redirect(300, `/playlist/create/${uid}?p=${Math.floor(trackCount / PAGE_SIZE) + 1}`)
+	if (tracks.length === 0 && page > 1) redirect(300, `/playlist/create/${uid}?p=${Math.floor(trackCount / PAGE_SIZE) + 1}`)
 
 	let res: SpotifyApi.TrackObjectFull[] = []
 	if (tracks.length > 0) {
@@ -43,7 +43,7 @@ export const load = (async ({ params, url, locals }) => {
 				res = (await spotify.getTracks(trackIds)).body.tracks
 			} catch (e) {
 				console.error(e)
-				throw error(500, 'Failed to get tracks from Spotify')
+				error(500, 'Failed to get tracks from Spotify')
 			}
 		}
 	}

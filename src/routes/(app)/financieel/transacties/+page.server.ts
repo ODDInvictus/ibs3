@@ -18,11 +18,11 @@ export const load = (async ({ locals, url }) => {
 	})
 
 	if (financialPersonIds.length > 1) {
-		throw error(500, 'Meerdere financiële personen gevonden voor user #' + locals.user.id)
+		error(500, 'Meerdere financiële personen gevonden voor user #' + locals.user.id)
 	}
 
 	if (financialPersonIds.length === 0) {
-		throw error(500, 'Geen financiële persoon gevonden voor user #' + locals.user.id)
+		error(500, 'Geen financiële persoon gevonden voor user #' + locals.user.id)
 	}
 
 	const transactions = await db.saldoTransaction.findMany({

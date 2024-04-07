@@ -5,8 +5,7 @@ import { z } from 'zod'
 
 export const POST = (async ({ request, locals }) => {
 	const [authorized, committees] = authAdmin(locals)
-	if (!authorized)
-		throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
+	if (!authorized) error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
 
 	const jsonBody = await request.json()
 

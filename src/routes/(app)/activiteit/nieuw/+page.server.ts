@@ -133,8 +133,7 @@ export const actions = {
 	default: async event => {
 		// do authorisation
 		const [authorized, committees] = authUser(event.locals)
-		if (!authorized)
-			throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
+		if (!authorized) error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
 
 		const data = Object.fromEntries(await event.request.formData())
 
@@ -339,7 +338,7 @@ export const actions = {
 		}
 
 		if (id !== 0) {
-			throw redirect(303, `/activiteit/${id}`)
+			redirect(303, `/activiteit/${id}`)
 		}
 	},
 }

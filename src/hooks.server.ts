@@ -48,7 +48,7 @@ const authorization = (async ({ event, resolve }) => {
 		// If the path is something other than /auth, check if the user is logged in
 
 		if (!user) {
-			throw redirect(303, '/auth')
+			redirect(303, '/auth')
 		}
 	}
 
@@ -77,7 +77,7 @@ export const handle: Handle = sequence(
 		callbacks: {
 			async redirect({ url, baseUrl }) {
 				if (url.startsWith('/auth')) {
-					throw redirect(303, '/')
+					redirect(303, '/')
 				}
 
 				return baseUrl

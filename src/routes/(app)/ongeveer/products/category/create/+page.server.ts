@@ -15,7 +15,7 @@ export const load = (async ({ url }) => {
 				id,
 			},
 		})
-		if (!category) throw error(404)
+		if (!category) error(404)
 		data = category
 	}
 

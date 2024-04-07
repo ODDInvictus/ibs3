@@ -34,7 +34,7 @@ export const actions = {
 				},
 			})
 
-			if (!personData) throw error(500, 'Gebruiker heeft geen financiële gegevens')
+			if (!personData) error(500, 'Gebruiker heeft geen financiële gegevens')
 
 			await db.$transaction(async tx => {
 				const description = `Declaratie: ${product}`

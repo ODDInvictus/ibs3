@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types'
 
 export const load = (async ({ params, locals }) => {
 	const id = Number(params.id)
-	if (Number.isNaN(id)) throw error(400, 'Invalid ID')
+	if (Number.isNaN(id)) error(400, 'Invalid ID')
 
 	const tallySheet = await db.streeplijst.findUnique({
 		where: { id },
@@ -28,7 +28,7 @@ export const load = (async ({ params, locals }) => {
 		},
 	})
 
-	if (!tallySheet) throw error(404, 'Tally sheet not found')
+	if (!tallySheet) error(404, 'Tally sheet not found')
 
 	return { tallySheet: JSON.parse(JSON.stringify(tallySheet)) as typeof tallySheet }
 }) satisfies PageServerLoad

@@ -7,8 +7,7 @@ export const DELETE = (async ({ url, locals }) => {
 	// Then delete the alias
 	// Then redirect to the alias page
 	const [authorized, committees] = authAdmin(locals)
-	if (!authorized)
-		throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
+	if (!authorized) error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
 
 	const id = Number(url.searchParams.get('id'))
 

@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ request, params }) => {
 
 	const slug = activitySlug(activity.name)
 
-	throw redirect(301, `/activiteit/${slug}/${id}`)
+	redirect(301, `/activiteit/${slug}/${id}`)
 }
 
 export const POST: RequestHandler = async ({ request, locals }) => {

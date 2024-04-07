@@ -144,7 +144,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-upload
+/upload
 /test-results/
 /playwright-report/
 /blob-report/
