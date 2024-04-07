@@ -19,6 +19,11 @@ export default redis
 type RedisJobKeys = 'photo-processing' | 'new-activity' | 'unknown'
 
 export const createRedisJob = async (key: RedisJobKeys, data?: string) => {
+	if (env.DISABLE_REDIS === 'true') {
+		console.log('[REDIS] Redis is disabled, jobs will not be processed')
+		return
+	}
+
 	console.log('[REDIS] Creating job of type', key)
 	await redis.publish(
 		key,

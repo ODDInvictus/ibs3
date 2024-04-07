@@ -28,18 +28,36 @@ Daarna kan je de development server starten met `npm run dev`
 
 ## Database
 
-IBS3 gebruikt 2 databases, MariaDB en Redis.
+IBS3 gebruikt 3 databases, MariaDB, MongoDB en Redis.
 
 ### MariaDB
 
 Om MariaDB lokaal te draaien moet je even een kopie van de productie database maken, en dan kan je aan de slag.
 Er is ook een gehoste development database, vraag Niels hierna.
 
+
+### Redis en mongo
+
+Redis en mongo zijn niet verplicht, je kan ze uitschakelen met de volgende environment variables:
+```
+DISABLE_MONGO=true
+DISABLE_REDIS=true
+```
+
 Redis is makkelijk lokaal te draaien in docker.
 
 ```console
 docker run -d -p 6379:6379 --name redis redis
 ```
+
+Zelfde geldt voor Mongo
+
+```console
+docker run -d -p 27017:27017 --name mongo mongo
+```
+
+
+
 
 ## Tasks
 
@@ -83,3 +101,5 @@ Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab
 | PUBLIC_SPOTIFY_CLIENT_ID     | Client id voor spotify                                                                | ...                                                   |
 | SPOTIFY_CLIENT_SECRET        | Client secret voor spotify                                                            | ...                                                   |
 | PUBLIC_SPOITFY_REDIRECT_URI  | Redirect uri voor spotify, alles van spotify is alleen nodig voor de playlist feature | http://localhost:5173/playlist/callback               |
+| DISABLE_REDIS                | Schakel redis uit, jobs en cache werkt niet meer                                      | true                                                  |
+| DISABLE_MONGO                | Schakel mongodb uit, bestanden uploaden en fotos werken niet meer                     | true                                                  |

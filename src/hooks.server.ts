@@ -102,6 +102,10 @@ export const handleError = (async ({ error, event }) => {
 await (async () => {
 	Decimal.set({ precision: 4 })
 
-	await Mongo.connect()
-	console.log('You successfully connected to MongoDB!')
+	if (env.DISABLE_MONGO === 'true') {
+		console.log('MongoDB is not connected.')
+	} else {
+		await Mongo.connect()
+		console.log('You successfully connected to MongoDB!')
+	}
 })()

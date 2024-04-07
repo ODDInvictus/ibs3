@@ -47,10 +47,15 @@ app.post('/email/send', async (req, res) => {
 app.listen(port, async () => {
 	console.log(`Job scheduler listening at http://localhost:${port}`)
 
+	if (process.env.DISABLE_REDIS === 'true') {
+		console.log('[REDIS] Redis is disabled, jobs will not be processed')
+		return
+	}
+
 	console.log('Connecting to redis...')
 	await redis.connect()
-
 	console.log('[REDIS] Listening for jobs')
+
 	// Listen for photo processing
 	await redis.subscribe('photo-processing', async msg => {
 		if (!msg) return

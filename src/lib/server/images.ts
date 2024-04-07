@@ -1,5 +1,6 @@
 import type { Photo, PhotoCreator, User } from '@prisma/client'
 import db from './db'
+import { env } from '$env/dynamic/private'
 import redis, { createRedisJob } from './cache'
 import fs from 'fs/promises'
 
@@ -179,7 +180,10 @@ type LoadPhotoType = {
 
 export async function loadPhoto(photo: Photo, size: PhotoSize = 'large'): Promise<LoadPhotoType> {
 	// First check the cache
-	const cachedFile = await redis.get(`file:${photo.id}:${size}`)
+	let cachedFile
+	if (env.DISABLE_REDIS !== 'true') {
+		cachedFile = await redis.get(`file:${photo.id}:${size}`)
+	}
 
 	const ct = size === 'original' ? extToContentType(photo.extension) : 'image/avif'
 
@@ -209,7 +213,9 @@ export async function loadPhoto(photo: Photo, size: PhotoSize = 'large'): Promis
 	const file = await fs.readFile(fullPath)
 
 	// Cache the file
-	redis.set(`file:${photo.id}:${size}`, file.toString('binary'), 'EX', cacheTime)
+	if (env.DISABLE_REDIS !== 'true') {
+		redis.set(`file:${photo.id}:${size}`, file.toString('binary'), 'EX', cacheTime)
+	}
 
 	return {
 		buffer: file,
