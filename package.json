@@ -40,7 +40,7 @@
 		"@types/spotify-web-api-node": "^5.0.7",
 		"@typescript-eslint/eslint-plugin": "^6.2.0",
 		"@typescript-eslint/parser": "^6.2.0",
-		"@vite-pwa/sveltekit": "^0.2.5",
+		"@vite-pwa/sveltekit": "^0.4.0",
 		"classnames": "^2.3.2",
 		"concurrently": "^7.6.0",
 		"eslint": "^8.45.0",

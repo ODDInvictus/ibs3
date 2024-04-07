@@ -65,27 +65,26 @@ const authentikOptions = {
 	issuer: env.IBS_ISSUER,
 }
 
-export const handle: Handle = sequence(
-	SvelteKitAuth({
-		trustHost: true,
-		providers: [AuthentikProvider(authentikOptions)],
-		adapter: IBSAdapter(prisma),
-		secret: env.IBS_CLIENT_SECRET,
-		session: {
-			strategy: 'jwt',
-		},
-		callbacks: {
-			async redirect({ url, baseUrl }) {
-				if (url.startsWith('/auth')) {
-					redirect(303, '/')
-				}
+const auth = SvelteKitAuth({
+	trustHost: true,
+	providers: [AuthentikProvider(authentikOptions)],
+	adapter: IBSAdapter(prisma),
+	secret: env.IBS_CLIENT_SECRET,
+	session: {
+		strategy: 'jwt',
+	},
+	callbacks: {
+		async redirect({ url, baseUrl }) {
+			if (url.startsWith('/auth')) {
+				redirect(303, '/')
+			}
 
-				return baseUrl
-			},
+			return baseUrl
 		},
-	}),
-	authorization,
-)
+	},
+})
+
+export const handle: Handle = sequence(auth.handle, authorization)
 
 export const handleError = (async ({ error, event }) => {
 	// When an error occurs, we want to log it to our logger
