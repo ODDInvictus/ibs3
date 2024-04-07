@@ -3,7 +3,7 @@ import db from '$lib/server/db'
 
 export const load = (async ({ locals }) => {
 	return {
-		users: db.user.findMany({
+		users: await db.user.findMany({
 			where: {
 				isActive: true,
 			},

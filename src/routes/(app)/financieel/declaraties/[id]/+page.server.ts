@@ -26,7 +26,7 @@ export const load = async ({ params, locals }) => {
 		methodOfPayment: declaration.methodOfPayment,
 		description: declaration.reason,
 		status: declaration.status,
-		message: declaration.message,
+		message: declaration.reason,
 		total:
 			declaration.Journal?.Rows.reduce((acc, { price, amount }) => acc.add(new Decimal(price).mul(amount)), new Decimal(0)).toNumber() ??
 			declaration.askedAmount.toNumber(),

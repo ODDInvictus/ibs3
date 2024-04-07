@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types'
 import db from '$lib/server/db'
 
 export const load = (async () => {
-	const activities = db.activity.findMany({
+	const activities = await db.activity.findMany({
 		select: {
 			id: true,
 			name: true,

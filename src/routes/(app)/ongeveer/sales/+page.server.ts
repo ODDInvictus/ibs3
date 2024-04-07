@@ -6,7 +6,7 @@ export const load = (async ({ url }) => {
 	const { p, size } = pagination(url)
 
 	return {
-		invoices: getJournals({ type: 'SALE', pagination: { p, size } }),
+		invoices: await getJournals({ type: 'SALE', pagination: { p, size } }),
 		p,
 		size,
 	}

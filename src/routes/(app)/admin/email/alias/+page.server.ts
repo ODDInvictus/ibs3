@@ -3,12 +3,12 @@ import type { PageServerLoad } from './$types'
 
 export const load = (async () => {
 	return {
-		committeeAliases: db.emailAliasCommittee.findMany({
+		committeeAliases: await db.emailAliasCommittee.findMany({
 			include: { committee: true, alias: true },
 		}),
-		userAliases: db.emailAliasUser.findMany({ include: { user: true, alias: true } }),
-		customAliases: db.emailContact.findMany({ include: { EmailAlias: true } }),
-		users: db.user.findMany({
+		userAliases: await db.emailAliasUser.findMany({ include: { user: true, alias: true } }),
+		customAliases: await db.emailContact.findMany({ include: { EmailAlias: true } }),
+		users: await db.user.findMany({
 			where: { isActive: true },
 			select: { firstName: true, lastName: true, email: true, ldapId: true, nickname: true },
 		}),

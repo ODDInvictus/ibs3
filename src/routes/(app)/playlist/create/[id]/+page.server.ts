@@ -50,7 +50,7 @@ export const load = (async ({ params, url, locals }) => {
 
 	return {
 		tracks: res,
-		playlistUser: db.user.findUnique({
+		playlistUser: await db.user.findUnique({
 			where: {
 				id: uid,
 			},

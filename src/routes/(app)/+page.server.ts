@@ -134,12 +134,12 @@ export const load = (async ({ locals }) => {
 	}
 
 	return {
-		clicks: getTotalClicks(),
-		topclicker: getTopClicker(),
+		clicks: await getTotalClicks(),
+		topclicker: await getTopClicker(),
 		greeting: getGreeting(),
-		quote: getQuote(),
-		activity: getFirstActivity(),
-		strafbakken: getStrafbakken(),
-		nextBirthday: getNextBirthdayInLine(),
+		quote: await getQuote(),
+		activity: await getFirstActivity(),
+		strafbakken: await getStrafbakken(),
+		nextBirthday: await getNextBirthdayInLine(),
 	}
 }) satisfies PageServerLoad

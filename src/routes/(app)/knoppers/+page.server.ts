@@ -48,10 +48,10 @@ const getLastUpdates = async () => {
 	return c
 }
 
-export const load = (() => {
+export const load = (async () => {
 	return {
-		leaderboard: getLeaderboard(),
-		playTime: getPlaytime(),
-		lastUpdates: getLastUpdates(),
+    leaderboard: await getLeaderboard(),
+    playTime: await getPlaytime(),
+    lastUpdates: await getLastUpdates(),
 	}
 }) satisfies PageServerLoad

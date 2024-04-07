@@ -12,7 +12,7 @@ export const load = (async ({ params }) => {
 
 	return {
 		track,
-		reactions: db.track.findUnique({
+		reactions: await db.track.findUnique({
 			where: {
 				id: params.id,
 			},

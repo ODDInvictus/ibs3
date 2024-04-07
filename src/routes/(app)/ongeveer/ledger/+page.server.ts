@@ -6,7 +6,7 @@ export const load = (async () => {
 	await createForm.transform()
 
 	return {
-		ledgers: db.ledger.findMany({
+		ledgers: await db.ledger.findMany({
 			orderBy: {
 				id: 'asc',
 			},

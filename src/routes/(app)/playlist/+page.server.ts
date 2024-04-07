@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types'
 export const load = (async ({ locals }) => {
 	const userId = locals.user.id
 	return {
-		toReact: db.track.findMany({
+		toReact: await db.track.findMany({
 			where: {
 				inPlaylist: false,
 				likes: {

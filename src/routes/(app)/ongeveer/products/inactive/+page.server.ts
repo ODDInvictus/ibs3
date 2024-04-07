@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types'
 
 export const load = (async () => {
 	return {
-		products: db.product.findMany({
+		products: await db.product.findMany({
 			where: { isActive: false },
 			select: { id: true, name: true },
 		}),
