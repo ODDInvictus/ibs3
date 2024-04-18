@@ -17,10 +17,10 @@
     "mailhog": "docker run --rm -it -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog",
     "data-migration:attending": "ts-node-esm ./prisma/migrations/20231228173512_attending/data-migration.ts",
     "prepare": "husky install",
-    "test": "npm run test:frontend",
-    "test:init": "python ./e2e/init.py",
-    "test:frontend": "echo TODO",
-    "test:start:frontend": "vite dev --mode test"
+    "test": "npm run test:e2e",
+    "test:e2e": "npm run docker-down:test && npm run docker-up:test",
+    "docker-up:test": "docker compose -f docker-compose.test.yml up --force-recreate --build --abort-on-container-exit --exit-code-from ibs3",
+    "docker-down:test": "docker compose -f docker-compose.test.yml down"
   },
   "devDependencies": {
     "@floating-ui/core": "^1.4.1",
@@ -63,6 +63,7 @@
     "sveltekit-superforms": "^1.8.0",
     "ts-node": "^10.9.1",
     "tslib": "^2.4.1",
+    "tsx": "^4.7.2",
     "typescript": "^5.1.6",
     "unplugin-icons": "^0.16.1",
     "vite": "^4.4.12",
