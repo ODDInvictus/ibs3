@@ -1,0 +1,57 @@
+# Docker compose for testing, with mariadb, redis and mongo
+version: "3.9"
+name: ibs3_test
+
+services:
+  mariadb:
+    image: mariadb
+    ports:
+      - "4401:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ibs3_test
+      MYSQL_ROOT_HOST: "%"
+    # healthcheck:
+    #   test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+    #   interval: 3s
+    #   timeout: 3s
+    #   retries: 25
+
+  # redis:
+  #   image: redis
+  #   ports:
+  #     - "4402:6379"
+  #   healthcheck:
+  #     test: ['CMD', 'redis-cli', 'ping']
+  #     interval: 1s
+  #     timeout: 3s
+  #     retries: 30
+
+  # mongodb:
+  #   image: mongo
+  #   ports:
+  #     - "4403:27017"
+  #   healthcheck:
+  #     test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+  #     interval: 1s
+  #     timeout: 3s
+  #     retries: 30
+
+  ibs3:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    depends_on:
+      - mariadb
+      # redis:
+      #   condition: service_healthy
+      # mongodb:
+      #   condition: service_healthy
+    network_mode: "host"
+    env_file:
+      - .env.test
+    command: sh -c " sleep 30 && \
+        npx prisma migrate deploy && \
+        npx tsx e2e/seed.ts && \
+        npm run build && \
+        npx playwright test"

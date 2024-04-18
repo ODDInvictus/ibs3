@@ -1,0 +1,15 @@
+FROM node:18.14.0
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+RUN npx playwright install
+
+RUN npx playwright install msedge
+
+RUN npx playwright install-deps
+
+RUN npx prisma generate
