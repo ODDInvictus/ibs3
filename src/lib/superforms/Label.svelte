@@ -6,7 +6,7 @@
 	export let name: string
 </script>
 
-<label for={name}>
+<label for={name} class="input-label">
 	<slot />
 	{#if !$constraints?.required}
 		<span class="optional">(Optioneel)</span>

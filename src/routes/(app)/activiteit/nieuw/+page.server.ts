@@ -11,7 +11,7 @@ import { createRedisJob } from '$lib/server/cache.js'
 import { getPhotoCreator, uploadPhoto } from '$lib/server/images.js'
 
 export const load = (async ({ url, locals }) => {
-	const locations = db.activityLocation.findMany({
+	const locations = await db.activityLocation.findMany({
 		where: {
 			isActive: true,
 		},
@@ -19,7 +19,7 @@ export const load = (async ({ url, locals }) => {
 
 	const edit = url.searchParams.get('edit')
 
-	const committees = db.committee.findMany({
+	const committees = await db.committee.findMany({
 		where: {
 			isActive: true,
 		},

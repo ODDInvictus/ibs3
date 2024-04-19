@@ -43,7 +43,7 @@ export const load = (async () => {
 		.slice(0, 5)
 
 	return {
-		highlight: getHighlight(),
+		highlight: await getHighlight(),
 		activities,
 	}
 }) satisfies PageServerLoad

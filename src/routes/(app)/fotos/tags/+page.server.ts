@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types'
 import db from '$lib/server/db'
 
 export const load = (async () => {
-	const photoTags = db.photoTag.findMany({
+	const photoTags = await db.photoTag.findMany({
 		orderBy: {
 			name: 'asc',
 		},

@@ -112,7 +112,7 @@ export const actions = {
 								createMany: {
 									data: rows.map(row => {
 										const product = products.find(p => p.id === row.productId)
-										if (!product) throw new Error('Product not found')
+										if (!product) throw new Error('Product niet gevonden')
 										return {
 											...row,
 											price: product.price,

@@ -46,9 +46,15 @@ export async function verdubbelStrafbakken() {
 	const month = MONTH_NAMES[new Date().getMonth()]
 	const year = new Date().getFullYear()
 
-	for (const [user, bakken] of count) {
-		const limit = Number(process.env.STRAFBAKKEN_DOUBLE_LIMIT) || 50
-		const doubled = Math.min(bakken * 2, limit)
+  for (const [user, bakken] of count) {
+    const limit = Number(process.env.STRAFBAKKEN_DOUBLE_LIMIT) || 50
+    let doubled
+    if (bakken < 8) {
+      doubled = bakken * 2
+    } else {
+      doubled = Math.max(bakken + 1, Math.min(bakken * 2 * (1/(1+(bakken/limit))) + 3, limit))
+    }
+    doubled = Math.round(doubled)
 
 		const extra = doubled - bakken
 

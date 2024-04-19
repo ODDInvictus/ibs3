@@ -3,7 +3,7 @@ import db from '$lib/server/db'
 
 export const load = (async ({ locals }) => {
 	return {
-		preferences: db.preference.findMany({
+		preferences: await db.preference.findMany({
 			where: {
 				userId: locals.user.id,
 			},

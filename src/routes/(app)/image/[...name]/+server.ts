@@ -100,7 +100,10 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
 		// }
 
 		// First check if we have the file in the cache
-		const cachedFile = await redis.get(`file:${filename}:${size}`)
+		let cachedFile
+		if (env.DISABLE_REDIS !== 'true') {
+			cachedFile = await redis.get(`file:${filename}:${size}`)
+		}
 
 		if (cachedFile) {
 			let buf = Buffer.from(cachedFile, 'binary')
@@ -156,7 +159,9 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
 			return new Response('File not found', { status: 404 })
 		}
 
-		redis.set(`file:${filename}:${size}`, buf.toString('binary'), 'EX', IMAGE_CACHE_TIME)
+		if (env.DISABLE_REDIS !== 'true') {
+			redis.set(`file:${filename}:${size}`, buf.toString('binary'), 'EX', IMAGE_CACHE_TIME)
+		}
 
 		let contentType = 'image/avif'
 
@@ -193,11 +198,16 @@ async function readJpeg(path: string, name: string, size: string | undefined): P
 }
 
 async function cacheImage(filename: string, size: string, buf: Buffer) {
-	redis.set(`file:${filename}:${size}`, buf.toString('binary'), 'EX', IMAGE_CACHE_TIME)
+	if (env.DISABLE_REDIS !== 'true') {
+		redis.set(`file:${filename}:${size}`, buf.toString('binary'), 'EX', IMAGE_CACHE_TIME)
+	}
 }
 
 async function getImageFromCache(filename: string, size: string): Promise<Buffer | null> {
-	const cachedFile = await redis.get(`file:${filename}:${size}`)
+	let cachedFile
+	if (env.DISABLE_REDIS !== 'true') {
+		cachedFile = await redis.get(`file:${filename}:${size}`)
+	}
 
 	if (!cachedFile) return null
 

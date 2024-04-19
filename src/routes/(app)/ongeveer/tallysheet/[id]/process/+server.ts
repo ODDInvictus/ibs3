@@ -101,14 +101,14 @@ export const GET: RequestHandler = async event => {
 			)
 		} catch (e) {
 			console.error(e)
-			throw error(500, 'Failed to process tallysheet')
+			throw error(500, 'Streeplijst kon niet verwerkt worden')
 		}
 	})
 
 	throw redirect(
 		`/ongeveer/tallysheet`,
 		{
-			message: 'Tallysheet processed',
+			message: 'Streeplijst verwerkt',
 			title: 'Success',
 			type: 'success',
 		},

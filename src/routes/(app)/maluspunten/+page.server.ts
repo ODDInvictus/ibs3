@@ -17,8 +17,8 @@ export const load = (async ({ locals }) => {
 				receiver: true,
 			},
 		}),
-		feuten: getFeuten(),
-		members: getMembers(),
+		feuten: await getFeuten(),
+		members: await getMembers(),
 	}
 }) satisfies PageServerLoad
 

@@ -14,7 +14,7 @@ export const actions = {
 		const file = formData.get('file') as File
 		const lines = (await file.text()).split('\n')
 		const keys = lines.shift()?.split(',') ?? []
-		if (!HEADERS.every(header => keys.includes(header))) throw error(400, 'Invalid file')
+		if (!HEADERS.every(header => keys.includes(header))) throw error(400, 'Bestand ongeldig')
 		const transactions: { [key: string]: string }[] = []
 		for (const row of lines) {
 			if (row === '') continue // skip empty lines (last line)
@@ -22,7 +22,7 @@ export const actions = {
 			const values = row.split(',')
 			for (let i = 0; i < keys.length; i++) {
 				if (!(HEADERS as readonly string[]).includes(keys[i])) continue // skip unknown headers
-				if (values[i] === undefined) throw error(400, 'Invalid file')
+				if (values[i] === undefined) throw error(400, 'Bestand ongeldig')
 				transaction[keys[i]] = values[i]
 			}
 			transactions.push(transaction)
@@ -61,6 +61,12 @@ export const actions = {
 			console.error(e)
 			throw error(500)
 		}
+
+		await db.settings.upsert({
+			where: { name: 'bankTransactionsLastUpdated' },
+			create: { name: 'bankTransactionsLastUpdated', value: new Date().toISOString(), description: 'Last updated bank transactions' },
+			update: { value: new Date().toISOString() },
+		})
 
 		return { status: 200 }
 	},

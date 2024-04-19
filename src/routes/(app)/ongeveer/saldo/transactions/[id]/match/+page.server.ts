@@ -30,7 +30,7 @@ export const load = (async ({ params }) => {
 	const data = {
 		rows: transaction.Transaction.TransactionMatchRow.map(r => {
 			if (!r.journalId) {
-				throw error(500, 'JournalId is missing, while a saldo transaction should always be matched to a journal')
+				throw error(500, 'Grootboek ID ontbreekt, terwijl een saldo transactie altijd gematcht moet worden aan een grootboek')
 			}
 			return {
 				description: r.description ?? undefined,
@@ -173,7 +173,7 @@ export const actions = {
 		throw redirect(
 			`/ongeveer/saldo/transactions/${id}`,
 			warning ?? {
-				title: 'Matched',
+				title: 'Gematched!',
 				message: 'De transactie is succesvol gematcht',
 				type: 'success',
 			},

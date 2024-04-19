@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types'
 
 export const load = (async () => {
 	return {
-		relations: db.financialPerson.findMany({
+		relations: await db.financialPerson.findMany({
 			where: {
 				type: 'OTHER',
 				isActive: false,

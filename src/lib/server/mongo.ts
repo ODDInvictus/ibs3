@@ -6,6 +6,7 @@ import sharp from 'sharp'
  * MongoDB client instance.
  */
 export const client = new MongoClient(env.MONGO_URI!, {
+export const client = new MongoClient(env.MONGO_URI || 'mongodb://localhost:27017/ibs3', {
 	serverApi: {
 		version: ServerApiVersion.v1,
 		strict: true,
@@ -34,6 +35,11 @@ export const mongo = client.db(env.MONGO_DB_NAME)
  */
 export async function uploadFile(file: File, opts: { quality?: number; compress?: boolean } = { compress: true, quality: 75 }) {
 	let buffer = Buffer.from(await file.arrayBuffer())
+
+	if (!env.MONGO_URI) {
+		console.log('Tried uploading a file but MongoDB is not connected.')
+		return ''
+	}
 
 	const compressableTypes = ['image/jpeg', 'image/png', 'image/avif', 'image/tiff', 'image/webp']
 	let compressed = false

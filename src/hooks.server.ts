@@ -5,15 +5,25 @@ import { sequence } from '@sveltejs/kit/hooks'
 import AuthentikProvider from '@auth/core/providers/authentik'
 import IBSAdapter from '$lib/server/authAdapter'
 import prisma from '$lib/server/db'
-import { getCommittees, getRoles, getUser } from '$lib/server/userCache'
+import { getCommittees, getRoles, getUser, getUserTest } from '$lib/server/userCache'
 import { notifyDiscordError } from '$lib/server/notifications/discord'
 import { Decimal } from 'decimal.js'
 import { client as Mongo } from '$lib/server/mongo'
 
 const authorization = (async ({ event, resolve }) => {
 	const url = event.url.pathname
-	const session = await event.locals.getSession()
-	const user = await getUser(session)
+
+	let user
+
+	// If the environment is test, we can't check for authorization
+	if (env.NODE_ENV === 'test') {
+		const userId = Number(env.TEST_USER_ID ?? 1)
+		user = await getUserTest(userId)
+	} else {
+		const session = await event.locals.getSession()
+		user = await getUser(session)
+	}
+
 	const committees = await getCommittees(user)
 	const roles = await getRoles(user, committees)
 
@@ -39,6 +49,11 @@ const authorization = (async ({ event, resolve }) => {
 
 		if (!user) {
 			throw redirect(303, '/auth')
+		}
+
+
+		if (!user.isActive) {
+			redirect(303, '/auth/toegang-geweigerd')
 		}
 	}
 
@@ -92,6 +107,10 @@ export const handleError = (async ({ error, event }) => {
 await (async () => {
 	Decimal.set({ precision: 4 })
 
-	await Mongo.connect()
-	console.log('You successfully connected to MongoDB!')
+	if (env.DISABLE_MONGO === 'true') {
+		console.log('MongoDB is not connected.')
+	} else {
+		await Mongo.connect()
+		console.log('You successfully connected to MongoDB!')
+	}
 })()

@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types'
 
 export const load = (async () => {
 	return {
-		ledgers: db.ledger.findMany({
+		ledgers: await db.ledger.findMany({
 			orderBy: {
 				id: 'asc',
 			},

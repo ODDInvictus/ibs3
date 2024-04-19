@@ -47,7 +47,7 @@ export const actions = {
 		throw redirect(
 			`/ongeveer/products/category/${category.id}`,
 			{
-				message: 'Category saved',
+				message: 'Product-categorie opgeslagen',
 				title: 'Success',
 				type: 'success',
 			},
