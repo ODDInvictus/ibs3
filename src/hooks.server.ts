@@ -39,6 +39,11 @@ const authorization = (async ({ event, resolve }) => {
 		if (!user) {
 			throw redirect(303, '/auth');
 		}
+
+
+		if (!user.isActive) {
+			throw redirect(303, '/auth/toegang-geweigerd')
+		}
 	}
 
 	// If the request is still here, just proceed as normally
