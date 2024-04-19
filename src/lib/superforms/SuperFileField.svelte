@@ -11,6 +11,6 @@
 
 <style>
 	input[type='file'] {
-		line-height: 3rem;
+		line-height: 2.5rem;
 	}
 </style>
