@@ -42,7 +42,7 @@ const authorization = (async ({ event, resolve }) => {
 
 
 		if (!user.isActive) {
-			throw redirect(303, '/auth/toegang-geweigerd')
+			redirect(303, '/auth/toegang-geweigerd')
 		}
 	}
 
