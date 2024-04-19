@@ -3,10 +3,9 @@ import type { PageServerLoad, Actions } from './$types'
 import { declatationSchema } from './declarationSchema'
 import { error, fail } from '@sveltejs/kit'
 import { redirect } from 'sveltekit-flash-message/server'
-import { env } from '$env/dynamic/private'
-import fs from 'fs'
 import db from '$lib/server/db'
 import { getLedgerIds } from '$lib/ongeveer/db'
+import { uploadFile } from '$lib/server/mongo'
 
 export const load = (async () => {
 	const data = {
@@ -71,9 +70,9 @@ export const actions = {
 					},
 				})
 
-				if (!receipt) return
+				if (!receipt || receipt?.size === 0) return
 
-				const filename = `receipt-${declaration.id}-${receipt.name}`
+				const meta = await uploadFile(receipt, { quality: 99 })
 
 				await tx.journal.update({
 					where: {
@@ -83,18 +82,14 @@ export const actions = {
 						Attachments: {
 							create: [
 								{
-									filename,
-									size: receipt.size,
-									MIMEtype: receipt.type,
+									filename: meta.filename,
+									size: meta.size,
+									MIMEtype: meta.type,
 								},
 							],
 						},
 					},
 				})
-
-				// Save the receipt
-				// TODO @niels replace with new endpoint
-				fs.writeFileSync(`${env.UPLOAD_FOLDER}/purchases/${filename}`, Buffer.from(await receipt.arrayBuffer()), { encoding: 'binary' })
 			})
 		} catch (err: any) {
 			console.error(err)

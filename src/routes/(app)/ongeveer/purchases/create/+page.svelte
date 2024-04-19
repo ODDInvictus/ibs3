@@ -30,7 +30,7 @@
 	const idProxy = intProxy(form, 'id')
 
 	let attatchments: FileList
-	let previews: { src: string; MIMEtype: string; size: string; name: string }[] = data.attachments
+	let previews: { src?: string; MIMEtype: string; size: string; filename: string }[] = data.attachments
 
 	$: if (attatchments) {
 		showAttatchments()
@@ -38,7 +38,7 @@
 
 	function showAttatchments() {
 		if (!attatchments || attatchments.length === 0) return
-		previews = data.attachments.filter(attatchment => !toDelete.includes(attatchment.name))
+		previews = data.attachments.filter(attatchment => !toDelete.includes(attatchment.filename))
 
 		for (const attatchment of attatchments) {
 			const reader = new FileReader()
@@ -50,7 +50,7 @@
 						src: event.target?.result?.toString() ?? '',
 						MIMEtype: attatchment.type,
 						size: formatFileSize(attatchment.size),
-						name: attatchment.name,
+						filename: attatchment.name,
 					},
 				]
 			}
@@ -81,8 +81,7 @@
 		options={[
 			['PURCHASE', 'Aankoop'],
 			['DECLARATION', 'Declaratie'],
-		]}>Type</SuperSelect
-	>
+		]}>Type</SuperSelect>
 
 	{#if data.declarationData}
 		<hr />
@@ -153,8 +152,7 @@
 									const filtered = [...$form.rows]
 									filtered.splice(i, 1)
 									$form.rows = filtered
-								}}><Trashcan /></button
-							>
+								}}><Trashcan /></button>
 						{/if}
 					</td>
 				</tr>
@@ -192,16 +190,14 @@
 								type: 'danger',
 							})
 						}
-					}}>Goedkeuren en transactie maken</button
-				>
+					}}>Goedkeuren en transactie maken</button>
 			{/if}
 			{#if $idProxy}
 				<DeleteButton
 					url={`/ongeveer/purchases/${$idProxy}${data.declarationData?.status === 'PENDING' ? '?type=declaration' : ''}`}
 					redirect="/ongeveer/purchases"
 					confirmMessage="Weet je zeker dat je dit boekstuk wilt verwijderen?"
-					text={data.declarationData?.status === 'PENDING' ? 'Afwijzen en verwijderen' : undefined}
-				/>
+					text={data.declarationData?.status === 'PENDING' ? 'Afwijzen en verwijderen' : undefined} />
 			{/if}
 		</div>
 		<div class="attachments">
