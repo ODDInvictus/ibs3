@@ -5,7 +5,6 @@ import sharp from 'sharp'
 /**
  * MongoDB client instance.
  */
-export const client = new MongoClient(env.MONGO_URI!, {
 export const client = new MongoClient(env.MONGO_URI || 'mongodb://localhost:27017/ibs3', {
 	serverApi: {
 		version: ServerApiVersion.v1,
