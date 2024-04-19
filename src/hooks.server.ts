@@ -51,9 +51,10 @@ const authorization = (async ({ event, resolve }) => {
 			throw redirect(303, '/auth')
 		}
 
+		console.log(user.isActive)
 
 		if (!user.isActive) {
-			redirect(303, '/auth/toegang-geweigerd')
+			throw redirect(303, '/auth/toegang-geweigerd')
 		}
 	}
 
@@ -70,27 +71,30 @@ const authentikOptions = {
 	issuer: env.IBS_ISSUER,
 }
 
-export const handle: Handle = sequence(
-	SvelteKitAuth({
-		trustHost: true,
-		providers: [AuthentikProvider(authentikOptions)],
-		adapter: IBSAdapter(prisma),
-		secret: env.IBS_CLIENT_SECRET,
-		session: {
-			strategy: 'jwt',
-		},
-		callbacks: {
-			async redirect({ url, baseUrl }) {
-				if (url.startsWith('/auth')) {
-					throw redirect(303, '/')
-				}
+const {
+	handle: handleAuth,
+	signIn,
+	signOut,
+} = SvelteKitAuth({
+	trustHost: true,
+	providers: [AuthentikProvider(authentikOptions)],
+	adapter: IBSAdapter(prisma),
+	secret: env.IBS_CLIENT_SECRET,
+	session: {
+		strategy: 'jwt',
+	},
+	callbacks: {
+		async redirect({ url, baseUrl }) {
+			if (url.startsWith('/auth')) {
+				throw redirect(303, '/')
+			}
 
-				return baseUrl
-			},
+			return baseUrl
 		},
-	}),
-	authorization,
-)
+	},
+})
+
+export const handle: Handle = sequence(handleAuth, authorization)
 
 export const handleError = (async ({ error, event }) => {
 	// When an error occurs, we want to log it to our logger
