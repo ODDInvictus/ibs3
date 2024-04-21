@@ -2,7 +2,7 @@
 	<h1>Toegang geweigerd</h1>
 
 	<p>Je hebt op dit moment geen toegang tot IBS.</p>
-	<p>Mocht dit niet kloppen, neem dan contact op met het senaat</p>
+	<p>Mocht dit niet kloppen, neem dan contact op met de senaat</p>
 </main>
 
 <style lang="scss">
