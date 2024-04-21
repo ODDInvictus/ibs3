@@ -281,37 +281,25 @@ export const actions = {
 				// To do that: get all members + feuten
 				// and if membersOnly is set, then exclude the feuten\
 				if (!edit) {
-					const members = await tx.committeeMember.findMany({
+					const users = await tx.user.findMany({
 						where: {
-							committee: {
-								ldapId: LDAP_IDS.MEMBERS,
-							},
+							isActive: true,
+							CommitteeMember: membersOnly
+								? {
+										none: {
+											committee: { ldapId: LDAP_IDS.FEUTEN },
+										},
+									}
+								: undefined,
 						},
 					})
 
-					let feuten: CommitteeMember[] = []
-
-					if (!membersOnly) {
-						feuten = await tx.committeeMember.findMany({
-							where: {
-								committee: {
-									ldapId: LDAP_IDS.FEUTEN,
-								},
-							},
-						})
-					}
-
-					const users = members.concat(feuten)
-
-					// Create the attending create objects
-					const attending = []
-
-					for (const user of users) {
-						attending.push({
-							userId: user.userId,
+					const attending = users.map(user => {
+						return {
+							userId: user.id,
 							activityId: activity.id,
-						})
-					}
+						}
+					})
 
 					// Create all attending objects!
 					await tx.attending.createMany({
