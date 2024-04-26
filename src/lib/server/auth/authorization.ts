@@ -13,7 +13,7 @@ const handleAuthorization = (async ({ event, resolve }) => {
 		const userId = Number(env.TEST_USER_ID ?? 1)
 		user = await getUserTest(userId)
 	} else {
-		const session = await event.locals.getSession()
+		const session = await event.locals.auth()
 		user = await getUser(session)
 	}
 
@@ -27,11 +27,6 @@ const handleAuthorization = (async ({ event, resolve }) => {
 	event.locals.roles = roles
 
 	event.locals.theme = env.THEME_OVERRIDE ?? user?.preferredTheme ?? 'light'
-
-	// If the url starts with /jobs, we don't need to check if the user is logged in
-	// This route is used by the jobs server to execute jobs
-	// This route has to be whitelisted to only allow the jobs server to execute jobs
-	// Fix this in NGINX
 
 	// If shortner, then ignore auth.
 	if (url.startsWith('/s/')) {
