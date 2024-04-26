@@ -36,11 +36,11 @@ const handleAuthorization = (async ({ event, resolve }) => {
 		// If the path is something other than /auth, check if the user is logged in
 
 		if (!user) {
-			throw redirect(303, '/auth')
+			return redirect(303, '/auth')
 		}
 
 		if (user.accessDisabled) {
-			throw redirect(303, '/auth/toegang-geweigerd')
+			return redirect(303, '/auth/toegang-geweigerd')
 		}
 	}
 
