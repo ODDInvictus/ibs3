@@ -3,8 +3,12 @@ import db from '$lib/server/db'
 import { randomSortDay } from '$lib/utils.js'
 import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
+import { LDAP_IDS } from '$lib/constants'
+import { redirect } from 'sveltekit-flash-message/server'
 
-export const load = (async ({ params }) => {
+export const load = (async event => {
+	const { params, locals } = event
+
 	const activity = await db.activity.findFirstOrThrow({
 		where: {
 			id: parseInt(params.id),
@@ -33,6 +37,20 @@ export const load = (async ({ params }) => {
 			},
 		},
 	})
+
+	const isMember = locals.committees.find(c => c.ldapId === LDAP_IDS.MEMBERS) !== undefined
+
+	if (activity.membersOnly && !isMember) {
+		throw redirect(
+			'/kalender',
+			{
+				title: 'Geen toegang',
+				message: 'Deze activiteit is alleen toegankelijk voor leden.',
+				type: 'danger',
+			},
+			event,
+		)
+	}
 
 	const attending = randomSortDay(activity.attending)
 
