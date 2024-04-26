@@ -147,6 +147,6 @@ export const actions = {
 
 		await createRedisJob('photo-processing')
 
-		throw redirect(303, '/fotos/upload/success?ids=' + ids.join(','))
+		redirect(303, '/fotos/upload/success?ids=' + ids.join(','))
 	},
 } satisfies Actions

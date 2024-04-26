@@ -8,7 +8,7 @@ const schmea = z.object({})
 
 export const load = async ({ locals }) => {
 	if (!locals.roles['ibs-admins']) {
-		throw redirect(301, '/')
+		redirect(301, '/')
 	}
 
 	const form = await superValidate(schmea)

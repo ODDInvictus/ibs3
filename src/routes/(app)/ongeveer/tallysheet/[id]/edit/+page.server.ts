@@ -10,12 +10,12 @@ import { canDeleteTallySheet } from './canDeleteTallySheet'
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id)
-	if (Number.isNaN(id)) throw error(400)
+	if (Number.isNaN(id)) error(400)
 
 	const tallySheet = await db.streeplijst.findUnique({
 		where: { id },
 	})
-	if (!tallySheet) throw error(404)
+	if (!tallySheet) error(404)
 
 	const data = {
 		begin: tallySheet.startDate ?? undefined,

@@ -320,7 +320,7 @@ export const actions = {
 		}
 
 		if (id !== 0) {
-			throw redirect(303, `/activiteit/${id}`)
+			redirect(303, `/activiteit/${id}`)
 		}
 	},
 }

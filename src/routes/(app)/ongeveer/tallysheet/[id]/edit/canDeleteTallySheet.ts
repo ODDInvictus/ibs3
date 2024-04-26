@@ -16,9 +16,9 @@ export const canDeleteTallySheet = async (id: number) => {
 		})
 	} catch (e) {
 		console.error(e)
-		throw error(500)
+		error(500)
 	}
-	if (!tallySheet) throw error(404)
+	if (!tallySheet) error(404)
 
 	return !tallySheet.sales.some(s => s.TransactionMatchRow.length > 0)
 }

@@ -12,7 +12,7 @@ export async function GET({ params, locals }) {
 	})
 
 	if (!link) {
-		throw redirect(302, '/s/error')
+		redirect(302, '/s/error')
 	}
 
 	// We have to check locals.user here, since it CAN be null here.
@@ -28,5 +28,5 @@ export async function GET({ params, locals }) {
 	}
 
 	// Redirect the user
-	throw redirect(302, link.link)
+	redirect(302, link.link)
 }

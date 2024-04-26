@@ -5,7 +5,7 @@ import Decimal from 'decimal.js'
 
 export const load = async ({ params, locals }) => {
 	const id = Number.parseInt(params.id)
-	if (Number.isNaN(id)) throw error(400, 'Ongeldige declaratie ID')
+	if (Number.isNaN(id)) error(400, 'Ongeldige declaratie ID')
 
 	const declaration = await db.declarationData.findUnique({
 		where: { id },
@@ -19,7 +19,7 @@ export const load = async ({ params, locals }) => {
 		},
 	})
 
-	if (!declaration) throw error(404, `Declaratie ${params.id} niet gevonden`)
+	if (!declaration) error(404, `Declaratie ${params.id} niet gevonden`)
 
 	const data = {
 		id: declaration.id,

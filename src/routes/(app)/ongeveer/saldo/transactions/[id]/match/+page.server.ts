@@ -11,7 +11,7 @@ import type { Notification } from '$lib/notification'
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id)
-	if (Number.isNaN(id)) throw error(400)
+	if (Number.isNaN(id)) error(400)
 
 	const transaction = await db.saldoTransaction.findUnique({
 		where: { id },
@@ -25,12 +25,12 @@ export const load = (async ({ params }) => {
 		},
 	})
 
-	if (!transaction) throw error(404)
+	if (!transaction) error(404)
 
 	const data = {
 		rows: transaction.Transaction.TransactionMatchRow.map(r => {
 			if (!r.journalId) {
-				throw error(500, 'Grootboek ID ontbreekt, terwijl een saldo transactie altijd gematcht moet worden aan een grootboek')
+				error(500, 'Grootboek ID ontbreekt, terwijl een saldo transactie altijd gematcht moet worden aan een grootboek')
 			}
 			return {
 				description: r.description ?? undefined,
@@ -54,7 +54,7 @@ export const actions = {
 	default: async event => {
 		const { request, locals, params } = event
 		const id = Number(params.id)
-		if (Number.isNaN(id)) throw error(400)
+		if (Number.isNaN(id)) error(400)
 
 		const form = await superValidate(request, matchSaldoTransaction)
 

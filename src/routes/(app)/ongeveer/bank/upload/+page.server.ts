@@ -8,13 +8,13 @@ const HEADERS = ['Type', 'Product', 'Started Date', 'Completed Date', 'Descripti
 
 export const actions = {
 	default: async ({ request, locals }) => {
-		if (!hasRole(locals.user, LDAP_IDS.FINANCIE)) throw error(403)
+		if (!hasRole(locals.user, LDAP_IDS.FINANCIE)) error(403)
 
 		const formData = await request.formData()
 		const file = formData.get('file') as File
 		const lines = (await file.text()).split('\n')
 		const keys = lines.shift()?.split(',') ?? []
-		if (!HEADERS.every(header => keys.includes(header))) throw error(400, 'Bestand ongeldig')
+		if (!HEADERS.every(header => keys.includes(header))) error(400, 'Bestand ongeldig')
 		const transactions: { [key: string]: string }[] = []
 		for (const row of lines) {
 			if (row === '') continue // skip empty lines (last line)
@@ -22,7 +22,7 @@ export const actions = {
 			const values = row.split(',')
 			for (let i = 0; i < keys.length; i++) {
 				if (!(HEADERS as readonly string[]).includes(keys[i])) continue // skip unknown headers
-				if (values[i] === undefined) throw error(400, 'Bestand ongeldig')
+				if (values[i] === undefined) error(400, 'Bestand ongeldig')
 				transaction[keys[i]] = values[i]
 			}
 			transactions.push(transaction)
@@ -59,7 +59,7 @@ export const actions = {
 			)
 		} catch (e) {
 			console.error(e)
-			throw error(500)
+			error(500)
 		}
 
 		await db.settings.upsert({

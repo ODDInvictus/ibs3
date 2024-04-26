@@ -11,6 +11,7 @@ export const DELETE = (async ({ url, locals }) => {
 		return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: admin', {
 			status: 403,
 		})
+
 	const id = Number(url.searchParams.get('id'))
 
 	if (id) {
