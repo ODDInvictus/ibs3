@@ -1,4 +1,4 @@
-import { authAdmin } from '$lib/server/authorizationMiddleware'
+import { isAdmin } from '$lib/server/auth'
 import { error, type RequestHandler } from '@sveltejs/kit'
 import db from '$lib/server/db'
 
@@ -6,8 +6,11 @@ export const DELETE = (async ({ url, locals }) => {
 	// First check if the user is allowed to delete this alias
 	// Then delete the alias
 	// Then redirect to the alias page
-	const [authorized, committees] = authAdmin(locals)
-	if (!authorized) error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
+	const authorized = isAdmin(locals.user)
+	if (!authorized)
+		return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: admin', {
+			status: 403,
+		})
 
 	const id = Number(url.searchParams.get('id'))
 

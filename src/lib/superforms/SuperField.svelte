@@ -24,7 +24,7 @@
 		type === 'date'
 			? dateProxy(formProps.form, field, {
 					format: 'date',
-			  })
+				})
 			: undefined
 
 	$: boolValue = value as Writable<boolean>
@@ -63,8 +63,7 @@
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$proxyDate}
 			{...deleteRequired($constraints)}
-			{...$$restProps}
-		/>
+			{...$$restProps} />
 	{:else if type === 'number'}
 		<input
 			{name}
@@ -72,8 +71,7 @@
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
 			{...deleteRequired($constraints)}
-			{...$$restProps}
-		/>
+			{...$$restProps} />
 	{:else if type === 'text'}
 		<input
 			{name}
@@ -81,8 +79,7 @@
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
 			{...deleteRequired({ ...$constraints })}
-			{...$$restProps}
-		/>
+			{...$$restProps} />
 	{:else if type === 'checkbox'}
 		<input
 			{name}
@@ -90,8 +87,7 @@
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:checked={$boolValue}
 			{...deleteRequired($constraints)}
-			{...$$restProps}
-		/>
+			{...$$restProps} />
 	{/if}
 </div>
 <Error {errors} />

@@ -4,6 +4,7 @@
 	import { formatDateHumanReadable } from '$lib/dateUtils'
 	import Title from '$lib/components/title.svelte'
 	import { formatMoney } from '$lib/utils'
+	import Attachment from '$lib/ongeveer/Attatchment.svelte'
 
 	export let data: PageData
 </script>
@@ -38,21 +39,13 @@
 				<th>Betaal methode</th>
 				<td>{data.declaration.methodOfPayment}</td>
 			</tr>
-			<tr>
-				<th>Bericht</th>
-				<td>{data.declaration.message ?? '-'}</td>
-			</tr>
 		</table>
 	</div>
 
 	{#if data.declaration.Attachments.length > 0}
 		<div class="receipts">
 			<h2>Bonnetjes</h2>
-			{#each data.declaration.Attachments as attachment}
-				<!-- TODO niet image bestanden -->
-				<!-- TODO: @niels replace with new endpoint -->
-				<img src="{env.PUBLIC_UPLOAD_URL}purchases/{attachment.filename}" alt="Helaas is hier geen bonnetje voor geupload :(" />
-			{/each}
+			<Attachment previews={data.declaration.Attachments} noDelete />
 		</div>
 	{/if}
 </div>
@@ -63,8 +56,8 @@
 	}
 
 	#root {
-		display: flex;
-		justify-content: space-around;
+		display: grid;
+		grid-template-columns: 1fr 2fr;
 	}
 
 	#left {

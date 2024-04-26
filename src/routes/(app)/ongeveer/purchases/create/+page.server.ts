@@ -6,10 +6,8 @@ import { error, fail } from '@sveltejs/kit'
 import { getJournalStatus, getLedgers, getRelations } from '$lib/ongeveer/db'
 import schema from './pruchaseSchema'
 import { redirect } from 'sveltekit-flash-message/server'
-import fs from 'fs'
-import { env as publicEnv } from '$env/dynamic/public'
-import { env as privateEnv } from '$env/dynamic/private'
 import { formatFileSize } from '$lib/utils'
+import { deleteFile, uploadFile } from '$lib/server/mongo'
 
 type PurchaseType = 'PURCHASE' | 'DECLARATION'
 
@@ -69,9 +67,8 @@ export const load = (async event => {
 		purchase?.Attachments?.map(attatchment => {
 			return {
 				MIMEtype: attatchment.MIMEtype,
-				src: `${publicEnv.PUBLIC_UPLOAD_URL}purchases/${attatchment.filename}`,
 				size: formatFileSize(attatchment.size),
-				name: attatchment.filename,
+				filename: attatchment.filename,
 			}
 		}) ?? []
 
@@ -90,15 +87,6 @@ export const load = (async event => {
 	}
 }) satisfies PageServerLoad
 
-const createFileNames = (files: File[], id: string | number) => {
-	const fileData: { name: string; file: File }[] = []
-	for (const file of files) {
-		if (file.type === 'application/octet-stream') continue
-		fileData.push({ name: `purchase-${id}-${file.name.replaceAll(' ', '_')}`, file })
-	}
-	return fileData
-}
-
 export const actions: Actions = {
 	default: async event => {
 		const { request, locals } = event
@@ -109,9 +97,11 @@ export const actions: Actions = {
 		if (!authorization(locals.roles)) error(403)
 		if (!form.valid) return fail(400, { form })
 
-		const attachments = formData.getAll('attachments') as File[]
+		const files = formData.getAll('attachments') as File[]
 		const toDelete = JSON.parse(formData.get('toDelete') as string) as string[] // Filenames to delete, include already uploaded files and files that are not uploaded yet
-		const { id, ref, date, termsOfPayment, relation, rows, type } = form.data
+		const attachments = files.filter(f => !toDelete.includes(f.name) && f.size > 0)
+		const { ref, date, termsOfPayment, relation, rows, type } = form.data
+		let id = form.data.id
 
 		// TODO make sure declaration can only be related to a user
 
@@ -126,12 +116,41 @@ export const actions: Actions = {
 				})
 		}
 
-		let files: ReturnType<typeof createFileNames> = []
+		// Handle attatchments
+		let attachmentsMeta: Awaited<ReturnType<typeof uploadFile>>[] = []
+		try {
+			attachmentsMeta = await Promise.all(attachments.map(f => uploadFile(f)))
+			await Promise.all(toDelete.map(name => deleteFile(name)))
+		} catch (e) {
+			console.error(e)
+			throw error(500)
+		}
+
+		const attachmentsWithNames = attachments.map((file, index) => {
+			return {
+				meta: attachmentsMeta[index],
+				file,
+			}
+		})
+
+		const attatchmentCreate = attachmentsWithNames.map(({ meta }) => {
+			return {
+				filename: meta.filename,
+				MIMEtype: meta.type,
+				size: meta.size,
+			}
+		})
+
+		const rowsCreate = rows.map(({ amount, price, description, ledger }) => ({
+			amount,
+			price,
+			description,
+			ledgerId: ledger,
+		}))
 
 		try {
 			if (id) {
 				// Update existing journal
-				files = createFileNames(attachments, id)
 				await db.journal.update({
 					where: { id },
 					data: {
@@ -145,30 +164,17 @@ export const actions: Actions = {
 									in: toDelete,
 								},
 							},
-							create: files
-								.filter(({ name }) => !toDelete.includes(name))
-								.map(fileData => {
-									return {
-										filename: fileData.name,
-										MIMEtype: fileData.file.type,
-										size: fileData.file.size,
-									}
-								}),
+							create: attatchmentCreate,
 						},
 						Rows: {
 							deleteMany: {},
-							create: rows.map(({ amount, price, description, ledger }) => ({
-								amount,
-								price,
-								description,
-								ledgerId: ledger,
-							})),
+							create: rowsCreate,
 						},
 					},
 				})
 			} else {
 				// Create new journal
-				const { id } = await db.journal.create({
+				const newJournal = await db.journal.create({
 					data: {
 						type,
 						ref,
@@ -176,30 +182,14 @@ export const actions: Actions = {
 						termsOfPayment,
 						relationId: relation,
 						Rows: {
-							create: rows.map(({ amount, price, description, ledger }) => ({
-								amount,
-								price,
-								description,
-								ledgerId: ledger,
-							})),
+							create: rowsCreate,
 						},
-					},
-				})
-				files = createFileNames(attachments, id)
-				await db.journal.update({
-					where: { id },
-					data: {
 						Attachments: {
-							create: files
-								.filter(({ name }) => !toDelete.includes(name))
-								.map(fileData => ({
-									filename: fileData.name,
-									MIMEtype: fileData.file.type,
-									size: fileData.file.size,
-								})),
+							create: attatchmentCreate,
 						},
 					},
 				})
+				id = newJournal.id
 			}
 		} catch (e) {
 			console.error(e)
@@ -234,7 +224,7 @@ export const actions: Actions = {
 		}
 
 		throw redirect(
-			'/ongeveer/purchases',
+			`/ongeveer/purchases/${id}`,
 			{
 				message: `Aankoop boeking ${id ? 'aangepast' : 'aangemaakt'}`,
 				type: 'success',

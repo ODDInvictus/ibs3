@@ -1,10 +1,10 @@
 import type { Actions, PageServerLoad } from './$types'
 import db, { getFeuten, getMembers } from '$lib/server/db'
 import { error, fail } from '@sveltejs/kit'
-import { authMember } from '$lib/server/authorizationMiddleware'
+import { isMember } from '$lib/server/auth'
 
 export const load = (async ({ locals }) => {
-	const [ok] = await authMember(locals)
+	const ok = isMember(locals.user)
 
 	if (!ok) {
 		return error(403)

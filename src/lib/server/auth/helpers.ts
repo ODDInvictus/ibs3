@@ -20,6 +20,10 @@ export async function isFinancie(user: User) {
 	return await hasRole(user, LDAP_IDS.FINANCIE)
 }
 
-export async function isSenate(user: User) {
-	return await hasRole(user, LDAP_IDS.SENAAT)
+export async function isMember(user: User) {
+	return await hasRole(user, LDAP_IDS.MEMBERS)
+}
+
+export async function isAdmin(user: User) {
+	return await hasRole(user, LDAP_IDS.ADMINS)
 }

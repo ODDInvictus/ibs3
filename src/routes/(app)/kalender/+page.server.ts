@@ -7,52 +7,27 @@ export const load = (async ({ locals }) => {
 	// If the user is in the members committee, show all events
 	const isMember = locals.committees.find(c => c.ldapId === LDAP_IDS.MEMBERS) !== undefined
 
-	let activities = []
-
-	if (!isMember) {
-		activities = await db.activity.findMany({
-			orderBy: [
-				{
-					startTime: 'asc',
-				},
-			],
-			where: {
-				endTime: {
-					gte: today,
-				},
-				membersOnly: false,
+	const activities = await db.activity.findMany({
+		orderBy: [
+			{
+				startTime: 'asc',
 			},
-			include: {
-				location: {
-					select: {
-						name: true,
-					},
-				},
-				photo: true,
+		],
+		where: {
+			endTime: {
+				gte: today,
 			},
-		})
-	} else {
-		activities = await db.activity.findMany({
-			orderBy: [
-				{
-					startTime: 'asc',
-				},
-			],
-			where: {
-				endTime: {
-					gte: today,
+			membersOnly: !isMember ? false : undefined,
+		},
+		include: {
+			location: {
+				select: {
+					name: true,
 				},
 			},
-			include: {
-				location: {
-					select: {
-						name: true,
-					},
-				},
-				photo: true,
-			},
-		})
-	}
+			photo: true,
+		},
+	})
 
 	return {
 		activities,

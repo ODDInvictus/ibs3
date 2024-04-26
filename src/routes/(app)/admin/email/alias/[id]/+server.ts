@@ -1,10 +1,14 @@
-import { authAdmin } from '$lib/server/authorizationMiddleware'
+import { isAdmin } from '$lib/server/auth'
 import { error, type RequestHandler } from '@sveltejs/kit'
 import db from '$lib/server/db'
 
 export const PUT = (async ({ request, locals }) => {
-	const [authorized, committees] = authAdmin(locals)
-	if (!authorized) error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
+
+	const authorized = isAdmin(locals.user)
+	if (!authorized)
+		return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: admin', {
+			status: 403,
+		})
 
 	// Now we have a json body, so parse it
 	const body = await request.json()
