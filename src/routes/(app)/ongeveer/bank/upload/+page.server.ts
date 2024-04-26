@@ -1,6 +1,6 @@
 import db from '$lib/server/db'
 import { error, type Actions } from '@sveltejs/kit'
-import { hasRole } from '$lib/server/authorization'
+import { hasRole } from '$lib/server/auth'
 import { LDAP_IDS } from '$lib/constants'
 import type { BankTransactionProduct, BankTransactionType } from '@prisma/client'
 
