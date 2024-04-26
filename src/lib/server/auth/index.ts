@@ -4,6 +4,7 @@ import { env } from '$env/dynamic/private'
 import { handleAuthorization } from './authorization'
 import { IBSAuthAdapter } from './adapter'
 import { redirect } from '@sveltejs/kit'
+import { isFinancie, isMember, isAdmin } from './helpers'
 
 const {
 	handle: handleAuthentication,
@@ -39,4 +40,4 @@ const {
 	},
 })
 
-export { handleAuthentication, handleAuthorization, signIn, signOut }
+export { handleAuthentication, handleAuthorization, signIn, signOut, isFinancie, isMember, isAdmin }
