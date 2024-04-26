@@ -1,6 +1,5 @@
 import type { Adapter, AdapterAccount } from '@auth/core/adapters'
 import db from '../db'
-import { data } from 'autoprefixer'
 
 async function createEmptyAccount(accountId: string) {
 	await db.unlinkedAccount.upsert({
