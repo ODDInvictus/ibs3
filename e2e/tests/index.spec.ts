@@ -1,9 +1,4 @@
 import { test, expect } from '@playwright/test'
-import { loginTestUser } from '../utils/loginUser'
-
-test.beforeEach(async ({ context }) => {
-	await loginTestUser(context, 'lid')
-})
 
 test('test header', async ({ page }) => {
 	await page.goto('/')
