@@ -16,7 +16,7 @@ const authorization = (async ({ event, resolve }) => {
 	let user
 
 	// If the environment is test, we can't check for authorization
-	if (env.NODE_ENV === 'test') {
+	if (env.ENVIRONMENT === 'test') {
 		const userId = Number(env.TEST_USER_ID ?? 1)
 		user = await getUserTest(userId)
 	} else {
