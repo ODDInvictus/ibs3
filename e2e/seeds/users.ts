@@ -1,5 +1,4 @@
 import { prisma } from '../seed'
-import sessionTokens from '../sessionTokens.json' assert { type: 'json' }
 
 export const userTypes = ['admin', 'colosseum', 'feut', 'financie', 'senaat', 'lid'] as const
 
@@ -42,18 +41,5 @@ export async function seedUsers() {
 		data: accounts,
 	})
 
-	/* Session */
-
-	const sessions = users.map(user => ({
-		id: `FILL-IN-${user.id}`,
-		userId: user.id,
-		expires: '2030-06-11T21:08:54.125Z',
-		sessionToken: sessionTokens[user.firstName],
-	}))
-
-	await prisma.session.createMany({
-		data: sessions,
-	})
-
-	return { users, accounts, sessions }
+	return { users, accounts }
 }
