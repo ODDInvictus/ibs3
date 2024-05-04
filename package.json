@@ -24,14 +24,21 @@
     "docker-down:test": "docker compose -f docker-compose.test.yml down",
 
     "test:local:prepare": "playwright install && playwright install ms-edge && playwright install-deps",
-    "test:local": "npm run test:local:before && playwright test --ui && npm run test:local:after",
+
+    "test:local:unix": "npm run test:local:before && playwright test --ui && npm run test:local:after:unix",
+    "test:local:windows": "npm run test:local:before && playwright test --ui && npm run test:local:after:windows",
+
     "test:local:before": "npm run build && npm run testEnv:before && npm run seed:test",
     "testEnv:before": "cp .env .env.temp && cp .env.test .env",
     "seed:test": "prisma migrate reset && tsx e2e/seed.ts",
-    "test:local:after": "npm run testEnv:after",
-    "testEnv:after": "cp .env.temp .env && rm .env.temp",
 
-    "test:debug": "npm run testEnv:before && playwright test --ui && npm run testEnv:after"
+    "test:local:after:unix": "npm run testEnv:after:unix",
+    "test:local:after:windows": "npm run testEnv:after:windows",
+    
+    "testEnv:after:unix": "cp .env.temp .env && rm .env.temp",
+    "testEnv:after:windows": "cp .env.temp .env && del .env.temp",
+
+    "test:debug": "npm run testEnv:before && playwright test --ui && npm run testEnv:after:unix"
   },
   "devDependencies": {
     "@floating-ui/core": "^1.4.1",
