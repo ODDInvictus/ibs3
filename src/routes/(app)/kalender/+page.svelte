@@ -9,7 +9,7 @@
 <Title title="Kalender" />
 <a id="new-activity-link" href="/activiteit/nieuw">Activiteit aanmaken</a>
 
-<div id="activities">
+<div data-testId="activities" id="activities">
 	{#each data.activities as activity}
 		<div class="row">
 			<div class="image">
@@ -20,8 +20,7 @@
 						src="/image/id/{activity.photo.id}?size=750x375"
 						onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
 						alt="⏳"
-						loading="lazy"
-					/>
+						loading="lazy" />
 				{/if}
 
 				<div class="date-tag">

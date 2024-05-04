@@ -29,7 +29,9 @@
     "testEnv:before": "cp .env .env.temp && cp .env.test .env",
     "seed:test": "prisma migrate reset && tsx e2e/seed.ts",
     "test:local:after": "npm run testEnv:after",
-    "testEnv:after": "cp .env.temp .env && rm .env.temp"
+    "testEnv:after": "cp .env.temp .env && rm .env.temp",
+
+    "test:debug": "npm run testEnv:before && playwright test --ui && npm run testEnv:after"
   },
   "devDependencies": {
     "@floating-ui/core": "^1.4.1",

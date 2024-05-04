@@ -155,10 +155,9 @@
 					imagePreview({
 						image: activityImage(false),
 					})}
-				src={activityImage(true)}
-			/>
+				src={activityImage(true)} />
 		</div>
-		<h2 class="ibs-card--title">
+		<h2 class="ibs-card--title" data-testid="next-activity-name">
 			{@html markdown(data.activity?.name ?? 'Niks!')}
 		</h2>
 		{#if data.activity}
@@ -197,7 +196,7 @@
 		<h2 class="ibs-card--title">Strafbakken</h2>
 		<div class="ibs-card--content">
 			<p>Jij hebt op dit moment</p>
-			<h1>{data.strafbakken}</h1>
+			<h1 data-testid="strafbakken">{data.strafbakken}</h1>
 			<p>strafbakken!</p>
 		</div>
 		<div class="mt-6" />
