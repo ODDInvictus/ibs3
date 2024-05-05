@@ -4,11 +4,15 @@ type Settings = {
 	get: (name: Setting, defaultValue?: string) => string
 	getBool: (name: Setting, defaultValue?: boolean) => boolean
 	getNumber: (name: Setting, defaultValue?: number) => number
+	update: (settingId: number, value: string) => Promise<void>
 	keys: Record<Setting, string>
 }
 
 export enum Setting {
 	FILE_UPLOAD_DISABLED = 'FILE_UPLOAD_DISABLED',
+	VERSION = 'VERSION',
+	GIT_COMMIT = 'GIT_COMMIT',
+	GITHUB_LINK = 'GITHUB_LINK',
 }
 
 export const settings = {
@@ -33,6 +37,15 @@ export const settings = {
 		if (settings.keys[name] === undefined) return 0
 		return parseInt(settings.keys[name] as string)
 	},
+	update: async (settingId: number, value: string) => {
+		const ns = await db.settings.update({
+			where: { id: settingId },
+			data: { value },
+		})
+
+		settings.keys[ns.name as Setting] = value
+	},
+	keys: {} as Record<Setting, string>,
 } as Settings
 
 export async function initSettings() {
@@ -42,4 +55,5 @@ export async function initSettings() {
 
 	// Disallow changes to settings at runtime
 	Object.freeze(settings)
+	console.log('[SETTINGS] Settings initialized')
 }
