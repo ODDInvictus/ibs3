@@ -17,7 +17,7 @@ const authorization = (async ({ event, resolve }) => {
 
 	// If the environment is test, we can't check for authorization
 	if (env.ENVIRONMENT === 'test') {
-		const userId = Number(env.TEST_USER_ID ?? 1)
+		const userId = Number(event.cookies.get('testUserId') ?? 1)
 		user = await getUserTest(userId)
 	} else {
 		const session = await event.locals.getSession()

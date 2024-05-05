@@ -38,7 +38,8 @@
     "testEnv:after:unix": "cp .env.temp .env && rm .env.temp",
     "testEnv:after:windows": "cp .env.temp .env && del .env.temp",
 
-    "test:debug": "npm run testEnv:before && playwright test --ui && npm run testEnv:after:unix"
+    "test:debug:unix": "npm run testEnv:before && playwright test --ui && npm run testEnv:after:unix",
+    "test:debug:windows": "npm run testEnv:before && playwright test --ui && npm run testEnv:after:windows"
   },
   "devDependencies": {
     "@floating-ui/core": "^1.4.1",

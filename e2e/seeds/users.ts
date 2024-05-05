@@ -1,6 +1,5 @@
 import { prisma } from '../seed'
-
-export const userTypes = ['admin', 'colosseum', 'feut', 'financie', 'senaat', 'lid'] as const
+import { userTypes } from '../utils'
 
 export async function seedUsers() {
 	/* User */
