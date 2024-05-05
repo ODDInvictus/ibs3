@@ -1,6 +1,5 @@
 import { GridFSBucket, MongoClient, ServerApiVersion } from 'mongodb'
 import { env } from '$env/dynamic/private'
-import sharp from 'sharp'
 import { Setting, settings } from '../settings'
 
 /**
@@ -33,10 +32,9 @@ export const mongo = client.db(env.MONGO_DB_NAME)
  * console.log(`Uploaded file: ${name}`);
  * ```
  */
-export async function uploadFile(file: File, uploaderName: string) {
-	if (!env.MONGO_URI || !settings.getBool(Setting.FILE_UPLOAD_DISABLED, false)) {
-		console.log('Tried uploading a file but MongoDB is not connected or FILE_UPLOAD_DISABLED is set to true.')
-		return ''
+export async function _uploadFile(file: File, uploaderName: string) {
+	if (!env.MONGO_URI || settings.getBool(Setting.FILE_UPLOAD_DISABLED, false)) {
+		throw new Error('Tried uploading a file but MongoDB is not connected or FILE_UPLOAD_DISABLED is set to true.')
 	}
 
 	let buffer = Buffer.from(await file.arrayBuffer())
@@ -52,7 +50,17 @@ export async function uploadFile(file: File, uploaderName: string) {
 		})
 		.end(buffer)
 
-	return { filename, type: file.type, size: buffer.length }
+	return filename
+}
+
+export async function _getFileStream(filename: string) {
+	const bucket = new GridFSBucket(mongo, { bucketName: 'fs' })
+	const cursor = bucket.find({ filename })
+	const doc = await cursor.next()
+
+	if (!doc) return null
+
+	return { doc, stream: bucket.openDownloadStreamByName(filename) }
 }
 
 /**

@@ -1,3 +1,4 @@
-import { uploadGenericFile } from './fileHandler'
+import { uploadGenericFile, uploadPhoto, getFile } from './fileHandler'
+import { client } from './mongo'
 
-export { uploadGenericFile }
+export { uploadGenericFile, uploadPhoto, client, getFile }

@@ -1,8 +1,8 @@
 import type { Actions } from './$types'
-import { uploadFile } from '$lib/server/mongo'
 import { fail, redirect } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms/server'
 import { z } from 'zod'
+import { uploadGenericFile } from '$lib/server/files'
 
 const schmea = z.object({})
 
@@ -21,8 +21,8 @@ export const load = async ({ locals }) => {
  */
 
 export const actions = {
-	default: async event => {
-		const formData = await event.request.formData()
+	default: async ({ request, locals }) => {
+		const formData = await request.formData()
 		const form = await superValidate(formData, schmea)
 		if (!form.valid) {
 			fail(400, { form })
@@ -31,7 +31,7 @@ export const actions = {
 		// Other fields are accessible in form.data
 
 		const file = formData.get('file') as File
-		const name = await uploadFile(file)
+		const name = await uploadGenericFile(file, locals.user)
 
 		return { form, name }
 	},
