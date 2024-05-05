@@ -860,3 +860,16 @@ model Comment {
   activity   Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
   activityId Int?
 }
+
+//
+// Files
+//
+
+model File {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  filename  String @unique
+  mongoId   String @unique
+}
