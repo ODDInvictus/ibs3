@@ -2,28 +2,35 @@ import type { User } from '@prisma/client'
 import { LDAP_IDS } from '$lib/constants'
 import db from '$lib/server/db'
 
-export async function hasRole(user: User, role: string) {
-	const committeeMembers = await db.committeeMember.findMany({
-		where: {
-			userId: user.id,
-		},
+let committeeMembers: any[]
+
+export async function initAuthHelpers() {
+	committeeMembers = await db.committeeMember.findMany({
 		include: {
 			committee: true,
 		},
 	})
-
-	// return true is Admin or has the role
-	return committeeMembers.some(cm => cm.committee.ldapId === LDAP_IDS.ADMINS) || committeeMembers.some(cm => cm.committee.ldapId === role)
 }
 
-export async function isFinancie(user: User) {
-	return await hasRole(user, LDAP_IDS.FINANCIE)
+export function hasRole(user: User, role: string) {
+	const committees = committeeMembers.filter(cm => cm.userId === user.id)
+
+	if (committees.length === 0) return false
+
+	if (committees.find(cm => cm.committee.ldapId === LDAP_IDS.ADMINS)) return true
+
+	const committeeMember = committees.find(cm => cm.committee.ldapId === role)
+	return committeeMember !== undefined
 }
 
-export async function isMember(user: User) {
-	return await hasRole(user, LDAP_IDS.MEMBERS)
+export function isFinancie(user: User) {
+	return hasRole(user, LDAP_IDS.FINANCIE)
 }
 
-export async function isAdmin(user: User) {
-	return await hasRole(user, LDAP_IDS.ADMINS)
+export function isMember(user: User) {
+	return hasRole(user, LDAP_IDS.MEMBERS)
+}
+
+export function isAdmin(user: User) {
+	return hasRole(user, LDAP_IDS.ADMINS)
 }

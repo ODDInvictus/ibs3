@@ -1,5 +1,4 @@
 <script lang="ts">
-	// @ts-expect-error jonge
 	import { signIn } from '@auth/sveltekit/client'
 	import Logo from '$lib/components/logo-v2-small.svelte'
 	import LogoBig from '$lib/components/logo-v2.svelte'
@@ -8,6 +7,9 @@
 	import Register from '~icons/tabler/bookmark-edit.svg'
 	import { env } from '$env/dynamic/public'
 	import { page } from '$app/stores'
+	import type { PageData } from './$types'
+
+	export let data: PageData
 
 	let selection = 'login'
 
@@ -84,9 +86,9 @@
 		<footer>
 			<p>O.D.D. Invictus</p>
 			<p>
-				v{env.PUBLIC_VERSION} -
-				<a href={env.PUBLIC_GITHUB_LINK + '/tree/' + env.PUBLIC_GIT_REV}>
-					({env.PUBLIC_GIT_REV_SHORT})
+				v{data.version} -
+				<a href={data.githubLink + '/tree/' + data.gitCommit}>
+					({data.gitCommit})
 				</a>
 			</p>
 		</footer>

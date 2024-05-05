@@ -9,7 +9,7 @@ export const load = (async ({ url, locals }) => {
 
 	const ids = idsParam.split(',').map(id => parseInt(id))
 
-	const photos = db.photo.findMany({
+	const photosPromise = db.photo.findMany({
 		where: {
 			id: {
 				in: ids,
@@ -49,11 +49,11 @@ export const load = (async ({ url, locals }) => {
 		},
 	})
 
-	const tags = db.photoTag.findMany()
+	const tagsPromise = db.photoTag.findMany()
 
-	const photoCreators = db.photoCreator.findMany()
+	const photoCreatorsPromise = db.photoCreator.findMany()
 
-	const people = db.user.findMany({
+	const peoplePromise = db.user.findMany({
 		where: {
 			isActive: true,
 		},
@@ -66,7 +66,7 @@ export const load = (async ({ url, locals }) => {
 		},
 	})
 
-	const activities = db.activity.findMany({
+	const activitiesPromise = db.activity.findMany({
 		select: {
 			id: true,
 			name: true,
@@ -77,6 +77,14 @@ export const load = (async ({ url, locals }) => {
 			endTime: 'desc',
 		},
 	})
+
+	const [photos, photoCreators, tags, people, activities] = await Promise.all([
+		photosPromise,
+		photoCreatorsPromise,
+		tagsPromise,
+		peoplePromise,
+		activitiesPromise,
+	])
 
 	return { photos, photoCreators, tags, people, activities }
 }) satisfies PageServerLoad

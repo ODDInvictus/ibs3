@@ -28,9 +28,11 @@
 	import ShoppingCart from '~icons/tabler/shopping-cart'
 	import OngeveerLogo from './_ongeveer-logo.svelte'
 	import IbsLogo from './_ibs-logo.svelte'
+	import type { PageData } from './$types'
 
 	export let openMenu: () => void
 	export let open: boolean
+	export let version: string
 
 	$: inOngeveer = $page.url.pathname.startsWith('/ongeveer')
 </script>
@@ -145,7 +147,7 @@
 
 	<a class="layout--navbar--item version" href="/over">
 		<i><InformationCircle /></i>
-		<span>IBS v{env.PUBLIC_VERSION}</span>
+		<span>IBS v{version}</span>
 	</a>
 </nav>
 

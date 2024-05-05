@@ -1,6 +1,6 @@
 import { GridFSBucket, MongoClient, ServerApiVersion } from 'mongodb'
 import { env } from '$env/dynamic/private'
-import sharp from 'sharp'
+import { Setting, settings } from '../settings'
 
 /**
  * MongoDB client instance.
@@ -32,48 +32,35 @@ export const mongo = client.db(env.MONGO_DB_NAME)
  * console.log(`Uploaded file: ${name}`);
  * ```
  */
-export async function uploadFile(file: File, opts: { quality?: number; compress?: boolean } = { compress: true, quality: 75 }) {
+export async function _uploadFile(file: File, uploaderName: string) {
+	if (!env.MONGO_URI || settings.getBool(Setting.FILE_UPLOAD_DISABLED, false)) {
+		throw new Error('Tried uploading a file but MongoDB is not connected or FILE_UPLOAD_DISABLED is set to true.')
+	}
+
 	let buffer = Buffer.from(await file.arrayBuffer())
-
-	if (!env.MONGO_URI) {
-		console.log('Tried uploading a file but MongoDB is not connected.')
-		return ''
-	}
-
-	const compressableTypes = ['image/jpeg', 'image/png', 'image/avif', 'image/tiff', 'image/webp']
-	let compressed = false
-	if (compressableTypes.includes(file.type) && opts.compress) {
-		try {
-			buffer = await sharp(buffer)
-				.jpeg({ mozjpeg: true, quality: opts.quality ?? 75 })
-				.toBuffer()
-			compressed = true
-		} catch (err) {
-			console.error(err)
-		}
-	}
-
 	const bucket = new GridFSBucket(mongo)
 
-	let filename = compressed ? file.name.replace(/\.\w+$/, '.jpeg') : file.name
-
-	// check if name already exists and generate a new one like 'name-2.jpeg'
-	let i = 1
-	while (await bucket.find({ filename: filename }).hasNext()) {
-		filename = `${filename.replace(/\.\w+$/, '')}-${i++}.${filename.split('.').pop()}`
-	}
-
-	const type = compressed ? 'image/jpeg' : file.type
+	let filename = `Invictus_${uploaderName}_${Date.now()}_${file.name}`
 
 	bucket
 		.openUploadStream(filename, {
 			metadata: {
-				type,
+				type: file.type,
 			},
 		})
 		.end(buffer)
 
-	return { filename, type, size: buffer.length }
+	return filename
+}
+
+export async function _getFileStream(filename: string) {
+	const bucket = new GridFSBucket(mongo, { bucketName: 'fs' })
+	const cursor = bucket.find({ filename })
+	const doc = await cursor.next()
+
+	if (!doc) return null
+
+	return { doc, stream: bucket.openDownloadStreamByName(filename) }
 }
 
 /**
