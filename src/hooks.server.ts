@@ -5,6 +5,8 @@ import { notifyDiscordError } from '$lib/server/notifications/discord'
 import { Decimal } from 'decimal.js'
 import { client as Mongo } from '$lib/server/mongo'
 import { handleAuthentication, handleAuthorization } from '$lib/server/auth'
+import { initSettings } from '$lib/server/settings'
+import { initAuthHelpers } from '$lib/server/auth'
 
 export const handle: Handle = sequence(handleAuthentication, handleAuthorization)
 
@@ -21,6 +23,9 @@ export const handleError = (async ({ error, event }) => {
 // On start up
 await (async () => {
 	Decimal.set({ precision: 4 })
+
+	await initSettings()
+	await initAuthHelpers()
 
 	if (env.DISABLE_MONGO === 'true') {
 		console.log('MongoDB is not connected.')
