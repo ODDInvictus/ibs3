@@ -16,7 +16,7 @@ const redis = new Redis({
 
 export default redis
 
-type RedisJobKeys = 'photo-processing' | 'new-activity' | 'unknown'
+type RedisJobKeys = 'photo-processing' | 'new-activity' | 'unknown' | 'compress-image' | 'rotate-image'
 
 export const createRedisJob = async (key: RedisJobKeys, data?: string) => {
 	if (env.DISABLE_REDIS === 'true') {
