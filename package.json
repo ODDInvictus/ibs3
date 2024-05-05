@@ -25,18 +25,22 @@
 
     "test:local:prepare": "playwright install && playwright install ms-edge && playwright install-deps",
 
-    "test:local:unix": "npm run test:local:before && playwright test --ui && npm run test:local:after:unix",
-    "test:local:windows": "npm run test:local:before && playwright test --ui && npm run test:local:after:windows",
+    "test:local:unix": "npm run test:local:before:unix && playwright test --ui && npm run test:local:after:unix",
+    "test:local:windows": "npm run test:local:before:windows && playwright test --ui && npm run test:local:after:windows",
 
-    "test:local:before": "npm run build && npm run testEnv:before && npm run seed:test",
-    "testEnv:before": "cp .env .env.temp && cp .env.test .env",
+    "test:local:before:unix": "npm run build && npm run testEnv:before:unix && npm run seed:test",
+    "test:local:before:windows": "npm run build && npm run testEnv:before:windows && npm run seed:test",
+
+    "testEnv:before:unix": "cp .env .env.temp && cp .env.test .env",
+    "testEnv:before:windows": "copy .env .env.temp && copy .env.test .env",
+
     "seed:test": "prisma migrate reset && tsx e2e/seed.ts",
 
     "test:local:after:unix": "npm run testEnv:after:unix",
     "test:local:after:windows": "npm run testEnv:after:windows",
     
     "testEnv:after:unix": "cp .env.temp .env && rm .env.temp",
-    "testEnv:after:windows": "cp .env.temp .env && del .env.temp",
+    "testEnv:after:windows": "copy .env.temp .env && del .env.temp",
 
     "test:debug:unix": "npm run testEnv:before && playwright test --ui && npm run testEnv:after:unix",
     "test:debug:windows": "npm run testEnv:before && playwright test --ui && npm run testEnv:after:windows"
