@@ -4,11 +4,7 @@
 
 <Title title="Invictus Bier Systeem beheer" shortTitle="Admin" />
 
-<p>Leuke statistieken ofzo</p>
-
-<br />
-
-<a href="/admin/email/alias">Beheer email</a>
+<a href="/admin/email">Beheer email</a>
 <br />
 <a href="/admin/commissie">Beheer commissies</a>
 <br />
@@ -17,3 +13,5 @@
 <a href="/docs">Documentatie</a>
 <br />
 <a href="/fotos/upload">Upload fotos</a>
+<br />
+<a href="/admin/instellingen">IBS Instellingen</a>

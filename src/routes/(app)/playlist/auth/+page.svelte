@@ -23,7 +23,7 @@
 			toast({
 				title: 'Error',
 				message: error,
-				type: 'error',
+				type: 'danger',
 			})
 
 		if (tokens) {
@@ -44,7 +44,7 @@
 			})
 		} catch (error) {
 			toast({
-				type: 'error',
+				type: 'danger',
 				message: 'De playlist kon niet gesynchroniseerd worden',
 				title: 'Error',
 			})
@@ -68,8 +68,7 @@
 						message: 'Refresh token copied to clipboard',
 						type: 'success',
 					})
-				}}
-			>
+				}}>
 				<p>Copy to clipboard</p>
 				<i>
 					<Copy />
