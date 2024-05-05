@@ -1,12 +1,11 @@
 import type { Actions, PageServerLoad } from './$types'
 import db from '$lib/server/db'
 import { fail, redirect } from '@sveltejs/kit'
-import { createRedisJob } from '$lib/server/cache'
-import { uploadPhoto } from '$lib/server/images'
+import { uploadPhoto } from '$lib/server/files'
 
 export const load = (async () => {
 	return {
-		users: db.user.findMany({
+		users: await db.user.findMany({
 			where: {
 				isActive: true,
 			},
@@ -14,7 +13,7 @@ export const load = (async () => {
 				firstName: 'asc',
 			},
 		}),
-		creators: db.photoCreator.findMany({
+		creators: await db.photoCreator.findMany({
 			orderBy: {
 				name: 'asc',
 			},
@@ -132,20 +131,19 @@ export const actions = {
 		let ids = []
 
 		for (const foto of fotos) {
-			const p = await uploadPhoto({
-				upload: {
-					filename: foto.name,
-					buf: Buffer.from(await foto.arrayBuffer()),
-				},
-				creator: c,
-				uploader: locals.user,
-				runProcessingJob: false,
-			})
+			const id = await uploadPhoto(foto, c.name)
+			// const p = await uploadPhoto({
+			// 	upload: {
+			// 		filename: foto.name,
+			// 		buf: Buffer.from(await foto.arrayBuffer()),
+			// 	},
+			// 	creator: c,
+			// 	uploader: locals.user,
+			// 	runProcessingJob: false,
+			// })
 
-			ids.push(p.id)
+			ids.push(id)
 		}
-
-		await createRedisJob('photo-processing')
 
 		redirect(303, '/fotos/upload/success?ids=' + ids.join(','))
 	},
