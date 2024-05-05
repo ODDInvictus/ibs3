@@ -23,7 +23,8 @@
     "docker-up:test": "docker compose -f docker-compose.test.yml up --force-recreate --build --abort-on-container-exit --exit-code-from ibs3",
     "docker-down:test": "docker compose -f docker-compose.test.yml down",
 
-    "test:local:prepare": "playwright install && playwright install ms-edge && playwright install-deps",
+    "test:local:prepare:unix": "playwright install && playwright install msedge && playwright install-deps",
+    "test:local:prepare:windows": "playwright install && playwright install-deps",
 
     "test:local:unix": "npm run test:local:before:unix && playwright test --ui && npm run test:local:after:unix",
     "test:local:windows": "npm run test:local:before:windows && playwright test --ui && npm run test:local:after:windows",
