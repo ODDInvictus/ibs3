@@ -1,4 +1,4 @@
-import { prisma } from '../seed'
+import { prisma } from '../db'
 import { userTypes } from '../utils'
 
 export async function seedUsers() {

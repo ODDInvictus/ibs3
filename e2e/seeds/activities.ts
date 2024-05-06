@@ -1,4 +1,4 @@
-import { prisma } from '../seed'
+import { prisma } from '../db'
 
 export async function seedActivities(users: { id: number }[]) {
 	/* Activity locations */

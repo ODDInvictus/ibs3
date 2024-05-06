@@ -27,8 +27,7 @@
 					type: 'danger',
 				})
 			}
-		}}>{data.relation.isActive ? 'Uitschakelen' : 'Inschakelen'}</button
-	>
+		}}>{data.relation.isActive ? 'Uitschakelen' : 'Inschakelen'}</button>
 
 	<button
 		on:click={async () => {
@@ -44,7 +43,7 @@
 				})
 		}}
 		disabled={Object.values(data.relation._count).some(count => count > 0) || data.relation.type !== 'OTHER'}
-	>
+		data-testId="delete-btn">
 		Verwijder
 	</button>
 </div>

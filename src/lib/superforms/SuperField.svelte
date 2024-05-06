@@ -24,7 +24,7 @@
 		type === 'date'
 			? dateProxy(formProps.form, field, {
 					format: 'date',
-			  })
+				})
 			: undefined
 
 	$: boolValue = value as Writable<boolean>
@@ -55,43 +55,49 @@
 <div class="input-group">
 	<Label {name} {constraints}><slot /></Label>
 	{#if type === 'textarea'}
-		<textarea {name} class:has-error={$errors?.length ?? 0 > 0} bind:value={$value} {...deleteRequired($constraints)} {...$$restProps} />
+		<textarea
+			{name}
+			data-testId="{name}-input"
+			class:has-error={$errors?.length ?? 0 > 0}
+			bind:value={$value}
+			{...deleteRequired($constraints)}
+			{...$$restProps} />
 	{:else if type === 'date'}
 		<input
 			{name}
+			data-testId="{name}-input"
 			type="date"
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$proxyDate}
 			{...deleteRequired($constraints)}
-			{...$$restProps}
-		/>
+			{...$$restProps} />
 	{:else if type === 'number'}
 		<input
 			{name}
+			data-testId="{name}-input"
 			type="number"
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
 			{...deleteRequired($constraints)}
-			{...$$restProps}
-		/>
+			{...$$restProps} />
 	{:else if type === 'text'}
 		<input
 			{name}
+			data-testId="{name}-input"
 			type="text"
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
 			{...deleteRequired({ ...$constraints })}
-			{...$$restProps}
-		/>
+			{...$$restProps} />
 	{:else if type === 'checkbox'}
 		<input
 			{name}
+			data-testId="{name}-input"
 			type="checkbox"
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:checked={$boolValue}
 			{...deleteRequired($constraints)}
-			{...$$restProps}
-		/>
+			{...$$restProps} />
 	{/if}
 </div>
 <Error {errors} />

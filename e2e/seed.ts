@@ -1,10 +1,11 @@
-import { PrismaClient } from '@prisma/client'
 import { seedUsers } from './seeds/users'
 import { seedCommittees } from './seeds/committees'
 import { seedActivities } from './seeds/activities'
 import { seedMaluspunten } from './seeds/maluspunten'
-
-export const prisma = new PrismaClient()
+import { seedLedgers } from './seeds/ongeveer/ledgers'
+import { seedFinancialPersons } from './seeds/ongeveer/financialPersons'
+import { prisma } from './db'
+import { seedJournalOther } from './seeds/ongeveer/journals'
 
 async function main() {
 	console.log('Start seeding...')
@@ -13,6 +14,9 @@ async function main() {
 	await seedCommittees()
 	await seedActivities(users)
 	await seedMaluspunten()
+	await seedLedgers()
+	const { financialPersons } = await seedFinancialPersons(users)
+	await seedJournalOther(financialPersons)
 
 	console.log('Seeding finished successfully!')
 }

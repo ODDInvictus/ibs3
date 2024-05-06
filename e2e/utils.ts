@@ -12,3 +12,7 @@ export async function setUser(context: BrowserContext, user: (typeof userTypes)[
 		},
 	])
 }
+
+export function generateRandomString(length = 7) {
+	return Math.random().toString(36).substring(length)
+}

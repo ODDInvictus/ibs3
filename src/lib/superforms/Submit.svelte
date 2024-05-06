@@ -9,7 +9,7 @@
 	const { delayed } = formProps
 </script>
 
-<button {...$$restProps} type="submit">
+<button data-testId="submit-btn" {...$$restProps} type="submit">
 	{#if $delayed}
 		<LoaderElipses />
 	{:else}
