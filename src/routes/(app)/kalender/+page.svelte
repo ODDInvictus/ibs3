@@ -9,7 +9,7 @@
 <Title title="Kalender" />
 <a id="new-activity-link" href="/activiteit/nieuw">Activiteit aanmaken</a>
 
-<div data-testId="activities" id="activities">
+<div data-testid="activities" id="activities">
 	{#each data.activities as activity}
 		<div class="row">
 			<div class="image">

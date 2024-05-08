@@ -43,7 +43,7 @@
 				})
 		}}
 		disabled={Object.values(data.relation._count).some(count => count > 0) || data.relation.type !== 'OTHER'}
-		data-testId="delete-btn">
+		data-testid="delete-btn">
 		Verwijder
 	</button>
 </div>

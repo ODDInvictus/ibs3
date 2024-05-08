@@ -57,7 +57,7 @@
 	{#if type === 'textarea'}
 		<textarea
 			{name}
-			data-testId="{name}-input"
+			data-testid="{name}-input"
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
 			{...deleteRequired($constraints)}
@@ -65,7 +65,7 @@
 	{:else if type === 'date'}
 		<input
 			{name}
-			data-testId="{name}-input"
+			data-testid="{name}-input"
 			type="date"
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$proxyDate}
@@ -74,7 +74,7 @@
 	{:else if type === 'number'}
 		<input
 			{name}
-			data-testId="{name}-input"
+			data-testid="{name}-input"
 			type="number"
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
@@ -83,7 +83,7 @@
 	{:else if type === 'text'}
 		<input
 			{name}
-			data-testId="{name}-input"
+			data-testid="{name}-input"
 			type="text"
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
@@ -92,7 +92,7 @@
 	{:else if type === 'checkbox'}
 		<input
 			{name}
-			data-testId="{name}-input"
+			data-testid="{name}-input"
 			type="checkbox"
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:checked={$boolValue}
