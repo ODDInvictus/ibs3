@@ -66,5 +66,5 @@ test('Can not delete relation of type user', async ({ page, context, playwright 
 	})
 
 	const res = await apiContext.delete(`/ongeveer/relations/${user.id}`)
-	expect(res.status()).toBe(409)
+	expect(res.status()).toBe(400)
 })
