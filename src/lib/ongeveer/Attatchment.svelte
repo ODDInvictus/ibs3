@@ -1,9 +1,9 @@
 <script lang="ts">
 	export let previews: {
-		src: string
+		src?: string
 		MIMEtype: string
-		size: string
-		name: string
+		size?: string
+		filename: string
 	}[] = []
 	export let toDelete: string[] = []
 	export let noDelete = false
@@ -16,29 +16,37 @@
 		{#each previews as preview, i}
 			<button class="nav-item btn-secondary" class:selected={selected === i} type="button">
 				<span on:click={() => (selected = i)} class="select">
-					{preview.name.match(/^purchase-\d+-.*/) ? preview.name.split('-').slice(2).join('-') : preview.name}
+					{preview.filename}
 				</span>
 				{#if !noDelete}
 					<span
 						on:click={() => {
-							toDelete = [...toDelete, previews[i].name]
+							toDelete = [...toDelete, previews[i].filename]
 							previews = previews.filter((_, j) => j !== i)
 							selected = 0
-						}}
-					>
+						}}>
 						x
 					</span>
 				{/if}
 			</button>
 		{/each}
 	</div>
-	<p class="small">{previews[selected].name} ({previews[selected].size})</p>
-	{#if previews[selected].MIMEtype.startsWith('image/')}
-		<img src={previews[selected].src} alt={previews[selected].name} />
-	{:else if previews[selected].MIMEtype === 'application/pdf'}
-		<iframe src={previews[selected].src} title={previews[selected].name} />
+	{#if previews.length === 0}
+		<p>Geen bijlagen</p>
 	{:else}
-		<a href={previews[selected].src} download={previews[selected].name} class="button download"> Download </a>
+		{@const { filename, size, MIMEtype } = previews[selected]}
+		{@const src = previews[selected].src ?? `/file/${filename}`}
+		<p class="small">
+			{filename}
+			{#if size}({size}){/if}
+		</p>
+		{#if MIMEtype.startsWith('image/')}
+			<img {src} alt={filename} />
+		{:else if MIMEtype === 'application/pdf'}
+			<iframe {src} title={filename} />
+		{:else}
+			<a href={src} download={filename} class="button download"> Download </a>
+		{/if}
 	{/if}
 </div>
 

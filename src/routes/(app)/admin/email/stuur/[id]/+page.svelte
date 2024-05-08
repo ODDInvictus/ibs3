@@ -30,8 +30,7 @@
 				})
 			}
 		}
-	}}
->
+	}}>
 	<div class="form-control">
 		<label class="label" for="subject">Onderwerp</label>
 		<input type="text" name="subject" id="subject" required />

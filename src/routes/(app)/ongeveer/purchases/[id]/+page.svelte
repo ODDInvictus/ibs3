@@ -49,9 +49,13 @@
 	<div class="attachments">
 		{#if data.attachments.length > 0}
 			<h3>Bijlagen</h3>
-			{#each data.attachments as attachment}
-				<a href={attachment.src} target="_blank">{attachment.name}</a>
-			{/each}
+			<ul>
+				{#each data.attachments as { src, filename }}
+					<li>
+						<a href={src} target="_blank">{filename}</a>
+					</li>
+				{/each}
+			</ul>
 		{:else}
 			<p><i>Geen bijlagen</i></p>
 		{/if}

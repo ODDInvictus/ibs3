@@ -32,10 +32,7 @@ export const mongo = client.db(env.MONGO_DB_NAME)
  * console.log(`Uploaded file: ${name}`);
  * ```
  */
-export async function uploadFile(
-	file: File,
-	opts: { quality?: number; compress?: boolean } = { compress: true, quality: 75 },
-): Promise<string> {
+export async function uploadFile(file: File, opts: { quality?: number; compress?: boolean } = { compress: true, quality: 75 }) {
 	let buffer = Buffer.from(await file.arrayBuffer())
 
 	if (!env.MONGO_URI) {
@@ -58,21 +55,35 @@ export async function uploadFile(
 
 	const bucket = new GridFSBucket(mongo)
 
-	let name = compressed ? file.name.replace(/\.\w+$/, '.jpeg') : file.name
+	let filename = compressed ? file.name.replace(/\.\w+$/, '.jpeg') : file.name
 
 	// check if name already exists and generate a new one like 'name-2.jpeg'
 	let i = 1
-	while (await bucket.find({ filename: name }).hasNext()) {
-		name = `${name.replace(/\.\w+$/, '')}-${i++}.${name.split('.').pop()}`
+	while (await bucket.find({ filename: filename }).hasNext()) {
+		filename = `${filename.replace(/\.\w+$/, '')}-${i++}.${filename.split('.').pop()}`
 	}
 
+	const type = compressed ? 'image/jpeg' : file.type
+
 	bucket
-		.openUploadStream(name, {
+		.openUploadStream(filename, {
 			metadata: {
-				type: compressed ? 'image/jpeg' : file.type,
+				type,
 			},
 		})
 		.end(buffer)
 
-	return name
+	return { filename, type, size: buffer.length }
+}
+
+/**
+ * Deletes a file from the MongoDB GridFS bucket.
+ * @param filename - The name of the file to be deleted.
+ * @returns A Promise that resolves when the file is successfully deleted.
+ */
+export async function deleteFile(filename: string): Promise<void> {
+	const bucket = new GridFSBucket(mongo, { bucketName: 'fs' })
+	const file = await bucket.find({ filename }).next()
+	if (!file) return
+	await bucket.delete(file._id)
 }

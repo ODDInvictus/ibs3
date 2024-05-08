@@ -62,6 +62,12 @@ export const actions = {
 			throw error(500)
 		}
 
+		await db.settings.upsert({
+			where: { name: 'bankTransactionsLastUpdated' },
+			create: { name: 'bankTransactionsLastUpdated', value: new Date().toISOString(), description: 'Last updated bank transactions' },
+			update: { value: new Date().toISOString() },
+		})
+
 		return { status: 200 }
 	},
 } satisfies Actions
