@@ -1,23 +1,11 @@
 import { sveltekit } from '@sveltejs/kit/vite'
-import type { Plugin, UserConfig } from 'vite'
+import type { UserConfig } from 'vite'
 import Icons from 'unplugin-icons/vite'
 import { SvelteKitPWA } from '@vite-pwa/sveltekit'
-
-const removeTestIdPlugin: Plugin = {
-	name: 'remove-testids',
-	enforce: 'pre',
-	transform(code, id) {
-		if (id.endsWith('.svelte')) {
-			return code.replaceAll(/data-testid=".*"/g, '')
-		}
-		return code
-	},
-}
 
 const config: UserConfig = {
 	plugins: [
 		sveltekit(),
-		process.env.ENVIRONMENT === 'test' ? undefined : removeTestIdPlugin,
 		Icons({
 			compiler: 'svelte',
 		}),
