@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { generateRandomString, setUser } from '../../utils'
 import { prisma } from '../../db'
-import { Decimal } from 'decimal.js'
 
 async function getLidAndSenaat() {
 	const lid = await prisma.financialPerson.findFirst({ where: { name: 'lid' } })

@@ -3,6 +3,7 @@ import prisma from '$lib/server/db'
 import type { Session } from 'next-auth'
 import type { Committee, User } from '@prisma/client'
 import { UserRolesEmpty, Roles, type UserRoles } from '$lib/constants'
+import { env } from '$env/dynamic/private'
 
 // Keep user records for 24 hours
 const cache = new NodeCache({ stdTTL: 60 * 60 * 24 })
@@ -56,7 +57,7 @@ export const getCommittees = async (user: User | null): Promise<Committee[] | nu
 
 	const token = user.ldapId + '_committees'
 
-	if (cache.has(token)) {
+	if (env.ENVIRONMENT !== 'test' && cache.has(token)) {
 		return cache.get(token) as Committee[]
 	}
 
@@ -90,13 +91,14 @@ export const getRoles = async (user: User | null, committees: Committee[] | null
 
 	const token = user.ldapId + '_roles'
 
-	if (cache.has(token)) {
+	if (env.ENVIRONMENT !== 'test' && cache.has(token)) {
 		return cache.get(token) as UserRoles
 	}
 
 	const roles = committees.map(committee => committee.ldapId)
 
-	let userRoles = UserRolesEmpty
+	// Create a deep copy of UserRolesEmpty
+	let userRoles = JSON.parse(JSON.stringify(UserRolesEmpty)) as typeof UserRolesEmpty
 
 	const allRoles: string[] = Object.values(Roles)
 

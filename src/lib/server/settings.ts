@@ -1,6 +1,7 @@
 import db from './db'
 import NodeCache from 'node-cache'
 import type { Settings } from '@prisma/client'
+import { env } from '$env/dynamic/private'
 
 // Cache for 24 hours
 // This is so that we don't have to query the database every time we want to get a setting
@@ -8,7 +9,7 @@ import type { Settings } from '@prisma/client'
 const cache = new NodeCache({ stdTTL: 60 * 60 * 24 })
 
 export async function getSettings(): Promise<Settings[]> {
-	if (cache.has('settings')) {
+	if (env.ENVIRONMENT !== 'test' && cache.has('settings')) {
 		// TypeScript kijk nou eens wat in die if statement staat
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		return cache.get<Settings[]>('settings')!
