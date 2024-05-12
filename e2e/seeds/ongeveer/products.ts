@@ -35,24 +35,30 @@ export async function seedProducts(categories: ProductCategory[]) {
 		throw new Error("Categories 'bier' and 'eten' not found, but required to seed products")
 	}
 
-	const products = await prisma.product.createMany({
-		data: [
-			{
-				name: 'Grolsch pijpje',
-				description: 'Groslch premium pilsner 0.3L',
-				price: 1.5,
-				categoryId: beerCategory.id,
-				data: {},
-			},
-			{
-				name: 'Frikandel',
-				description: 'Frikandel',
-				price: 1.0,
-				categoryId: foodCategory.id,
-				data: {},
-			},
-		],
+	const data = [
+		{
+			name: 'Grolsch pijpje',
+			description: 'Groslch premium pilsner 0.3L',
+			price: 1.5,
+			categoryId: beerCategory.id,
+			data: {},
+		},
+		{
+			name: 'Frikandel',
+			description: 'Frikandel',
+			price: 1.0,
+			categoryId: foodCategory.id,
+			data: {},
+		},
+	]
+
+	const productsPromises = data.map(product => {
+		return prisma.product.create({
+			data: product,
+		})
 	})
+
+	const products = await Promise.all(productsPromises)
 
 	return { products }
 }

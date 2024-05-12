@@ -5,7 +5,7 @@ import { seedMaluspunten } from './seeds/maluspunten'
 import { seedLedgers } from './seeds/ongeveer/ledgers'
 import { seedFinancialPersons } from './seeds/ongeveer/financialPersons'
 import { prisma } from './db'
-import { seedJournalOther } from './seeds/ongeveer/journals'
+import { seedJournalOther, seedJournalProduct } from './seeds/ongeveer/journals'
 import { seedProductCategories, seedProducts } from './seeds/ongeveer/products'
 
 async function main() {
@@ -21,7 +21,8 @@ async function main() {
 	const { financialPersons } = await seedFinancialPersons(users)
 	await seedJournalOther(financialPersons)
 	const { productCategories } = await seedProductCategories()
-	await seedProducts(productCategories)
+	const { products } = await seedProducts(productCategories)
+	await seedJournalProduct(financialPersons, products)
 
 	console.log('Seeding finished successfully!')
 }
