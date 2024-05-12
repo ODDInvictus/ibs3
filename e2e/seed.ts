@@ -6,6 +6,7 @@ import { seedLedgers } from './seeds/ongeveer/ledgers'
 import { seedFinancialPersons } from './seeds/ongeveer/financialPersons'
 import { prisma } from './db'
 import { seedJournalOther } from './seeds/ongeveer/journals'
+import { seedProductCategories, seedProducts } from './seeds/ongeveer/products'
 
 async function main() {
 	console.log('Start seeding...')
@@ -14,9 +15,13 @@ async function main() {
 	await seedCommittees()
 	await seedActivities(users)
 	await seedMaluspunten()
+
+	// Ongeveer
 	await seedLedgers()
 	const { financialPersons } = await seedFinancialPersons(users)
 	await seedJournalOther(financialPersons)
+	const { productCategories } = await seedProductCategories()
+	await seedProducts(productCategories)
 
 	console.log('Seeding finished successfully!')
 }

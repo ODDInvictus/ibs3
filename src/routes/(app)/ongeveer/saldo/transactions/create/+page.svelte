@@ -34,7 +34,7 @@
 
 	<form method="POST">
 		<label for="giver">Van</label>
-		<select name="giver">
+		<select name="giver" data-testid="giver-input">
 			<option value={0}>Kies een persoon</option>
 			{#each Object.entries(data.financialPeople) as [key, arr]}
 				<optgroup label={key}>
@@ -45,7 +45,7 @@
 		</select>
 
 		<label for="receiver">Naar</label>
-		<select name="receiver">
+		<select name="receiver" data-testid="receiver-input">
 			<option value={0}>Kies een persoon</option>
 			{#each Object.entries(data.financialPeople) as [key, arr]}
 				<optgroup label={key}>
@@ -56,15 +56,15 @@
 		</select>
 
 		<label for="description">Beschrijving</label>
-		<input type="text" name="description" />
+		<input type="text" name="description" data-testid="description-input" />
 
 		<label for="amount">Bedrag</label>
 		<span class="input-euro">
-			<input type="number" class="euro" min="0.00" step=".01" name="amount" id="amount" />
+			<input type="number" class="euro" min="0.00" step=".01" name="amount" id="amount" data-testid="amount-input" />
 		</span>
 
 		<div class="button">
-			<button type="submit">Verstuur</button>
+			<button type="submit" data-testid="submit-btn">Verstuur</button>
 			<a href="/ongeveer/saldo">Terug</a>
 		</div>
 	</form>
