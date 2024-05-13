@@ -28,7 +28,7 @@ export async function seedLedgers() {
 			{
 				name: 'Cantus',
 				id: 3201,
-				description: 'Cantus',
+				description: 'Cantus ledger',
 			},
 		],
 	})
