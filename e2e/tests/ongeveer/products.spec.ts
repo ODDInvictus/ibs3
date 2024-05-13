@@ -51,10 +51,10 @@ test('Delete product', async ({ page, context }) => {
 	})
 
 	await page.goto(`/ongeveer/products/${product.id}`)
-	await page.getByTestId('delete-btn').click()
 	page.on('dialog', async dialog => {
 		await dialog.accept()
 	})
+	await page.getByTestId('delete-btn').click()
 	await page.waitForURL('/ongeveer/products')
 	expect(page.getByRole('cell', { name })).not.toBeVisible()
 })
