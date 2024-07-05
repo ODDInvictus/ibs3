@@ -44,7 +44,7 @@
 			<h3>Bekijk anderen hun playlist:</h3>
 			<div class="lists">
 				<UserList users={data.users.slice(0, Math.floor(data.users.length / 2))} />
-				<UserList users={data.users.slice(Math.floor(data.users.length / 2) + 1)} />
+				<UserList users={data.users.slice(Math.floor(data.users.length / 2))} />
 			</div>
 		{/if}
 
