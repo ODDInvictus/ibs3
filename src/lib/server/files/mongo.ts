@@ -1,6 +1,7 @@
 import { GridFSBucket, MongoClient, ServerApiVersion } from 'mongodb'
 import { env } from '$env/dynamic/private'
 import { Setting, settings } from '../settings'
+import { GridFSPromise } from 'gridfs-promise'
 
 /**
  * MongoDB client instance.
@@ -17,6 +18,8 @@ export const client = new MongoClient(env.MONGO_URI || 'mongodb://localhost:2701
  * MongoDB database instance.
  */
 export const mongo = client.db(env.MONGO_DB_NAME)
+
+export const gridFS = new GridFSPromise(env.MONGO_DB_NAME || 'ibs3', env.MONGO_URI, {}, env.MONGO_DB_BUCKET_NAME || 'ibs3-fs')
 
 /**
  * Uploads a file to MongoDB GridFS.
@@ -38,23 +41,29 @@ export async function _uploadFile(file: File, uploaderName: string) {
 	}
 
 	let buffer = Buffer.from(await file.arrayBuffer())
-	const bucket = new GridFSBucket(mongo)
+	// const bucket = new GridFSBucket(mongo)
 
-	let filename = `Invictus_${uploaderName}_${Date.now()}_${file.name}`
+	let normalizedFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_')
+	let filename = `Invictus_${uploaderName}_${Date.now()}_${normalizedFileName}`
 
-	bucket
-		.openUploadStream(filename, {
-			metadata: {
-				type: file.type,
-			},
-		})
-		.end(buffer)
+	await gridFS.uploadFileString(buffer.toString('base64'), filename, file.type, {})
+
+	// const stream = bucket
+	// 	.openUploadStream(filename, {
+	// 		metadata: {
+	// 			type: file.type,
+	// 			processed: false
+	// 		}
+	// 	})
+	// 	.end(buffer)
+
+	console.log(`Uploaded file: ${filename}`)
 
 	return filename
 }
 
 export async function _getFileStream(filename: string) {
-	const bucket = new GridFSBucket(mongo, { bucketName: 'fs' })
+	const bucket = new GridFSBucket(mongo, { bucketName: env.MONGO_DB_BUCKET_NAME || 'ibs3-fs' })
 	const cursor = bucket.find({ filename })
 	const doc = await cursor.next()
 

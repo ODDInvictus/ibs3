@@ -31,7 +31,7 @@ export const actions = {
 		// Other fields are accessible in form.data
 
 		const file = formData.get('file') as File
-		const name = await uploadGenericFile(file, locals.user)
+		const name = await uploadGenericFile(file, locals.user.ldapId)
 
 		return { form, name }
 	},

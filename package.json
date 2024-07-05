@@ -80,6 +80,7 @@
 		"dotenv": "^16.3.1",
 		"express": "^4.19.2",
 		"filereader": "^0.10.3",
+		"gridfs-promise": "^6.3.10",
 		"markdown-it": "^13.0.1",
 		"markdown-it-emoji": "^2.0.2",
 		"markdown-it-ins": "^3.0.1",
