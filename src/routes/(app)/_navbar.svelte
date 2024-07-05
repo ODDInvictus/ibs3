@@ -29,6 +29,7 @@
 	import OngeveerLogo from './_ongeveer-logo.svelte'
 	import IbsLogo from './_ibs-logo.svelte'
 	import type { PageData } from './$types'
+	import { PUBLIC_MALUSPUNTEN_ENABLED } from '$env/static/public'
 
 	export let openMenu: () => void
 	export let open: boolean
@@ -112,11 +113,13 @@
 			<span>Menu</span>
 		</button>
 
-		{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
-			<a class="layout--navbar--item" href="/maluspunten">
-				<i><AccessibleOff /></i>
-				<span>Maluspunten</span>
-			</a>
+		{#if env.PUBLIC_MALUSPUNTEN_ENABLED === 'true'}
+			{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
+				<a class="layout--navbar--item" href="/maluspunten">
+					<i><AccessibleOff /></i>
+					<span>Maluspunten</span>
+				</a>
+			{/if}
 		{/if}
 
 		<a class="layout--navbar--item" href="/financieel">
