@@ -26,6 +26,7 @@
 	import QuestionMark from '~icons/tabler/question-mark'
 	import Home from '~icons/tabler/home'
 	import ShoppingCart from '~icons/tabler/shopping-cart'
+	import ListNumbers from '~icons/tabler/list-numbers'
 	import OngeveerLogo from './_ongeveer-logo.svelte'
 	import IbsLogo from './_ibs-logo.svelte'
 	import type { PageData } from './$types'
@@ -112,6 +113,11 @@
 			{/if}
 			<span>Menu</span>
 		</button>
+
+		<a class="layout--navbar--item" href="/ranglijst">
+			<i><ListNumbers /></i>
+			<span>Ranglijsten</span>
+		</a>
 
 		{#if env.PUBLIC_MALUSPUNTEN_ENABLED === 'true'}
 			{#if !$page.data.roles[LDAP_IDS.FEUTEN]}

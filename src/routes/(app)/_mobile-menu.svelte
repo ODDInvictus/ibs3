@@ -7,11 +7,18 @@
 	import ShieldCheck from '~icons/tabler/shield-check'
 	import Settings from '~icons/tabler/settings'
 	import AccessibleOff from '~icons/tabler/accessible-off'
+	import ListNumbers from '~icons/tabler/list-numbers'
+	import { env } from '$env/dynamic/public'
 
 	export let version: string
 </script>
 
 <div class="inner">
+	<a class="layout--mobimenu--item" href="/ranglijst">
+		<i><ListNumbers /></i>
+		<span>Ranglijsten</span>
+	</a>
+
 	{#if env.PUBLIC_MALUSPUNTEN_ENABLED === 'true'}
 		{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
 			<a class="layout--mobimenu--item" href="/maluspunten">

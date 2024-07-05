@@ -15,3 +15,5 @@
 <a href="/fotos/upload">Upload fotos</a>
 <br />
 <a href="/admin/instellingen">IBS Instellingen</a>
+<br />
+<a href="/ranglijst/nieuw">Nieuwe ranglijst</a>
