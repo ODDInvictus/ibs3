@@ -35,10 +35,10 @@ IBS3 gebruikt 3 databases, MariaDB, MongoDB en Redis.
 Om MariaDB lokaal te draaien moet je even een kopie van de productie database maken, en dan kan je aan de slag.
 Er is ook een gehoste development database, vraag Niels hierna.
 
-
 ### Redis en mongo
 
 Redis en mongo zijn niet verplicht, je kan ze uitschakelen met de volgende environment variables:
+
 ```
 DISABLE_MONGO=true
 DISABLE_REDIS=true
@@ -56,9 +56,6 @@ Zelfde geldt voor Mongo
 docker run -d -p 27017:27017 --name mongo mongo
 ```
 
-
-
-
 ## Tasks
 
 IBS3 is in staat om dingen op de achtergrond te draaien, buiten een request om. Dit is nice voor dingen die (redelijk) wat tijd kosten, zoals emails versturen. Hiervoor gebruiken we een express/node-cron backend. Deze start in development automatisch op als je `npm run dev` doet.
@@ -74,6 +71,14 @@ cron.schedule('1 * * * *', syncLDAPUsers)
 ```
 
 Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab.guru/) gebruiken
+
+## Maluspunten
+
+Maluspunten kan worden uitgeschakeld met een environment variable:
+
+```
+PUBLIC_MALUSPUNTEN_ENABLED=true
+```
 
 ## Environment Variables
 
@@ -103,3 +108,4 @@ Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab
 | PUBLIC_SPOITFY_REDIRECT_URI  | Redirect uri voor spotify, alles van spotify is alleen nodig voor de playlist feature | http://localhost:5173/playlist/callback               |
 | DISABLE_REDIS                | Schakel redis uit, jobs en cache werkt niet meer                                      | true                                                  |
 | DISABLE_MONGO                | Schakel mongodb uit, bestanden uploaden en fotos werken niet meer                     | true                                                  |
+| PUBLIC_MALUSPUNTEN_ENABLED   | Schakelt maluspunten in (in het menu)                                                 | true                                                  |
