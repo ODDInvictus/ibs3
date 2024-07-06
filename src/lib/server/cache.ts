@@ -1,5 +1,6 @@
 import Redis from 'ioredis'
 import { env } from '$env/dynamic/private'
+import db from './db'
 
 const redis = new Redis({
 	port: Number(env.REDIS_PORT ?? 6379),
@@ -33,4 +34,14 @@ export const createRedisJob = async (key: RedisJobKeys, data?: string) => {
 			type: key,
 		}),
 	)
+
+	const name = `${key}-${Date.now()}`
+
+	await db.job.create({
+		data: {
+			type: key,
+			data: data ?? '',
+			name,
+		},
+	})
 }
