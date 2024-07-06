@@ -38,19 +38,16 @@ export async function uploadGenericFile(file: File, uploader: string): Promise<s
  * Uploads a photo to the server. Automatically compresses the image.
  * @param file The photo to upload.
  * @param uploader The user uploading the photo.
- * @param compress Whether to compress the image default true.
  * @returns The ID of the uploaded File.
  */
-export async function uploadPhoto(file: File, uploader: string, compress = true): Promise<filename> {
+export async function uploadPhoto(file: File, uploader: string): Promise<string> {
 	if (settings.getBool(Setting.FILE_UPLOAD_DISABLED, false)) {
 		throw new Error('File uploads are disabled')
 	}
 
 	const f = await uploadGenericFile(file, uploader)
 
-	if (compress) {
-		await compressImage(f)
-	}
+	await compressImage(f)
 
 	return f
 }
@@ -91,10 +88,48 @@ export async function getFile(fileId: string) {
 	return _getFile(file)
 }
 
+/**
+ * Get a file-stream from mongo
+ *
+ * See /(app)/file/[filename] for an example of how to use this
+ * @param fileId The filename of the file to get
+ * @returns Filestream + metadata
+ *
+ */
 export async function getFileByFilename(filename: string) {
 	const file = await db.file.findUnique({
 		where: {
 			filename,
+		},
+	})
+
+	return _getFile(file)
+}
+
+type PhotoQuality = 'thumbnail' | 'normal' | 'original'
+
+/**
+ * Get a file-stream from mongo
+ *
+ * See /(app)/file/[filename] for an example of how to use this
+ * @param fileId The ID of the file to get
+ * @param quality The quality of the image (defaults to large)
+ * @returns Filestream + metadata
+ *
+ */
+export async function getPhoto(filename: string, quality: PhotoQuality = 'normal') {
+	const spl = filename.split('.')
+	const ext = spl.pop()
+
+	if (!ext) {
+		throw new Error('Invalid filename')
+	}
+
+	const fn = spl + '-' + quality + '.' + ext
+
+	const file = await db.file.findUnique({
+		where: {
+			filename: fn,
 		},
 	})
 
