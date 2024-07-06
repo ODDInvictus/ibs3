@@ -914,7 +914,7 @@ model LeaderboardEntry {
 //
 
 model File {
-  id        Int      @id @default(autoincrement())
+  id        String      @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

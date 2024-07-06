@@ -1,5 +1,5 @@
 import { Setting, settings } from '$lib/server/settings'
-import type { User } from '@prisma/client'
+import type { File } from '@prisma/client'
 import { _getFileStream, _uploadFile } from './mongo'
 import db from '$lib/server/db'
 import { compressImage } from './sharp'
@@ -15,7 +15,7 @@ function log(...message: any): void {
  * @returns The ID of the uploaded File.
  * @throws {Error} If file uploads are disabled.
  */
-export async function uploadGenericFile(file: File, uploader: string): Promise<number> {
+export async function uploadGenericFile(file: File, uploader: string): Promise<string> {
 	if (settings.getBool(Setting.FILE_UPLOAD_DISABLED, false)) {
 		throw new Error('File uploads are disabled')
 	}
@@ -26,11 +26,12 @@ export async function uploadGenericFile(file: File, uploader: string): Promise<n
 
 	const fileId = await db.file.create({
 		data: {
-			filename: f,
+			filename: f.filename,
+			id: f.mongoID,
 		},
 	})
 
-	return fileId.id
+	return f.filename
 }
 
 /**
@@ -54,21 +55,7 @@ export async function uploadPhoto(file: File, uploader: string, compress = true)
 	return f
 }
 
-/**
- * Get a file-stream from mongo
- *
- * See /(app)/file/[filename] for an example of how to use this
- * @param fileId The ID of the file to get
- * @returns Filestream + metadata
- *
- */
-export async function getFile(fileId: number) {
-	const file = await db.file.findUnique({
-		where: {
-			id: fileId,
-		},
-	})
-
+async function _getFile(file: File | null) {
 	if (!file) {
 		return null
 	}
@@ -84,4 +71,32 @@ export async function getFile(fileId: number) {
 		stream: str.stream,
 		doc: str.doc,
 	}
+}
+
+/**
+ * Get a file-stream from mongo
+ *
+ * See /(app)/file/[filename] for an example of how to use this
+ * @param fileId The ID of the file to get
+ * @returns Filestream + metadata
+ *
+ */
+export async function getFile(fileId: string) {
+	const file = await db.file.findUnique({
+		where: {
+			id: fileId,
+		},
+	})
+
+	return _getFile(file)
+}
+
+export async function getFileByFilename(filename: string) {
+	const file = await db.file.findUnique({
+		where: {
+			filename,
+		},
+	})
+
+	return _getFile(file)
 }

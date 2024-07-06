@@ -21,13 +21,16 @@ export const mongo = client.db(env.MONGO_DB_NAME)
 
 export const gridFS = new GridFSPromise(env.MONGO_DB_NAME || 'ibs3', env.MONGO_URI, {}, env.MONGO_DB_BUCKET_NAME || 'ibs3-fs')
 
+type UploadedFile = {
+	filename: string
+	mongoID: string
+}
+
 /**
  * Uploads a file to MongoDB GridFS.
  * @param file The file to upload.
  * @param opts Options for file compression and quality.
- * @param opts.quality The quality of the compressed image (0-100) default 75.
- * @param opts.compress Whether to compress the image default true.
- * @returns The name of the uploaded file.
+ * @returns The MongoDB ID of the uploaded file.
  *
  * @example
  * ```ts
@@ -35,7 +38,7 @@ export const gridFS = new GridFSPromise(env.MONGO_DB_NAME || 'ibs3', env.MONGO_U
  * console.log(`Uploaded file: ${name}`);
  * ```
  */
-export async function _uploadFile(file: File, uploaderName: string) {
+export async function _uploadFile(file: File, uploaderName: string): Promise<UploadedFile> {
 	if (!env.MONGO_URI || settings.getBool(Setting.FILE_UPLOAD_DISABLED, false)) {
 		throw new Error('Tried uploading a file but MongoDB is not connected or FILE_UPLOAD_DISABLED is set to true.')
 	}
@@ -46,7 +49,7 @@ export async function _uploadFile(file: File, uploaderName: string) {
 	let normalizedFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_')
 	let filename = `Invictus_${uploaderName}_${Date.now()}_${normalizedFileName}`
 
-	await gridFS.uploadFileString(buffer.toString('base64'), filename, file.type, {})
+	const object = await gridFS.uploadFileString(buffer.toString('base64'), filename, file.type, {})
 
 	// const stream = bucket
 	// 	.openUploadStream(filename, {
@@ -57,9 +60,12 @@ export async function _uploadFile(file: File, uploaderName: string) {
 	// 	})
 	// 	.end(buffer)
 
-	console.log(`Uploaded file: ${filename}`)
+	console.log(`Uploaded file: ${filename} with id ${object._id}`)
 
-	return filename
+	return {
+		mongoID: object._id.toString(),
+		filename,
+	}
 }
 
 export async function _getFileStream(filename: string) {
