@@ -1,5 +1,5 @@
 import { Setting, settings } from '$lib/server/settings'
-import type { File } from '@prisma/client'
+import type { File as IBSFile } from '@prisma/client'
 import { _getFileStream, _uploadFile } from './mongo'
 import db from '$lib/server/db'
 import { compressImage } from './sharp'
@@ -41,7 +41,7 @@ export async function uploadGenericFile(file: File, uploader: string): Promise<s
  * @param compress Whether to compress the image default true.
  * @returns The ID of the uploaded File.
  */
-export async function uploadPhoto(file: File, uploader: string, compress = true): Promise<number> {
+export async function uploadPhoto(file: File, uploader: string, compress = true): Promise<filename> {
 	if (settings.getBool(Setting.FILE_UPLOAD_DISABLED, false)) {
 		throw new Error('File uploads are disabled')
 	}
@@ -55,7 +55,7 @@ export async function uploadPhoto(file: File, uploader: string, compress = true)
 	return f
 }
 
-async function _getFile(file: File | null) {
+async function _getFile(file: IBSFile | null) {
 	if (!file) {
 		return null
 	}
