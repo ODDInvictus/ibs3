@@ -31,9 +31,20 @@
 	const { enhance } = formProps
 </script>
 
-<Title title="File upload" />
+<Title title="Bestand uploaden" underTitle="Hier kan je een generiek bestandje uploaden, denk aan PDFjes voor ALVs o.i.d." />
+
+<div class="topbar">
+	<a href="/file/overzicht">Overzicht bestanden</a>
+</div>
 
 <form method="post" enctype="multipart/form-data" class="superform" use:enhance>
-	<SuperFileField {formProps} name="file">File</SuperFileField>
+	<SuperFileField {formProps} name="file">Bestand</SuperFileField>
 	<Submit {formProps}>Uploaden</Submit>
 </form>
+
+<style>
+	.topbar {
+		display: flex;
+		justify-content: center;
+	}
+</style>

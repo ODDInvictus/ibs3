@@ -25,13 +25,18 @@ export const actions = {
 		const formData = await request.formData()
 		const form = await superValidate(formData, schmea)
 		if (!form.valid) {
-			fail(400, { form })
+			return fail(400, { form })
 		}
 
 		// Other fields are accessible in form.data
 
 		const file = formData.get('file') as File
-		const name = await uploadGenericFile(file, locals.user.ldapId)
+
+		if (!file || file.size === 0) {
+			return fail(400, { form: { ...form, errors: { file: 'No file uploaded' } } })
+		}
+
+		const name = await uploadGenericFile(file, locals.user.firstName)
 
 		return { form, name }
 	},
