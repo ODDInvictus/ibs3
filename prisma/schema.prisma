@@ -921,3 +921,17 @@ model File {
   filename  String @unique
 }
 
+
+//
+// Jobs
+// 
+
+model Job {
+  id       Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String
+  data String
+  type String
+}
