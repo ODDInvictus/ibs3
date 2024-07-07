@@ -44,13 +44,12 @@ export async function _uploadFile(file: File, uploaderName: string): Promise<Upl
 		throw new Error('Tried uploading a file but MongoDB is not connected or FILE_UPLOAD_ENABLED is set to 0.')
 	}
 
-	let buffer = Buffer.from(await file.arrayBuffer())
-	// const bucket = new GridFSBucket(mongo)
-
 	let normalizedFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_')
 	const date = getCurrentDateFilename()
 
 	let filename = `invictus_${uploaderName}_${date}_${normalizedFileName}`
+
+	const buffer = Buffer.from(await file.arrayBuffer())
 
 	const object = await gridFS.uploadFileString(buffer.toString('base64'), filename, file.type, {})
 

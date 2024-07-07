@@ -26,15 +26,6 @@ export const createRedisJob = async (key: RedisJobKeys, data?: string) => {
 	}
 
 	console.log('[REDIS] Creating job of type', key)
-	await redis.publish(
-		key,
-		JSON.stringify({
-			data: data ?? '',
-			date: Date.now(),
-			type: key,
-		}),
-	)
-
 	const name = `${key}-${Date.now()}`
 
 	await db.job.create({
@@ -44,4 +35,14 @@ export const createRedisJob = async (key: RedisJobKeys, data?: string) => {
 			name,
 		},
 	})
+
+	await redis.publish(
+		key,
+		JSON.stringify({
+			name,
+			data: data ?? '',
+			date: Date.now(),
+			type: key,
+		}),
+	)
 }

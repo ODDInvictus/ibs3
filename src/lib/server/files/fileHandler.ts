@@ -24,7 +24,7 @@ export async function uploadGenericFile(file: File, uploader: User): Promise<str
 
 	const f = await _uploadFile(file, uploader.ldapId)
 
-	const fileId = await db.file.create({
+	await db.file.create({
 		data: {
 			filename: f.filename,
 			id: f.mongoID,
