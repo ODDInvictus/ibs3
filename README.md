@@ -72,14 +72,6 @@ cron.schedule('1 * * * *', syncLDAPUsers)
 
 Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab.guru/) gebruiken
 
-## Maluspunten
-
-Maluspunten kan worden uitgeschakeld met een environment variable:
-
-```
-PUBLIC_MALUSPUNTEN_ENABLED=true
-```
-
 ## Environment Variables
 
 | Sleutel                      | Waarde                                                                                | Voorbeeld                                             |

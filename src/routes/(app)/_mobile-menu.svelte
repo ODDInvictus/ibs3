@@ -19,7 +19,7 @@
 		<span>Ranglijsten</span>
 	</a>
 
-	{#if env.PUBLIC_MALUSPUNTEN_ENABLED === 'true'}
+	{#if $page.data.settings.maluspuntenEnabled}
 		{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
 			<a class="layout--mobimenu--item" href="/maluspunten">
 				<i><AccessibleOff /></i>

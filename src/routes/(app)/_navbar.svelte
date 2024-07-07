@@ -30,7 +30,6 @@
 	import OngeveerLogo from './_ongeveer-logo.svelte'
 	import IbsLogo from './_ibs-logo.svelte'
 	import type { PageData } from './$types'
-	import { PUBLIC_MALUSPUNTEN_ENABLED } from '$env/static/public'
 
 	export let openMenu: () => void
 	export let open: boolean
@@ -119,7 +118,7 @@
 			<span>Ranglijsten</span>
 		</a>
 
-		{#if env.PUBLIC_MALUSPUNTEN_ENABLED === 'true'}
+		{#if $page.data?.settings.maluspuntenEnabled}
 			{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
 				<a class="layout--navbar--item" href="/maluspunten">
 					<i><AccessibleOff /></i>
