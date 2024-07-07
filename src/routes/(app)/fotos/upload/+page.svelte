@@ -55,8 +55,7 @@
 
 <Title
 	title="Upload fotos"
-	underTitle="Hier kan je foto's uploaden van Invictus. Doe dit alsjeblieft op desktop, of in ieder geval met goed internet, aangezien het echt een bakbeest van een proces is."
-/>
+	underTitle="Hier kan je foto's uploaden van Invictus. Doe dit alsjeblieft op desktop, of in ieder geval met goed internet, aangezien het echt een bakbeest van een proces is." />
 
 <small>Tip: Upload foto's per activiteit, dat maakt het taggen makkelijker!</small>
 
@@ -83,8 +82,7 @@
 				update()
 			}
 		}
-	}}
->
+	}}>
 	<div class="buttons">
 		<label class="button btn-info" for="fotos">Selecteer fotos</label>
 		<input bind:this={input} on:change={onChange} accept="image/*" type="file" id="fotos" name="fotos" multiple required />
@@ -101,15 +99,7 @@
 			{#each data.users as u}
 				<option value={u.ldapId}>{u.firstName}</option>
 			{/each}
-			{#each data.creators as c}
-				<option value={'other-' + c.id}>{c.name}</option>
-			{/each}
-			<option value={'other'}>Anders, namelijk...</option>
 		</select>
-
-		{#if creator === 'other'}
-			<input type="text" id="creator" name="creator-other" placeholder="Voor- en achternaam" required />
-		{/if}
 	</div>
 </form>
 

@@ -303,8 +303,7 @@
 <Title
 	title="Success! Uploaden gelukt"
 	shortTitle="Tag foto's"
-	underTitle="De backend is nog bezig met het verwerken van alle foto's, maar in de tussentijd kan je wel alvast metadata specificeren. Dit kan natuurlijk later ook nog worden gedaan, door iedereen, dus maak je geen zorgen als het niet helemaal klopt."
-/>
+	underTitle="De backend is nog bezig met het verwerken van alle foto's, maar in de tussentijd kan je wel alvast metadata specificeren. Dit kan natuurlijk later ook nog worden gedaan, door iedereen, dus maak je geen zorgen als het niet helemaal klopt." />
 
 <div class="top">
 	<div class="activity-options">
@@ -316,8 +315,7 @@
 			<select bind:value={selectedActivityAll}>
 				{#each data.activities as activity}
 					<option value={activity.id}
-						>{`${stripMarkdown(activity.name)} (${getDutchMonth(activity.endTime)} ${activity.endTime.getFullYear()})`}</option
-					>
+						>{`${stripMarkdown(activity.name)} (${getDutchMonth(activity.endTime)} ${activity.endTime.getFullYear()})`}</option>
 				{/each}
 			</select>
 			<button class="btn-a" on:click={saveActivity}>
@@ -357,10 +355,9 @@
 												// @ts-ignore
 												editFields[photo.id].value = e.target?.value
 											}
-										}}
-									>
-										{#each data.photoCreators as creator}
-											<option value={creator.id}>{creator.name}</option>
+										}}>
+										{#each data.people as creator}
+											<option value={creator.id}>{creator.firstName}</option>
 										{/each}
 									</select>
 								</td>
@@ -374,7 +371,7 @@
 								</td>
 							{:else}
 								<td>
-									{photo.creator?.name}
+									{photo.creator?.firstName}
 								</td>
 								<td>
 									<button class="btn-a" on:click={() => edit('name', photo.id)}>
@@ -395,8 +392,7 @@
 												// @ts-ignore
 												editFields[photo.id].value = e.target?.value
 											}
-										}}
-									/>
+										}} />
 								</td>
 								<td>
 									<button class="btn-a" on:click={() => edit('date', photo.id)}>
@@ -430,8 +426,7 @@
 												// @ts-ignore
 												editFields[photo.id].value = e.target?.value
 											}
-										}}
-									/>
+										}} />
 								</td>
 								<td>
 									<button class="btn-a" on:click={() => edit('description', photo.id)}>
@@ -475,8 +470,7 @@
 												// @ts-ignore
 												editFields[photo.id].value = e.target?.value
 											}
-										}}
-									>
+										}}>
 										<option value={-1}>Selecteer een tag</option>
 										<option value={-2}>Nieuwe tag aanmaken</option>
 										{#each tags as tag}
@@ -498,8 +492,7 @@
 										{#each photo.tags as tag}
 											<!-- svelte-ignore a11y-click-events-have-key-events -->
 											<span role="button" tabindex="0" on:click={() => removeTag(photo.id, tag.photoTag.id)} class="ibs-chip removable"
-												>{tag.photoTag.name}</span
-											>
+												>{tag.photoTag.name}</span>
 										{/each}
 									{:else}
 										Geen tags geselecteerd
@@ -529,8 +522,7 @@
 												// @ts-expect-error Idem dito
 												editFields[photo.id].value = selection
 											}
-										}}
-									>
+										}}>
 										{#each data.people as person}
 											{@const selected = photo.peopleTagged.find(pt => pt.user.ldapId === person.ldapId) !== undefined}
 											<option {selected} value={person.ldapId}>{person.firstName}</option>
@@ -561,7 +553,7 @@
 							{#if editFields[photo.id] && editFields[photo.id].field === 'activity'}
 								<td>
 									<select
-										value={photo.activity?.id ?? -1}
+										value={photo.activityPhotoId ?? -1}
 										on:change={e => {
 											if (e) {
 												// @ts-expect-error Bestaat gewoon
@@ -570,13 +562,11 @@
 												// @ts-ignore
 												editFields[photo.id].value = e.target?.value
 											}
-										}}
-									>
+										}}>
 										<option value={-1}>Selecteer een activiteit</option>
 										{#each data.activities as activity}
 											<option value={activity.id}
-												>{`${stripMarkdown(activity.name)} (${getDutchMonth(activity.endTime)} ${activity.endTime.getFullYear()})`}</option
-											>
+												>{`${stripMarkdown(activity.name)} (${getDutchMonth(activity.endTime)} ${activity.endTime.getFullYear()})`}</option>
 										{/each}
 									</select>
 								</td>
@@ -589,15 +579,14 @@
 									</button>
 								</td>
 							{:else}
-								<td>{photo.activity?.name ?? 'Geen activiteit gelinkt'}</td>
+								<td>{photo.activityPhotos?.name ?? 'Geen activiteit gelinkt'}</td>
 								<td>
 									<button class="btn-a" on:click={() => edit('activity', photo.id)}>
 										<i><CalenderPlus /></i>
 									</button>
 								</td>
 							{/if}
-						</tr></tbody
-					>
+						</tr></tbody>
 				</table>
 			</div>
 			<div class="photo">

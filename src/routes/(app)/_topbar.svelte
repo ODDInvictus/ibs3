@@ -30,7 +30,7 @@
 
 	<div class="user" on:click={logout}>
 		<div class="avatar">
-			<ProfileIcon uid={$page.data.user.profilePictureId} name={`${$page.data.user.firstName} ${$page.data.user.lastName}`} />
+			<ProfileIcon filename={$page.data.user.profilePicture} name={`${$page.data.user.firstName} ${$page.data.user.lastName}`} />
 		</div>
 		<div class="name">
 			{$page.data.user.firstName}

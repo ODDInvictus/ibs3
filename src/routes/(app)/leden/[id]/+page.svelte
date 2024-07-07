@@ -25,7 +25,7 @@
 		'personalEmail',
 		'accessDisabled',
 		'preferredTheme',
-		'profilePictureId',
+		'profilePicture',
 	]
 
 	const fields = Object.keys(data.member).filter(key => !usedFields.includes(key))
@@ -51,10 +51,10 @@
 <Title title="{data.member.firstName} {data.member.lastName}" />
 
 <div id="img">
-	{#if !data.member.profilePictureId}
+	{#if !data.member.profilePicture}
 		<img src="/image/logo.png?static=true" alt={data.member.firstName} />
 	{:else}
-		<img src="/image/id/{data.member.profilePictureId}" alt={data.member.firstName} />
+		<img src="/file/{data.member.profilePicture}" alt={data.member.firstName} />
 	{/if}
 
 	{#if $page.data.isCurrentUser}
@@ -128,7 +128,7 @@
 		<p>Laatst ingelogd</p>
 		<p>{toDate(data.member.lastLoggedin)}</p>
 		<p>Profiel foto</p>
-		<p>{data.member.profilePictureId}</p>
+		<p>{data.member.profilePicture}</p>
 		<p>Geen toegang</p>
 		<p>{data.member.accessDisabled}</p>
 	</div>

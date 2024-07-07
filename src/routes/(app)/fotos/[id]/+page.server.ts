@@ -40,7 +40,7 @@ export const load = (async ({ params, locals, url }) => {
 							id: true,
 							firstName: true,
 							lastName: true,
-							profilePictureId: true,
+							profilePicture: true,
 							ldapId: true,
 						},
 					},
@@ -131,7 +131,7 @@ export const actions = {
 					select: {
 						id: true,
 						firstName: true,
-						profilePictureId: true,
+						profilePicture: true,
 						lastName: true,
 						ldapId: true,
 					},

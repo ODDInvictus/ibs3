@@ -1,9 +1,10 @@
 import db from '$lib/server/db'
 import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types.js'
-import { getPhotoCreator, uploadPhoto } from '$lib/server/images.js'
+import { getPhotoCreator } from '$lib/server/images.js'
 import { createRedisJob } from '$lib/server/cache.js'
 import { invalidateUser } from '$lib/server/userCache.js'
+import { uploadPhoto } from '$lib/server/files'
 
 export const load = (async ({ params, locals }) => {
 	let id = params.id
@@ -56,41 +57,23 @@ export const actions = {
 
 		const data = Object.fromEntries(await request.formData())
 
-		const abuf = await data.image.arrayBuffer()
+		const file = data.image as File
 
-		if (abuf.byteLength === 0) {
+		if (!file || file.size === 0) {
 			return fail(400, { success: false, message: 'Geen foto geupload' })
 		}
 
-		db.$transaction(async tx => {
-			const img = data.image as any
+		const filename = await uploadPhoto(file, locals.user)
 
-			const p = await uploadPhoto(
-				{
-					upload: {
-						filename: img.name,
-						buf: Buffer.from(abuf),
-					},
-					additionalName: 'profiel',
-					runProcessingJob: false,
-					uploader: locals.user,
-					creator: await getPhotoCreator(locals.user, false),
-					invisible: true,
-				},
-				tx,
-			)
-
-			// update the user
-			await tx.user.update({
-				where: {
-					ldapId: locals.user.ldapId,
-				},
-				data: {
-					profilePictureId: p.id,
-				},
-			})
+		await db.user.update({
+			where: {
+				ldapId: locals.user.ldapId,
+			},
+			data: {
+				profilePicture: filename,
+			},
 		})
-			.then(async () => await createRedisJob('photo-processing'))
-			.then(() => invalidateUser(locals.user.email))
+
+		invalidateUser(locals.user.email)
 	},
 } satisfies Actions

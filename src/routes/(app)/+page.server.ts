@@ -109,9 +109,6 @@ export const load = (async ({ locals }) => {
 						gte: today,
 					},
 				},
-				include: {
-					photo: true,
-				},
 			})
 		} else {
 			return db.activity.findFirst({
@@ -125,9 +122,6 @@ export const load = (async ({ locals }) => {
 						gte: today,
 					},
 					membersOnly: false,
-				},
-				include: {
-					photo: true,
 				},
 			})
 		}

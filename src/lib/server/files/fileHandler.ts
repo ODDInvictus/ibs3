@@ -50,6 +50,11 @@ export async function uploadPhoto(file: File, uploader: User): Promise<string> {
 
 	await compressImage(f)
 
+	// Now create the photo object
+	await db.photo.create({
+		// TODO
+	})
+
 	return f
 }
 

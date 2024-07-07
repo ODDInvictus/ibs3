@@ -3,7 +3,7 @@
 	import Title from '$lib/components/title.svelte'
 	import { imagePreview } from '$lib/imagePreviewStore'
 	import { activitySlug } from '$lib/textUtils'
-	import { markdown, stripMarkdown } from '$lib/utils'
+	import { getPictureUrl, markdown, stripMarkdown } from '$lib/utils'
 	import type { PageData } from './$types'
 
 	export let data: PageData
@@ -31,8 +31,8 @@
 
 		<div class="ibs-card--content">
 			{#if data.highlight}
-				<div on:click={() => imagePreview({ image: `/image/${data.highlight.filename}?size=large` })}>
-					<img src="/image/{data.highlight.filename}?size=medium" alt="Foto van de Dag" />
+				<div on:click={() => imagePreview({ image: getPictureUrl(data.highlight.filename, 'normal') })}>
+					<img src={getPictureUrl(data.highlight.filename, 'thumbnail')} alt="Foto van de Dag" />
 				</div>
 				<p>Gemaakt door {data.highlight.name}</p>
 				<div class="ibs-card--buttons">

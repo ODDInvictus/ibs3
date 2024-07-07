@@ -51,22 +51,21 @@ model User {
   id       Int     @id @default(autoincrement())
   isActive Boolean @default(true)
 
-  firstName        String
-  lastName         String
-  ldapId           String    @unique
-  email            String    @unique
-  personalEmail    String?
-  nickname         String?   @unique
-  profilePicture   Photo?    @relation("profilePicture", fields: [profilePictureId], references: [id], onDelete: SetNull)
-  profilePictureId Int?
-  birthDate        DateTime? @db.Date
-  phone            String?
-  firstDrink       DateTime? @db.Date
-  becameFeut       DateTime? @db.Date
-  becameMember     DateTime? @db.Date
-  lastLoggedin     DateTime  @default(now())
-  preferredTheme   String    @default("light")
-  accessDisabled   Boolean   @default(false)
+  firstName      String
+  lastName       String
+  ldapId         String    @unique
+  email          String    @unique
+  personalEmail  String?
+  nickname       String?   @unique
+  profilePicture String?
+  birthDate      DateTime? @db.Date
+  phone          String?
+  firstDrink     DateTime? @db.Date
+  becameFeut     DateTime? @db.Date
+  becameMember   DateTime? @db.Date
+  lastLoggedin   DateTime  @default(now())
+  preferredTheme String    @default("light")
+  accessDisabled Boolean   @default(false)
 
   StrafbakGiven     Strafbak[]        @relation("strafbakGiver")
   StrafbakReceived  Strafbak[]        @relation("strafbakReceiver")
@@ -84,8 +83,8 @@ model User {
   ClickSession            ClickSession[]
   Preference              Preference[]
   TrackReaction           TrackReaction[]
-  Photo                   Photo[]
-  PhotoCreator            PhotoCreator[]
+  PhotosUploaded          Photo[]                   @relation("photoUploader")
+  PhotosCreated           Photo[]                   @relation("photoCreator")
   PhotosWithTags          PhotosWithTags[]
   PhotoRating             PhotoRating[]
   PhotoTaggedIn           PhotoPersonTag[]          @relation("taggedInPhoto")
@@ -206,8 +205,7 @@ model Activity {
   // Wie zijn er aanwezig?
   attending   Attending[]
 
-  // Plaatje
-  photo  Photo?  @relation("activityImage")
+  photo  String?
   // Foto's genomen van deze activiteit
   photos Photo[] @relation("activityPhotos")
 
@@ -642,7 +640,7 @@ model LinkClick {
   updatedAt DateTime @updatedAt
 
   // De link die is aangeklikt
-  link   Link @relation(fields: [linkId], references: [id])
+  link   Link @relation(fields: [linkId], references: [id], onDelete: Cascade)
   linkId Int
 
   // De persoon die de link heeft aangeklikt
@@ -759,7 +757,8 @@ model Photo {
   visible Boolean @default(true)
 
   // Photo
-  filename  String @unique
+  file      File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId    String
   extension String
 
   // Heeft de backend deze foto al verwerkt?
@@ -770,30 +769,16 @@ model Photo {
 
   tags PhotosWithTags[]
 
-  uploader     User?            @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  uploader     User?            @relation("photoUploader", fields: [uploaderId], references: [id], onDelete: SetNull)
   uploaderId   Int?
-  creator      PhotoCreator?    @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  creator      User?            @relation("photoCreator", fields: [creatorId], references: [id], onDelete: SetNull)
   creatorId    Int?
   ratings      PhotoRating[]
   peopleTagged PhotoPersonTag[]
   comments     Comment[]
 
-  activityImage   Activity? @relation("activityImage", fields: [activityImageId], references: [id])
-  activityImageId Int?      @unique
   activityPhotos  Activity? @relation("activityPhotos", fields: [activityPhotoId], references: [id], onDelete: SetNull)
   activityPhotoId Int?
-
-  profilePicture User[] @relation("profilePicture")
-}
-
-model PhotoCreator {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int?
-  name      String   @unique
-
-  Photo Photo[]
 }
 
 model PhotoTag {
@@ -921,8 +906,9 @@ model File {
 
   filename String @unique
 
-  uploader   User? @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  uploader   User?   @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
   uploaderId Int?
+  Photo      Photo[]
 }
 
 //
@@ -930,7 +916,7 @@ model File {
 // 
 
 model Job {
-  name String @id
+  name      String   @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

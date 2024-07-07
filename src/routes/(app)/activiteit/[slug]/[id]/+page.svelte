@@ -9,7 +9,7 @@
 	import ExternalLink from '~icons/tabler/external-link'
 	import AccessibleOff from '~icons/tabler/accessible-off'
 	import UserCard from './_user-card.svelte'
-	import { generateICal, stripMarkdown } from '$lib/utils'
+	import { generateICal, getPictureUrl, stripMarkdown } from '$lib/utils'
 	import { toast } from '$lib/notification'
 	import { markdown } from '$lib/utils'
 	import Title from '$lib/components/title.svelte'
@@ -43,14 +43,13 @@
 		return data.attending.sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status])
 	}
 
-	function formatTime(time: string) {
-		const date = new Date(time)
-		return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+	function formatTime(time: Date) {
+		return time.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
 	}
 
-	function formatDate(time: string, endTime: string) {
-		const date = new Date(time)
-		const end = new Date(endTime)
+	function formatDate(time: Date, endTime: Date) {
+		const date = time
+		const end = endTime
 
 		// If the activity is longer than 12 hours, show the end date
 		if (end.getTime() - date.getTime() > 12 * 60 * 60 * 1000) {
@@ -208,14 +207,13 @@
 					on:click={() => {
 						if (activity.photo) {
 							imagePreview({
-								image: `/image/${activity.photo.filename}`,
+								image: getPictureUrl(activity.photo, 'normal'),
 							})
 						}
 					}}
 					alt={nameWithoutMarkdown}
-					src={activity.photo ? `/image/${activity.photo.filename}?size=1000x500` : `/image/favicon-512.png?static=true`}
-					onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
-				/>
+					src={getPictureUrl(activity.photo, 'normal')}
+					onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;" />
 			</div>
 
 			<h2 class="ibs-card--title">{@html markdown(activity.name)}</h2>
@@ -318,8 +316,7 @@
 							})
 							update()
 						}
-					}}
-				>
+					}}>
 					<input type="text" name="comment" placeholder="Typ een reactie..." />
 					<button class="btn-a" type="submit">Plaats</button>
 				</form>
@@ -328,7 +325,7 @@
 					{@const u = comment.commenter}
 					<div class="ibs-comment">
 						<div class="ibs-comment--icon">
-							<ProfileIcon uid={u.profilePictureId} name={u.firstName + ' ' + u.lastName} height={50} width={50} />
+							<ProfileIcon filename={u.profilePicture} name={u.firstName + ' ' + u.lastName} height={50} width={50} />
 						</div>
 						<div class="ibs-comment--content">
 							<a href="/leden/{u.ldapId}" class="ibs-comment--content--name">{u.firstName} {u.lastName}</a>

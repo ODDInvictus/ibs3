@@ -180,3 +180,16 @@ export function getCurrentDateFilename() {
 	const date = new Date()
 	return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`
 }
+
+export function getPictureUrl(filename: string | null | undefined, quality: 'thumbnail' | 'normal' | 'original' = 'normal') {
+	if (!filename) {
+		return `image/logo.png?static=true`
+	}
+
+	let fn = filename
+	if (quality !== 'original') {
+		fn = filename.replace(/\.[^/.]+$/, `-${quality}.jpg`)
+	}
+
+	return `/file/${fn}`
+}

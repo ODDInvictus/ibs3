@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { pad } from '$lib/utils.js'
 import type { PageServerLoad } from './$types.js'
 import { createRedisJob } from '$lib/server/cache.js'
-import { getPhotoCreator, uploadPhoto } from '$lib/server/images.js'
+import { uploadPhoto } from '$lib/server/files'
 
 export const load = (async ({ url, locals }) => {
 	const locations = await db.activityLocation.findMany({
@@ -236,35 +236,31 @@ export const actions = {
 				}
 
 				if (image.size > 0) {
-					const creator = await getPhotoCreator(event.locals.user, false)
+					const filename = await uploadPhoto(image, event.locals.user)
 
-					const buf = Buffer.from(await image.arrayBuffer())
+					// const buf = Buffer.from(await image.arrayBuffer())
 
-					const photo = await uploadPhoto(
-						{
-							creator,
-							uploader: event.locals.user,
-							runProcessingJob: false,
-							additionalName: 'Activiteit',
-							invisible: true,
-							upload: {
-								buf,
-								filename: image.name,
-							},
-						},
-						tx,
-					)
+					// const photo = await uploadPhoto(
+					// 	{
+					// 		creator,
+					// 		uploader: event.locals.user,
+					// 		runProcessingJob: false,
+					// 		additionalName: 'Activiteit',
+					// 		invisible: true,
+					// 		upload: {
+					// 			buf,
+					// 			filename: image.name,
+					// 		},
+					// 	},
+					// 	tx,
+					// )
 
 					await tx.activity.update({
 						where: {
 							id: activity.id,
 						},
 						data: {
-							photo: {
-								connect: {
-									id: photo.id,
-								},
-							},
+							photo: filename,
 						},
 					})
 				}
@@ -300,11 +296,6 @@ export const actions = {
 					})
 				}
 			})
-
-			// If the image has been updated, process them.
-			if (image.size > 0) {
-				await createRedisJob('photo-processing')
-			}
 
 			if (!edit) {
 				// Now, we notify everyone

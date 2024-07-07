@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte'
-	import { markdown } from '$lib/utils'
+	import { getPictureUrl, markdown } from '$lib/utils'
 	import type { PageData } from './$types'
 
 	export let data: PageData
@@ -17,11 +17,10 @@
 					<img src="/image/favicon-512.png?static=true" alt="⏳" />
 				{:else}
 					<img
-						src="/image/id/{activity.photo.id}?size=750x375"
+						src={getPictureUrl(activity.photo)}
 						onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
 						alt="⏳"
-						loading="lazy"
-					/>
+						loading="lazy" />
 				{/if}
 
 				<div class="date-tag">

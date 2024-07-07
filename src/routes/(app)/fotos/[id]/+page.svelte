@@ -126,8 +126,7 @@
 {:else}
 	<Title
 		shortTitle={!data.photo.description ? `Foto ${data.photo.id}` : `${data.photo.description} - Foto`}
-		title={data.photo.description ? `${data.photo.description}` : `Foto ${data.photo.id}`}
-	/>
+		title={data.photo.description ? `${data.photo.description}` : `Foto ${data.photo.id}`} />
 
 	<div class="root">
 		<div class="details-container">
@@ -173,8 +172,7 @@
 							on:focusout={() => (starHovered = rating)}
 							on:mouseleave={() => (starHovered = rating)}
 							on:click={rate}
-							data-filled={starHovered >= idx + 1}><Star /></i
-						>
+							data-filled={starHovered >= idx + 1}><Star /></i>
 					{/each}
 				</div>
 				<small>
@@ -224,8 +222,7 @@
 							})
 							update()
 						}
-					}}
-				>
+					}}>
 					<input type="text" name="comment" placeholder="Typ een reactie..." />
 					<button type="submit">Plaats</button>
 				</form>
@@ -234,7 +231,7 @@
 					{@const u = comment.commenter}
 					<div class="ibs-comment">
 						<div class="ibs-comment--icon">
-							<ProfileIcon uid={u.profilePictureId} name={u.firstName + ' ' + u.lastName} height={50} width={50} />
+							<ProfileIcon filename={u.profilePicture} name={u.firstName + ' ' + u.lastName} height={50} width={50} />
 						</div>
 						<div class="ibs-comment--content">
 							<a href="/leden/{u.ldapId}" class="ibs-comment--content--name">{u.firstName} {u.lastName}</a>
@@ -255,8 +252,7 @@
 						image: data.photoUrl ?? '',
 					})}
 				src={data.photoUrl}
-				alt="Foto {data.photo.id}"
-			/>
+				alt="Foto {data.photo.id}" />
 		</div>
 	</div>
 {/if}

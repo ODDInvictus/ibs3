@@ -4,23 +4,17 @@ import { fail, redirect } from '@sveltejs/kit'
 import { uploadPhoto } from '$lib/server/files'
 
 export const load = (async () => {
+	const users = await db.user.findMany({
+		where: {
+			isActive: true,
+		},
+		orderBy: {
+			firstName: 'asc',
+		},
+	})
+
 	return {
-		users: await db.user.findMany({
-			where: {
-				isActive: true,
-			},
-			orderBy: {
-				firstName: 'asc',
-			},
-		}),
-		creators: await db.photoCreator.findMany({
-			orderBy: {
-				name: 'asc',
-			},
-			where: {
-				userId: null,
-			},
-		}),
+		users,
 	}
 }) satisfies PageServerLoad
 
@@ -51,32 +45,10 @@ export const actions = {
 		const fotos = formData.getAll('fotos') as File[]
 		const creator = formData.get('creator') as string
 		let name = ''
+		let c = locals.user
 
-		let other = false
-
-		if (creator === 'other') {
-			name = formData.get('creator-other') as string
-
-			if (name === '') {
-				return f({ status: 400, message: 'Geen naam ingevuld' })
-			}
-		} else if (creator === locals.user.ldapId) {
+		if (creator === locals.user.ldapId) {
 			name = locals.user.firstName + ' ' + locals.user.lastName
-		} else if (creator.startsWith('other-')) {
-			// A non-user, existing creator has been selected
-			let cid = creator.split('-')[1]
-
-			const c = await db.photoCreator.findFirst({
-				where: {
-					id: parseInt(cid),
-				},
-			})
-
-			if (!c) return f({ status: 400, message: 'Geen creator gevonden' })
-
-			name = c.name
-
-			other = true
 		} else {
 			// We know that creator is an user
 			const u = await db.user.findFirst({
@@ -87,7 +59,7 @@ export const actions = {
 			if (!u) {
 				return f({ status: 400, message: 'Geen gebruiker gevonden' })
 			}
-
+			c = u
 			name = u.firstName + ' ' + u.lastName
 		}
 
@@ -95,53 +67,10 @@ export const actions = {
 			return f({ status: 400, message: 'Geen fotos gevonden' })
 		}
 
-		let c
-
-		// Creator
-		if (creator === 'other' || other) {
-			c = await db.photoCreator.upsert({
-				update: {},
-				create: {
-					name,
-				},
-				where: {
-					name,
-				},
-			})
-		} else {
-			c = await db.photoCreator.upsert({
-				update: {},
-				create: {
-					name,
-					user: {
-						connect: {
-							ldapId: creator,
-						},
-					},
-				},
-				where: {
-					name,
-					user: {
-						ldapId: creator,
-					},
-				},
-			})
-		}
-
 		let ids = []
 
 		for (const foto of fotos) {
-			const id = await uploadPhoto(foto, c.name)
-			// const p = await uploadPhoto({
-			// 	upload: {
-			// 		filename: foto.name,
-			// 		buf: Buffer.from(await foto.arrayBuffer()),
-			// 	},
-			// 	creator: c,
-			// 	uploader: locals.user,
-			// 	runProcessingJob: false,
-			// })
-
+			const id = await uploadPhoto(foto, c)
 			ids.push(id)
 		}
 
