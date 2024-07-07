@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ locals, params }) => {
 			activityId: aid,
 		},
 		data: {
-			isAttending: true,
+			status: 'ATTENDING',
 		},
 	})
 
