@@ -930,11 +930,10 @@ model File {
 // 
 
 model Job {
-  id        Int      @id @default(autoincrement())
+  name String @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name String
   data String
   type String
 
