@@ -55,11 +55,11 @@
 		</tr>
 		<tr>
 			<td>
-				<a href="/short">
+				<a href="/admin/shortlinks">
 					<span class="icon">
 						<TablerExternalLink />
 					</span>
-					Maak nieuwe short link
+					Short links
 				</a>
 			</td>
 		</tr>
