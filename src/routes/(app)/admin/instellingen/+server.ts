@@ -16,8 +16,8 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 	const id = setting.id
 	const value = setting.value
 
-	if (!id || !value) {
-		throw error(400, 'Missing id or value')
+	if (!id) {
+		throw error(400, 'ID mist')
 	}
 
 	await settings.update(id, value)

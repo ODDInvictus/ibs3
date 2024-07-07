@@ -7,7 +7,7 @@
 	export let data: PageData
 
 	const save = (settingId: number) => {
-		const setting = data.settings.find(s => s.id === settingId)
+		const setting = data.ibsSettings.find(s => s.id === settingId)
 		if (!setting) return
 
 		fetch(``, {
@@ -25,34 +25,67 @@
 	}
 </script>
 
-<div>
-	<Title
-		title="Instellingen"
-		shortTitle="Instellingen"
-		underTitle="Op deze pagina kan je instellingen aanpassen, doe dit alleen als je weet wat je doet lol" />
+<Title
+	title="Instellingen"
+	shortTitle="Instellingen"
+	underTitle="Op deze pagina kan je instellingen aanpassen, doe dit alleen als je weet wat je doet lol" />
 
-	<table class="striped small">
-		<thead>
+<table class="striped small">
+	<thead>
+		<tr>
+			<th>Naam</th>
+			<th>Beschrijving</th>
+			<th>Waarde</th>
+			<th>Acties</th>
+		</tr>
+	</thead>
+	<tbody>
+		{#each data.ibsSettings as setting}
 			<tr>
-				<th>Naam</th>
-				<th>Beschrijving</th>
-				<th>Waarde</th>
-				<th>Acties</th>
+				<td>{setting.name}</td>
+				<td>{setting.description}</td>
+				<td><input type="text" bind:value={setting.value} /></td>
+				<td class="actions">
+					<button class="btn-a" title="Opslaan" on:click={() => save(setting.id)}>
+						<Save />
+					</button>
+				</td>
 			</tr>
-		</thead>
-		<tbody>
-			{#each data.settings as setting}
+		{/each}
+	</tbody>
+</table>
+
+{#if data.unsetKeys?.length > 0}
+	<div class="unset-keys">
+		<hr />
+		<h2>Onbekende instellingen</h2>
+		<p>Deze instellingen zijn nog niet bekend in de database, maar wel in de code. Hieronder kan je ze aanmaken</p>
+
+		<table class="striped equal-width">
+			<thead>
 				<tr>
-					<td>{setting.name}</td>
-					<td>{setting.description}</td>
-					<td><input type="text" bind:value={setting.value} /></td>
-					<td class="actions">
-						<button class="btn-a" title="Opslaan" on:click={() => save(setting.id)}>
-							<Save />
-						</button>
-					</td>
+					<th>Key</th>
+					<th>Acties</th>
 				</tr>
-			{/each}
-		</tbody>
-	</table>
-</div>
+			</thead>
+			<tbody>
+				{#each data.unsetKeys as key}
+					<tr>
+						<td>{key}</td>
+						<td>
+							<a href="/admin/instellingen/aanmaken/{key}" class="btn-a">Aanmaken</a>
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
+{/if}
+
+<style lang="scss">
+	.unset-keys {
+		hr {
+			margin: 1rem 0;
+		}
+	}
+</style>
