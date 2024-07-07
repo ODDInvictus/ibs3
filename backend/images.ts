@@ -66,18 +66,16 @@ async function compressImage(msg: ImageProcessingJob) {
 
 		let newFilename = `${filename}-normal.jpg`
 		// If resolution is below 1920x1080, don't upscale
-		let resizeHeight = height
-		let resizeWidth = width
-		if (height >= 1080 && width >= 1920) {
-			resizeHeight = 1080
-			resizeWidth = 1920
-		}
+		let resizeOptions = {}
 
-		if (height > width) {
-			const rw = resizeWidth
-			const rh = resizeHeight
-			resizeHeight = rw
-			resizeWidth = rh
+		if (height >= 1080 && width >= 1920) {
+			resizeOptions = {
+				width: 1920,
+			}
+		} else if (height > width) {
+			resizeOptions = {
+				height: 1920,
+			}
 		}
 
 		const pipeline = sharp(data).jpeg({ quality: ratio ?? 90 })
@@ -85,8 +83,8 @@ async function compressImage(msg: ImageProcessingJob) {
 		let saveBuffer = await pipeline
 			.clone()
 			.resize({
-				width: resizeWidth,
-				height: resizeHeight,
+				...resizeOptions,
+				withoutEnlargement: true,
 				fit: sharp.fit.cover,
 			})
 			.toBuffer()
@@ -96,19 +94,21 @@ async function compressImage(msg: ImageProcessingJob) {
 		newFilename = `${filename}-thumbnail.jpg`
 
 		if (height > width) {
-			resizeHeight = 640
-			resizeWidth = 360
+			resizeOptions = {
+				height: 640,
+			}
 		} else {
-			resizeHeight = 360
-			resizeWidth = 640
+			resizeOptions = {
+				width: 640,
+			}
 		}
 
 		saveBuffer = await pipeline
 			.clone()
 			.resize({
-				width: resizeWidth,
-				height: resizeHeight,
+				...resizeOptions,
 				fit: sharp.fit.cover,
+				withoutEnlargement: true,
 			})
 			.toBuffer()
 
