@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			activityId,
 		},
 		data: {
-			isAttending: status,
+			status: status ? 'ATTENDING' : 'NOT_ATTENDING',
 		},
 	})
 

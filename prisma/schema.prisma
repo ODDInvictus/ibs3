@@ -249,7 +249,6 @@ model Attending {
   activityId Int
 
   status      AttendingStatus @default(NO_RESPONSE)
-  isAttending Boolean         @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
