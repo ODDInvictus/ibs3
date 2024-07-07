@@ -8,10 +8,10 @@
 	import { toast } from '$lib/notification'
 	import type { PageData } from './$types'
 
-	const preferences = $page.data.preferences as Preference[]
+	export let data: PageData
 
 	function edit(id: string, action: string) {
-		const obj = preferences.find(p => p.id === Number(id))
+		const obj = data.preferences.find(p => p.id === Number(id))
 
 		if (!obj) return
 
@@ -27,9 +27,9 @@
 		} else if (action === 'revert') {
 			confirm({
 				title: 'Voorkeur terugdraaien',
-				message: `De standaard waarde voor deze voorkeur is: ${obj.defaultValue}`,
-				cb: async () => {
-					await cb(id, obj.defaultValue, 'revert')
+				message: `De standaard waarde voor deze voorkeur is: ${obj.base.defaultValue}`,
+				cb: async value => {
+					if (value) await cb(id, obj.base.defaultValue, 'edit')
 				},
 			})
 		}
@@ -101,8 +101,6 @@
 				console.error(err)
 			})
 	}
-
-	export let data: PageData
 </script>
 
 <Title title="Instellingen" underTitle="Op deze pagina kan je je ibs voorkeuren veranderen." />
@@ -131,7 +129,7 @@
 	class="striped"
 	tableId="settings-table"
 	columns={['Voorkeur', 'Waarde', 'Acties']}
-	rows={preferences.map(p => {
+	rows={data.preferences.map(p => {
 		return [String(p.id), p.base.description, String(p.value)]
 	})}
 	actions={[
@@ -145,5 +143,4 @@
 			action: id => edit(id, 'revert'),
 			title: 'Terug naar standaard waarde',
 		},
-	]}
-/>
+	]} />
