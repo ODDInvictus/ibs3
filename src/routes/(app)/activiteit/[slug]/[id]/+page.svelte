@@ -99,9 +99,19 @@
 				activityId: activity.id,
 			}),
 		})
-			.then(() => {
+			.then(async res => {
 				let title, message
 				let type: 'info' | 'success' | 'warning' | 'error' = 'info'
+
+				if (!res.ok) {
+					const body = await res.json()
+					toast({
+						title: 'Oeps',
+						message: body.message,
+						type: 'danger',
+					})
+					return
+				}
 
 				if (status === 'ATTENDING') {
 					title = 'Gezellig!'

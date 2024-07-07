@@ -110,11 +110,14 @@
 	}
 
 	async function bij() {
-		fetch(`/activiteit/${data.activity?.id}/bij`, { method: 'POST' }).then(res => {
+		fetch(`/activiteit/${data.activity?.id}/bij`, {
+			method: 'POST',
+		}).then(async res => {
 			if (res.status !== 200) {
+				const body = await res.json()
 				toast({
 					title: 'Oeps!',
-					message: 'Er ging iets mis bij het aanmelden voor de activiteit',
+					message: body.message,
 					type: 'danger',
 				})
 			} else {
