@@ -10,6 +10,7 @@
 	import TablerAdjustmentsCog from '~icons/tabler/adjustments-cog'
 	import TablerListNumbers from '~icons/tabler/list-numbers'
 	import TablerBeer from '~icons/tabler/beer'
+	import TablerBackhoe from '~icons/tabler/backhoe'
 	import { toast } from '$lib/notification'
 
 	async function bak() {
@@ -119,6 +120,16 @@
 						<TablerListNumbers />
 					</span>
 					Nieuwe ranglijst
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="/admin/jobs">
+					<span class="icon">
+						<TablerBackhoe />
+					</span>
+					Jobs
 				</a>
 			</td>
 		</tr>
