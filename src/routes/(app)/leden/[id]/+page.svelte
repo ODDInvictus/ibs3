@@ -5,7 +5,7 @@
 	import Title from '$lib/components/title.svelte'
 	import type { PageData } from './$types.js'
 
-	let member = $page.data.member
+	export let data: PageData
 
 	const usedFields = [
 		'firstName',
@@ -23,9 +23,12 @@
 		'id',
 		'isActive',
 		'personalEmail',
+		'accessDisabled',
+		'preferredTheme',
+		'profilePictureId',
 	]
 
-	const fields = Object.keys(member).filter(key => !usedFields.includes(key))
+	const fields = Object.keys(data.member).filter(key => !usedFields.includes(key))
 
 	function getAge(birthDate: Date) {
 		const today = new Date()
@@ -37,23 +40,21 @@
 		return age
 	}
 
-	function toDate(date: string) {
+	function toDate(date: Date | null) {
 		if (!date) return undefined
 		return new Date(date).toLocaleDateString('nl-NL')
 	}
 
 	export let form
-
-	export let data: PageData
 </script>
 
-<Title title="{member.firstName} {member.lastName}" />
+<Title title="{data.member.firstName} {data.member.lastName}" />
 
 <div id="img">
-	{#if !member.profilePictureId}
-		<img src="/image/logo.png?static=true" alt={member.firstName} />
+	{#if !data.member.profilePictureId}
+		<img src="/image/logo.png?static=true" alt={data.member.firstName} />
 	{:else}
-		<img src="/image/id/{data.member.profilePictureId}" alt={member.firstName} />
+		<img src="/image/id/{data.member.profilePictureId}" alt={data.member.firstName} />
 	{/if}
 
 	{#if $page.data.isCurrentUser}
@@ -77,15 +78,17 @@
 
 	<div>
 		<p>Voornaam</p>
-		<p>{member.firstName}</p>
+		<p>{data.member.firstName}</p>
 		<p>Achternaam</p>
-		<p>{member.lastName}</p>
+		<p>{data.member.lastName}</p>
 		<p>Geboortedatum</p>
-		<p>{toDate(member.birthDate)}</p>
+		<p>{toDate(data.member.birthDate)}</p>
 		<p>Leeftijd</p>
-		<p>{getAge(new Date(member.birthDate))}</p>
+		<p>{getAge(data.member.birthDate ?? new Date())}</p>
 		<p>Persoonlijke email</p>
-		<p>{member.personalEmail}</p>
+		<p>{data.member.personalEmail}</p>
+		<p>Thema</p>
+		<p>{data.member.preferredTheme}</p>
 	</div>
 </div>
 
@@ -96,11 +99,11 @@
 
 	<div>
 		<p>Email</p>
-		<p>{member.email}</p>
+		<p>{data.member.email}</p>
 		<p>Telefoonnummer</p>
-		<p>{member.phone}</p>
+		<p>{data.member.phone}</p>
 		<p>Ldap ID</p>
-		<p>{member.ldapId}</p>
+		<p>{data.member.ldapId}</p>
 	</div>
 </div>
 
@@ -111,21 +114,23 @@
 
 	<div>
 		<p>ID</p>
-		<p>{member.id}</p>
+		<p>{data.member.id}</p>
 		<p>Actief lid</p>
-		<p>{member.isActive}</p>
+		<p>{data.member.isActive}</p>
 		<p>Bijnaam</p>
-		<p>{member.nickname}</p>
+		<p>{data.member.nickname}</p>
 		<p>Eerste meeborrel</p>
-		<p>{toDate(member.firstDrink)}</p>
+		<p>{toDate(data.member.firstDrink)}</p>
 		<p>Feut geworden</p>
-		<p>{toDate(member.becameFeut)}</p>
+		<p>{toDate(data.member.becameFeut)}</p>
 		<p>Lid geworden</p>
-		<p>{toDate(member.becameMember)}</p>
+		<p>{toDate(data.member.becameMember)}</p>
 		<p>Laatst ingelogd</p>
-		<p>{toDate(member.lastLoggedin)}</p>
+		<p>{toDate(data.member.lastLoggedin)}</p>
 		<p>Profiel foto</p>
-		<p>{member.picture}</p>
+		<p>{data.member.profilePictureId}</p>
+		<p>Geen toegang</p>
+		<p>{data.member.accessDisabled}</p>
 	</div>
 </div>
 
@@ -138,7 +143,7 @@
 		<div>
 			{#each fields as field}
 				<p>{field}</p>
-				<p>{member[field]}</p>
+				<p>{data.member[field]}</p>
 			{/each}
 		</div>
 	</div>
