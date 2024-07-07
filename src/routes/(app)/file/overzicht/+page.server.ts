@@ -10,6 +10,9 @@ export const load = (async () => {
 				},
 			},
 		},
+		orderBy: {
+			createdAt: 'desc',
+		},
 	})
 
 	return { files }
