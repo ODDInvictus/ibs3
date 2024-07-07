@@ -2,6 +2,7 @@ import { GridFSBucket, MongoClient, ServerApiVersion } from 'mongodb'
 import { env } from '$env/dynamic/private'
 import { Setting, settings } from '../settings'
 import { GridFSPromise } from 'gridfs-promise'
+import { getCurrentDateFilename } from '$lib/utils'
 
 /**
  * MongoDB client instance.
@@ -39,15 +40,17 @@ type UploadedFile = {
  * ```
  */
 export async function _uploadFile(file: File, uploaderName: string): Promise<UploadedFile> {
-	if (!env.MONGO_URI || settings.getBool(Setting.FILE_UPLOAD_DISABLED, false)) {
-		throw new Error('Tried uploading a file but MongoDB is not connected or FILE_UPLOAD_DISABLED is set to true.')
+	if (!env.MONGO_URI || !settings.getBool(Setting.FILE_UPLOAD_ENABLED, false)) {
+		throw new Error('Tried uploading a file but MongoDB is not connected or FILE_UPLOAD_ENABLED is set to 0.')
 	}
 
 	let buffer = Buffer.from(await file.arrayBuffer())
 	// const bucket = new GridFSBucket(mongo)
 
 	let normalizedFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_')
-	let filename = `Invictus_${uploaderName}_${Date.now()}_${normalizedFileName}`
+	const date = getCurrentDateFilename()
+
+	let filename = `invictus_${uploaderName}_${date}_${normalizedFileName}`
 
 	const object = await gridFS.uploadFileString(buffer.toString('base64'), filename, file.type, {})
 

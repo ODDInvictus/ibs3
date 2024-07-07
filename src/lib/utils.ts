@@ -175,3 +175,8 @@ export function pagination(url: URL) {
 export function formatMoney(price: number | Decimal | String) {
 	return `€ ${Number(price).toFixed(2)}`
 }
+
+export function getCurrentDateFilename() {
+	const date = new Date()
+	return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`
+}

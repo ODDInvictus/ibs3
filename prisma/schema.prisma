@@ -94,6 +94,7 @@ model User {
   Journal                 Journal[]
   Streeplijst             Streeplijst[]
   LeaderboardEntries      LeaderboardEntry[]
+  File                    File[]
 }
 
 model Account {
@@ -883,12 +884,12 @@ model Leaderboard {
 
   pinned Boolean @default(false)
 
-  name   String           @unique
+  name        String           @unique
   description String
-  type   LeaderboardTypes
-  sortBy LeaderboardSort
+  type        LeaderboardTypes
+  sortBy      LeaderboardSort
 
-  opensAt DateTime?
+  opensAt  DateTime?
   closesAt DateTime?
 
   // Entries
@@ -914,24 +915,30 @@ model LeaderboardEntry {
 //
 
 model File {
-  id        String      @id
+  id        String   @id
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  filename  String @unique
-}
+  filename String @unique
 
+  uploader   User? @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  uploaderId Int?
+}
 
 //
 // Jobs
 // 
 
 model Job {
-  id       Int      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   name String
   data String
   type String
+
+  finished    Boolean   @default(false)
+  completedAt DateTime?
+  result      String?
 }

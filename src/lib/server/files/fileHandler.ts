@@ -1,5 +1,5 @@
 import { Setting, settings } from '$lib/server/settings'
-import type { File as IBSFile } from '@prisma/client'
+import type { File as IBSFile, User } from '@prisma/client'
 import { _getFileStream, _uploadFile } from './mongo'
 import db from '$lib/server/db'
 import { compressImage } from './sharp'
@@ -15,19 +15,20 @@ function log(...message: any): void {
  * @returns The ID of the uploaded File.
  * @throws {Error} If file uploads are disabled.
  */
-export async function uploadGenericFile(file: File, uploader: string): Promise<string> {
-	if (settings.getBool(Setting.FILE_UPLOAD_DISABLED, false)) {
+export async function uploadGenericFile(file: File, uploader: User): Promise<string> {
+	if (!settings.getBool(Setting.FILE_UPLOAD_ENABLED, false)) {
 		throw new Error('File uploads are disabled')
 	}
 
-	log('Uploading generic file', file.name)
+	log('Uploading file', file.name)
 
-	const f = await _uploadFile(file, uploader)
+	const f = await _uploadFile(file, uploader.ldapId)
 
 	const fileId = await db.file.create({
 		data: {
 			filename: f.filename,
 			id: f.mongoID,
+			uploaderId: uploader.id,
 		},
 	})
 
@@ -40,8 +41,8 @@ export async function uploadGenericFile(file: File, uploader: string): Promise<s
  * @param uploader The user uploading the photo.
  * @returns The ID of the uploaded File.
  */
-export async function uploadPhoto(file: File, uploader: string): Promise<string> {
-	if (settings.getBool(Setting.FILE_UPLOAD_DISABLED, false)) {
+export async function uploadPhoto(file: File, uploader: User): Promise<string> {
+	if (!settings.getBool(Setting.FILE_UPLOAD_ENABLED, false)) {
 		throw new Error('File uploads are disabled')
 	}
 
