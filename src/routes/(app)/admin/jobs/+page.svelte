@@ -10,7 +10,6 @@
 <table class="striped">
 	<thead>
 		<tr>
-			<th>ID</th>
 			<th>Naam</th>
 			<th>Aangemaakt</th>
 			<th>Voltooid</th>
@@ -20,11 +19,10 @@
 	<tbody>
 		{#each data.jobs as job}
 			<tr>
-				<td>{job.id}</td>
 				<td>{job.name}</td>
 				<td>{job.createdAt.toLocaleString('nl')}</td>
 				<td>{job.finished ? 'Ja' : 'Nee'}</td>
-				<td><a href="/admin/jobs/{job.id}">Meer informatie</a></td>
+				<td><a href="/admin/jobs/{job.name}">Meer informatie</a></td>
 			</tr>
 		{/each}
 	</tbody>

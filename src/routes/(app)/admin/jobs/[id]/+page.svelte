@@ -29,17 +29,15 @@
 			<td>{data.job.finished ? 'Ja' : 'Nee'}</td>
 		</tr>
 
-		{#if data.job.finished}
-			<tr>
-				<td>Voltooid op</td>
-				<td>{data.job.completedAt?.toLocaleString('nl')}</td>
-			</tr>
+		<tr>
+			<td>Voltooid op</td>
+			<td>{data.job.completedAt?.toLocaleString('nl')}</td>
+		</tr>
 
-			<tr>
-				<td>Resultaat</td>
-				<td>{data.job.result ?? 'Geen resultaat opgeslagen'}</td>
-			</tr>
-		{/if}
+		<tr>
+			<td>Resultaat</td>
+			<td>{data.job.result ?? 'Geen resultaat opgeslagen'}</td>
+		</tr>
 
 		<tr>
 			<td>Aangemaakt op</td>

@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types'
 export const load = (async ({ params }) => {
 	const job = await db.job.findFirst({
 		where: {
-			id: Number.parseInt(params.id),
+			name: params.id,
 		},
 	})
 
