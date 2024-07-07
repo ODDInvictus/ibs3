@@ -17,6 +17,7 @@
 			<th>Naam</th>
 			<th>_id</th>
 			<th>Geupload op</th>
+			<th>Uploader</th>
 			<th>Acties</th>
 		</tr>
 	</thead>
@@ -26,6 +27,7 @@
 				<td>{file.filename}</td>
 				<td>{file.id}</td>
 				<td>{file.createdAt.toLocaleDateString('nl')}</td>
+				<td>{file.uploader?.firstName ?? ''}</td>
 				<td><a href="/file/{file.filename}">Bekijk</a></td>
 			</tr>
 		{/each}
