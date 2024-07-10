@@ -758,10 +758,6 @@ model Photo {
   // Photo
   file      File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
   fileId    String
-  extension String
-
-  // Heeft de backend deze foto al verwerkt?
-  processed Boolean @default(false)
 
   // Description
   description String?

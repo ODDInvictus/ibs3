@@ -1,6 +1,7 @@
 import type { Actions, PageServerLoad } from './$types'
 import db from '$lib/server/db'
 import { fail } from '@sveltejs/kit'
+import { getPictureUrl } from '$lib/utils'
 
 export const load = (async ({ params, locals, url }) => {
 	if (!params.id || isNaN(Number(params.id))) {
@@ -12,6 +13,7 @@ export const load = (async ({ params, locals, url }) => {
 			id: Number(params.id),
 		},
 		include: {
+			file: true,
 			creator: true,
 			peopleTagged: {
 				include: {
@@ -83,19 +85,22 @@ export const load = (async ({ params, locals, url }) => {
 	let photoUrl = ''
 	const quality = url.searchParams.get('quality')
 
-	if (quality === 'origineel') {
-		photoUrl = `/image/id/${photo.id}`
-	} else {
-		let qualityParam = 'large'
-		if (quality === 'klein') {
-			qualityParam = 'small'
-		} else if (quality === 'normaal') {
-			qualityParam = 'medium'
-		} else if (quality === 'groot') {
-			qualityParam = 'large'
-		}
-		photoUrl = `/image/${photo.filename}?size=${qualityParam}`
+	let qualityParam = 'normal'
+
+	switch (quality) {
+		case 'normal':
+			qualityParam = 'normal'
+			break
+		case 'origineel':
+			qualityParam = 'original'
+			break
+		case 'klein':
+			qualityParam = 'thumbnail'
+			break
 	}
+
+	// @ts-expect-error kan niet undefined zijn
+	photoUrl = getPictureUrl(photo.file.filename, qualityParam)
 
 	return {
 		photo,

@@ -188,9 +188,8 @@
 				<hr />
 
 				<h2>Kwaliteit</h2>
-				<a href="?quality=klein" class="btn-a">SD</a>
-				<a href="?quality=normaal" class="btn-a">HD</a>
-				<a href="?quality=groot" class="btn-a">FHD</a>
+				<a href="?quality=klein" class="btn-a">Klein</a>
+				<a href="?quality=normaal" class="btn-a">Normaal</a>
 				<a href="?quality=origineel" class="btn-a">Origineel</a>
 			</div>
 			<small> Met rechtermuisknop -> opslaan kan je deze downloaden in de geselecteerde kwaliteit </small>

@@ -21,7 +21,11 @@ export const load = (async ({ params }) => {
 					photoTagId: tag.id,
 				},
 				select: {
-					photo: true,
+					photo: {
+						include: {
+							file: true,
+						},
+					},
 				},
 				orderBy: {
 					photo: {
@@ -44,6 +48,9 @@ export const load = (async ({ params }) => {
 			where: {
 				visible: true,
 			},
+			include: {
+				file: true,
+			},
 		})
 
 		return {
@@ -62,9 +69,7 @@ export const load = (async ({ params }) => {
 						},
 					},
 					{
-						activityImage: {
-							is: null,
-						},
+						activityPhotoId: null,
 					},
 					{
 						visible: true,
@@ -96,6 +101,9 @@ export const load = (async ({ params }) => {
 			photos: {
 				orderBy: {
 					createdAt: 'desc',
+				},
+				include: {
+					file: true,
 				},
 			},
 		},
