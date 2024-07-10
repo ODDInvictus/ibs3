@@ -4,8 +4,8 @@ import type { PageServerLoad } from './$types'
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id)
-	if (isNaN(id)) error(400)
+	if (isNaN(id)) return error(400)
 	const product = await db.product.findUnique({ where: { id }, include: { category: true } })
-	if (!product) error(404)
+	if (!product) return error(404)
 	return { product: JSON.parse(JSON.stringify(product)) as typeof product }
 }) satisfies PageServerLoad

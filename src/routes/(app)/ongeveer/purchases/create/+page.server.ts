@@ -7,7 +7,7 @@ import { getJournalStatus, getLedgers, getRelations } from '$lib/ongeveer/db'
 import schema from './pruchaseSchema'
 import { redirect } from 'sveltekit-flash-message/server'
 import { formatFileSize } from '$lib/utils'
-import { deleteFile, uploadFile } from '$lib/server/mongo'
+// import { deleteFile, uploadFile } from '$lib/server/mongo'
 
 type PurchaseType = 'PURCHASE' | 'DECLARATION'
 
@@ -26,7 +26,7 @@ export const load = (async event => {
 				DeclarationData: true,
 			},
 		})
-		if (!purchase) error(404)
+		if (!purchase) return error(404)
 		if (purchase.type === 'SALE')
 			throw redirect(
 				`/ongeveer/sales/${purchase.id}`,
@@ -94,7 +94,7 @@ export const actions: Actions = {
 		const formData = await request.formData()
 		const form = await superValidate(formData, schema)
 
-		if (!authorization(locals.roles)) error(403)
+		if (!authorization(locals.roles)) return error(403)
 		if (!form.valid) return fail(400, { form })
 
 		const files = formData.getAll('attachments') as File[]
@@ -107,11 +107,11 @@ export const actions: Actions = {
 
 		if (id) {
 			const status = await getJournalStatus(id)
-			if (!status) error(404)
+			if (!status) return error(404)
 
 			// TODO make if posible to change irrelevant fields
 			if (status === 'PAID')
-				error(409, {
+				return error(409, {
 					message: 'Deze factuur is al gematched, unmatch de transactie voordat je de aankoop kan wijzigen',
 				})
 		}
@@ -123,7 +123,7 @@ export const actions: Actions = {
 			await Promise.all(toDelete.map(name => deleteFile(name)))
 		} catch (e) {
 			console.error(e)
-			throw error(500)
+			return error(500)
 		}
 
 		const attachmentsWithNames = attachments.map((file, index) => {
@@ -193,7 +193,7 @@ export const actions: Actions = {
 			}
 		} catch (e) {
 			console.error(e)
-			error(500)
+			return error(500)
 		}
 
 		// Write files to disk
@@ -204,11 +204,12 @@ export const actions: Actions = {
 				if (toDelete.includes(fileData.name)) continue
 				fs.writeFileSync(`${privateEnv.UPLOAD_FOLDER}/purchases/${fileData.name}`, Buffer.from(await fileData.file.arrayBuffer()), {
 					encoding: 'binary',
+					qq,
 				})
 			}
 		} catch (e) {
 			console.error(e)
-			error(500)
+			return error(500)
 		}
 
 		// Delete files from disk
@@ -219,7 +220,7 @@ export const actions: Actions = {
 				fs.unlinkSync(`${privateEnv.UPLOAD_FOLDER}/purchases/${file}`)
 			} catch (e) {
 				console.error(e)
-				error(500)
+				return error(500)
 			}
 		}
 

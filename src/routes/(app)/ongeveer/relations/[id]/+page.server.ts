@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types'
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id)
-	if (Number.isNaN(id)) error(400, 'Ongeldige ID')
+	if (Number.isNaN(id)) return error(400, 'Ongeldige ID')
 
 	const relation = await db.financialPerson.findUnique({
 		where: { id },
@@ -21,7 +21,7 @@ export const load = (async ({ params }) => {
 		},
 	})
 
-	if (!relation) error(404)
+	if (!relation) return error(404)
 
 	return {
 		relation: JSON.parse(JSON.stringify(relation)) as typeof relation,

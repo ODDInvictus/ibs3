@@ -12,7 +12,7 @@ import { createTransaction, getInvictusId, getUnmatchedJournals } from '$lib/ong
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id)
-	if (!id) error(400)
+	if (!id) return error(400)
 
 	const bankTransaction = await db.bankTransaction.findUnique({
 		where: { id },
@@ -31,7 +31,7 @@ export const load = (async ({ params }) => {
 		},
 	})
 
-	if (!bankTransaction) error(404)
+	if (!bankTransaction) return error(404)
 
 	const data = {
 		ref: bankTransaction.ref ?? undefined,

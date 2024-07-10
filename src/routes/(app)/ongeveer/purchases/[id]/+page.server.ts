@@ -30,7 +30,7 @@ export const load = (async ({ params }) => {
 			},
 		},
 	})
-	if (!purchase) error(404, 'Aankoop niet gevonden')
+	if (!purchase) return error(404, 'Aankoop niet gevonden')
 
 	const attachments =
 		purchase?.Attachments?.map(attatchment => {
