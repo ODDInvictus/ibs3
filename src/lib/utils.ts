@@ -14,6 +14,7 @@ import markdownItPlainText from 'markdown-it-plain-text'
 
 import xss from 'xss'
 import type Decimal from 'decimal.js'
+import { env } from '$env/dynamic/public'
 
 const md = new markdownIt({
 	linkify: true,
@@ -182,8 +183,13 @@ export function getCurrentDateFilename() {
 }
 
 export function getPictureUrl(filename: string | null | undefined, quality: 'thumbnail' | 'normal' | 'original' = 'normal') {
+	if (env.PUBLIC_DISABLE_MONGO === 'true') {
+		console.log(`MongoDB disabled, replacing ${filename} with logo`)
+		return '/image/logo.png?static=true'
+	}
+
 	if (!filename) {
-		return `image/logo.png?static=true`
+		return `/image/logo.png?static=true`
 	}
 
 	let fn = filename

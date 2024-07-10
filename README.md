@@ -42,7 +42,7 @@ Er is ook een gehoste development database, vraag Niels hierna.
 Redis en mongo zijn niet verplicht, je kan ze uitschakelen met de volgende environment variables:
 
 ```
-DISABLE_MONGO=true
+PUBLIC_DISABLE_MONGO=true
 DISABLE_REDIS=true
 ```
 
@@ -101,4 +101,4 @@ Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab
 | SPOTIFY_CLIENT_SECRET        | Client secret voor spotify                                                            | ...                                                   |
 | PUBLIC_SPOITFY_REDIRECT_URI  | Redirect uri voor spotify, alles van spotify is alleen nodig voor de playlist feature | http://localhost:5173/playlist/callback               |
 | DISABLE_REDIS                | Schakel redis uit, jobs en cache werkt niet meer                                      | true                                                  |
-| DISABLE_MONGO                | Schakel mongodb uit, bestanden uploaden en fotos werken niet meer                     | true                                                  |
+| PUBLIC_DISABLE_MONGO         | Schakel mongodb uit, bestanden uploaden en fotos werken niet meer                     | true                                                  |

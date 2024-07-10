@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/private'
+import { env as envPublic } from '$env/dynamic/public'
 import { sequence } from '@sveltejs/kit/hooks'
 import type { Handle, HandleServerError } from '@sveltejs/kit'
 import { notifyDiscordError } from '$lib/server/notifications/discord'
@@ -27,7 +28,7 @@ await (async () => {
 	await initSettings()
 	await initAuthHelpers()
 
-	if (env.DISABLE_MONGO === 'true') {
+	if (envPublic.PUBLIC_DISABLE_MONGO === 'true') {
 		console.log('MongoDB is not connected.')
 	} else {
 		await Mongo.connect()
