@@ -141,3 +141,16 @@ export async function getPhoto(filename: string, quality: PhotoQuality = 'normal
 
 	return _getFile(file)
 }
+
+export async function deleteFile(filename: string) {
+	// Soft delete
+	return await db.file.update({
+		where: {
+			filename,
+		},
+		data: {
+			deletedAt: new Date(),
+			deleted: true,
+		},
+	})
+}

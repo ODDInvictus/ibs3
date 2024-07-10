@@ -901,6 +901,10 @@ model File {
 
   filename String @unique
 
+  // soft delete
+  deletedAt DateTime?
+  deleted Boolean @default(false)
+
   uploader   User?   @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
   uploaderId Int?
   Photo      Photo[]
