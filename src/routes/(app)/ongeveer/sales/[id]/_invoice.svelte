@@ -16,7 +16,7 @@
 			} | null
 			FinancialPersonDataUser?: {
 				user: {
-					personalEmail?: string | null
+					email?: string | null
 				}
 			} | null
 		}
@@ -52,7 +52,7 @@
 						{invoice.relation.FinancialPersonDataOther.city ?? ''}
 					</p>
 				{:else if invoice.relation.FinancialPersonDataUser}
-					<p>{invoice.relation.FinancialPersonDataUser.user.personalEmail ?? ''}</p>
+					<p>{invoice.relation.FinancialPersonDataUser.user.email ?? ''}</p>
 				{/if}
 			</div>
 			<div>
