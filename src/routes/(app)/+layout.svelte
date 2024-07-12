@@ -60,7 +60,7 @@
 
 	<div class="layout--stripe" data-open={open} />
 
-	<Topbar />
+	<Topbar adminAlert={data.adminAlert} />
 
 	{#if !open}
 		<div class="layout--container">

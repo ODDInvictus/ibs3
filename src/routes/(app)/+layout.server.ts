@@ -3,14 +3,28 @@ import type { LayoutServerLoad } from './$types'
 import { LDAP_IDS } from '$lib/constants'
 import { loadFlash } from 'sveltekit-flash-message/server'
 import { Setting, settings } from '$lib/server/settings'
+import db from '$lib/server/db'
 
 export const load = loadFlash(async ({ locals }) => {
 	const topRole = getTopRole(locals.committees)
 
 	const maluspuntenEnabled = settings.getBool(Setting.MALUSPUNTEN_ENABLED, false)
 
+	let adminAlert: { title: string; url: string } | undefined = undefined
+
+	if (locals.committees.find(c => c.ldapId === LDAP_IDS.ADMINS)) {
+		// Check for missing settings
+		if (settings.unsetKeys.length > 0) {
+			adminAlert = {
+				title: 'Missende instellingen',
+				url: '/admin/instellingen',
+			}
+		}
+	}
+
 	return {
 		topRole,
+		adminAlert,
 		settings: {
 			maluspuntenEnabled,
 		},

@@ -15,6 +15,8 @@
 			},
 		})
 	}
+
+	export let adminAlert: { title: string; url: string } | undefined
 </script>
 
 <div class="layout--topbar">
@@ -26,6 +28,13 @@
 		<a href="/">
 			<Logo />
 		</a>
+	</div>
+
+	<div class="alert">
+		{#if adminAlert}
+			<b>Let op!</b>
+			<a href={adminAlert.url}>{adminAlert.title}</a>
+		{/if}
 	</div>
 
 	<div class="user" on:click={logout}>
@@ -50,6 +59,16 @@
 
 	.logo {
 		display: none;
+	}
+
+	.alert {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+
+		a {
+			color: white;
+		}
 	}
 
 	.user {
