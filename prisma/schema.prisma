@@ -248,7 +248,7 @@ model Attending {
   activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
   activityId Int
 
-  status      AttendingStatus @default(NO_RESPONSE)
+  status AttendingStatus @default(NO_RESPONSE)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -546,7 +546,7 @@ model Journal {
   Treasurer   User? @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
   treasurerId Int?
 
-  Attachments         JournalAttachments[]
+  Attachments         File[]
   DeclarationData     DeclarationData?
   TransactionMatchRow TransactionMatchRow[]
   Streeplijst         Streeplijst?          @relation(fields: [streeplijstId], references: [id])
@@ -599,16 +599,6 @@ model JournalRow {
 
   Journal   Journal @relation(fields: [journalId], references: [id], onDelete: Cascade)
   journalId Int
-}
-
-model JournalAttachments {
-  id       Int    @id @default(autoincrement())
-  MIMEtype String
-  filename String @unique
-  size     Int // Bytes
-
-  Journal   Journal? @relation(fields: [journalId], references: [id], onDelete: Cascade)
-  journalId Int?
 }
 
 //
@@ -756,8 +746,8 @@ model Photo {
   visible Boolean @default(true)
 
   // Photo
-  file      File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
-  fileId    String
+  file   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId String
 
   // Description
   description String?
@@ -903,11 +893,13 @@ model File {
 
   // soft delete
   deletedAt DateTime?
-  deleted Boolean @default(false)
+  deleted   Boolean   @default(false)
 
-  uploader   User?   @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  uploader   User?    @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
   uploaderId Int?
   Photo      Photo[]
+  Journal    Journal? @relation(fields: [journalId], references: [id])
+  journalId  Int?
 }
 
 //

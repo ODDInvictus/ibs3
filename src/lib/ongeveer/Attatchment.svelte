@@ -1,9 +1,11 @@
 <script lang="ts">
+	import { getPictureUrl } from '$lib/utils'
+
 	export let previews: {
 		src?: string
-		MIMEtype: string
-		size?: string
 		filename: string
+		MIMEtype?: string
+		size?: string
 	}[] = []
 	export let toDelete: string[] = []
 	export let noDelete = false
@@ -35,12 +37,12 @@
 		<p>Geen bijlagen</p>
 	{:else}
 		{@const { filename, size, MIMEtype } = previews[selected]}
-		{@const src = previews[selected].src ?? `/file/${filename}`}
+		{@const src = previews[selected].src ?? getPictureUrl(filename)}
 		<p class="small">
 			{filename}
 			{#if size}({size}){/if}
 		</p>
-		{#if MIMEtype.startsWith('image/')}
+		{#if MIMEtype?.startsWith('image/')}
 			<img {src} alt={filename} />
 		{:else if MIMEtype === 'application/pdf'}
 			<iframe {src} title={filename} />

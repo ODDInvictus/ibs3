@@ -3,6 +3,7 @@
 	import { env } from '$env/dynamic/public'
 	import InputFile from '$lib/components/input-file.svelte'
 	import Title from '$lib/components/title.svelte'
+	import { getPictureUrl } from '$lib/utils.js'
 	import type { PageData } from './$types.js'
 
 	export let data: PageData
@@ -51,11 +52,7 @@
 <Title title="{data.member.firstName} {data.member.lastName}" />
 
 <div id="img">
-	{#if !data.member.profilePicture}
-		<img src="/image/logo.png?static=true" alt={data.member.firstName} />
-	{:else}
-		<img src="/file/{data.member.profilePicture}" alt={data.member.firstName} />
-	{/if}
+	<img src={getPictureUrl(data.member.profilePicture)} alt={data.member.firstName} />
 
 	{#if $page.data.isCurrentUser}
 		<div>

@@ -30,7 +30,7 @@
 	const idProxy = intProxy(form, 'id')
 
 	let attatchments: FileList
-	let previews: { src?: string; MIMEtype: string; size: string; filename: string }[] = data.attachments
+	let previews: { filename: string; src: string; MIMEtype?: string; size?: string }[] = data.attachments
 
 	$: if (attatchments) {
 		showAttatchments()
@@ -48,9 +48,9 @@
 					...previews,
 					{
 						src: event.target?.result?.toString() ?? '',
-						MIMEtype: attatchment.type,
-						size: formatFileSize(attatchment.size),
 						filename: attatchment.name,
+						MIMEtype: attatchment.type,
+						size: attatchment.size + '',
 					},
 				]
 			}
@@ -110,6 +110,7 @@
 	{/if}
 	<!-- Wie dit leest trekt bak-->
 	<!-- Ja gotver -->
+	<!-- Verdomme kut naut -->
 	<!-- TODO extract into component smth idk -->
 	<hr />
 	<table>

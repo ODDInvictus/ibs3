@@ -6,7 +6,7 @@ import sharp from 'sharp'
 import { loadPhotoById, type PhotoSize } from '$lib/server/images'
 
 const UPLOAD_FOLDER = env.UPLOAD_FOLDER
-const STATIC_FOLDER = env.STATIC_FOLDER
+const STATIC_FOLDER = env.STATIC_FOLDER || './static'
 const IMAGE_CACHE_TIME = env.IMAGE_CACHE_TIME ?? 1
 
 const SIZES = ['small', 'medium', 'large', 'original']
