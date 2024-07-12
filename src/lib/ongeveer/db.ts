@@ -208,6 +208,7 @@ export async function getLedgerIds() {
 			value: true,
 		},
 	})
+
 	if (ids.length !== names.length) throw new Error('Not all ledger ids are found')
 
 	const res: Record<string, number> = {}
