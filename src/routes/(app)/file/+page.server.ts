@@ -45,7 +45,7 @@ export const actions = {
 		try {
 			if (isPhoto) {
 				console.log('[FilePage] Uploading photo')
-				name = await uploadPhoto(file, locals.user)
+				name = await uploadPhoto(file, locals.user, false)
 			} else {
 				console.log('[FilePage] Uploading generic file')
 				name = await uploadGenericFile(file, locals.user)

@@ -1,5 +1,5 @@
 import db from '$lib/server/db'
-import { error, redirect } from '@sveltejs/kit'
+import { error, fail, redirect } from '@sveltejs/kit'
 
 export const load = async ({ params }) => {
 	const users = await db.user.findMany({
@@ -72,6 +72,12 @@ export const actions = {
 			const minutes = parseInt(spl[0])
 			const seconds = parseInt(spl[1])
 			toSave = minutes * 60 + seconds
+		} else {
+			if (Number.parseInt(value) < 0) {
+				return fail(400, {
+					message: 'Waarde kan niet negatief zijn.',
+				})
+			}
 		}
 
 		await db.leaderboardEntry.create({

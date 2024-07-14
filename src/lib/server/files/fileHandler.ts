@@ -41,7 +41,7 @@ export async function uploadGenericFile(file: File, uploader: User): Promise<str
  * @param uploader The user uploading the photo.
  * @returns The ID of the uploaded File.
  */
-export async function uploadPhoto(file: File, uploader: User): Promise<string> {
+export async function uploadPhoto(file: File, uploader: User, visible?: boolean, returnPhotoId?: boolean, creator?: User): Promise<string> {
 	if (!settings.getBool(Setting.FILE_UPLOAD_ENABLED, false)) {
 		throw new Error('File uploads are disabled')
 	}
@@ -50,10 +50,44 @@ export async function uploadPhoto(file: File, uploader: User): Promise<string> {
 
 	await compressImage(f)
 
+	console.log(f, visible)
+
+	let photoCreateObject = {
+		date: new Date(),
+		visible: visible === true,
+		file: {
+			connect: {
+				filename: f,
+			},
+		},
+		uploader: {
+			connect: {
+				id: uploader.id,
+			},
+		},
+	}
+
+	if (creator) {
+		photoCreateObject = Object.assign(
+			{
+				creator: {
+					connect: {
+						id: creator.id,
+					},
+				},
+			},
+			photoCreateObject,
+		)
+	}
+
 	// Now create the photo object
-	await db.photo.create({
-		// TODO
+	const photoId = await db.photo.create({
+		data: photoCreateObject,
 	})
+
+	if (returnPhotoId) {
+		return '' + photoId.id
+	}
 
 	return f
 }

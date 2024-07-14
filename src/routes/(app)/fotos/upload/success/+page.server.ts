@@ -7,7 +7,9 @@ export const load = (async ({ url, locals }) => {
 
 	const idsParam = url.searchParams.get('ids') as string
 
-	const ids = idsParam.split(',')
+	const ids = idsParam.split(',').map(num => {
+		return Number.parseInt(num, 10)
+	})
 
 	const photosPromise = db.photo.findMany({
 		where: {
@@ -16,6 +18,7 @@ export const load = (async ({ url, locals }) => {
 			},
 		},
 		include: {
+			file: true,
 			creator: true,
 			tags: {
 				select: {

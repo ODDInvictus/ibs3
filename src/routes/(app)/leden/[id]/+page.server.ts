@@ -1,9 +1,7 @@
 import db from '$lib/server/db'
 import { fail } from '@sveltejs/kit'
-import type { Actions, PageServerLoad } from './$types.js'
-import { getPhotoCreator } from '$lib/server/images.js'
-import { createRedisJob } from '$lib/server/cache.js'
-import { invalidateUser } from '$lib/server/userCache.js'
+import type { Actions, PageServerLoad } from './$types'
+import { invalidateUser } from '$lib/server/userCache'
 import { uploadPhoto } from '$lib/server/files'
 
 export const load = (async ({ params, locals }) => {
@@ -63,7 +61,7 @@ export const actions = {
 			return fail(400, { success: false, message: 'Geen foto geupload' })
 		}
 
-		const filename = await uploadPhoto(file, locals.user)
+		const filename = await uploadPhoto(file, locals.user, false)
 
 		await db.user.update({
 			where: {

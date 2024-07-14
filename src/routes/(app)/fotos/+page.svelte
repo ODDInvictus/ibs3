@@ -32,7 +32,7 @@
 		<div class="ibs-card--content">
 			{#if data.highlight}
 				<div on:click={() => imagePreview({ image: getPictureUrl(data.highlight.filename, 'normal') })}>
-					<img src={getPictureUrl(data.highlight.filename, 'thumbnail')} alt="Foto van de Dag" />
+					<img src={getPictureUrl(data.highlight.filename, 'thumbnail')} alt={data.highlight.filename} />
 				</div>
 				<p>Gemaakt door {data.highlight.name}</p>
 				<div class="ibs-card--buttons">

@@ -2,6 +2,7 @@ import type { Actions, PageServerLoad } from './$types'
 import db from '$lib/server/db'
 import { fail, redirect } from '@sveltejs/kit'
 import { uploadPhoto } from '$lib/server/files'
+import type { User } from '@prisma/client'
 
 export const load = (async () => {
 	const users = await db.user.findMany({
@@ -44,33 +45,30 @@ export const actions = {
 
 		const fotos = formData.getAll('fotos') as File[]
 		const creator = formData.get('creator') as string
-		let name = ''
-		let c = locals.user
+		let c: User = locals.user
 
-		if (creator === locals.user.ldapId) {
-			name = locals.user.firstName + ' ' + locals.user.lastName
-		} else {
-			// We know that creator is an user
-			const u = await db.user.findFirst({
+		if (creator) {
+			const user = await db.user.findFirst({
 				where: {
 					ldapId: creator,
 				},
 			})
-			if (!u) {
+
+			if (!user) {
 				return f({ status: 400, message: 'Geen gebruiker gevonden' })
 			}
-			c = u
-			name = u.firstName + ' ' + u.lastName
+
+			c = user
 		}
 
 		if (fotos.length === 0) {
 			return f({ status: 400, message: 'Geen fotos gevonden' })
 		}
 
-		let ids = []
+		let ids: string[] = []
 
 		for (const foto of fotos) {
-			const id = await uploadPhoto(foto, c)
+			const id = await uploadPhoto(foto, c, true, true, c)
 			ids.push(id)
 		}
 

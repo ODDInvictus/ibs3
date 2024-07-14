@@ -12,7 +12,7 @@
 	import { prompt } from '$lib/prompt'
 	import { toast } from '$lib/notification'
 	import { imagePreview } from '$lib/imagePreviewStore'
-	import { stripMarkdown } from '$lib/utils'
+	import { getPictureUrl, stripMarkdown } from '$lib/utils'
 	import { getDutchMonth, toDateString } from '$lib/dateUtils'
 	import { goto } from '$app/navigation'
 
@@ -230,7 +230,7 @@
 						break
 					case 'name':
 						// @ts-expect-error kan gewoon
-						p.creator = data.photoCreators.find(c => c.id === parseInt(value))
+						p.creator = data.people.find(c => c.id === parseInt(value))
 						break
 					case 'description':
 						p.description = value
@@ -247,8 +247,9 @@
 						break
 					case 'activity':
 						const a = data.activities.find(a => a.id === parseInt(value))
-						// @ts-expect-error kan gewoon
-						p.activity = a
+
+						// @ts-expect-error Kan gewoon hoor - NR 14-07-2024
+						p.activityPhotos = a
 						p.date = a?.startTime!
 						break
 				}
@@ -289,7 +290,7 @@
 
 			data.photos = data.photos.map(photo => {
 				photo.date = activity.startTime
-				photo.activity = activity
+				photo.activityPhotos = activity
 				return photo
 			})
 		}
@@ -590,8 +591,8 @@
 				</table>
 			</div>
 			<div class="photo">
-				<div role="button" tabindex="0" on:click={() => imagePreview({ image: `/image/id/${photo.id}?size=original` })}>
-					<img src="/image/id/{photo.id}?size=original" alt="Foto van {photo.creator?.name}" />
+				<div role="button" tabindex="0" on:click={() => imagePreview({ image: getPictureUrl(photo.file.filename, 'original') })}>
+					<img src={getPictureUrl(photo.file.filename, 'original')} alt="Foto van {photo.creator?.firstName}" />
 				</div>
 			</div>
 		</div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms'
 	import Title from '$lib/components/title.svelte'
 	import type { PageData } from './$types'
 

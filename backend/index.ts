@@ -6,7 +6,6 @@ import { verdubbelStrafbakken } from './strafbakken'
 import { prisma } from './prisma'
 import { newActivitiyNotification } from './notifications'
 import { sendCustomEmail } from './email-utils'
-import { processPhotos } from './image-processing'
 import redis from './redis'
 import { ImageProcessing } from './images'
 
@@ -56,14 +55,6 @@ app.listen(port, async () => {
 	console.log('Connecting to redis...')
 	await redis.connect()
 	console.log('[REDIS] Listening for jobs')
-
-	// Listen for photo processing
-	await redis.subscribe('photo-processing', async msg => {
-		if (!msg) return
-		console.log('[REDIS] Received photo-processing job', msg)
-		// New photo's have been uploaded, process them
-		await processPhotos()
-	})
 
 	await redis.subscribe('new-activity', async msg => {
 		if (!msg) return

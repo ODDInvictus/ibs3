@@ -236,7 +236,7 @@ export const actions = {
 				}
 
 				if (image.size > 0) {
-					const filename = await uploadPhoto(image, event.locals.user)
+					const filename = await uploadPhoto(image, event.locals.user, false)
 
 					// const buf = Buffer.from(await image.arrayBuffer())
 
