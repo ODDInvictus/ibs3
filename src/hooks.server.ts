@@ -1,10 +1,13 @@
 import { env } from '$env/dynamic/private'
+import { env as envPublic } from '$env/dynamic/public'
 import { sequence } from '@sveltejs/kit/hooks'
 import type { Handle, HandleServerError } from '@sveltejs/kit'
 import { notifyDiscordError } from '$lib/server/notifications/discord'
 import { Decimal } from 'decimal.js'
-import { client as Mongo } from '$lib/server/mongo'
+import { client as Mongo } from '$lib/server/files'
 import { handleAuthentication, handleAuthorization } from '$lib/server/auth'
+import { initSettings } from '$lib/server/settings'
+import { initAuthHelpers } from '$lib/server/auth'
 
 export const handle: Handle = sequence(handleAuthentication, handleAuthorization)
 
@@ -22,7 +25,10 @@ export const handleError = (async ({ error, event }) => {
 await (async () => {
 	Decimal.set({ precision: 4 })
 
-	if (env.DISABLE_MONGO === 'true') {
+	await initSettings()
+	await initAuthHelpers()
+
+	if (envPublic.PUBLIC_DISABLE_MONGO === 'true') {
 		console.log('MongoDB is not connected.')
 	} else {
 		await Mongo.connect()

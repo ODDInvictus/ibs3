@@ -34,7 +34,7 @@
 
 <div class="user-card" title={statusTitle()}>
 	<div class="user-card-picture">
-		<ProfileIcon height="50" width="50" uid={user.profilePictureId} name={user.firstName + ' ' + user.lastName} />
+		<ProfileIcon height="50" width="50" filename={user.profilePicture} name={user.firstName + ' ' + user.lastName} />
 
 		<div class="status">
 			{#key status}

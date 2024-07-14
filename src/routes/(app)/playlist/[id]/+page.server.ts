@@ -24,7 +24,7 @@ export const load = (async ({ params }) => {
 								nickname: true,
 								firstName: true,
 								lastName: true,
-								profilePictureId: true,
+								profilePicture: true,
 								id: true,
 							},
 						},

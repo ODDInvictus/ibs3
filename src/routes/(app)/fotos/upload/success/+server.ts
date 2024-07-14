@@ -107,7 +107,7 @@ async function saveChange(body: SaveChangeBodyType, user: User) {
 
 	switch (body.field) {
 		case 'name':
-			const creator = await db.photoCreator.findFirst({
+			const creator = await db.user.findFirst({
 				where: {
 					id: parseInt(body.value),
 				},

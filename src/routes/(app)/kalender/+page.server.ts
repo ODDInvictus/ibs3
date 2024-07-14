@@ -25,7 +25,6 @@ export const load = (async ({ locals }) => {
 					name: true,
 				},
 			},
-			photo: true,
 		},
 	})
 

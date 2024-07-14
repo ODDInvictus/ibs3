@@ -2,6 +2,7 @@ import SpotifyWebApi from 'spotify-web-api-node'
 import db from './db'
 import { env as privateEnv } from '$env/dynamic/private'
 import { env } from '$env/dynamic/public'
+import { Setting, settings } from './settings'
 
 const { PUBLIC_SPOTIFY_CLIENT_ID, PUBLIC_SPOTIFY_REDIRECT_URI } = env
 
@@ -14,16 +15,8 @@ const credentials = {
 const spotify = new SpotifyWebApi(credentials)
 
 export const refreshToken = async () => {
-	const refreshToken = (
-		await db.settings.findUnique({
-			where: {
-				name: 'SPOTIFY_REFRESH_TOKEN',
-			},
-			select: {
-				value: true,
-			},
-		})
-	)?.value
+	const refreshToken = settings.get(Setting.SPOTIFY_REFRESH_TOKEN)
+
 	if (!refreshToken) throw new Error('No refresh token found in database, the name should be SPOTIFY_REFRESH_TOKEN')
 
 	spotify.setRefreshToken(refreshToken)

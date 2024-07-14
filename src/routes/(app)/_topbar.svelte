@@ -15,6 +15,8 @@
 			},
 		})
 	}
+
+	export let adminAlert: { title: string; url: string } | undefined
 </script>
 
 <div class="layout--topbar">
@@ -28,9 +30,16 @@
 		</a>
 	</div>
 
+	<div class="alert">
+		{#if adminAlert}
+			<b>Let op!</b>
+			<a href={adminAlert.url}>{adminAlert.title}</a>
+		{/if}
+	</div>
+
 	<div class="user" on:click={logout}>
 		<div class="avatar">
-			<ProfileIcon uid={$page.data.user.profilePictureId} name={`${$page.data.user.firstName} ${$page.data.user.lastName}`} />
+			<ProfileIcon filename={$page.data.user.profilePicture} name={`${$page.data.user.firstName} ${$page.data.user.lastName}`} />
 		</div>
 		<div class="name">
 			{$page.data.user.firstName}
@@ -50,6 +59,16 @@
 
 	.logo {
 		display: none;
+	}
+
+	.alert {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+
+		a {
+			color: white;
+		}
 	}
 
 	.user {

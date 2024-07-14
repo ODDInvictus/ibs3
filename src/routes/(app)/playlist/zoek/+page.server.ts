@@ -11,7 +11,7 @@ export const load = (async ({ locals }) => {
 				firstName: true,
 				lastName: true,
 				nickname: true,
-				profilePictureId: true,
+				profilePicture: true,
 				id: true,
 			},
 		}),

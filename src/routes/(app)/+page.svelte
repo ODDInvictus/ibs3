@@ -5,7 +5,7 @@
 	import { daysLeftTill, formatDateHumanReadable, toAge, toBirthday } from '$lib/dateUtils'
 	import { imagePreview } from '$lib/imagePreviewStore'
 	import { toast } from '$lib/notification'
-	import { markdown } from '$lib/utils'
+	import { getPictureUrl, markdown } from '$lib/utils'
 	import type { PageData } from './$types'
 
 	export let data: PageData
@@ -86,16 +86,12 @@
 
 		if (data.activity) {
 			if (data.activity.photo) {
-				link = `/image/id/${data.activity.photo.id}&static=false`
+				link = getPictureUrl(data.activity.photo, resize ? 'thumbnail' : 'normal')
 			} else {
 				link = `/image/logo${resize ? '' : '@2'}.png?static=true`
 			}
 		} else {
 			link = `/image/no-activity.jpeg?static=true`
-		}
-
-		if (resize) {
-			link += '&size=750x375'
 		}
 
 		return link
@@ -104,25 +100,24 @@
 	function birthdayImage(resize: boolean) {
 		let link = ''
 
-		if (data.nextBirthday.profilePictureId) {
-			link = `/image/id/${data.nextBirthday.profilePictureId}?static=false`
+		if (data.nextBirthday.profilePicture) {
+			link = getPictureUrl(data.nextBirthday.profilePicture, resize ? 'thumbnail' : 'normal')
 		} else {
 			link = `/image/no-birthday.jpeg?static=true`
-		}
-
-		if (resize) {
-			link += '&size=750x375'
 		}
 
 		return link
 	}
 
 	async function bij() {
-		fetch(`/activiteit/${data.activity?.id}/bij`, { method: 'POST' }).then(res => {
+		fetch(`/activiteit/${data.activity?.id}/bij`, {
+			method: 'POST',
+		}).then(async res => {
 			if (res.status !== 200) {
+				const body = await res.json()
 				toast({
 					title: 'Oeps!',
-					message: 'Er ging iets mis bij het aanmelden voor de activiteit',
+					message: body.message,
 					type: 'danger',
 				})
 			} else {
@@ -155,8 +150,7 @@
 					imagePreview({
 						image: activityImage(false),
 					})}
-				src={activityImage(true)}
-			/>
+				src={activityImage(true)} />
 		</div>
 		<h2 class="ibs-card--title">
 			{@html markdown(data.activity?.name ?? 'Niks!')}

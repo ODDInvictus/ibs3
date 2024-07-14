@@ -13,6 +13,9 @@
 	import { getFlash } from 'sveltekit-flash-message'
 	import { page } from '$app/stores'
 	import { toast } from '$lib/notification'
+	import type { PageData } from './$types'
+
+	export let data: PageData
 
 	const flash = getFlash(page)
 
@@ -42,11 +45,11 @@
 </script>
 
 <main class="layout--main">
-	<Navbar {openMenu} {open} />
+	<Navbar {openMenu} {open} version={data.version} />
 
 	{#if open}
 		<div class="layout--mobimenu">
-			<MobileMenu />
+			<MobileMenu version={data.version} />
 		</div>
 	{/if}
 
@@ -57,7 +60,7 @@
 
 	<div class="layout--stripe" data-open={open} />
 
-	<Topbar />
+	<Topbar adminAlert={data.adminAlert} />
 
 	{#if !open}
 		<div class="layout--container">

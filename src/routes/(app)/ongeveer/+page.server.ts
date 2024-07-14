@@ -24,7 +24,7 @@ function getUnmatchedTransactions(transactions: Awaited<ReturnType<typeof getTra
 	return transactions.filter(t => {
 		const matched = t.TransactionMatchRow.reduce((acc: Decimal, row) => acc.add(row.amount), new Decimal(0))
 		const price = t.type === 'BANK' ? t.BankTransaction?.amount : t.SaldoTransaction?.price
-		if (price === undefined) throw error(500, 'price is undefined')
+		if (price === undefined) return error(500, 'price is undefined')
 		return !matched.eq(price)
 	})
 }

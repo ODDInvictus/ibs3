@@ -6,7 +6,7 @@ import { LDAP_IDS } from '$lib/constants'
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const body = await request.json()
 
-	if (body.action === 'set') {
+	if (body.action === 'edit') {
 		const { id } = body
 		let { value } = body
 

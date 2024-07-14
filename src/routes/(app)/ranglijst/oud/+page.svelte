@@ -7,7 +7,7 @@
 
 <Title title="Oude ranglijsten" />
 
-<table class="striped equal-width">
+<table class="striped">
 	<thead>
 		<tr>
 			<th>Naam</th>

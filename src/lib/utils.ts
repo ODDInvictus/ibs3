@@ -14,6 +14,7 @@ import markdownItPlainText from 'markdown-it-plain-text'
 
 import xss from 'xss'
 import type Decimal from 'decimal.js'
+import { env } from '$env/dynamic/public'
 
 const md = new markdownIt({
 	linkify: true,
@@ -174,4 +175,27 @@ export function pagination(url: URL) {
 
 export function formatMoney(price: number | Decimal | String) {
 	return `€ ${Number(price).toFixed(2)}`
+}
+
+export function getCurrentDateFilename() {
+	const date = new Date()
+	return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`
+}
+
+export function getPictureUrl(filename: string | null | undefined, quality: 'thumbnail' | 'normal' | 'original' = 'normal') {
+	if (env.PUBLIC_DISABLE_MONGO === 'true') {
+		console.log(`MongoDB disabled, replacing ${filename} with logo`)
+		return '/image/logo.png?static=true'
+	}
+
+	if (!filename) {
+		return `/image/logo.png?static=true`
+	}
+
+	let fn = filename
+	if (quality !== 'original') {
+		fn = filename.replace(/\.[^/.]+$/, `-${quality}.jpg`)
+	}
+
+	return `/file/${fn}`
 }

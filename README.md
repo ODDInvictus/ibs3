@@ -4,6 +4,8 @@ Invictus Bier Systeem is _het_ websysteem voor O.D.D. Invictus.
 
 ## Ontwikkelen
 
+IBS3 gebruikt node 22.4.0
+
 Om te beginnen met ontwikkelen moet je eerst de repository clonen met
 
 ```console
@@ -40,7 +42,7 @@ Er is ook een gehoste development database, vraag Niels hierna.
 Redis en mongo zijn niet verplicht, je kan ze uitschakelen met de volgende environment variables:
 
 ```
-DISABLE_MONGO=true
+PUBLIC_DISABLE_MONGO=true
 DISABLE_REDIS=true
 ```
 
@@ -72,14 +74,6 @@ cron.schedule('1 * * * *', syncLDAPUsers)
 
 Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab.guru/) gebruiken
 
-## Maluspunten
-
-Maluspunten kan worden uitgeschakeld met een environment variable:
-
-```
-PUBLIC_MALUSPUNTEN_ENABLED=true
-```
-
 ## Environment Variables
 
 | Sleutel                      | Waarde                                                                                | Voorbeeld                                             |
@@ -107,5 +101,4 @@ PUBLIC_MALUSPUNTEN_ENABLED=true
 | SPOTIFY_CLIENT_SECRET        | Client secret voor spotify                                                            | ...                                                   |
 | PUBLIC_SPOITFY_REDIRECT_URI  | Redirect uri voor spotify, alles van spotify is alleen nodig voor de playlist feature | http://localhost:5173/playlist/callback               |
 | DISABLE_REDIS                | Schakel redis uit, jobs en cache werkt niet meer                                      | true                                                  |
-| DISABLE_MONGO                | Schakel mongodb uit, bestanden uploaden en fotos werken niet meer                     | true                                                  |
-| PUBLIC_MALUSPUNTEN_ENABLED   | Schakelt maluspunten in (in het menu)                                                 | true                                                  |
+| PUBLIC_DISABLE_MONGO         | Schakel mongodb uit, bestanden uploaden en fotos werken niet meer                     | true                                                  |

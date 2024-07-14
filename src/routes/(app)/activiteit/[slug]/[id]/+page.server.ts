@@ -21,7 +21,6 @@ export const load = (async event => {
 			},
 			organisedBy: true,
 			location: true,
-			photo: true,
 			comments: {
 				include: {
 					commenter: {
@@ -29,7 +28,7 @@ export const load = (async event => {
 							id: true,
 							firstName: true,
 							lastName: true,
-							profilePictureId: true,
+							profilePicture: true,
 							ldapId: true,
 						},
 					},
@@ -88,7 +87,7 @@ export const actions = {
 					select: {
 						id: true,
 						firstName: true,
-						profilePictureId: true,
+						profilePicture: true,
 						lastName: true,
 						ldapId: true,
 					},

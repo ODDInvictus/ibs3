@@ -2,6 +2,7 @@ import { redirect, type Handle } from '@sveltejs/kit'
 import prisma from '$lib/server/db'
 import { getCommittees, getRoles, getUser, getUserTest } from '$lib/server/userCache'
 import { env } from '$env/dynamic/private'
+import { Setting, settings } from '../settings'
 
 const handleAuthorization = (async ({ event, resolve }) => {
 	const url = event.url.pathname
@@ -26,7 +27,9 @@ const handleAuthorization = (async ({ event, resolve }) => {
 	event.locals.committees = committees
 	event.locals.roles = roles
 
-	event.locals.theme = env.THEME_OVERRIDE ?? user?.preferredTheme ?? 'light'
+	const themeOverride = settings.getWithoutDefault(Setting.THEME_OVERRIDE)
+
+	event.locals.theme = themeOverride ?? user?.preferredTheme ?? 'light'
 
 	// If shortner, then ignore auth.
 	if (url.startsWith('/s/')) {

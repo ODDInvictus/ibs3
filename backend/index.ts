@@ -6,13 +6,13 @@ import { verdubbelStrafbakken } from './strafbakken'
 import { prisma } from './prisma'
 import { newActivitiyNotification } from './notifications'
 import { sendCustomEmail } from './email-utils'
-import { processPhotos } from './image-processing'
 import redis from './redis'
+import { ImageProcessing } from './images'
 
 const API_VERSION = '1.0.1'
 
 /*
-  EXPRESS
+	EXPRESS
 */
 
 dotenv.config()
@@ -56,14 +56,6 @@ app.listen(port, async () => {
 	await redis.connect()
 	console.log('[REDIS] Listening for jobs')
 
-	// Listen for photo processing
-	await redis.subscribe('photo-processing', async msg => {
-		if (!msg) return
-		console.log('[REDIS] Received photo-processing job', msg)
-		// New photo's have been uploaded, process them
-		await processPhotos()
-	})
-
 	await redis.subscribe('new-activity', async msg => {
 		if (!msg) return
 
@@ -87,10 +79,20 @@ app.listen(port, async () => {
 		// Now send out the discord notification and emails
 		await newActivitiyNotification(activity)
 	})
+
+	await redis.subscribe('compress-image', async msg => {
+		if (!msg) {
+			console.error('[REDIS] Received message for compress-image but no data was provided')
+			return
+		}
+		const body = JSON.parse(msg)
+
+		await ImageProcessing.compressImage(body)
+	})
 })
 
 /*
-  CRONJOBS
+	CRONJOBS
 */
 
 // Sync email every day at 7:00
@@ -102,3 +104,5 @@ app.listen(port, async () => {
 const cronStrafbakken = process.env.CRONTAB_STRAFBAKKEN || '0 0 1 * *'
 console.log('[CRONTAB]', 'Strafbakken verdubbelen running at', cronStrafbakken)
 cron.schedule(cronStrafbakken, verdubbelStrafbakken)
+
+// TODO rerun jobs that failed

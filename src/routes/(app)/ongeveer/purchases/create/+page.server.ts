@@ -6,8 +6,8 @@ import { error, fail } from '@sveltejs/kit'
 import { getJournalStatus, getLedgers, getRelations } from '$lib/ongeveer/db'
 import schema from './pruchaseSchema'
 import { redirect } from 'sveltekit-flash-message/server'
-import { formatFileSize } from '$lib/utils'
-import { deleteFile, uploadFile } from '$lib/server/mongo'
+import { deleteFile, uploadGenericFile } from '$lib/server/files'
+import { getPictureUrl } from '$lib/utils'
 
 type PurchaseType = 'PURCHASE' | 'DECLARATION'
 
@@ -26,7 +26,7 @@ export const load = (async event => {
 				DeclarationData: true,
 			},
 		})
-		if (!purchase) error(404)
+		if (!purchase) return error(404)
 		if (purchase.type === 'SALE')
 			throw redirect(
 				`/ongeveer/sales/${purchase.id}`,
@@ -63,20 +63,21 @@ export const load = (async event => {
 
 	const form = await superValidate(data, schema)
 
-	const attachments =
-		purchase?.Attachments?.map(attatchment => {
-			return {
-				MIMEtype: attatchment.MIMEtype,
-				size: formatFileSize(attatchment.size),
-				filename: attatchment.filename,
-			}
-		}) ?? []
-
 	const relations = await getRelations()
 
 	const declarationData = purchase?.DeclarationData
 		? (JSON.parse(JSON.stringify(purchase.DeclarationData)) as typeof purchase.DeclarationData)
 		: null
+
+	const attachments =
+		purchase?.Attachments.map(file => {
+			return {
+				...file,
+				src: getPictureUrl(file.filename, 'original'),
+				MIMEtype: 'onbekend',
+				size: 'onbekend',
+			}
+		}) ?? []
 
 	return {
 		form,
@@ -94,7 +95,7 @@ export const actions: Actions = {
 		const formData = await request.formData()
 		const form = await superValidate(formData, schema)
 
-		if (!authorization(locals.roles)) error(403)
+		if (!authorization(locals.roles)) return error(403)
 		if (!form.valid) return fail(400, { form })
 
 		const files = formData.getAll('attachments') as File[]
@@ -107,39 +108,25 @@ export const actions: Actions = {
 
 		if (id) {
 			const status = await getJournalStatus(id)
-			if (!status) error(404)
+			if (!status) return error(404)
 
 			// TODO make if posible to change irrelevant fields
 			if (status === 'PAID')
-				error(409, {
+				return error(409, {
 					message: 'Deze factuur is al gematched, unmatch de transactie voordat je de aankoop kan wijzigen',
 				})
 		}
 
 		// Handle attatchments
-		let attachmentsMeta: Awaited<ReturnType<typeof uploadFile>>[] = []
+		let attachmentIds: Awaited<string>[] = []
 		try {
-			attachmentsMeta = await Promise.all(attachments.map(f => uploadFile(f)))
+			attachmentIds = await Promise.all(attachments.map(f => uploadGenericFile(f, locals.user)))
+			// TODO get fileIDS
 			await Promise.all(toDelete.map(name => deleteFile(name)))
 		} catch (e) {
 			console.error(e)
-			throw error(500)
+			return error(500)
 		}
-
-		const attachmentsWithNames = attachments.map((file, index) => {
-			return {
-				meta: attachmentsMeta[index],
-				file,
-			}
-		})
-
-		const attatchmentCreate = attachmentsWithNames.map(({ meta }) => {
-			return {
-				filename: meta.filename,
-				MIMEtype: meta.type,
-				size: meta.size,
-			}
-		})
 
 		const rowsCreate = rows.map(({ amount, price, description, ledger }) => ({
 			amount,
@@ -164,7 +151,9 @@ export const actions: Actions = {
 									in: toDelete,
 								},
 							},
-							create: attatchmentCreate,
+							connect: attachmentIds.map(filename => {
+								return { filename }
+							}),
 						},
 						Rows: {
 							deleteMany: {},
@@ -185,7 +174,9 @@ export const actions: Actions = {
 							create: rowsCreate,
 						},
 						Attachments: {
-							create: attatchmentCreate,
+							connect: attachmentIds.map(filename => {
+								return { filename }
+							}),
 						},
 					},
 				})
@@ -193,37 +184,10 @@ export const actions: Actions = {
 			}
 		} catch (e) {
 			console.error(e)
-			error(500)
+			return error(500)
 		}
 
-		// Write files to disk
-		// TODO @niels write new endpoint to upload files
-		// TODO prevent files from being overwritten / uploading a file twice when updating an existing journal
-		try {
-			for (let fileData of files) {
-				if (toDelete.includes(fileData.name)) continue
-				fs.writeFileSync(`${privateEnv.UPLOAD_FOLDER}/purchases/${fileData.name}`, Buffer.from(await fileData.file.arrayBuffer()), {
-					encoding: 'binary',
-				})
-			}
-		} catch (e) {
-			console.error(e)
-			error(500)
-		}
-
-		// Delete files from disk
-		// TODO escape toDelete to go up/into another folder
-		for (let file of toDelete) {
-			if (files.find(({ name }) => name === file)) continue
-			try {
-				fs.unlinkSync(`${privateEnv.UPLOAD_FOLDER}/purchases/${file}`)
-			} catch (e) {
-				console.error(e)
-				error(500)
-			}
-		}
-
-		throw redirect(
+		return redirect(
 			`/ongeveer/purchases/${id}`,
 			{
 				message: `Aankoop boeking ${id ? 'aangepast' : 'aangemaakt'}`,

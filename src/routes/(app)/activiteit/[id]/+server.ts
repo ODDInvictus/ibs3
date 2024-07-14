@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types'
 import db from '$lib/server/db'
 import { activitySlug } from '$lib/textUtils'
-import { redirect } from '@sveltejs/kit'
+import { error, redirect } from '@sveltejs/kit'
 
 type RequestType = {
 	status: boolean
@@ -34,13 +34,30 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const { status, activityId }: RequestType = await request.json()
 	const user = locals.user
 
+	const activity = await db.activity.findUnique({
+		where: {
+			id: activityId,
+		},
+		select: {
+			endTime: true,
+		},
+	})
+
+	if (!activity) {
+		return error(404, 'Activiteit niet gevonden')
+	}
+
+	if (activity.endTime < new Date()) {
+		return error(400, 'Activiteit is al geweest, je kan je status niet meer aanpassen')
+	}
+
 	await db.attending.updateMany({
 		where: {
 			userId: user.id,
 			activityId,
 		},
 		data: {
-			isAttending: status,
+			status: status ? 'ATTENDING' : 'NOT_ATTENDING',
 		},
 	})
 

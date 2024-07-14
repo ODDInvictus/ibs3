@@ -38,3 +38,27 @@ export const DELETE: RequestHandler = async ({ request }) => {
 		status: 200,
 	})
 }
+
+export const POST: RequestHandler = async ({ request, locals }) => {
+	const body = await request.json()
+	const uid = locals.user.id
+
+	switch (body.action) {
+		case 'self':
+			if (!body.reason) {
+				return new Response('Geen reden opgegeven', { status: 400 })
+			}
+
+			const strafbak = await db.strafbak.create({
+				data: {
+					receiverId: uid,
+					giverId: uid,
+					reason: body.reason,
+				},
+			})
+
+			return new Response('Gefeliciteerd', { status: 200 })
+		default:
+			return new Response(`Onbekende actie ${body.action} voor deze route`, { status: 400 })
+	}
+}

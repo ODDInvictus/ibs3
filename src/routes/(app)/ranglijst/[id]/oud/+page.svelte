@@ -11,9 +11,17 @@
 		if (minutes < 1) return `00:${seconds < 10 ? '0' : ''}${seconds}`
 		return `${Math.floor(minutes)}:${seconds < 10 ? '0' : ''}${seconds}`
 	}
+
+	function back() {
+		window.history.back()
+	}
 </script>
 
 <Title title="Oude inzendingen" />
+
+<div class="topbar">
+	<button class="btn-a" on:click={back}> Terug </button>
+</div>
 
 <table class="small striped equal-width">
 	<thead>
@@ -38,3 +46,10 @@
 		{/each}
 	</tbody>
 </table>
+
+<style>
+	.topbar {
+		display: flex;
+		justify-content: center;
+	}
+</style>
