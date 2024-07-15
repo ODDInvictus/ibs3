@@ -3,7 +3,8 @@ import { env } from '$env/dynamic/private'
 import fs from 'fs/promises'
 import redis from '$lib/server/cache'
 import sharp from 'sharp'
-import { loadPhotoById, type PhotoSize } from '$lib/server/images'
+import db from '$lib/server/db'
+import type { Photo } from '@prisma/client'
 
 const UPLOAD_FOLDER = env.UPLOAD_FOLDER
 const STATIC_FOLDER = env.STATIC_FOLDER || './static'
@@ -37,67 +38,8 @@ export const GET: RequestHandler = async ({ request, params, setHeaders, url }) 
 
 	try {
 		if (filename.startsWith('id/')) {
-			const id = parseInt(filename.split('/')[1])
-
-			if (!id) {
-				return new Response('File not found', { status: 404 })
-			}
-
-			let sizeToLoad = size
-
-			if (size.includes('x')) sizeToLoad = getBestImageSizeToLoad(size)
-
-			const photo = await loadPhotoById(id, sizeToLoad as PhotoSize)
-
-			if (!photo) {
-				return new Response('File not found', { status: 404 })
-			}
-
-			if (agent && (agent.includes('Edg/') || agent.includes('Edge'))) {
-				if (size.includes('x')) {
-					const [width, height] = size.split('x')
-					photo.buffer = await sharp(photo.buffer).resize(parseInt(width), parseInt(height)).jpeg({ mozjpeg: true, quality: 75 }).toBuffer()
-				} else {
-					photo.buffer = await sharp(photo.buffer).jpeg({ mozjpeg: true, quality: 75 }).toBuffer()
-				}
-
-				photo.contentType = 'image/jpeg'
-			} else {
-				if (size.includes('x')) {
-					photo.buffer = await resizeImage(photo.buffer, size)
-				}
-			}
-
-			setHeaders({
-				'Content-Type': photo.contentType,
-				'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`,
-			})
-
-			return new Response(photo.buffer)
+			return new Response('Endpoint not in use', { status: 404 })
 		}
-
-		// Edge ondersteund geen AVIF om een of andere kut reden, dus zij krijgen JPEG
-		// if (agent && (agent.includes('Edg/') || agent.includes('Edge'))) {
-		//   // Set headers to jpeg and cache for a whatever time is in the env.
-		//   setHeaders({
-		//     'Content-Type': 'image/jpeg',
-		//     'Cache-Control': `public, max-age=${IMAGE_CACHE_TIME}`
-		//   })
-		//   // First, check the cache
-		//   const cachedFile = await getImageFromCache(filename, 'jpeg-' + size)
-
-		//   if (cachedFile) {
-		//     return new Response(cachedFile)
-		//   }
-
-		//   // If the file is not in the cache, read it from disk
-		//   const photo = await readJpeg(path, filename, size)
-
-		//   // Cache the file
-		//   await cacheImage(filename, 'jpeg-' + size, photo)
-
-		//   return new Response(photo)
-		// }
 
 		// First check if we have the file in the cache
 		let cachedFile
@@ -239,3 +181,158 @@ function resizeImage(buf: Buffer, size: string): Promise<Buffer> {
 
 	return sharp(buf).resize(parseInt(width), parseInt(height)).avif({ quality: 70 }).toBuffer()
 }
+
+type PhotoSize = 'small' | 'medium' | 'large' | 'original'
+
+const uploadFolder = process.env.UPLOAD_FOLDER
+
+// // export async function getPhotoCreator(user: User, other: boolean, name?: string): Promise<PhotoCreator> {
+// // 	let c
+
+// // 	if (other) {
+// // 		if (!name) {
+// // 			throw new Error('Name is missing in getPhotoCreator')
+// // 		}
+
+// // 		c = await db.photoCreator.upsert({
+// // 			update: {},
+// // 			create: {
+// // 				name,
+// // 			},
+// // 			where: {
+// // 				name,
+// // 			},
+// // 		})
+// // 	} else {
+// // 		name = user.firstName + ' ' + user.lastName
+// // 		c = await db.photoCreator.upsert({
+// // 			update: {},
+// // 			create: {
+// // 				name,
+// // 				user: {
+// // 					connect: {
+// // 						ldapId: user.ldapId,
+// // 					},
+// // 				},
+// // 			},
+// // 			where: {
+// // 				name,
+// // 				user: {
+// // 					ldapId: user.ldapId,
+// // 				},
+// // 			},
+// // 		})
+// // 	}
+
+// // 	return c
+// // }
+
+// type UploadPhotoArgs = {
+// 	upload: {
+// 		filename: string
+// 		buf: Buffer
+// 	}
+// 	additionalName?: string
+// 	runProcessingJob?: boolean
+// 	creator: PhotoCreator
+// 	uploader: User
+// 	invisible?: boolean
+// }
+
+// /**
+//  * Upload een foto
+//  * @param args Argumenten enzo
+//  * @param tx PrismaClient
+//  * @returns
+//  */
+// export async function uploadPhoto(args: UploadPhotoArgs, transactionClient?: any): Promise<Photo> {
+// 	const date = Date.now()
+// 	// Take filename, buf, creator from args
+// 	const { filename, buf } = args.upload
+// 	const { creator } = args
+
+// 	// If there is not an extension, just assume jpeg
+// 	const extension = filename.split('.').pop() || 'jpeg'
+// 	const creatorName = creator.name.split(' ').join('_')
+
+// 	let filenameOnDisk = `Invictus${args.additionalName ? `-${args.additionalName}` : ''}-${creatorName}-${date}`
+
+// 	const invisible = args.invisible || false
+
+// 	let response
+
+// 	try {
+// 		if (transactionClient) {
+// 			response = await transaction(transactionClient, filenameOnDisk, extension, creatorName, date, args, creator, invisible)
+// 		} else {
+// 			await db.$transaction(async tx => {
+// 				response = await transaction(tx, filenameOnDisk, extension, creatorName, date, args, creator, invisible)
+// 			})
+// 		}
+// 	} catch (err) {
+// 		console.error(err)
+// 		throw err
+// 	}
+
+// 	let photo = response?.photo
+// 	filenameOnDisk = response?.filenameOnDisk || ''
+
+// 	// Write the file to disk
+// 	await fs.writeFile(`${uploadFolder}/${filenameOnDisk}.${extension}`, buf).catch(err => {
+// 		photo = undefined
+// 		console.error('------------------------------')
+// 		console.error('[PHOTO-SAVE]' + err)
+// 		console.error('------------------------------')
+// 	})
+
+// 	if (!photo) {
+// 		throw new Error('Photo saving failed')
+// 	}
+
+// 	// if (args.runProcessingJob) {
+// 		// await createRedisJob('photo-processing')
+// 	// }
+
+// 	return photo
+// }
+
+// type TransactionReturnType = {
+// 	photo: Photo
+// 	filenameOnDisk: string
+// }
+
+// async function transaction(
+// 	tx: any,
+// 	filenameOnDisk: string,
+// 	extension: string,
+// 	creatorName: string,
+// 	date: number,
+// 	args: UploadPhotoArgs,
+// 	creator: PhotoCreator,
+// 	invisible: boolean,
+// ): Promise<TransactionReturnType> {
+// 	let photo = await tx.photo.create({
+// 		data: {
+// 			filename: filenameOnDisk,
+// 			extension,
+// 			processed: false,
+// 			uploaderId: args.uploader.id,
+// 			creatorId: creator.id,
+// 			date: new Date(),
+// 			visible: !invisible,
+// 		},
+// 	})
+
+// 	filenameOnDisk = `Invictus${args.additionalName ? `-${args.additionalName}` : ''}-${creatorName}-${date}-${photo.id}`
+
+// 	await tx.photo.update({
+// 		where: {
+// 			id: photo.id,
+// 		},
+// 		data: {
+// 			filename: filenameOnDisk,
+// 		},
+// 	})
+
+// 	return { photo, filenameOnDisk }
+// }

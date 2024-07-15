@@ -52,7 +52,7 @@ export const actions = {
 			}
 		} catch (e) {
 			console.error('[FilePage] Error uploading file:', e)
-			return fail(500, { message: e.message })
+			return fail(500, { message: (e as Error).message })
 		}
 		return { form, name }
 	},
