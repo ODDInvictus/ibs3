@@ -15,7 +15,7 @@ const credentials = {
 const spotify = new SpotifyWebApi(credentials)
 
 export const refreshToken = async () => {
-	const refreshToken = settings.get(Setting.SPOTIFY_REFRESH_TOKEN)
+	const refreshToken = settings.getWithoutDefault(Setting.SPOTIFY_REFRESH_TOKEN)
 
 	if (!refreshToken) throw new Error('No refresh token found in database, the name should be SPOTIFY_REFRESH_TOKEN')
 
