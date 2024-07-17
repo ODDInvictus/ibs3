@@ -29,7 +29,11 @@ const handleAuthorization = (async ({ event, resolve }) => {
 
 	const themeOverride = settings.getWithoutDefault(Setting.THEME_OVERRIDE)
 
-	event.locals.theme = themeOverride ?? user?.preferredTheme ?? 'light'
+	if (themeOverride) {
+		event.locals.theme = themeOverride
+	} else {
+		event.locals.theme = user?.preferredTheme ?? 'light'
+	}
 
 	// If shortner, then ignore auth.
 	if (url.startsWith('/s/')) {
