@@ -101,6 +101,21 @@ export const load = (async ({ params, locals }) => {
 		})
 	}
 
+	if (scoreboard.type === 'TIME') {
+		// Move all -1 entries to end
+		const dnfs: { id: number; name: string; value: number }[] = []
+
+		entries = entries.filter(entry => {
+			if (entry && entry.value === -1) {
+				dnfs.push(entry)
+				return false
+			}
+			return true
+		})
+
+		entries.push(...dnfs)
+	}
+
 	// Filter out repeat users
 	const seen = new Set()
 	entries = entries.filter(entry => {

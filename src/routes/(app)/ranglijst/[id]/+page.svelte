@@ -19,6 +19,10 @@
 	}
 
 	function calcTime(num: number) {
+		if (num === -1) {
+			return 'DNF'
+		}
+
 		const minutes = num / 60
 		const seconds = num % 60
 

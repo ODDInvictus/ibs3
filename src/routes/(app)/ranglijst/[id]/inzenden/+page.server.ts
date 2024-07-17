@@ -37,7 +37,7 @@ export const actions = {
 		const userId = data.get('user') as string
 		const value = data.get('value') as string
 
-		if (!userId || !value) {
+		if (!userId) {
 			return {
 				status: 400,
 				message: 'Vul alle velden in.',
@@ -60,7 +60,13 @@ export const actions = {
 		let toSave = parseInt(value)
 
 		if (leaderboard.type === 'TIME') {
-			const spl = value.split(':')
+			const dnf = data.get('dnf')
+
+			let spl = ['0', '-1']
+
+			if (!dnf || dnf === 'off') {
+				spl = value.split(':')
+			}
 
 			if (spl.length !== 2) {
 				return {
@@ -76,6 +82,12 @@ export const actions = {
 			if (Number.parseInt(value) < 0) {
 				return fail(400, {
 					message: 'Waarde kan niet negatief zijn.',
+				})
+			}
+
+			if (Number.parseInt(value) === 0) {
+				return fail(400, {
+					message: 'Waarde kan niet 0 zijn',
 				})
 			}
 		}

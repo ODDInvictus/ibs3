@@ -4,6 +4,12 @@
 	import type { PageData } from './$types'
 
 	export let data: PageData
+
+	let dnf = false
+
+	function onDNFChange(event) {
+		dnf = event.target.checked
+	}
 </script>
 
 <Title title="Inzending doen voor {data.leaderboard.name}" shortTitle="Inzending doen" />
@@ -16,10 +22,13 @@
 		{/each}
 	</select>
 
-	<label for="value">Waarde</label>
 	{#if data.leaderboard.type === 'TIME'}
-		<input type="time" name="value" />
+		<label for="value">Tijd</label>
+		<input disabled={dnf} type="time" name="value" />
+		<label for="dnf">DNF</label>
+		<input type="checkbox" name="dnf" on:change={onDNFChange} />
 	{:else}
+		<label for="value">Waarde</label>
 		<input type="number" name="value" />
 	{/if}
 
