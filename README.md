@@ -89,10 +89,8 @@ Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab
 | DISCORD_NOTIFICATION_WEBHOOK | Webhook URL voor discord kanaal waar errors in gepost worden                          | https://discord.com/api/webhooks/server/key           |
 | BACKEND_PORT                 | Poort waarop de backend draait                                                        | 3001                                                  |
 | UPLOAD_FOLDER                | Map op de schijf waar uploads opgeslagen worden                                       | ./static/upload                                       |
-| PUBLIC_UPLOAD_URL            | URL waar de uploads gevonden kunnen worden                                            | /upload/                                              |
 | BACKEND_URL                  | URL waar de backend op te vinden is                                                   | http://localhost:3000                                 |
 | UPLOAD_FOLDER                | Pad waar foto's naar geupload worden                                                  | ./upload                                              |
-| PUBLIC_UPLOAD_URL            | Oude url naar de static server                                                        | http://localhost:8000                                 |
 | STATIC_FOLDER                | Waar static files gevonden kunnen worden                                              | ./static                                              |
 | IMAGE_CACHE_TIME             | Hoelang een image in de cache blijft                                                  | 86400                                                 |
 | QUOTE_API_URL                | Url naar de quote api                                                                 | ...                                                   |

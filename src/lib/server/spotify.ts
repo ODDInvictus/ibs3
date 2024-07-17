@@ -1,5 +1,4 @@
 import SpotifyWebApi from 'spotify-web-api-node'
-import db from './db'
 import { env as privateEnv } from '$env/dynamic/private'
 import { env } from '$env/dynamic/public'
 import { Setting, settings } from './settings'
