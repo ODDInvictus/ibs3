@@ -101,7 +101,7 @@ export const load = (async ({ params, locals }) => {
 		})
 	}
 
-	if (scoreboard.type === 'TIME') {
+	if (scoreboard.type === 'TIME' || scoreboard.type === 'ADTMEISTER') {
 		// Move all -1 entries to end
 		const dnfs: { id: number; name: string; value: number }[] = []
 

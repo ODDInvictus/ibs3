@@ -1,20 +1,9 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte'
+	import { calcLeaderboardTime } from '$lib/leaderboards'
 	import type { PageData } from './$types'
 
 	export let data: PageData
-
-	function calcTime(num: number) {
-		if (num === -1) {
-			return 'DNF'
-		}
-
-		const minutes = num / 60
-		const seconds = num % 60
-
-		if (minutes < 1) return `00:${seconds < 10 ? '0' : ''}${seconds}`
-		return `${Math.floor(minutes)}:${seconds < 10 ? '0' : ''}${seconds}`
-	}
 
 	function back() {
 		window.history.back()
@@ -40,8 +29,8 @@
 		{#each data.entries as submission}
 			<tr>
 				<td>{submission.user.firstName}</td>
-				{#if data.leaderboard.type === 'TIME'}
-					<td>{calcTime(submission.value)}</td>
+				{#if data.leaderboard.type === 'TIME' || data.leaderboard.type === 'ADTMEISTER'}
+					<td>{calcLeaderboardTime(submission.value)}</td>
 				{:else}
 					<td>{submission.value}</td>
 				{/if}

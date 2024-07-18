@@ -1,4 +1,5 @@
 import db from '$lib/server/db'
+import type { LeaderboardTypes } from '@prisma/client'
 import { error, fail, redirect } from '@sveltejs/kit'
 
 export const load = async ({ params }) => {
@@ -25,6 +26,7 @@ export const load = async ({ params }) => {
 	return {
 		users,
 		leaderboard,
+		type: leaderboard.type as LeaderboardTypes,
 		title: leaderboard.name,
 	}
 }
@@ -78,6 +80,16 @@ export const actions = {
 			const minutes = parseInt(spl[0])
 			const seconds = parseInt(spl[1])
 			toSave = minutes * 60 + seconds
+		} else if (leaderboard.type === 'ADTMEISTER') {
+			const dnf = data.get('dnf')
+			const seconds = data.get('s') as string
+			const miliseconds = data.get('ms') as string
+
+			if (dnf && dnf === 'on') {
+				toSave = -1
+			} else {
+				toSave = Number.parseInt(seconds) * 100 + Number.parseInt(miliseconds)
+			}
 		} else {
 			if (Number.parseInt(value) < 0) {
 				return fail(400, {

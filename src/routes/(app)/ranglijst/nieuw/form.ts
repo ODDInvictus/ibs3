@@ -59,7 +59,7 @@ export const newScoreboardForm = new Form<{
 	},
 	needsConfirmation: true,
 	confirmText: 'Weet je zeker dat je deze ranglijst aan wil aanmaken?',
-	requiredRoles: [Roles.Senaat],
+	requiredRoles: [Roles.Senaat, Roles.Admins],
 	formId: 'scoreboard-form',
 	fields: [
 		{
@@ -113,6 +113,10 @@ export const newScoreboardForm = new Form<{
 				{
 					label: 'Highscore',
 					value: LeaderboardTypes.SCORE,
+				},
+				{
+					label: 'Adtmeister',
+					value: LeaderboardTypes.ADTMEISTER,
 				},
 			],
 		} as Field<'select'>,

@@ -840,6 +840,7 @@ enum LeaderboardTypes {
   SCORE
   COUNT
   TIME
+  ADTMEISTER
 }
 
 enum LeaderboardSort {

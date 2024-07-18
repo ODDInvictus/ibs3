@@ -22,9 +22,18 @@
 		{/each}
 	</select>
 
-	{#if data.leaderboard.type === 'TIME'}
+	{#if data.type === 'TIME'}
 		<label for="value">Tijd</label>
 		<input disabled={dnf} type="time" name="value" />
+		<label for="dnf">DNF</label>
+		<input type="checkbox" name="dnf" on:change={onDNFChange} />
+	{:else if data.type === 'ADTMEISTER'}
+		<label for="value">Tijd (s:ms)</label>
+		<div class="adtmeister-input">
+			<input type="number" name="s" value={0} disabled={dnf} />
+			<input type="number" name="ms" value={0} min={0} max={99} disabled={dnf} />
+		</div>
+
 		<label for="dnf">DNF</label>
 		<input type="checkbox" name="dnf" on:change={onDNFChange} />
 	{:else}
@@ -37,6 +46,12 @@
 
 <style lang="scss">
 	form {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+	}
+
+	.adtmeister-input {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 1rem;

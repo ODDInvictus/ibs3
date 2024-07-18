@@ -3,32 +3,11 @@
 	import Title from '$lib/components/title.svelte'
 	import { LDAP_IDS } from '$lib/constants'
 	import { toast } from '$lib/notification'
+	import { calcLeaderboardTime, getLeaderboardName } from '$lib/leaderboards'
 
 	export let data: PageData
 
 	let currentDate = new Date()
-
-	let type = ''
-
-	if (data.scoreboard.type === 'COUNT') {
-		type = 'Aantal'
-	} else if (data.scoreboard.type === 'SCORE') {
-		type = 'Score'
-	} else if (data.scoreboard.type === 'TIME') {
-		type = 'Tijd'
-	}
-
-	function calcTime(num: number) {
-		if (num === -1) {
-			return 'DNF'
-		}
-
-		const minutes = num / 60
-		const seconds = num % 60
-
-		if (minutes < 1) return `00:${seconds < 10 ? '0' : ''}${seconds}`
-		return `${Math.floor(minutes)}:${seconds < 10 ? '0' : ''}${seconds}`
-	}
 
 	function formatDate(date: Date) {
 		return date.toLocaleDateString('nl')
@@ -81,7 +60,7 @@
 		<tr>
 			<th>Positie</th>
 			<th>Naam</th>
-			<th>{type}</th>
+			<th>{getLeaderboardName(data.scoreboard.type)}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -89,8 +68,8 @@
 			<tr>
 				<td>{i + 1}</td>
 				<td>{entry.name}</td>
-				{#if data.scoreboard.type === 'TIME'}
-					<td>{calcTime(entry.value)}</td>
+				{#if data.scoreboard.type === 'TIME' || data.scoreboard.type === 'ADTMEISTER'}
+					<td>{calcLeaderboardTime(entry.value, data.scoreboard.type)}</td>
 				{:else}
 					<td>{entry.value}</td>
 				{/if}
