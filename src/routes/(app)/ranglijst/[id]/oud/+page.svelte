@@ -30,7 +30,7 @@
 			<tr>
 				<td>{submission.user.firstName}</td>
 				{#if data.leaderboard.type === 'TIME' || data.leaderboard.type === 'ADTMEISTER'}
-					<td>{calcLeaderboardTime(submission.value)}</td>
+					<td>{calcLeaderboardTime(submission.value, data.leaderboard.type)}</td>
 				{:else}
 					<td>{submission.value}</td>
 				{/if}
