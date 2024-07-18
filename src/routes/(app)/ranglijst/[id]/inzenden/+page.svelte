@@ -44,16 +44,22 @@
 	<button type="submit">Inzenden</button>
 </form>
 
-<style lang="scss">
+<style>
 	form {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 1rem;
+		gap: 0.5rem;
+		max-width: 100vw;
+	}
+
+	input {
+		max-width: 15vw;
 	}
 
 	.adtmeister-input {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 1rem;
+		max-width: 100vw;
 	}
 </style>
