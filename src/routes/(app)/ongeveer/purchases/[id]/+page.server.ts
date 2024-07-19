@@ -2,7 +2,6 @@ import db from '$lib/server/db'
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import Decimal from 'decimal.js'
-import { formatFileSize } from '$lib/utils'
 
 export const load = (async ({ params }) => {
 	const purchase = await db.journal.findUnique({
@@ -35,9 +34,7 @@ export const load = (async ({ params }) => {
 	const attachments =
 		purchase?.Attachments?.map(attatchment => {
 			return {
-				MIMEtype: attatchment.MIMEtype,
 				src: `/file/${attatchment.filename}`,
-				size: formatFileSize(attatchment.size),
 				filename: attatchment.filename,
 			}
 		}) ?? []

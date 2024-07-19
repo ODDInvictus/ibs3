@@ -1,9 +1,8 @@
 import db from '$lib/server/db'
-import { formatFileSize } from '$lib/utils.js'
 import { error } from '@sveltejs/kit'
 import Decimal from 'decimal.js'
 
-export const load = async ({ params, locals }) => {
+export const load = async ({ params }) => {
 	const id = Number.parseInt(params.id)
 	if (Number.isNaN(id)) error(400, 'Ongeldige declaratie ID')
 
@@ -32,11 +31,9 @@ export const load = async ({ params, locals }) => {
 			declaration.Journal?.Rows.reduce((acc, { price, amount }) => acc.add(new Decimal(price).mul(amount)), new Decimal(0)).toNumber() ??
 			declaration.askedAmount.toNumber(),
 		Attachments:
-			declaration.Journal?.Attachments.map(({ id, filename, MIMEtype, size }) => ({
+			declaration.Journal?.Attachments.map(({ id, filename }) => ({
 				id,
 				filename,
-				MIMEtype,
-				size: formatFileSize(size),
 			})) ?? [],
 	}
 

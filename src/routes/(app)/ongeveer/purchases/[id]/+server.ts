@@ -73,7 +73,8 @@ export const PATCH: RequestHandler = async ({ params, locals }) => {
 			giver: await getInvictusId(),
 			receiver: journal.relationId,
 			amount: toPay,
-			description: `Declaratie: ${journal.description}`,
+			description: journal.description ?? 'declaratie',
+			isManual: false,
 		})
 
 		// Match transaction to journal
@@ -82,7 +83,7 @@ export const PATCH: RequestHandler = async ({ params, locals }) => {
 				transactionId: transaction.Transaction.id,
 				journalId: journal.id,
 				amount: toPay,
-				description: `Declaratie: ${journal.description}`,
+				description: journal.description ?? 'declaratie',
 			},
 		})
 

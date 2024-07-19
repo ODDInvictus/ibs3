@@ -3,7 +3,6 @@ import { env as envPublic } from '$env/dynamic/public'
 import { sequence } from '@sveltejs/kit/hooks'
 import type { Handle, HandleServerError } from '@sveltejs/kit'
 import { notifyDiscordError } from '$lib/server/notifications/discord'
-import { Decimal } from 'decimal.js'
 import { client as Mongo } from '$lib/server/files'
 import { handleAuthentication, handleAuthorization } from '$lib/server/auth'
 import { initSettings } from '$lib/server/settings'
@@ -23,8 +22,6 @@ export const handleError = (async ({ error, event }) => {
 
 // On start up
 await (async () => {
-	Decimal.set({ precision: 4 })
-
 	await initSettings()
 	await initAuthHelpers()
 

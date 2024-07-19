@@ -38,9 +38,10 @@ export const actions = {
 			await db.$transaction(async tx => {
 				const description = `Declaratie: ${product}`
 
-				if (!receipt || receipt?.size === 0) return
-
-				const filename = await uploadGenericFile(receipt, locals.user)
+				let filename = null
+				if (receipt && receipt?.size !== 0) {
+					filename = await uploadGenericFile(receipt, locals.user)
+				}
 
 				// Create object in database
 				await tx.journal.create({
@@ -51,11 +52,13 @@ export const actions = {
 						relationId: personData.personId,
 						description,
 						ref: description,
-						Attachments: {
-							connect: {
-								filename,
-							},
-						},
+						Attachments: filename
+							? {
+									connect: {
+										filename,
+									},
+								}
+							: undefined,
 						Rows: {
 							create: [
 								{

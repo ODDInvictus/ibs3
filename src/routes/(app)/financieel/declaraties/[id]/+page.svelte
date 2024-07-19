@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { env } from '$env/dynamic/public'
 	import type { PageData } from './$types'
 	import { formatDateHumanReadable } from '$lib/dateUtils'
 	import Title from '$lib/components/title.svelte'
@@ -55,9 +54,15 @@
 		max-width: 25vw;
 	}
 
+	@media (min-width: 600px) {
+		#root {
+			display: grid;
+			grid-template-columns: 1fr 2fr;
+		}
+	}
+
 	#root {
-		display: grid;
-		grid-template-columns: 1fr 2fr;
+		display: block;
 	}
 
 	#left {
