@@ -23,8 +23,6 @@ export const handleError = (async ({ error, event }) => {
 
 // On start up
 await (async () => {
-	Decimal.set({ precision: 4 })
-
 	await initSettings()
 	await initAuthHelpers()
 

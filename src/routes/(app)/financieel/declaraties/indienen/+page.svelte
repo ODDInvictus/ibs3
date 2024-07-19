@@ -58,8 +58,7 @@
 		options={[
 			['SALDO', 'Saldo'],
 			['ACCOUNT', 'Rekening'],
-		]}
-	>
+		]}>
 		Ontvangemethode
 	</SuperSelect>
 
@@ -80,11 +79,9 @@
 
 <style lang="scss">
 	img {
-		position: absolute;
-		bottom: 7rem;
-		right: 1rem;
 		max-height: 20rem;
 		max-width: 80%;
+		margin-top: 1rem;
 	}
 
 	@media (min-width: 600px) {
