@@ -135,7 +135,7 @@
 			<div>
 				<h2>Details</h2>
 				<p>Beschrijving: {data.photo.description}</p>
-				<p>Gemaakt door: {data.photo.creator?.name}</p>
+				<p>Gemaakt door: {data.photo.creator?.firstName}</p>
 				{#if data.photo.date}
 					<p>Datum: {formatDateHumanReadable(data.photo.date)}</p>
 				{/if}

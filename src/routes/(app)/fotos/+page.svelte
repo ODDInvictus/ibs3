@@ -34,7 +34,7 @@
 				<div on:click={() => imagePreview({ image: getPictureUrl(data.highlight.filename, 'normal') })}>
 					<img src={getPictureUrl(data.highlight.filename, 'thumbnail')} alt={data.highlight.filename} />
 				</div>
-				<p>Gemaakt door {data.highlight.name}</p>
+				<p>Gemaakt door {data.highlight.firstName}</p>
 				<div class="ibs-card--buttons">
 					<a href="/fotos/{data.highlight.pid}">Meer informatie</a>
 				</div>

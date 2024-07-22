@@ -3,7 +3,7 @@ import db from '$lib/server/db'
 import type { Photo } from '@prisma/client'
 
 type PhotoHighlight = {
-	name: string
+	firstName: string
 	filename: string
 	pid: number
 }
