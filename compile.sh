@@ -15,6 +15,11 @@ fi
 echo Bouwen voor versie $1
 npm run build
 
+if [ $? -ne 1 ]; then
+    echo 'Build gefaald, probeer opnieuw'
+    exit 1
+fi
+
 echo
 echo Docker container genereren
 docker build -t ghcr.io/oddinvictus/ibs3:$1 .
