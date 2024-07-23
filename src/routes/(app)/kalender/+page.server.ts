@@ -1,13 +1,18 @@
 import { LDAP_IDS } from '$lib/constants.js'
 import db from '$lib/server/db'
+import type { Activity } from '@prisma/client'
 import type { PageServerLoad } from './$types'
+
+type CalendarActivity = Activity & {
+	isDies: boolean
+}
 
 export const load = (async ({ locals }) => {
 	const today = new Date()
 	// If the user is in the members committee, show all events
 	const isMember = locals.committees.find(c => c.ldapId === LDAP_IDS.MEMBERS) !== undefined
 
-	const activities = await db.activity.findMany({
+	const activityQuery = await db.activity.findMany({
 		orderBy: [
 			{
 				startTime: 'asc',
@@ -26,6 +31,14 @@ export const load = (async ({ locals }) => {
 				},
 			},
 		},
+	})
+
+	let activities = activityQuery.map(activity => {
+		const isDies = activity.name.toLowerCase().includes('dies')
+		return {
+			...activity,
+			isDies,
+		}
 	})
 
 	return {

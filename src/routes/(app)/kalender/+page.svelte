@@ -14,7 +14,7 @@
 
 <div id="activities">
 	{#each data.activities as activity}
-		<div class="row">
+		<div class="row {activity.isDies ? 'dies' : ''}">
 			<div class="image">
 				{#if !activity.photo}
 					<img src="/image/favicon-512.png?static=true" alt="⏳" />
@@ -75,6 +75,12 @@
 		@media screen and (max-width: 600px) {
 			margin: 0 10px !important;
 		}
+	}
+
+	.dies {
+		background-image: url('/vlaggen.svg');
+		background-repeat: repeat-x;
+		background-size: 200px;
 	}
 
 	.row {
