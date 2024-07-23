@@ -2,6 +2,7 @@ import sharp from 'sharp'
 import { getFileData, uploadFile } from './mongo'
 import { prisma } from './prisma'
 import { File } from '@prisma/client'
+import { failJob } from './utils'
 
 type ImageProcessingJob = {
 	name: string
@@ -38,15 +39,7 @@ async function compressImage(msg: ImageProcessingJob) {
 
 	if (!originalFile) {
 		console.error(`[REDIS] File ${name} not found in database`)
-		await prisma.job.update({
-			where: {
-				name: job.name,
-			},
-			data: {
-				finished: false,
-				result: 'Bestand niet gevonden in database',
-			},
-		})
+		await failJob(job.name, 'Bestand niet gevonden in database')
 		return
 	}
 
@@ -126,21 +119,13 @@ async function compressImage(msg: ImageProcessingJob) {
 		})
 	} catch (err) {
 		console.error('[ImageProcessing] Error compressing image', err)
-		await prisma.job.update({
-			where: {
-				name: job.name,
-			},
-			data: {
-				finished: false,
-				completedAt: new Date(),
-				result: (err as Error).message,
-			},
-		})
+		await failJob(job.name, (err as Error).message)
 	}
 }
 
-function rotateImage(msg: ImageProcessingJob) {
-	console.log('TODO')
+async function rotateImage(msg: ImageProcessingJob) {
+	await failJob(msg.name, 'Niet geimplementeerd')
+	// Load all version of the image
 }
 
 async function saveNewImage(data: Buffer, newFilename: string, file: File) {

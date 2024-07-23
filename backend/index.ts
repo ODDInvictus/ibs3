@@ -8,6 +8,7 @@ import { newActivitiyNotification } from './notifications'
 import { sendCustomEmail } from './email-utils'
 import redis from './redis'
 import { ImageProcessing } from './images'
+import { failJob } from './utils'
 
 const API_VERSION = '1.0.1'
 
@@ -73,6 +74,7 @@ app.listen(port, async () => {
 
 		if (!activity) {
 			console.log('[REDIS] Invalid activity id')
+			await failJob(body.name, 'Activiteit niet gevonden')
 			return
 		}
 
@@ -88,6 +90,16 @@ app.listen(port, async () => {
 		const body = JSON.parse(msg)
 
 		await ImageProcessing.compressImage(body)
+	})
+
+	await redis.subscribe('rotate-image', async msg => {
+		if (!msg) {
+			console.error('[REDIS] Received message for rotate-image but no data was provided')
+			return
+		}
+		const body = JSON.parse(msg)
+
+		await ImageProcessing.rotateImage(body)
 	})
 })
 
