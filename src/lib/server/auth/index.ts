@@ -5,7 +5,7 @@ import { handleAuthorization } from './authorization'
 import { IBSAuthAdapter } from './adapter'
 import { redirect } from '@sveltejs/kit'
 import { isFinancie, isMember, isAdmin, hasRole, initAuthHelpers } from './helpers'
-import { verifyToken, getOrCreateToken } from './token'
+import { verifyToken, getOrCreateToken, verifyTokenWithoutUser } from './token'
 
 const {
 	handle: handleAuthentication,
@@ -53,4 +53,5 @@ export {
 	initAuthHelpers,
 	verifyToken,
 	getOrCreateToken,
+	verifyTokenWithoutUser,
 }

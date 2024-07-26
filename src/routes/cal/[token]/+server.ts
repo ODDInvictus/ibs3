@@ -1,4 +1,4 @@
-import { verifyToken } from '$lib/server/auth'
+import { verifyTokenWithoutUser } from '$lib/server/auth'
 import type { RequestHandler } from './$types'
 import * as ics from 'ics'
 import { isFeut } from '$lib/server/auth/helpers'
@@ -15,14 +15,14 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 		return fail(400, 'Geen token meegegeven')
 	}
 
-	const valid = await verifyToken(locals.user, token, 'calendar')
+	const { valid, user } = await verifyTokenWithoutUser(token, 'calendar')
 
 	if (!valid) {
 		return fail(403, 'Token is ongeldig')
 	}
 
 	// If the token is valid, respond with the personal calendar for that user
-	const activities = await getActivities(isFeut(locals.user))
+	const activities = await getActivities(isFeut(user!))
 
 	const events = buildEvents(activities)
 	const bds = await buildBirthdayEvents()
@@ -40,6 +40,16 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 				resolve(new Response(value, { status: 200, headers: { 'Content-Type': 'text/calendar' } }))
 			},
 		)
+	})
+}
+
+export async function OPTIONS() {
+	return new Response(null, {
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'GET, OPTIONS',
+			'Access-Control-Allow-Headers': 'Content-Type',
+		},
 	})
 }
 

@@ -36,7 +36,7 @@ const handleAuthorization = (async ({ event, resolve }) => {
 	}
 
 	// If shortner, then ignore auth.
-	if (url.startsWith('/s/')) {
+	if (url.startsWith('/s/') || url.startsWith('/cal')) {
 		// Resolve normally
 		return await resolve(event)
 	} else if (!url.startsWith('/auth')) {
