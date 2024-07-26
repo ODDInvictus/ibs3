@@ -14,6 +14,7 @@ export async function initAuthHelpers() {
 
 export function hasRole(user: User, role: string) {
 	const committees = committeeMembers.filter(cm => cm.userId === user.id)
+	console.log(user.ldapId, role, committees)
 
 	if (committees.length === 0) return false
 
@@ -36,5 +37,10 @@ export function isAdmin(user: User) {
 }
 
 export function isFeut(user: User) {
-	return hasRole(user, LDAP_IDS.FEUTEN)
+	const committees = committeeMembers.filter(cm => cm.userId === user.id)
+
+	if (committees.length === 0) return false
+
+	const committeeMember = committees.find(cm => cm.committee.ldapId === LDAP_IDS.FEUTEN)
+	return committeeMember !== undefined
 }

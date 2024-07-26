@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 	}
 
 	// If the token is valid, respond with the personal calendar for that user
-	const activities = await getActivities(!isFeut(locals.user))
+	const activities = await getActivities(isFeut(locals.user))
 
 	const events = buildEvents(activities)
 	const bds = await buildBirthdayEvents()
