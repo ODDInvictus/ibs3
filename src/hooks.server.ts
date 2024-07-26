@@ -10,10 +10,7 @@ import { initAuthHelpers } from '$lib/server/auth'
 
 const handleCors: Handle = async ({ event, resolve }) => {
 	const res = await resolve(event)
-
 	res.headers.append('Access-Control-Allow-Origin', '*')
-	// if (event.url.pathname.startsWith('/cal')) {}
-
 	return res
 }
 
