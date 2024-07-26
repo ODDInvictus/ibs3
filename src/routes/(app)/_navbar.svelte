@@ -66,6 +66,14 @@
 			<i><ArrowBarLeft /></i>
 			<span>Inkoop</span>
 		</a>
+		<button class="layout--navbar--item btn-a" on:click={openMenu}>
+			{#if open}
+				<i><X /></i>
+			{:else}
+				<i><Menu /></i>
+			{/if}
+			<span>Menu</span>
+		</button>
 		<a href="/ongeveer/sales" class="layout--navbar--item">
 			<i><ArrowBarRight /></i>
 			<span>Verkoop</span>

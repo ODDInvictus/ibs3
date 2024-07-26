@@ -260,6 +260,10 @@ $steps: 20;
 	&--item:nth-child(6) {
 		grid-row-start: -6;
 	}
+
+	&--item:nth-child(7) {
+		grid-row-start: -7;
+	}
 }
 
 @media (max-width: 600px) {
