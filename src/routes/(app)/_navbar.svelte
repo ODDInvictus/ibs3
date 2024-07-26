@@ -127,12 +127,10 @@
 		</a>
 
 		{#if $page.data?.settings.maluspuntenEnabled}
-			{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
-				<a class="layout--navbar--item" href="/maluspunten">
-					<i><AccessibleOff /></i>
-					<span>Maluspunten</span>
-				</a>
-			{/if}
+			<a class="layout--navbar--item" href="/maluspunten">
+				<i><AccessibleOff /></i>
+				<span>Maluspunten</span>
+			</a>
 		{/if}
 
 		<a class="layout--navbar--item" href="/financieel">
