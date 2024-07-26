@@ -65,7 +65,7 @@ export const actions = {
 
 		await db.user.update({
 			where: {
-				ldapId: locals.user.ldapId,
+				ldapId: id,
 			},
 			data: {
 				profilePicture: filename,
