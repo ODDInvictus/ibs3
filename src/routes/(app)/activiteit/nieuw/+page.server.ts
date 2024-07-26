@@ -196,6 +196,7 @@ export const actions = {
 						data: {
 							name,
 							description,
+							createdById: event.locals.user.id,
 							startTime: start,
 							endTime: end,
 							locationId: loc,

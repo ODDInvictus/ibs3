@@ -95,6 +95,7 @@ model User {
   LeaderboardEntries      LeaderboardEntry[]
   File                    File[]
   AccessToken             AccessToken[]
+  Activity                Activity[]
 }
 
 model Account {
@@ -195,9 +196,11 @@ model Maluspunt {
 
 model Activity {
   // Administratieve gegevens
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  createdById Int?
 
   name        String
   description String            @db.LongText
