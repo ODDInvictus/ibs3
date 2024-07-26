@@ -136,6 +136,8 @@ model AccessToken {
   type   String
   user   User   @relation(fields: [userId], references: [id])
   userId Int
+
+  lastUsed DateTime @default(now())
 }
 
 model Committee {

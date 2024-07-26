@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `AccessToken` ADD COLUMN `lastUsed` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE `Settings` ALTER COLUMN `updatedAt` DROP DEFAULT;

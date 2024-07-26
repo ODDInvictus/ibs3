@@ -17,6 +17,8 @@ export async function verifyToken(user: User, token: string, type: TokenType): P
 	if (accessToken.user.id !== user.id) return false
 	if (accessToken.type !== type) return false
 
+	await setLastUsed(accessToken)
+
 	return true
 }
 
@@ -38,6 +40,8 @@ export async function verifyTokenWithoutUser(token: string, type: TokenType): Pr
 	if (!accessToken) return { valid: false, user: null }
 	if (accessToken.type !== type) return { valid: false, user: null }
 
+	await setLastUsed(accessToken)
+
 	return { valid: true, user: accessToken.user }
 }
 
@@ -49,7 +53,10 @@ export async function getOrCreateToken(user: User, type: TokenType): Promise<Acc
 		},
 	})
 
-	if (accessToken) return accessToken
+	if (accessToken) {
+		await setLastUsed(accessToken)
+		return accessToken
+	}
 
 	return db.accessToken.create({
 		data: {
@@ -60,6 +67,17 @@ export async function getOrCreateToken(user: User, type: TokenType): Promise<Acc
 			},
 			type,
 			name: `${user.ldapId}-${type}`,
+		},
+	})
+}
+
+async function setLastUsed(accessToken: AccessToken): Promise<void> {
+	await db.accessToken.update({
+		where: {
+			token: accessToken.token,
+		},
+		data: {
+			lastUsed: new Date(),
 		},
 	})
 }
