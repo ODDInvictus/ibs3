@@ -54,18 +54,16 @@
 <div id="img">
 	<img src={getPictureUrl(data.member.profilePicture)} alt={data.member.firstName} />
 
-	{#if $page.data.isCurrentUser}
-		<div>
-			<form method="POST" enctype="multipart/form-data">
-				<InputFile name="image" id="image" accept="image/*" />
-				{#if form?.success !== undefined}
-					<p class="error">{form?.message}</p>
-				{:else}
-					<button type="submit">Upload</button>
-				{/if}
-			</form>
-		</div>
-	{/if}
+	<div>
+		<form method="POST" enctype="multipart/form-data">
+			<InputFile name="image" id="image" accept="image/*" />
+			{#if form?.success !== undefined}
+				<p class="error">{form?.message}</p>
+			{:else}
+				<button type="submit">Upload</button>
+			{/if}
+		</form>
+	</div>
 </div>
 
 <div id="personal" class="info">

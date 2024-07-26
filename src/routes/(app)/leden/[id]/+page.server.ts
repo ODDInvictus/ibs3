@@ -45,10 +45,10 @@ export const load = (async ({ params, locals }) => {
 
 export const actions = {
 	default: async ({ request, params, locals }) => {
-		const id = params.id
+		let id = params.id
 
-		if (locals.user.ldapId !== id) {
-			return fail(403, { success: false, message: 'Leuk geprobeerd, maar je mag dit niet doen.' })
+		if (id === 'ik') {
+			id = locals.user.ldapId
 		}
 
 		// save the image and update the user
