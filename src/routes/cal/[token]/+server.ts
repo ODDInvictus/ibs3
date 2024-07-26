@@ -28,14 +28,18 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 	const bds = await buildBirthdayEvents()
 
 	return await new Promise((resolve, reject) => {
-		ics.createEvents([...events, ...bds], (error, value) => {
-			if (error) {
-				console.error('Het bouwen van de calender voor gebruiker ' + locals.user.ldapId + ' is mislukt', error)
-				reject(fail(500, 'Er ging iets mis bij het maken van de kalender'))
-			}
+		ics.createEvents(
+			[...events, ...bds],
+			{ productId: '//O.D.D. Invictus//Invictus Bier Systeem//NL', method: 'PUBLISH', calName: 'O.D.D. Invictus' },
+			(error, value) => {
+				if (error) {
+					console.error('Het bouwen van de calender voor gebruiker ' + locals.user.ldapId + ' is mislukt', error)
+					reject(fail(500, 'Er ging iets mis bij het maken van de kalender'))
+				}
 
-			resolve(new Response(value, { status: 200, headers: { 'Content-Type': 'text/calendar' } }))
-		})
+				resolve(new Response(value, { status: 200, headers: { 'Content-Type': 'text/calendar' } }))
+			},
+		)
 	})
 }
 
@@ -90,6 +94,7 @@ const buildEvents = (activities: Activity[]): ics.EventAttributes[] => {
 			title,
 			description,
 			url: env.ORIGIN + '/activiteit/' + activity.id,
+			uid: `activiteit-${activity.id}@oddinvictus.nl`,
 			status: 'CONFIRMED',
 			busyStatus: 'BUSY',
 			organizer: { name: 'O.D.D. Invictus', email: 'senaat@oddinvictus.nl' },
@@ -117,6 +122,7 @@ const buildBirthdayEvents = async (): Promise<ics.EventAttributes[]> => {
 				start: [new Date().getFullYear(), user.birthDate.getMonth() + 1, user.birthDate.getDate()],
 				end: [new Date().getFullYear(), endDate.getMonth() + 1, endDate.getDate()],
 				startInputType: 'local',
+				uid: `verjaardag-${user.ldapId}@oddinvictus.nl`,
 				recurrenceRule: 'FREQ=YEARLY',
 				url: env.ORIGIN + '/leden/' + user.ldapId,
 				organizer: { name: 'O.D.D. Invictus', email: 'senaat@oddinvictus.nl' },
