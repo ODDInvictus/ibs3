@@ -2,15 +2,16 @@ import type { RequestHandler } from './$types'
 import db from '$lib/server/db'
 import type { AttendingStatus } from '@prisma/client'
 import { error } from '@sveltejs/kit'
+import { isSenaat } from '$lib/server/auth/helpers'
 
 type RequestType = {
 	status: AttendingStatus
 	activityId: number
+	ldapId: string
 }
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-	const { status, activityId }: RequestType = await request.json()
-	const user = locals.user
+	const { status, activityId, ldapId }: RequestType = await request.json()
 
 	const activity = await db.activity.findUnique({
 		where: {
@@ -29,9 +30,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		return error(400, 'Deze activiteit is al geweest, je kan je status niet meer aanpassen')
 	}
 
+	const isUser = locals.user.ldapId === ldapId
+
+	if (!isUser && !isSenaat(locals.user)) {
+		return error(403, 'Je hebt geen toestemming om deze actie uit te voeren')
+	}
+
 	await db.attending.updateMany({
 		where: {
-			userId: user.id,
+			user: {
+				ldapId,
+			},
 			activityId,
 		},
 		data: {

@@ -5,6 +5,8 @@
 	export let user: User
 	export let status: AttendingStatus
 
+	export let cardAction: (ldapId: string, status: AttendingStatus) => void
+
 	const getStatus = () => {
 		switch (status) {
 			case 'ATTENDING':
@@ -48,7 +50,7 @@
 	</div>
 
 	<div class="user-card-name">
-		<a href="/leden/{user.ldapId}">{user.firstName + ' ' + user.lastName}</a>
+		<button class="btn-a" on:click={() => cardAction(user.ldapId, status)}>{user.firstName + ' ' + user.lastName}</button>
 	</div>
 </div>
 

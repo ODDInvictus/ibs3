@@ -36,6 +36,10 @@ export function isAdmin(user: User) {
 	return hasRole(user, LDAP_IDS.ADMINS)
 }
 
+export function isSenaat(user: User) {
+	return hasRole(user, LDAP_IDS.SENAAT)
+}
+
 export function isFeut(user: User) {
 	const committees = committeeMembers.filter(cm => cm.userId === user.id)
 

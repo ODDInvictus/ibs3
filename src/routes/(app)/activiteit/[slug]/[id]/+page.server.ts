@@ -5,6 +5,7 @@ import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { LDAP_IDS } from '$lib/constants'
 import { redirect } from 'sveltekit-flash-message/server'
+import { isSenaat } from '$lib/server/auth/helpers'
 
 export const load = (async event => {
 	const { params, locals } = event
@@ -58,6 +59,7 @@ export const load = (async event => {
 		attending,
 		title: activity.name,
 		domain: env.IBS_URL,
+		canEditAttending: isSenaat(locals.user),
 	}
 }) satisfies PageServerLoad
 

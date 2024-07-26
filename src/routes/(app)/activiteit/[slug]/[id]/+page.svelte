@@ -18,6 +18,8 @@
 	import { enhance } from '$app/forms'
 	import ProfileIcon from '$lib/components/profile-icon.svelte'
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
+	import type { AttendingStatus } from '@prisma/client'
+	import { promptCheckbox } from '$lib/promptCheckbox'
 
 	export let data: PageData
 
@@ -78,15 +80,17 @@
 		})
 	}
 
-	async function setAttending(status: string) {
+	async function setAttending(status: string, ldapId: string) {
 		// First check if the user is attending
-		const a = attending.find((a: any) => a.user.ldapId == data.user.ldapId)
+		const a = attending.find((a: any) => a.user.ldapId == ldapId)
 
 		// If a is undefined, then continue, since the backend will make it
 		if (a && a.status === status) {
 			// The user is already attending/not attending, so do nothing
 			return
 		}
+
+		const isUser = data.user.ldapId === ldapId
 
 		// Send a request to the server to update the attending status
 		await fetch('', {
@@ -96,6 +100,7 @@
 			},
 			body: JSON.stringify({
 				status,
+				ldapId,
 				activityId: activity.id,
 			}),
 		})
@@ -115,11 +120,11 @@
 
 				if (status === 'ATTENDING') {
 					title = 'Gezellig!'
-					message = 'Je aanwezigheid is opgeslagen'
+					message = isUser ? 'Je aanwezigheid is opgeslagen' : 'De aanwezigheid is opgeslagen'
 					type = 'success'
 				} else if (status === 'NOT_ATTENDING') {
 					title = 'Jammer!'
-					message = 'Je afwezigheid is opgeslagen'
+					message = isUser ? 'Je afwezigheid is opgeslagen' : 'De afwezigheid is opgeslagen'
 				} else {
 					title = 'Opgeslagen'
 					message = 'Vul je het later nog in?'
@@ -202,6 +207,25 @@
 		uri.search = search.toString()
 
 		window.open(uri.toString())
+	}
+
+	function cardAction(ldapId: string, status: AttendingStatus) {
+		console.log(ldapId, status)
+
+		if (data.canEditAttending) {
+			promptCheckbox({
+				title: 'Status wijzigen',
+				message: 'Is deze persoon aanwezig bij deze activiteit?',
+				value: status === 'ATTENDING',
+				cb: async value => {
+					if (value === (status === 'ATTENDING')) return
+
+					await setAttending(value ? 'ATTENDING' : 'NOT_ATTENDING', ldapId)
+				},
+			})
+		} else {
+			window.location.href = '/leden/' + ldapId
+		}
 	}
 </script>
 
@@ -288,14 +312,14 @@
 			<h2 class="ibs-card--title">Wie komen er allemaal?</h2>
 
 			<div class="ibs-card--buttons top">
-				<button on:click={async () => await setAttending('ATTENDING')}>Ik ben 🐝</button>
-				<button on:click={async () => await setAttending('UNSURE')}>Ik weet het nog niet</button>
-				<button on:click={async () => await setAttending('NOT_ATTENDING')}>Ik ben niet 🐝</button>
+				<button on:click={async () => await setAttending('ATTENDING', data.user.ldapId)}>Ik ben 🐝</button>
+				<button on:click={async () => await setAttending('UNSURE', data.user.ldapId)}>Ik weet het nog niet</button>
+				<button on:click={async () => await setAttending('NOT_ATTENDING', data.user.ldapId)}>Ik ben niet 🐝</button>
 			</div>
 
 			<div class="ibs-card--content users">
 				{#each attending as a}
-					<UserCard status={a.status} user={a.user} />
+					<UserCard status={a.status} user={a.user} {cardAction} />
 				{/each}
 			</div>
 		</div>
