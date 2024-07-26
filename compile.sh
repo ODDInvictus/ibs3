@@ -13,6 +13,7 @@ then
 fi
 
 echo Bouwen voor versie $1
+npm install
 npm run build
 
 if [ $? -ne 0 ]; then
