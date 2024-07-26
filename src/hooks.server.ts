@@ -8,7 +8,29 @@ import { handleAuthentication, handleAuthorization } from '$lib/server/auth'
 import { initSettings } from '$lib/server/settings'
 import { initAuthHelpers } from '$lib/server/auth'
 
-export const handle: Handle = sequence(handleAuthentication, handleAuthorization)
+const handleCors: Handle = async ({ event, resolve }) => {
+	if (event.url.pathname.startsWith('/cal')) {
+		// Allow CORS for the calendar
+		if (event.request.method === 'OPTIONS') {
+			return new Response(null, {
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Methods': 'GET',
+					'Access-Control-Allow-Headers': 'Content-Type',
+				},
+			})
+		}
+	}
+	const res = await resolve(event)
+
+	if (event.url.pathname.startsWith('/cal')) {
+		res.headers.append('Access-Control-Allow-Origin', '*')
+	}
+
+	return res
+}
+
+export const handle: Handle = sequence(handleAuthentication, handleAuthorization, handleCors)
 
 export const handleError = (async ({ error, event }) => {
 	// When an error occurs, we want to log it to our logger
