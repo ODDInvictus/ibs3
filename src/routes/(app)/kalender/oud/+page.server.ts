@@ -12,7 +12,7 @@ export const load = (async ({ locals }) => {
 
 	const activities = await db.activity.findMany({
 		orderBy: {
-			id: 'desc',
+			startTime: 'desc',
 		},
 		select: {
 			id: true,
