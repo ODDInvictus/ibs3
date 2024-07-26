@@ -386,6 +386,14 @@
 		}
 	}
 
+	@media (max-width: 1350px) {
+		.ibs-card--buttons {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+	}
+
 	.cols {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
