@@ -107,6 +107,39 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		return new Response(JSON.stringify({ message: 'Thema bijgewerkt!', success: true }), {
 			status: 200,
 		})
+	} else if (body.action === 'reject-token') {
+		const { id } = body
+
+		if (!id) {
+			return new Response(JSON.stringify({ message: 'Token id is verplicht', success: false }), {
+				status: 400,
+			})
+		}
+
+		// Check if the token exists
+		const token = await db.accessToken.findFirst({
+			where: {
+				token: id,
+				userId: locals.user.id,
+			},
+		})
+
+		if (!token) {
+			return new Response(JSON.stringify({ message: 'Token bestaat niet', success: false }), {
+				status: 404,
+			})
+		}
+
+		// Delete the token
+		await db.accessToken.delete({
+			where: {
+				token: token.token,
+			},
+		})
+
+		return new Response(JSON.stringify({ message: 'Token verwijderd!', success: true }), {
+			status: 200,
+		})
 	} else {
 		return new Response(JSON.stringify({ message: 'Actie niet toegestaan', success: false }), {
 			status: 400,

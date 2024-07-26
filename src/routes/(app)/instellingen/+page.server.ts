@@ -11,8 +11,15 @@ export const load = (async ({ locals }) => {
 		},
 	})
 
+	const tokens = await db.accessToken.findMany({
+		where: {
+			userId: locals.user.id,
+		},
+	})
+
 	return {
 		preferences,
+		tokens,
 		currentTheme: locals.user.preferredTheme,
 	}
 }) satisfies PageServerLoad

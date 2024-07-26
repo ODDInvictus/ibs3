@@ -10,6 +10,7 @@
 <div class="topbar">
 	<a href="/activiteit/nieuw">Activiteit aanmaken</a>
 	<a href="/kalender/oud">Oude activiteiten</a>
+	<a href="/kalender/link">Download .ics</a>
 </div>
 
 <div id="activities">
@@ -63,6 +64,12 @@
 		justify-content: center;
 		gap: 1rem;
 		margin-bottom: 1rem;
+
+		@media (max-width: 600px) {
+			flex-direction: column;
+			align-items: center;
+			gap: 0;
+		}
 	}
 
 	#activities {

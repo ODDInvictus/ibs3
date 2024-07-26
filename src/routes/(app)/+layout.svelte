@@ -6,6 +6,7 @@
 	import Prompt from '$lib/components/prompt.svelte'
 	import PromptSelect from '$lib/components/prompt-select.svelte'
 	import PromptCheckbox from '$lib/components/prompt-checkbox.svelte'
+	import Alert from '$lib/components/alert.svelte'
 	import ImagePreview from '$lib/components/image-popup.svelte'
 	import { afterNavigate } from '$app/navigation'
 	import { Modals, closeModal } from 'svelte-modals'
@@ -92,6 +93,10 @@
 
 	<div class="layout--overlay">
 		<ImagePreview />
+	</div>
+
+	<div class="layout--overlay">
+		<Alert />
 	</div>
 </main>
 

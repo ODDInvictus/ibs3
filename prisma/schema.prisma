@@ -94,6 +94,7 @@ model User {
   Streeplijst             Streeplijst[]
   LeaderboardEntries      LeaderboardEntry[]
   File                    File[]
+  AccessToken             AccessToken[]
 }
 
 model Account {
@@ -126,6 +127,14 @@ model Session {
   userId       Int
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AccessToken {
+  token  String @id @default(cuid())
+  name   String
+  type   String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
 }
 
 model Committee {

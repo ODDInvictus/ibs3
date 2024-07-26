@@ -34,3 +34,7 @@ export function isMember(user: User) {
 export function isAdmin(user: User) {
 	return hasRole(user, LDAP_IDS.ADMINS)
 }
+
+export function isFeut(user: User) {
+	return hasRole(user, LDAP_IDS.FEUTEN)
+}
