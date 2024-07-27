@@ -57,7 +57,7 @@ app.listen(port, async () => {
 	await redis.connect()
 	console.log('[REDIS] Listening for jobs')
 
-	await redis.subscribe('new-activity', async msg => {
+	await redis.subscribe('new-activity', async (msg: string) => {
 		if (!msg) return
 
 		const body = JSON.parse(msg)
@@ -82,7 +82,7 @@ app.listen(port, async () => {
 		await newActivitiyNotification(activity)
 	})
 
-	await redis.subscribe('compress-image', async msg => {
+	await redis.subscribe('compress-image', async (msg: string) => {
 		if (!msg) {
 			console.error('[REDIS] Received message for compress-image but no data was provided')
 			return
@@ -92,7 +92,7 @@ app.listen(port, async () => {
 		await ImageProcessing.compressImage(body)
 	})
 
-	await redis.subscribe('rotate-image', async msg => {
+	await redis.subscribe('rotate-image', async (msg: string) => {
 		if (!msg) {
 			console.error('[REDIS] Received message for rotate-image but no data was provided')
 			return
