@@ -39,10 +39,10 @@ app.post('/email/send', async (req, res) => {
 	res.sendStatus(200)
 
 	console.log(`Attempted to send an email to ${to} with subject ${subject}`)
-	console.log('Skipping...')
+	// console.log('Skipping...')
 
 	// Send email
-	// await sendCustomEmail({ subject, to, from, text, toName, fromName, senderFirstName })
+	await sendCustomEmail({ subject, to, from, text, toName, fromName, senderFirstName })
 })
 
 app.listen(port, async () => {
