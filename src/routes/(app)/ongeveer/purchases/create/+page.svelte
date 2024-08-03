@@ -8,7 +8,7 @@
 	import { onError } from '$lib/superforms/error'
 	import Submit from '$lib/superforms/Submit.svelte'
 	import DeleteButton from '$lib/ongeveer/DeleteButton.svelte'
-	import { formatFileSize, formatMoney } from '$lib/utils'
+	import { formatMoney } from '$lib/utils'
 	import Attatchment from '$lib/ongeveer/Attatchment.svelte'
 	import Plus from '~icons/tabler/plus'
 	import Trashcan from '~icons/tabler/trash'
@@ -198,7 +198,7 @@
 					url={`/ongeveer/purchases/${$idProxy}${data.declarationData?.status === 'PENDING' ? '?type=declaration' : ''}`}
 					redirect="/ongeveer/purchases"
 					confirmMessage="Weet je zeker dat je dit boekstuk wilt verwijderen?"
-					text={data.declarationData?.status === 'PENDING' ? 'Afwijzen en verwijderen' : undefined} />
+					text={data.declarationData?.status === 'PENDING' ? 'Afwijzen en verwijderen' : 'Verwijderen'} />
 			{/if}
 		</div>
 		<div class="attachments">
