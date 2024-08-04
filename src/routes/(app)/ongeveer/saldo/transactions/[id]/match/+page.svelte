@@ -43,7 +43,24 @@
 
 <Title title="Match saldo transactie" />
 
+<table class="info">
+	<h3>Info</h3>
+	<tr>
+		<th>Totaal bedrag</th>
+		<td>{formatPrice(data.transaction.price)}</td>
+	</tr>
+	<tr>
+		<th>Matched</th>
+		<td>{formatPrice(data.totalMatched)}</td>
+	</tr>
+	<tr>
+		<th>Resterend</th>
+		<td>{formatPrice(data.toMatch)}</td>
+	</tr>
+</table>
+
 <form method="post" class="superform" use:enhance>
+	<h3>Match</h3>
 	<table>
 		<thead>
 			<th>Omschrijving</th>
@@ -108,7 +125,16 @@
 	<Submit {formProps}>Opslaan</Submit>
 </form>
 
-<style>
+<style lang="scss">
+	.info {
+		width: fit-content;
+
+		td,
+		th {
+			text-align: left;
+		}
+	}
+
 	table,
 	.bottom-btn {
 		margin-bottom: 1rem;
