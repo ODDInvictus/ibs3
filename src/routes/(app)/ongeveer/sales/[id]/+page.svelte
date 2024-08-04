@@ -9,7 +9,6 @@
 	import { formatPrice } from '$lib/textUtils'
 	import DeleteButton from '$lib/ongeveer/DeleteButton.svelte'
 	import { toast } from '$lib/notification'
-	import { tick } from 'svelte'
 
 	export let data: PageData
 </script>

@@ -9,8 +9,6 @@
 	import { toast } from '$lib/notification'
 	import Submit from '$lib/superforms/Submit.svelte'
 	import { formatPrice } from '$lib/textUtils'
-	import { onMount } from 'svelte'
-	import { browser } from '$app/environment'
 
 	export let data: PageData
 
@@ -41,21 +39,7 @@
 			},
 		]
 	}
-
-	//variable Init
-	let count = 0
-	//function to be called on click
-	function incrementCount() {
-		//incremtent
-		count++
-	}
 </script>
-
-<!-- the function will be called on click -->
-<button on:click={incrementCount}>
-	Clicked {count}
-	{count === 1 ? 'time' : 'times'}
-</button>
 
 <Title title="Match saldo transactie" />
 
@@ -116,9 +100,8 @@
 	</table>
 
 	{#if $form.rows.length === 0}
-		<button type="button" class="bottom-btn">
+		<button type="button" class="bottom-btn" on:click={addRow}>
 			<Plus />
-			Hello
 		</button>
 	{/if}
 

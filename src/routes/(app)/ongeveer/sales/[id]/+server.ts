@@ -34,6 +34,10 @@ export const POST: RequestHandler = async ({ locals, params }) => {
 
 	if (toPay === 0) return new Response('Journal already matched', { status: 409 })
 
+	if (journal.relation.type !== 'USER') {
+		return new Response('De geselcteerde relatie heeft geen saldo, want de relatie is geen gebruiker', { status: 409 })
+	}
+
 	const transaction = await createTransaction({
 		giver: journal.relationId,
 		receiver: await getInvictusId(),
