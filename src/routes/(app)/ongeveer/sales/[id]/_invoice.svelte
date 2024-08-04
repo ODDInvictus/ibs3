@@ -37,97 +37,95 @@
 </script>
 
 <div id="invoice">
-	<main>
-		<div class="topbar" />
-		<div class="top">
-			<div>
-				<p><b>{invoice.relation.name}</b></p>
-				{#if invoice.tav}
-					<p>T.a.v. {invoice.tav}</p>
-				{/if}
-				{#if invoice.relation.FinancialPersonDataOther}
-					<p>{invoice.relation.FinancialPersonDataOther.address ?? ''}</p>
-					<p>
-						{invoice.relation.FinancialPersonDataOther.postalCode ?? ''}
-						{invoice.relation.FinancialPersonDataOther.city ?? ''}
-					</p>
-				{:else if invoice.relation.FinancialPersonDataUser}
-					<p>{invoice.relation.FinancialPersonDataUser.user.email ?? ''}</p>
-				{/if}
+	<div class="topbar" />
+	<div class="top">
+		<div>
+			<p><b>{invoice.relation.name}</b></p>
+			{#if invoice.tav}
+				<p>T.a.v. {invoice.tav}</p>
+			{/if}
+			{#if invoice.relation.FinancialPersonDataOther}
+				<p>{invoice.relation.FinancialPersonDataOther.address ?? ''}</p>
+				<p>
+					{invoice.relation.FinancialPersonDataOther.postalCode ?? ''}
+					{invoice.relation.FinancialPersonDataOther.city ?? ''}
+				</p>
+			{:else if invoice.relation.FinancialPersonDataUser}
+				<p>{invoice.relation.FinancialPersonDataUser.user.email ?? ''}</p>
+			{/if}
+		</div>
+		<div>
+			<img src="/logo.svg" alt="O.D.D. Invictus" />
+		</div>
+	</div>
+
+	<div class="content">
+		<p class="title">Factuur</p>
+		<div class="info">
+			<div class="column">
+				<div>
+					<p>Factuurnummer:</p>
+					<p>Factuurdatum:</p>
+					<p>Betalingstermijn:</p>
+				</div>
+				<div>
+					<p>{invoice.id}</p>
+					<p>{formatDateHumanReadable(new Date(invoice.date ?? ''))}</p>
+					<p>{invoice.termsOfPayment} dagen</p>
+				</div>
 			</div>
-			<div>
-				<img src="/logo.svg" alt="O.D.D. Invictus" />
+			<div class="column">
+				<div>
+					{#if invoice.description}
+						<p>Omschrijving:</p>
+					{/if}
+					<p>Klantnummer:</p>
+					<p>Penningmeester:</p>
+				</div>
+				<div>
+					{#if invoice.description}
+						<p>{invoice.description ?? ''}</p>
+					{/if}
+					<p>{invoice.relation.id}</p>
+					<p>{invoice.Treasurer?.firstName ?? ''} {invoice.Treasurer?.lastName ?? ''}</p>
+				</div>
 			</div>
 		</div>
 
-		<div class="content">
-			<p class="title">Factuur</p>
-			<div class="info">
-				<div class="column">
-					<div>
-						<p>Factuurnummer:</p>
-						<p>Factuurdatum:</p>
-						<p>Betalingstermijn:</p>
-					</div>
-					<div>
-						<p>{invoice.id}</p>
-						<p>{formatDateHumanReadable(new Date(invoice.date ?? ''))}</p>
-						<p>{invoice.termsOfPayment} dagen</p>
-					</div>
-				</div>
-				<div class="column">
-					<div>
-						{#if invoice.description}
-							<p>Omschrijving:</p>
-						{/if}
-						<p>Klantnummer:</p>
-						<p>Penningmeester:</p>
-					</div>
-					<div>
-						{#if invoice.description}
-							<p>{invoice.description ?? ''}</p>
-						{/if}
-						<p>{invoice.relation.id}</p>
-						<p>{invoice.Treasurer?.firstName ?? ''} {invoice.Treasurer?.lastName ?? ''}</p>
-					</div>
-				</div>
-			</div>
-
-			<table>
-				<thead>
-					<th>Omschrijving</th>
-					<th>Hoeveelheid</th>
-					<th>Stukprijs</th>
-					<th>Totaal</th>
-				</thead>
-				<tbody>
-					{#each invoice.Rows as row}
-						<tr>
-							<td>{row.description}</td>
-							<td>{row.amount}</td>
-							<td>{formatPrice(row.price)}</td>
-							<td>{formatPrice(row.amount * Number(row.price))}</td>
-						</tr>
-					{/each}
-					<tr class="total">
-						<td /><td />
-						<td><i>Totaal</i></td>
-						<td>
-							{formatPrice(invoice.Rows.reduce((t, row) => t + row.amount * Number(row.price), 0))}
-						</td>
+		<table>
+			<thead>
+				<th>Omschrijving</th>
+				<th>Hoeveelheid</th>
+				<th>Stukprijs</th>
+				<th>Totaal</th>
+			</thead>
+			<tbody>
+				{#each invoice.Rows as row}
+					<tr>
+						<td>{row.description}</td>
+						<td>{row.amount}</td>
+						<td>{formatPrice(row.price)}</td>
+						<td>{formatPrice(row.amount * Number(row.price))}</td>
 					</tr>
-				</tbody>
-			</table>
+				{/each}
+				<tr class="total">
+					<td /><td />
+					<td><i>Totaal</i></td>
+					<td>
+						{formatPrice(invoice.Rows.reduce((t, row) => t + row.amount * Number(row.price), 0))}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<footer>
+		Gelieve binnen {invoice.termsOfPayment} dagen het bedrag van {invoice.Rows.reduce((t, row) => t + row.amount * Number(row.price), 0)} euro
+		over te maken op rekeningnummer<br />{env.PUBLIC_IBAN} t.n.v. N. Rotmensen onder vermelding van het factuurnummer {invoice.id}.
+		<div class="bottom-bar">
+			<p>IBAN: {env.PUBLIC_IBAN}</p>
+			<p>Email: questor@oddinvictus.nl</p>
 		</div>
-		<footer>
-			Gelieve binnen {invoice.termsOfPayment} dagen het bedrag van {invoice.Rows.reduce((t, row) => t + row.amount * Number(row.price), 0)} euro
-			over te maken op rekeningnummer<br />{env.PUBLIC_IBAN} t.n.v. N. Rotmensen onder vermelding van het factuurnummer {invoice.id}.
-			<div class="bottom-bar">
-				<p>IBAN: {env.PUBLIC_IBAN}</p>
-				<p>Email: questor@oddinvictus.nl</p>
-			</div>
-		</footer>
-	</main>
+	</footer>
 </div>
 
 <style lang="scss">
@@ -154,7 +152,12 @@
 		position: relative;
 		background-color: white;
 		color: black;
+
+		padding: 3rem 2rem 2rem 2rem;
+		padding-bottom: 6rem;
+		font-family: sans-serif !important;
 	}
+
 	.topbar {
 		position: absolute;
 		top: 0;
@@ -162,12 +165,6 @@
 		width: 100%;
 		height: 1rem;
 		background-color: var(--color-primary);
-	}
-
-	main {
-		padding: 3rem 2rem 2rem 2rem;
-		padding-bottom: 6rem;
-		font-family: sans-serif !important;
 	}
 	.title {
 		font-size: 2rem;

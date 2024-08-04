@@ -193,12 +193,17 @@
 				{/if}
 				{#each data.invoice.TransactionMatchRow as { amount, description, Transaction }}
 					<tr>
-						<td>{description}</td>
+						<td>{description ?? '-'}</td>
 						<td><a href="/ongeveer/transaction/{Transaction.id}">#{Transaction.id}</a></td>
 						<td>{Transaction.type === 'BANK' ? 'Bank' : 'Saldo'}</td>
 						<td>{formatPrice(amount)}</td>
 					</tr>
 				{/each}
+				<tr>
+					<td><i>Totaal</i></td>
+					<td colspan="2" />
+					<td>{formatPrice(data.paid)}</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>

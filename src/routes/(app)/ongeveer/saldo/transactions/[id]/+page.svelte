@@ -69,7 +69,7 @@
 		{#each data.transaction.Transaction.TransactionMatchRow as row}
 			<tr>
 				<td><a href="/ongeveer/journal/{row.journalId}">{row.journalId}</a></td>
-				<td>{row.description}</td>
+				<td>{row.description ?? '-'}</td>
 				<td>{formatPrice(row.amount)}</td>
 			</tr>
 		{/each}
