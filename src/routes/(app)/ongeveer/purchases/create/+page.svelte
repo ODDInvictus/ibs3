@@ -136,7 +136,7 @@
 					<td>
 						<select name="ledger" class:has-error={$errors.rows?.[i]?.ledger} bind:value={$form.rows[i].ledger}>
 							{#each data.ledgers ?? [] as ledger}
-								<option value={ledger.id}>{ledger.name}</option>
+								<option value={ledger.id}>{ledger.id} - {ledger.name}</option>
 							{/each}
 						</select>
 					</td>
