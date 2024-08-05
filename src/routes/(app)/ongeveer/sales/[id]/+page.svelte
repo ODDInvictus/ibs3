@@ -9,7 +9,6 @@
 	import { formatPrice } from '$lib/textUtils'
 	import DeleteButton from '$lib/ongeveer/DeleteButton.svelte'
 	import { toast } from '$lib/notification'
-	import { tick } from 'svelte'
 
 	export let data: PageData
 </script>
@@ -33,8 +32,7 @@
 					on:click={() =>
 						openModal(EditRef, {
 							form: data.form,
-						})}
-				>
+						})}>
 					<Pencil color="#777" class="pointer" />
 				</i>
 			</td>
@@ -83,6 +81,36 @@
 		<div class="ongeveer-nav mt-4">
 			{#if data.invoice.date}
 				<button
+					class:disabled={data.toPay === 0}
+					on:click={async () => {
+						if (data.toPay === 0) {
+							toast({
+								message: 'Deze factuur is al betaald',
+								type: 'danger',
+								title: 'Niet toegestaan',
+							})
+						} else {
+							const res = await fetch('', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+								},
+							})
+							if (res.ok) {
+								location.reload()
+							} else {
+								const msg = await res.text()
+								toast({
+									message: msg,
+									type: 'danger',
+									title: 'Fout bij betalen',
+								})
+							}
+						}
+					}}>
+					Betaal met saldo
+				</button>
+				<button
 					class="disabled"
 					on:click={() => {
 						toast({
@@ -90,8 +118,7 @@
 							type: 'danger',
 							title: 'Niet toegestaan',
 						})
-					}}>Bewerken</button
-				>
+					}}>Bewerken</button>
 			{:else}
 				<a href="/ongeveer/sales/{data.invoice.id}/process">Verwerken</a>
 				<a href="/ongeveer/sales/create?id={data.invoice.id}">Bewerken</a>
@@ -100,8 +127,7 @@
 				url="/ongeveer/sales/{data.invoice.id}"
 				redirect="/ongeveer/sales"
 				confirmMessage="Weet je zeker dat je deze factuur wilt verwijderen?"
-				disabled={data.paid > 0}
-			/>
+				disabled={data.paid > 0} />
 		</div>
 	</table>
 
@@ -167,12 +193,17 @@
 				{/if}
 				{#each data.invoice.TransactionMatchRow as { amount, description, Transaction }}
 					<tr>
-						<td>{description}</td>
+						<td>{description ?? '-'}</td>
 						<td><a href="/ongeveer/transaction/{Transaction.id}">#{Transaction.id}</a></td>
 						<td>{Transaction.type === 'BANK' ? 'Bank' : 'Saldo'}</td>
 						<td>{formatPrice(amount)}</td>
 					</tr>
 				{/each}
+				<tr>
+					<td><i>Totaal</i></td>
+					<td colspan="2" />
+					<td>{formatPrice(data.paid)}</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>

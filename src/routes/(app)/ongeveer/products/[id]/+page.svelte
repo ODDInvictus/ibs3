@@ -36,25 +36,25 @@
 		}}>Verwijderen</button>
 </div>
 
-<table>
+<table class="ongeveer-table">
 	<tr>
-		<td>ID</td>
+		<th>ID</th>
 		<td>{data.product.id}</td>
 	</tr>
 	<tr>
-		<td>Naam</td>
+		<th>Naam</th>
 		<td>{data.product.name}</td>
 	</tr>
 	<tr>
-		<td>Beschrijving</td>
+		<th>Beschrijving</th>
 		<td>{data.product.description}</td>
 	</tr>
 	<tr>
-		<td>Prijs</td>
+		<th>Prijs</th>
 		<td>{formatPrice(data.product.price)}</td>
 	</tr>
 	<tr>
-		<td>Categorie</td>
+		<th>Categorie</th>
 		<td>
 			<a href="/ongeveer/products/category/{data.product.category.id}">
 				{data.product.category.id} - {data.product.category.name}
@@ -62,26 +62,26 @@
 		</td>
 	</tr>
 	<tr>
-		<td>Product Type</td>
+		<th>Product Type</th>
 		<td>{data.product.productType}</td>
 	</tr>
 	<tr>
-		<td>Created at</td>
+		<th>Created at</th>
 		<td>{formatDateTimeHumanReadable(new Date(data.product.createdAt))}</td>
 	</tr>
 	<tr>
-		<td>Updated at</td>
+		<th>Updated at</th>
 		<td>{formatDateTimeHumanReadable(new Date(data.product.updatedAt))}</td>
 	</tr>
 	<tr>
-		<td>isActive</td>
+		<th>isActive</th>
 		<td>{data.product.isActive}</td>
 	</tr>
 	{#if data.product.data && Object.keys(data.product.data).length > 0}
 		<h2>Other data</h2>
 		{#each Object.entries(data.product.data ?? {}) as [key, value]}
 			<tr>
-				<td>{key}</td>
+				<th>{key}</th>
 				<td>{value}</td>
 			</tr>
 		{/each}

@@ -16,7 +16,7 @@
 	<a href="/ongeveer/bank/upload">Upload banktransacties</a>
 </div>
 
-<table>
+<table class="striped">
 	<thead>
 		<tr>
 			<th>ID</th>

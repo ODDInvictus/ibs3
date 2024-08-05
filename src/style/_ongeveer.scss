@@ -9,3 +9,12 @@
 		@extend a, .button;
 	}
 }
+
+table.ongeveer-table {
+	width: fit-content;
+
+	th,
+	td {
+		text-align: left;
+	}
+}

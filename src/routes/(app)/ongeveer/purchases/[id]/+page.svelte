@@ -12,40 +12,72 @@
 <div class="top">
 	<div>
 		<h3>Gegevens</h3>
-		<!-- TODO use table -->
-		<div class="info">
-			<div>
-				<p>Referentie:</p>
-				<p>Omschrijving:</p>
-				<p>Betalingstermijn:</p>
-				<p>Boekstuknummer:</p>
-				<p>Ingeboekt door:</p>
-				<p>Datum:</p>
-				<p>Type:</p>
-			</div>
-			<div>
-				<p>{data.purchase.ref ?? '-'}</p>
-				<p>{data.purchase.description ?? '-'}</p>
-				<p>{data.purchase.termsOfPayment} dagen</p>
-				<p>{data.purchase.id}</p>
-				<p>{data.purchase.Treasurer?.firstName ?? '-'}</p>
-				<p>{data.purchase.date ? formatDateHumanReadable(new Date(data.purchase.date)) : '-'}</p>
-				<p>{data.purchase.type.toLocaleLowerCase()}</p>
-			</div>
-		</div>
+		<table>
+			<tr>
+				<th>Referentie</th>
+				<td>{data.purchase.ref ?? '-'}</td>
+			</tr>
+			<tr>
+				<th>Omschrijving</th>
+				<td>{data.purchase.description ?? '-'}</td>
+			</tr>
+			<tr>
+				<th>Betalingstermijn</th>
+				<td>{data.purchase.termsOfPayment} dagen</td>
+			</tr>
+			<tr>
+				<th>Boekstuknummer</th>
+				<td>{data.purchase.id}</td>
+			</tr>
+			<tr>
+				<th>Datum</th>
+				<td>{data.purchase.date ? formatDateHumanReadable(new Date(data.purchase.date)) : '-'}</td>
+			</tr>
+			<tr>
+				<th>Bedrag</th>
+				<td>{formatPrice(data.total)}</td>
+			</tr>
+			<tr>
+				<th>Type</th>
+				<td>{data.purchase.type.toLocaleLowerCase()}</td>
+			</tr>
+		</table>
 	</div>
 
-	<div>
-		<h3>Declaratie</h3>
-		<div class="info">
-			<div>
-				<p>Titel:</p>
-			</div>
-			<div>
-				<p>huts</p>
-			</div>
+	{#if data.purchase.DeclarationData}
+		<div>
+			<h3>Declaratie</h3>
+			<table>
+				<tr>
+					<th>Gevraagde bedrag</th>
+					<td>{formatPrice(data.purchase.DeclarationData.askedAmount)}</td>
+				</tr>
+				<tr>
+					<th>Reden</th>
+					<td>{data.purchase.DeclarationData.reason}</td>
+				</tr>
+				<tr>
+					<th>Betaal methode</th>
+					<td>{data.purchase.DeclarationData.methodOfPayment}</td>
+				</tr>
+				<tr>
+					<th>Ontvangst methode</th>
+					<td>{data.purchase.DeclarationData.receiveMethod.toLowerCase()}</td>
+				</tr>
+				{#if data.purchase.DeclarationData.iban}
+					<tr>
+						<th>IBAN</th>
+						<td>{data.purchase.DeclarationData.iban}</td>
+					</tr>
+				{/if}
+				<tr>
+					<th>Status</th>
+					<td>{data.purchase.DeclarationData.status.toLowerCase()}</td>
+				</tr>
+			</table>
 		</div>
-	</div>
+	{/if}
+
 	<div class="attachments">
 		{#if data.attachments.length > 0}
 			<h3>Bijlagen</h3>
@@ -89,10 +121,6 @@
 	</tbody>
 </table>
 
-<div class="actions">
-	<a class="button" href="/ongeveer/purchases/create?id={data.purchase.id}">Bewerken</a>
-</div>
-
 <h2>Gematchte transacties</h2>
 <table class="striped">
 	<thead>
@@ -115,19 +143,33 @@
 				<td>{formatPrice(amount)}</td>
 			</tr>
 		{/each}
+		<tr>
+			<td colspan="2" />
+			<td><i>Totaal</i></td>
+			<td>{formatPrice(data.purchase.TransactionMatchRow.reduce((acc, { amount }) => acc + Number(amount), 0))}</td>
+		</tr>
 	</tbody>
 </table>
+
+<div class="actions">
+	<a class="button" href="/ongeveer/purchases/create?id={data.purchase.id}">Bewerken</a>
+</div>
 
 <style lang="scss">
 	.top {
 		display: flex;
-		gap: 2rem;
+		gap: 1rem;
+		margin-top: 1rem;
+		flex-wrap: wrap;
 
-		.info {
-			display: grid;
+		table {
 			width: fit-content;
-			gap: 1rem;
-			grid-template-columns: 1fr 1fr;
+			height: fit-content;
+		}
+
+		th,
+		td {
+			text-align: left;
 		}
 	}
 
