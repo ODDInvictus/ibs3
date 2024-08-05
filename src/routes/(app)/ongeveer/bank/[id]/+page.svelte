@@ -32,7 +32,7 @@
 		<h3>Gegevens</h3>
 		<p>Bank transactie ID: {data.bankTransaction.id}</p>
 		<p>Transactie ID: {data.bankTransaction.Transaction.id}</p>
-		<p>Referentie: {data.bankTransaction.ref}</p>
+		<p>Referentie: {data.bankTransaction.ref ?? '-'}</p>
 		{#if data.bankTransaction.Relation}
 			<p>Relatie: {data.bankTransaction.relationId} - {data.bankTransaction.Relation.name}</p>
 		{/if}

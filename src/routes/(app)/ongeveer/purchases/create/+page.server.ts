@@ -21,7 +21,11 @@ export const load = (async event => {
 		purchase = await db.journal.findUnique({
 			where: { id },
 			include: {
-				Rows: true,
+				Rows: {
+					include: {
+						Ledger: true,
+					},
+				},
 				Attachments: true,
 				DeclarationData: true,
 			},
@@ -79,10 +83,17 @@ export const load = (async event => {
 			}
 		}) ?? []
 
+	let ledgers = await getLedgers()
+	for (const row of purchase?.Rows ?? []) {
+		if (!ledgers.find(ledger => ledger.id === row.ledgerId)) {
+			ledgers.push(row.Ledger)
+		}
+	}
+
 	return {
 		form,
 		relations: JSON.parse(JSON.stringify(relations)) as typeof relations,
-		ledgers: await getLedgers(),
+		ledgers,
 		attachments,
 		declarationData,
 	}

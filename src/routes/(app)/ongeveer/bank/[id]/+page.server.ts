@@ -65,6 +65,17 @@ export const load = (async ({ params }) => {
 
 	const journals = await getUnmatchedJournals()
 
+	// Add the matched journals to the list of journals
+	for (const row of bankTransaction.Transaction.TransactionMatchRow) {
+		if (journals.some(j => j.id === row.journalId)) continue
+		if (!row.Journal) continue
+		journals.push({
+			id: row.Journal.id,
+			ref: row.Journal.ref,
+			type: row.Journal.type,
+		})
+	}
+
 	return {
 		form,
 		financialPersons,
