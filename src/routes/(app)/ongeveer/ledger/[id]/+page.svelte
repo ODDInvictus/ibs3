@@ -53,10 +53,10 @@
 						type: 'danger',
 					})
 				}
-			}}>{data.ledger.isActive ? 'Uitschakelen' : 'Inschakelen'}</button
-		>
+			}}>{data.ledger.isActive ? 'Uitschakelen' : 'Inschakelen'}</button>
 		<button
 			class="btn-danger"
+			data-testid="delete-btn"
 			disabled={!data.canDelete}
 			on:click={async () => {
 				const confirmed = confirm('Weet je zeker dat je dit grootboek wilt verwijderen?')
@@ -75,8 +75,7 @@
 						type: 'danger',
 					})
 				}
-			}}>Verwijder</button
-		>
+			}}>Verwijder</button>
 	</div>
 </div>
 

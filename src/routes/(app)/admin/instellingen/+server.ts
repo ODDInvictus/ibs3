@@ -1,8 +1,7 @@
 import { isAdmin } from '$lib/server/auth'
-import { error, json } from '@sveltejs/kit'
+import { error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import db from '$lib/server/db'
-import { settings } from '$lib/server/settings'
+import { settings } from '$lib/server/settings/settings'
 
 export const PUT: RequestHandler = async ({ request, locals }) => {
 	if (!isAdmin(locals.user)) {

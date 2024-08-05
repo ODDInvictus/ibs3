@@ -1,8 +1,7 @@
 import { redirect, type Handle } from '@sveltejs/kit'
-import prisma from '$lib/server/db'
 import { getCommittees, getRoles, getUser, getUserTest } from '$lib/server/userCache'
 import { env } from '$env/dynamic/private'
-import { Setting, settings } from '../settings'
+import { Setting, settings } from '../settings/settings'
 
 const handleAuthorization = (async ({ event, resolve }) => {
 	const url = event.url.pathname
@@ -10,8 +9,8 @@ const handleAuthorization = (async ({ event, resolve }) => {
 	let user
 
 	// If the environment is test, we can't check for authorization
-	if (env.NODE_ENV === 'test') {
-		const userId = Number(env.TEST_USER_ID ?? 1)
+	if (env.ENVIRONMENT === 'test') {
+		const userId = Number(event.cookies.get('testUserId') ?? 1)
 		user = await getUserTest(userId)
 	} else {
 		const session = await event.locals.auth()

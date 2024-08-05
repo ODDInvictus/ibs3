@@ -4,7 +4,6 @@ import db from '$lib/server/db'
 import { z } from 'zod'
 
 export const POST = (async ({ request, locals }) => {
-
 	const authorized = isAdmin(locals.user)
 	if (!authorized)
 		return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: admin', {

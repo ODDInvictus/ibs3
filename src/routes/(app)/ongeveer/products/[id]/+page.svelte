@@ -17,6 +17,7 @@
 	<a href="/ongeveer/products/create?id={data.product.id}">Bewerken</a>
 	<button
 		class="btn-danger"
+		data-testid="delete-btn"
 		on:click={async () => {
 			if (loading || !confirm('Weet je zeker dat je dit product wilt verwijderen?')) return
 			loading = true
@@ -32,8 +33,7 @@
 				})
 				loading = false
 			}
-		}}>Verwijderen</button
-	>
+		}}>Verwijderen</button>
 </div>
 
 <table>

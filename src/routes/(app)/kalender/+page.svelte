@@ -13,7 +13,7 @@
 	<a href="/kalender/link">Download .ics</a>
 </div>
 
-<div id="activities">
+<div data-testid="activities" id="activities">
 	{#each data.activities as activity}
 		<div class="row {activity.isDies ? 'dies' : ''}">
 			<div class="image">

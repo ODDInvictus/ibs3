@@ -1,6 +1,6 @@
 import type { Actions } from './$types'
 import { signIn } from '$lib/server/auth'
-import { Setting, settings } from '$lib/server/settings'
+import { Setting, settings } from '$lib/server/settings/settings'
 
 export const actions: Actions = {
 	default: signIn,

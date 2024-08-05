@@ -1,9 +1,8 @@
 import { Roles } from '$lib/constants'
 import { Form } from '$lib/form/form-generator'
 import type { Field } from '$lib/form/form-generator'
-import { LeaderboardSort, LeaderboardTypes } from '@prisma/client'
 import db from '$lib/server/db'
-import { Setting, settings } from '$lib/server/settings'
+import { Setting, settings } from '$lib/server/settings/settings'
 
 export const newSettingForm = new Form<{
 	name: string

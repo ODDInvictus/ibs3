@@ -5,8 +5,8 @@ import type { Handle, HandleServerError } from '@sveltejs/kit'
 import { notifyDiscordError } from '$lib/server/notifications/discord'
 import { client as Mongo } from '$lib/server/files'
 import { handleAuthentication, handleAuthorization } from '$lib/server/auth'
-import { initSettings } from '$lib/server/settings'
 import { initAuthHelpers } from '$lib/server/auth'
+import { initSettings } from '$lib/server/settings/settings'
 
 const handleCors: Handle = async ({ event, resolve }) => {
 	const res = await resolve(event)

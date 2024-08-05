@@ -1,8 +1,8 @@
 import { GridFSBucket, MongoClient, ServerApiVersion } from 'mongodb'
 import { env } from '$env/dynamic/private'
-import { Setting, settings } from '../settings'
 import { GridFSPromise } from 'gridfs-promise'
 import { getCurrentDateFilename } from '$lib/utils'
+import { Setting, settings } from '../settings/settings'
 
 /**
  * MongoDB client instance.

@@ -14,15 +14,16 @@ $label-width: 200px;
 	padding-top: 0.25rem;
 	padding-bottom: 0.25rem;
 
-  @media (max-width: 600px) {
-    display: flex;
-    flex-direction: column;
+	@media (max-width: 600px) {
+		display: flex;
+		flex-direction: column;
 
-    .input-label, .label {
-      margin-bottom: 0.25rem;
-      margin-top: 0.5rem;
-    }
-  }
+		.input-label,
+		.label {
+			margin-bottom: 0.25rem;
+			margin-top: 0.5rem;
+		}
+	}
 }
 
 // Shared styles between form generator and superforms
@@ -81,9 +82,9 @@ form.superform {
 		margin-left: $label-width;
 		width: fit-content;
 
-    @media (max-width: 600px) {
-      margin-left: 0;
-    }
+		@media (max-width: 600px) {
+			margin-left: 0;
+		}
 	}
 
 	button {

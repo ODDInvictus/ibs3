@@ -35,7 +35,7 @@
 					<th>Naar</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody data-testid="transactions">
 				{#each data.transactions as transaction}
 					{@const { price, description, from, to, Transaction, id } = transaction}
 					<tr>

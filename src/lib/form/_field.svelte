@@ -49,7 +49,7 @@
 
 {#if mounted}
 	{#if field.type === 'select'}
-		<select name={field.name} id={field.name} disabled={field.disabled}>
+		<select name={field.name} id={field.name} disabled={field.disabled} data-testid="{field.name}-input">
 			{#if !field.options}
 				<option value="">Geen opties</option>
 			{:else}
@@ -60,7 +60,13 @@
 			{/if}
 		</select>
 	{:else if field.type === 'checkbox'}
-		<input type="checkbox" name={field.name} id={field.name} checked={Boolean(field.value)} disabled={field.disabled} />
+		<input
+			type="checkbox"
+			name={field.name}
+			id={field.name}
+			checked={Boolean(field.value)}
+			disabled={field.disabled}
+			data-testid="{field.name}-input" />
 	{:else if field.type === 'textarea'}
 		<textarea
 			name={field.name}
@@ -68,7 +74,7 @@
 			placeholder={field.placeholder}
 			value={field.value?.toString() || ''}
 			disabled={field.disabled}
-		/>
+			data-testid="{field.name}-input" />
 	{:else if field.type === 'table' && field.columns}
 		<table id={field.name}>
 			<thead>
@@ -123,7 +129,7 @@
 			max={field.maxValue}
 			step={field.step}
 			disabled={field.disabled}
-		/>
+			data-testid="{field.name}-input" />
 	{/if}
 	{#if field.type !== 'table'}
 		<p id="{field.name}-error" class="form-error" />

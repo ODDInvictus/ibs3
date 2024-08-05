@@ -134,7 +134,7 @@
 				<input type="hidden" name={field.name} value={field.value} />
 			{/if}
 		{/each}
-		<button type="submit">
+		<button type="submit" data-testid="submit-btn">
 			{submitStr}
 		</button>
 	</form>
