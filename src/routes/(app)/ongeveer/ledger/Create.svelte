@@ -22,8 +22,6 @@
 		flex-direction: column;
 		z-index: 100;
 
-		color: black;
-
 		pointer-events: none;
 	}
 
@@ -36,9 +34,6 @@
 		flex-direction: column;
 		pointer-events: auto;
 
-		h2 {
-			text-align: center;
-			font-size: 1.5rem;
-		}
+		background-color: var(--color-bg);
 	}
 </style>
