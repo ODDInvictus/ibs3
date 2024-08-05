@@ -32,7 +32,7 @@ export const load = (async ({ params }) => {
 		},
 	})
 
-	if (!data) throw error(404)
+	if (!data) error(404)
 
 	return { strafbakken: data }
 }) satisfies PageServerLoad

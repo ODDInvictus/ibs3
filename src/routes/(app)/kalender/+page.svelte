@@ -1,23 +1,27 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte'
-	import { markdown } from '$lib/utils'
+	import { getPictureUrl, markdown } from '$lib/utils'
 	import type { PageData } from './$types'
 
 	export let data: PageData
 </script>
 
 <Title title="Kalender" />
-<a id="new-activity-link" href="/activiteit/nieuw">Activiteit aanmaken</a>
+<div class="topbar">
+	<a href="/activiteit/nieuw">Activiteit aanmaken</a>
+	<a href="/kalender/oud">Oude activiteiten</a>
+	<a href="/kalender/link">Download .ics</a>
+</div>
 
 <div data-testid="activities" id="activities">
 	{#each data.activities as activity}
-		<div class="row">
+		<div class="row {activity.isDies ? 'dies' : ''}">
 			<div class="image">
 				{#if !activity.photo}
 					<img src="/image/favicon-512.png?static=true" alt="⏳" />
 				{:else}
 					<img
-						src="/image/id/{activity.photo.id}?size=750x375"
+						src={getPictureUrl(activity.photo)}
 						onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
 						alt="⏳"
 						loading="lazy" />
@@ -55,6 +59,19 @@
 	$card-height: 250px;
 	$card-height-sm: 100px;
 
+	.topbar {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+		margin-bottom: 1rem;
+
+		@media (max-width: 600px) {
+			flex-direction: column;
+			align-items: center;
+			gap: 0;
+		}
+	}
+
 	#activities {
 		display: flex;
 		flex-direction: column;
@@ -65,6 +82,12 @@
 		@media screen and (max-width: 600px) {
 			margin: 0 10px !important;
 		}
+	}
+
+	.dies {
+		background-image: url('/vlaggen.svg');
+		background-repeat: repeat-x;
+		background-size: 200px;
 	}
 
 	.row {
@@ -174,14 +197,6 @@
 				}
 			}
 		}
-	}
-
-	#new-activity-link {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-
-		margin-bottom: 1rem;
 	}
 
 	hr {

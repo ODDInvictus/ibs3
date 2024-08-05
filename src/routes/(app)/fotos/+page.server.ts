@@ -3,7 +3,7 @@ import db from '$lib/server/db'
 import type { Photo } from '@prisma/client'
 
 type PhotoHighlight = {
-	name: string
+	firstName: string
 	filename: string
 	pid: number
 }
@@ -13,8 +13,9 @@ export const load = (async () => {
 
 	const getHighlight = async () => {
 		const query: Photo[] = await db.$queryRaw`
-      SELECT Photo.id as pid, name, filename, visible FROM Photo
-      LEFT JOIN PhotoCreator ON PhotoCreator.id = Photo.creatorId
+      SELECT Photo.id as pid, User.firstName, File.filename, visible FROM Photo
+      LEFT JOIN User ON User.id = Photo.creatorId
+			LEFT JOIN File on File.id = Photo.fileId
       WHERE Photo.visible = 1
       ORDER BY RAND(${rand})
       LIMIT 1;

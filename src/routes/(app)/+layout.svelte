@@ -6,6 +6,7 @@
 	import Prompt from '$lib/components/prompt.svelte'
 	import PromptSelect from '$lib/components/prompt-select.svelte'
 	import PromptCheckbox from '$lib/components/prompt-checkbox.svelte'
+	import Alert from '$lib/components/alert.svelte'
 	import ImagePreview from '$lib/components/image-popup.svelte'
 	import { afterNavigate } from '$app/navigation'
 	import { Modals, closeModal } from 'svelte-modals'
@@ -13,6 +14,9 @@
 	import { getFlash } from 'sveltekit-flash-message'
 	import { page } from '$app/stores'
 	import { toast } from '$lib/notification'
+	import type { PageData } from './$types'
+
+	export let data: PageData
 
 	const flash = getFlash(page)
 
@@ -42,11 +46,11 @@
 </script>
 
 <main class="layout--main">
-	<Navbar {openMenu} {open} />
+	<Navbar {openMenu} {open} version={data.version} />
 
 	{#if open}
 		<div class="layout--mobimenu">
-			<MobileMenu />
+			<MobileMenu version={data.version} />
 		</div>
 	{/if}
 
@@ -57,7 +61,7 @@
 
 	<div class="layout--stripe" data-open={open} />
 
-	<Topbar />
+	<Topbar adminAlert={data.adminAlert} />
 
 	{#if !open}
 		<div class="layout--container">
@@ -89,6 +93,10 @@
 
 	<div class="layout--overlay">
 		<ImagePreview />
+	</div>
+
+	<div class="layout--overlay">
+		<Alert />
 	</div>
 </main>
 

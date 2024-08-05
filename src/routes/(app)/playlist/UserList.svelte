@@ -4,7 +4,7 @@
 	export let users: {
 		firstName: string
 		lastName: string
-		profilePictureId: number | null
+		profilePicture: string | null
 		nickname: string | null
 		id: number
 	}[]
@@ -21,7 +21,12 @@
 		{#each users as user}
 			<li>
 				<a href={`${url}/${user.id}`}>
-					<ProfileIcon uid={user.profilePictureId} name={user.firstName + ' ' + user.lastName} width="50" height="50" fixedWidth={true} />
+					<ProfileIcon
+						filename={user.profilePicture}
+						name={user.firstName + ' ' + user.lastName}
+						width="50"
+						height="50"
+						fixedWidth={true} />
 					<p>{user.nickname ?? user.firstName}</p>
 				</a>
 			</li>

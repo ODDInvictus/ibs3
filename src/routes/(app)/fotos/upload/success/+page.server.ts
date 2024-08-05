@@ -7,15 +7,18 @@ export const load = (async ({ url, locals }) => {
 
 	const idsParam = url.searchParams.get('ids') as string
 
-	const ids = idsParam.split(',').map(id => parseInt(id))
+	const ids = idsParam.split(',').map(num => {
+		return Number.parseInt(num, 10)
+	})
 
-	const photos = db.photo.findMany({
+	const photosPromise = db.photo.findMany({
 		where: {
 			id: {
 				in: ids,
 			},
 		},
 		include: {
+			file: true,
 			creator: true,
 			tags: {
 				select: {
@@ -38,7 +41,7 @@ export const load = (async ({ url, locals }) => {
 					},
 				},
 			},
-			activityImage: {
+			activityPhotos: {
 				select: {
 					name: true,
 					id: true,
@@ -49,24 +52,23 @@ export const load = (async ({ url, locals }) => {
 		},
 	})
 
-	const tags = db.photoTag.findMany()
+	const tagsPromise = db.photoTag.findMany()
 
-	const photoCreators = db.photoCreator.findMany()
-
-	const people = db.user.findMany({
+	const peoplePromise = db.user.findMany({
 		where: {
 			isActive: true,
 		},
 		select: {
 			ldapId: true,
 			firstName: true,
+			id: true,
 		},
 		orderBy: {
 			firstName: 'asc',
 		},
 	})
 
-	const activities = db.activity.findMany({
+	const activitiesPromise = db.activity.findMany({
 		select: {
 			id: true,
 			name: true,
@@ -78,5 +80,7 @@ export const load = (async ({ url, locals }) => {
 		},
 	})
 
-	return { photos, photoCreators, tags, people, activities }
+	const [photos, tags, people, activities] = await Promise.all([photosPromise, tagsPromise, peoplePromise, activitiesPromise])
+
+	return { photos, tags, people, activities }
 }) satisfies PageServerLoad

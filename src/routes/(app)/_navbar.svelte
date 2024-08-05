@@ -26,11 +26,14 @@
 	import QuestionMark from '~icons/tabler/question-mark'
 	import Home from '~icons/tabler/home'
 	import ShoppingCart from '~icons/tabler/shopping-cart'
+	import ListNumbers from '~icons/tabler/list-numbers'
 	import OngeveerLogo from './_ongeveer-logo.svelte'
 	import IbsLogo from './_ibs-logo.svelte'
+	import type { PageData } from './$types'
 
 	export let openMenu: () => void
 	export let open: boolean
+	export let version: string
 
 	$: inOngeveer = $page.url.pathname.startsWith('/ongeveer')
 </script>
@@ -63,6 +66,14 @@
 			<i><ArrowBarLeft /></i>
 			<span>Inkoop</span>
 		</a>
+		<button class="layout--navbar--item btn-a" on:click={openMenu}>
+			{#if open}
+				<i><X /></i>
+			{:else}
+				<i><Menu /></i>
+			{/if}
+			<span>Menu</span>
+		</button>
 		<a href="/ongeveer/sales" class="layout--navbar--item">
 			<i><ArrowBarRight /></i>
 			<span>Verkoop</span>
@@ -110,7 +121,12 @@
 			<span>Menu</span>
 		</button>
 
-		{#if !$page.data.roles[LDAP_IDS.FEUTEN]}
+		<a class="layout--navbar--item" href="/ranglijst">
+			<i><ListNumbers /></i>
+			<span>Ranglijsten</span>
+		</a>
+
+		{#if $page.data?.settings.maluspuntenEnabled}
 			<a class="layout--navbar--item" href="/maluspunten">
 				<i><AccessibleOff /></i>
 				<span>Maluspunten</span>
@@ -145,7 +161,7 @@
 
 	<a class="layout--navbar--item version" href="/over">
 		<i><InformationCircle /></i>
-		<span>IBS v{env.PUBLIC_VERSION}</span>
+		<span>IBS v{version}</span>
 	</a>
 </nav>
 

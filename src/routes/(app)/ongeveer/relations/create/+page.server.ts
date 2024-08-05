@@ -25,7 +25,7 @@ export const load = (async event => {
 			},
 		})
 
-		if (!relation) throw error(404)
+		if (!relation) return error(404)
 		if (relation.type !== 'OTHER') {
 			throw redirect(
 				`/ongeveer/relations/${id}`,
@@ -50,7 +50,7 @@ export const load = (async event => {
 				postalCode: relation.FinancialPersonDataOther?.postalCode ?? undefined,
 				city: relation.FinancialPersonDataOther?.city ?? undefined,
 				email: relation.FinancialPersonDataOther?.email ?? undefined,
-		  }
+			}
 		: {}
 
 	const form = await superValidate(data, schema)
@@ -63,7 +63,7 @@ export const actions = {
 		const { request, locals } = event
 		const form = await superValidate(request, schema)
 
-		if (!authorization(locals.roles)) throw error(403)
+		if (!authorization(locals.roles)) return error(403)
 		// If there is inavlid data, return the form with the errors
 		if (!form.valid) return fail(400, { form })
 
@@ -105,7 +105,7 @@ export const actions = {
 			}
 		} catch (e: any) {
 			console.error(e)
-			throw error(500, 'Er is iets misgegaan, probeer het later opnieuw')
+			return error(500, 'Er is iets misgegaan, probeer het later opnieuw')
 		}
 		// Redirect with custom redirect that shows flash message
 		throw redirect(

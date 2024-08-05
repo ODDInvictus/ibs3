@@ -32,9 +32,8 @@
 			checked={$promptCheckboxStore.value}
 			on:change={e => {
 				// @ts-expect-error
-				return (currentValue = e.target?.value === 'on')
-			}}
-		/>
+				return (currentValue = e.target?.checked)
+			}} />
 	</div>
 
 	<div class="buttons">

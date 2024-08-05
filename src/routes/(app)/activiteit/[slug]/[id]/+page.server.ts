@@ -3,8 +3,13 @@ import db from '$lib/server/db'
 import { randomSortDay } from '$lib/utils.js'
 import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
+import { LDAP_IDS } from '$lib/constants'
+import { redirect } from 'sveltekit-flash-message/server'
+import { isSenaat } from '$lib/server/auth/helpers'
 
-export const load = (async ({ params }) => {
+export const load = (async event => {
+	const { params, locals } = event
+
 	const activity = await db.activity.findFirstOrThrow({
 		where: {
 			id: parseInt(params.id),
@@ -17,7 +22,6 @@ export const load = (async ({ params }) => {
 			},
 			organisedBy: true,
 			location: true,
-			photo: true,
 			comments: {
 				include: {
 					commenter: {
@@ -25,7 +29,7 @@ export const load = (async ({ params }) => {
 							id: true,
 							firstName: true,
 							lastName: true,
-							profilePictureId: true,
+							profilePicture: true,
 							ldapId: true,
 						},
 					},
@@ -34,6 +38,20 @@ export const load = (async ({ params }) => {
 		},
 	})
 
+	const isMember = locals.committees.find(c => c.ldapId === LDAP_IDS.MEMBERS) !== undefined
+
+	if (activity.membersOnly && !isMember) {
+		throw redirect(
+			'/kalender',
+			{
+				title: 'Geen toegang',
+				message: 'Deze activiteit is alleen toegankelijk voor leden.',
+				type: 'danger',
+			},
+			event,
+		)
+	}
+
 	const attending = randomSortDay(activity.attending)
 
 	return {
@@ -41,6 +59,7 @@ export const load = (async ({ params }) => {
 		attending,
 		title: activity.name,
 		domain: env.IBS_URL,
+		canEditAttending: isSenaat(locals.user),
 	}
 }) satisfies PageServerLoad
 
@@ -70,7 +89,7 @@ export const actions = {
 					select: {
 						id: true,
 						firstName: true,
-						profilePictureId: true,
+						profilePicture: true,
 						lastName: true,
 						ldapId: true,
 					},

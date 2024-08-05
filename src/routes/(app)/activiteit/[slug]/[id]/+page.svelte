@@ -9,7 +9,7 @@
 	import ExternalLink from '~icons/tabler/external-link'
 	import AccessibleOff from '~icons/tabler/accessible-off'
 	import UserCard from './_user-card.svelte'
-	import { generateICal, stripMarkdown } from '$lib/utils'
+	import { generateICal, getPictureUrl, stripMarkdown } from '$lib/utils'
 	import { toast } from '$lib/notification'
 	import { markdown } from '$lib/utils'
 	import Title from '$lib/components/title.svelte'
@@ -18,6 +18,8 @@
 	import { enhance } from '$app/forms'
 	import ProfileIcon from '$lib/components/profile-icon.svelte'
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
+	import type { AttendingStatus } from '@prisma/client'
+	import { promptCheckbox } from '$lib/promptCheckbox'
 
 	export let data: PageData
 
@@ -43,14 +45,13 @@
 		return data.attending.sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status])
 	}
 
-	function formatTime(time: string) {
-		const date = new Date(time)
-		return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+	function formatTime(time: Date) {
+		return time.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
 	}
 
-	function formatDate(time: string, endTime: string) {
-		const date = new Date(time)
-		const end = new Date(endTime)
+	function formatDate(time: Date, endTime: Date) {
+		const date = time
+		const end = endTime
 
 		// If the activity is longer than 12 hours, show the end date
 		if (end.getTime() - date.getTime() > 12 * 60 * 60 * 1000) {
@@ -79,15 +80,17 @@
 		})
 	}
 
-	async function setAttending(status: string) {
+	async function setAttending(status: string, ldapId: string) {
 		// First check if the user is attending
-		const a = attending.find((a: any) => a.user.ldapId == data.user.ldapId)
+		const a = attending.find((a: any) => a.user.ldapId == ldapId)
 
 		// If a is undefined, then continue, since the backend will make it
 		if (a && a.status === status) {
 			// The user is already attending/not attending, so do nothing
 			return
 		}
+
+		const isUser = data.user.ldapId === ldapId
 
 		// Send a request to the server to update the attending status
 		await fetch('', {
@@ -97,20 +100,31 @@
 			},
 			body: JSON.stringify({
 				status,
+				ldapId,
 				activityId: activity.id,
 			}),
 		})
-			.then(() => {
+			.then(async res => {
 				let title, message
 				let type: 'info' | 'success' | 'warning' | 'error' = 'info'
 
+				if (!res.ok) {
+					const body = await res.json()
+					toast({
+						title: 'Oeps',
+						message: body.message,
+						type: 'danger',
+					})
+					return
+				}
+
 				if (status === 'ATTENDING') {
 					title = 'Gezellig!'
-					message = 'Je aanwezigheid is opgeslagen'
+					message = isUser ? 'Je aanwezigheid is opgeslagen' : 'De aanwezigheid is opgeslagen'
 					type = 'success'
 				} else if (status === 'NOT_ATTENDING') {
 					title = 'Jammer!'
-					message = 'Je afwezigheid is opgeslagen'
+					message = isUser ? 'Je afwezigheid is opgeslagen' : 'De afwezigheid is opgeslagen'
 				} else {
 					title = 'Opgeslagen'
 					message = 'Vul je het later nog in?'
@@ -194,6 +208,25 @@
 
 		window.open(uri.toString())
 	}
+
+	function cardAction(ldapId: string, status: AttendingStatus) {
+		console.log(ldapId, status)
+
+		if (data.canEditAttending) {
+			promptCheckbox({
+				title: 'Status wijzigen',
+				message: 'Is deze persoon aanwezig bij deze activiteit?',
+				value: status === 'ATTENDING',
+				cb: async value => {
+					if (value === (status === 'ATTENDING')) return
+
+					await setAttending(value ? 'ATTENDING' : 'NOT_ATTENDING', ldapId)
+				},
+			})
+		} else {
+			window.location.href = '/leden/' + ldapId
+		}
+	}
 </script>
 
 <div>
@@ -208,14 +241,13 @@
 					on:click={() => {
 						if (activity.photo) {
 							imagePreview({
-								image: `/image/${activity.photo.filename}`,
+								image: getPictureUrl(activity.photo, 'normal'),
 							})
 						}
 					}}
 					alt={nameWithoutMarkdown}
-					src={activity.photo ? `/image/${activity.photo.filename}?size=1000x500` : `/image/favicon-512.png?static=true`}
-					onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
-				/>
+					src={getPictureUrl(activity.photo, 'normal')}
+					onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;" />
 			</div>
 
 			<h2 class="ibs-card--title">{@html markdown(activity.name)}</h2>
@@ -280,14 +312,14 @@
 			<h2 class="ibs-card--title">Wie komen er allemaal?</h2>
 
 			<div class="ibs-card--buttons top">
-				<button on:click={async () => await setAttending('ATTENDING')}>Ik ben 🐝</button>
-				<button on:click={async () => await setAttending('UNSURE')}>Ik weet het nog niet</button>
-				<button on:click={async () => await setAttending('NOT_ATTENDING')}>Ik ben niet 🐝</button>
+				<button on:click={async () => await setAttending('ATTENDING', data.user.ldapId)}>Ik ben 🐝</button>
+				<button on:click={async () => await setAttending('UNSURE', data.user.ldapId)}>Ik weet het nog niet</button>
+				<button on:click={async () => await setAttending('NOT_ATTENDING', data.user.ldapId)}>Ik ben niet 🐝</button>
 			</div>
 
 			<div class="ibs-card--content users">
 				{#each attending as a}
-					<UserCard status={a.status} user={a.user} />
+					<UserCard status={a.status} user={a.user} {cardAction} />
 				{/each}
 			</div>
 		</div>
@@ -318,8 +350,7 @@
 							})
 							update()
 						}
-					}}
-				>
+					}}>
 					<input type="text" name="comment" placeholder="Typ een reactie..." />
 					<button class="btn-a" type="submit">Plaats</button>
 				</form>
@@ -328,7 +359,7 @@
 					{@const u = comment.commenter}
 					<div class="ibs-comment">
 						<div class="ibs-comment--icon">
-							<ProfileIcon uid={u.profilePictureId} name={u.firstName + ' ' + u.lastName} height={50} width={50} />
+							<ProfileIcon filename={u.profilePicture} name={u.firstName + ' ' + u.lastName} height={50} width={50} />
 						</div>
 						<div class="ibs-comment--content">
 							<a href="/leden/{u.ldapId}" class="ibs-comment--content--name">{u.firstName} {u.lastName}</a>
@@ -352,6 +383,14 @@
 	@media (max-width: 600px) {
 		.title {
 			display: none;
+		}
+	}
+
+	@media (max-width: 1350px) {
+		.ibs-card--buttons {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
 		}
 	}
 

@@ -2,13 +2,11 @@ import db from '$lib/server/db'
 import { error, fail, redirect } from '@sveltejs/kit'
 import { env } from '$env/dynamic/private'
 import { LDAP_IDS } from '$lib/constants.js'
-import type { CommitteeMember } from '@prisma/client'
 import { z } from 'zod'
 import { pad } from '$lib/utils.js'
-import { authUser } from '$lib/server/authorizationMiddleware'
 import type { PageServerLoad } from './$types.js'
 import { createRedisJob } from '$lib/server/cache.js'
-import { getPhotoCreator, uploadPhoto } from '$lib/server/images.js'
+import { uploadPhoto } from '$lib/server/files'
 
 export const load = (async ({ url, locals }) => {
 	const locations = await db.activityLocation.findMany({
@@ -131,11 +129,6 @@ const formSchema = z.object({
 
 export const actions = {
 	default: async event => {
-		// do authorisation
-		const [authorized, committees] = authUser(event.locals)
-		if (!authorized)
-			throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
-
 		const data = Object.fromEntries(await event.request.formData())
 
 		const edit = event.url.searchParams.get('edit') === 'true'
@@ -203,6 +196,7 @@ export const actions = {
 						data: {
 							name,
 							description,
+							createdById: event.locals.user.id,
 							startTime: start,
 							endTime: end,
 							locationId: loc,
@@ -243,35 +237,31 @@ export const actions = {
 				}
 
 				if (image.size > 0) {
-					const creator = await getPhotoCreator(event.locals.user, false)
+					const filename = await uploadPhoto(image, event.locals.user, false)
 
-					const buf = Buffer.from(await image.arrayBuffer())
+					// const buf = Buffer.from(await image.arrayBuffer())
 
-					const photo = await uploadPhoto(
-						{
-							creator,
-							uploader: event.locals.user,
-							runProcessingJob: false,
-							additionalName: 'Activiteit',
-							invisible: true,
-							upload: {
-								buf,
-								filename: image.name,
-							},
-						},
-						tx,
-					)
+					// const photo = await uploadPhoto(
+					// 	{
+					// 		creator,
+					// 		uploader: event.locals.user,
+					// 		runProcessingJob: false,
+					// 		additionalName: 'Activiteit',
+					// 		invisible: true,
+					// 		upload: {
+					// 			buf,
+					// 			filename: image.name,
+					// 		},
+					// 	},
+					// 	tx,
+					// )
 
 					await tx.activity.update({
 						where: {
 							id: activity.id,
 						},
 						data: {
-							photo: {
-								connect: {
-									id: photo.id,
-								},
-							},
+							photo: filename,
 						},
 					})
 				}
@@ -281,37 +271,25 @@ export const actions = {
 				// To do that: get all members + feuten
 				// and if membersOnly is set, then exclude the feuten\
 				if (!edit) {
-					const members = await tx.committeeMember.findMany({
+					const users = await tx.user.findMany({
 						where: {
-							committee: {
-								ldapId: LDAP_IDS.MEMBERS,
-							},
+							isActive: true,
+							CommitteeMember: membersOnly
+								? {
+										none: {
+											committee: { ldapId: LDAP_IDS.FEUTEN },
+										},
+									}
+								: undefined,
 						},
 					})
 
-					let feuten: CommitteeMember[] = []
-
-					if (!membersOnly) {
-						feuten = await tx.committeeMember.findMany({
-							where: {
-								committee: {
-									ldapId: LDAP_IDS.FEUTEN,
-								},
-							},
-						})
-					}
-
-					const users = members.concat(feuten)
-
-					// Create the attending create objects
-					const attending = []
-
-					for (const user of users) {
-						attending.push({
-							userId: user.userId,
+					const attending = users.map(user => {
+						return {
+							userId: user.id,
 							activityId: activity.id,
-						})
-					}
+						}
+					})
 
 					// Create all attending objects!
 					await tx.attending.createMany({
@@ -319,11 +297,6 @@ export const actions = {
 					})
 				}
 			})
-
-			// If the image has been updated, process them.
-			if (image.size > 0) {
-				await createRedisJob('photo-processing')
-			}
 
 			if (!edit) {
 				// Now, we notify everyone
@@ -339,7 +312,7 @@ export const actions = {
 		}
 
 		if (id !== 0) {
-			throw redirect(303, `/activiteit/${id}`)
+			redirect(303, `/activiteit/${id}`)
 		}
 	},
 }

@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation'
 	import Title from '$lib/components/title.svelte'
 	import { imagePreview } from '$lib/imagePreviewStore'
+	import { getPictureUrl } from '$lib/utils'
 	import type { PageData } from './$types'
 
 	export let data: PageData
@@ -20,10 +21,9 @@
 			{#each photos as photo}
 				<figure class="photo">
 					<img
-						src="/image/{photo.filename}?size=small"
+						src={getPictureUrl(photo.file.filename, 'thumbnail')}
 						alt={photo.description}
-						on:click={() => imagePreview({ image: `/image/${photo.filename}?size=large` })}
-					/>
+						on:click={() => imagePreview({ image: getPictureUrl(photo.file.filename, 'normal') })} />
 					<figcaption>
 						<a href="/fotos/{photo.id}">{photo.description ?? 'Info'}</a>
 					</figcaption>

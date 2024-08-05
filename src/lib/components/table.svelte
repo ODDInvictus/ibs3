@@ -3,9 +3,10 @@
 	import Delete from '~icons/tabler/circle-x'
 	import Add from '~icons/tabler/plus'
 	import Revert from '~icons/tabler/arrow-back-up'
+	import Eye from '~icons/tabler/eye'
 
 	type Action = {
-		type: 'edit' | 'delete' | 'add' | 'revert'
+		type: 'edit' | 'delete' | 'add' | 'revert' | 'view'
 		action: (id: string) => void
 		title?: string
 	}
@@ -46,6 +47,10 @@
 								{:else if action.type === 'add'}
 									<div title={action.title ?? 'Toevoegen'}>
 										<Add />
+									</div>
+								{:else if action.type === 'view'}
+									<div title={action.title ?? 'Bekijken'}>
+										<Eye />
 									</div>
 								{:else if action.type === 'revert'}
 									<div title={action.title ?? 'Terugdraaien'}>

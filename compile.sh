@@ -13,11 +13,17 @@ then
 fi
 
 echo Bouwen voor versie $1
+npm install
 npm run build
+
+if [ $? -ne 0 ]; then
+    echo 'Build gefaald, probeer opnieuw'
+    exit 1
+fi
 
 echo
 echo Docker container genereren
-docker build -t ghcr.io/oddinvictus/ibs3:$1 .
+sudo docker build -t ghcr.io/oddinvictus/ibs3:$1 .
 
 if [ -z ${2+x} ];
 then
@@ -27,5 +33,5 @@ then
 else
   echo
   echo Pushen naar GitHub...
-  docker push ghcr.io/oddinvictus/ibs3:$1
+  sudo docker push ghcr.io/oddinvictus/ibs3:$1
 fi

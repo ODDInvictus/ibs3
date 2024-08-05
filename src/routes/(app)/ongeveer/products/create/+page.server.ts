@@ -19,7 +19,7 @@ export const load = (async ({ url }) => {
 				id,
 			},
 		})
-		if (!product) throw fail(404)
+		if (!product) return fail(404)
 		data = {
 			...product,
 			price: product.price.toNumber(),

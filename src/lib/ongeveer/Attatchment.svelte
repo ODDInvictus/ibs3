@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { getPictureUrl } from '$lib/utils'
+
 	export let previews: {
 		src?: string
-		MIMEtype: string
-		size?: string
 		filename: string
 	}[] = []
 	export let toDelete: string[] = []
@@ -16,7 +16,7 @@
 		{#each previews as preview, i}
 			<button class="nav-item btn-secondary" class:selected={selected === i} type="button">
 				<span on:click={() => (selected = i)} class="select">
-					{preview.filename}
+					{preview.filename.length > 20 ? preview.filename.slice(0, 20) + '...' : preview.filename}
 				</span>
 				{#if !noDelete}
 					<span
@@ -34,15 +34,15 @@
 	{#if previews.length === 0}
 		<p>Geen bijlagen</p>
 	{:else}
-		{@const { filename, size, MIMEtype } = previews[selected]}
-		{@const src = previews[selected].src ?? `/file/${filename}`}
+		{@const { filename } = previews[selected]}
+		{@const src = previews[selected].src ?? getPictureUrl(filename)}
+		{@const fileExtention = filename.split('.').pop()?.split('?').shift()?.toLowerCase() ?? ''}
 		<p class="small">
-			{filename}
-			{#if size}({size}){/if}
+			{filename.length > 40 ? filename.slice(0, 40) + '...' : filename}
 		</p>
-		{#if MIMEtype.startsWith('image/')}
+		{#if ['png', 'jpg', 'jpeg', 'gif', 'avif'].includes(fileExtention)}
 			<img {src} alt={filename} />
-		{:else if MIMEtype === 'application/pdf'}
+		{:else if fileExtention === 'pdf'}
 			<iframe {src} title={filename} />
 		{:else}
 			<a href={src} download={filename} class="button download"> Download </a>

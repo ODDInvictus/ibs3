@@ -5,7 +5,7 @@ import { error, fail } from '@sveltejs/kit'
 import { redirect } from 'sveltekit-flash-message/server'
 import db from '$lib/server/db'
 import { getLedgerIds } from '$lib/ongeveer/db'
-import { uploadFile } from '$lib/server/mongo'
+import { uploadGenericFile } from '$lib/server/files'
 
 export const load = (async () => {
 	const data = {
@@ -33,12 +33,18 @@ export const actions = {
 				},
 			})
 
-			if (!personData) throw error(500, 'Gebruiker heeft geen financiële gegevens')
+			if (!personData) error(500, 'Gebruiker heeft geen financiële gegevens')
 
 			await db.$transaction(async tx => {
 				const description = `Declaratie: ${product}`
+
+				let filename = null
+				if (receipt && receipt?.size !== 0) {
+					filename = await uploadGenericFile(receipt, locals.user)
+				}
+
 				// Create object in database
-				const declaration = await tx.journal.create({
+				await tx.journal.create({
 					data: {
 						type: 'DECLARATION',
 						date: new Date(),
@@ -46,6 +52,13 @@ export const actions = {
 						relationId: personData.personId,
 						description,
 						ref: description,
+						Attachments: filename
+							? {
+									connect: {
+										filename,
+									},
+								}
+							: undefined,
 						Rows: {
 							create: [
 								{
@@ -69,33 +82,12 @@ export const actions = {
 						},
 					},
 				})
-
-				if (!receipt || receipt?.size === 0) return
-
-				const meta = await uploadFile(receipt, { quality: 99 })
-
-				await tx.journal.update({
-					where: {
-						id: declaration.id,
-					},
-					data: {
-						Attachments: {
-							create: [
-								{
-									filename: meta.filename,
-									size: meta.size,
-									MIMEtype: meta.type,
-								},
-							],
-						},
-					},
-				})
 			})
 		} catch (err: any) {
 			console.error(err)
 			return fail(400, { succes: false, message: err?.message ?? 'Internal Error' })
 		}
 
-		throw redirect({ message: 'Je kan er gelijk nog een doen.', title: 'Declaratie ingediend', type: 'success' }, event)
+		return redirect({ message: 'Je kan er gelijk nog een doen.', title: 'Declaratie ingediend', type: 'success' }, event)
 	},
 } satisfies Actions

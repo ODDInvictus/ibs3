@@ -10,9 +10,9 @@ export const GET: RequestHandler = async event => {
 	const { locals, params } = event
 
 	const id = Number(params.id)
-	if (Number.isNaN(id)) throw error(400)
+	if (Number.isNaN(id)) error(400)
 
-	if (!authorization(locals.roles)) throw error(403)
+	if (!authorization(locals.roles)) error(403)
 
 	db.$transaction(async tx => {
 		// Find all journals that are not fully paid
@@ -26,17 +26,20 @@ export const GET: RequestHandler = async event => {
 			},
 		})
 
-		const unpaidJournals = journals.reduce((acc, journal) => {
-			const total = journal.Rows.reduce((acc, { price, amount }) => acc.add(price.mul(amount)), new Decimal(0))
-			const paid = journal.TransactionMatchRow.reduce((acc, { amount }) => acc.add(amount), new Decimal(0))
-			if (paid.lessThan(total)) {
-				acc.push({
-					toPay: total.minus(paid),
-					journal,
-				})
-			}
-			return acc
-		}, [] as { toPay: Decimal; journal: (typeof journals)[0] }[])
+		const unpaidJournals = journals.reduce(
+			(acc, journal) => {
+				const total = journal.Rows.reduce((acc, { price, amount }) => acc.add(price.mul(amount)), new Decimal(0))
+				const paid = journal.TransactionMatchRow.reduce((acc, { amount }) => acc.add(amount), new Decimal(0))
+				if (paid.lessThan(total)) {
+					acc.push({
+						toPay: total.minus(paid),
+						journal,
+					})
+				}
+				return acc
+			},
+			[] as { toPay: Decimal; journal: (typeof journals)[0] }[],
+		)
 
 		// Find all journals that not have a date set
 		const journalsWithoutDate = journals.filter(journal => !journal.date)
@@ -101,7 +104,7 @@ export const GET: RequestHandler = async event => {
 			)
 		} catch (e) {
 			console.error(e)
-			throw error(500, 'Streeplijst kon niet verwerkt worden')
+			error(500, 'Streeplijst kon niet verwerkt worden')
 		}
 	})
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { mergeClassNames } from '$lib/textUtils'
+	import { getPictureUrl } from '$lib/utils'
 
 	let height = $$props.height ?? 128
 	let width = $$props.width ?? 128
@@ -8,12 +9,11 @@
 
 <div class={mergeClassNames('ibs-profile-icon', $$props.class)}>
 	<img
-		src={`/image/id/${$$props.uid}?size=128x128`}
+		src={getPictureUrl($$props.filename)}
 		alt={$$props.name
 			.split(' ')
 			.map(w => w[0])
 			.join('')}
 		width={fixedSize ? width : undefined}
-		height={fixedSize ? height : undefined}
-	/>
+		height={fixedSize ? height : undefined} />
 </div>

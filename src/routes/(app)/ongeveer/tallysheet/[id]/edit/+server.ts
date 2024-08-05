@@ -5,9 +5,9 @@ import { authorization } from '$lib/ongeveer/utils'
 
 export const DELETE: RequestHandler = async ({ params, locals }) => {
 	const id = Number(params.id)
-	if (Number.isNaN(id)) throw error(400)
+	if (Number.isNaN(id)) error(400)
 
-	if (!authorization(locals.roles)) throw error(403)
+	if (!authorization(locals.roles)) error(403)
 
 	await db.$transaction(async tx => {
 		// Check if the tally sheet can be deleted
@@ -26,12 +26,12 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 			})
 		} catch (e) {
 			console.error(e)
-			throw error(500)
+			error(500)
 		}
-		if (!tallySheet) throw error(404)
+		if (!tallySheet) error(404)
 
 		if (tallySheet.sales.some(s => s.TransactionMatchRow.length > 0)) {
-			throw error(409, {
+			error(409, {
 				message: 'Streeplijst kan niet verwijderd worden omdat deze al betaald is.',
 			})
 		}
@@ -50,7 +50,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 			})
 		} catch (e) {
 			console.error(e)
-			throw error(500)
+			error(500)
 		}
 	})
 

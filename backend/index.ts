@@ -6,13 +6,14 @@ import { verdubbelStrafbakken } from './strafbakken'
 import { prisma } from './prisma'
 import { newActivitiyNotification } from './notifications'
 import { sendCustomEmail } from './email-utils'
-import { processPhotos } from './image-processing'
 import redis from './redis'
+import { ImageProcessing } from './images'
+import { failJob } from './utils'
 
 const API_VERSION = '1.0.1'
 
 /*
-  EXPRESS
+	EXPRESS
 */
 
 dotenv.config()
@@ -38,10 +39,10 @@ app.post('/email/send', async (req, res) => {
 	res.sendStatus(200)
 
 	console.log(`Attempted to send an email to ${to} with subject ${subject}`)
-	console.log('Skipping...')
+	// console.log('Skipping...')
 
 	// Send email
-	// await sendCustomEmail({ subject, to, from, text, toName, fromName, senderFirstName })
+	await sendCustomEmail({ subject, to, from, text, toName, fromName, senderFirstName })
 })
 
 app.listen(port, async () => {
@@ -56,15 +57,7 @@ app.listen(port, async () => {
 	await redis.connect()
 	console.log('[REDIS] Listening for jobs')
 
-	// Listen for photo processing
-	await redis.subscribe('photo-processing', async msg => {
-		if (!msg) return
-		console.log('[REDIS] Received photo-processing job', msg)
-		// New photo's have been uploaded, process them
-		await processPhotos()
-	})
-
-	await redis.subscribe('new-activity', async msg => {
+	await redis.subscribe('new-activity', async (msg: string) => {
 		if (!msg) return
 
 		const body = JSON.parse(msg)
@@ -81,16 +74,37 @@ app.listen(port, async () => {
 
 		if (!activity) {
 			console.log('[REDIS] Invalid activity id')
+			await failJob(body.name, 'Activiteit niet gevonden')
 			return
 		}
 
 		// Now send out the discord notification and emails
 		await newActivitiyNotification(activity)
 	})
+
+	await redis.subscribe('compress-image', async (msg: string) => {
+		if (!msg) {
+			console.error('[REDIS] Received message for compress-image but no data was provided')
+			return
+		}
+		const body = JSON.parse(msg)
+
+		await ImageProcessing.compressImage(body)
+	})
+
+	await redis.subscribe('rotate-image', async (msg: string) => {
+		if (!msg) {
+			console.error('[REDIS] Received message for rotate-image but no data was provided')
+			return
+		}
+		const body = JSON.parse(msg)
+
+		await ImageProcessing.rotateImage(body)
+	})
 })
 
 /*
-  CRONJOBS
+	CRONJOBS
 */
 
 // Sync email every day at 7:00
@@ -102,3 +116,5 @@ app.listen(port, async () => {
 const cronStrafbakken = process.env.CRONTAB_STRAFBAKKEN || '0 0 1 * *'
 console.log('[CRONTAB]', 'Strafbakken verdubbelen running at', cronStrafbakken)
 cron.schedule(cronStrafbakken, verdubbelStrafbakken)
+
+// TODO rerun jobs that failed

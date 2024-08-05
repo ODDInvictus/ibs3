@@ -5,7 +5,7 @@ import { tallySheetIsProcessed } from '$lib/ongeveer/db'
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id)
-	if (Number.isNaN(id)) throw error(400)
+	if (Number.isNaN(id)) return error(400)
 
 	const tallySheet = await db.streeplijst.findUnique({
 		where: { id },
@@ -28,7 +28,7 @@ export const load = (async ({ params }) => {
 		},
 	})
 
-	if (!tallySheet) throw error(404)
+	if (!tallySheet) return error(404)
 
 	const isProcessed = await tallySheetIsProcessed(id)
 

@@ -1,11 +1,11 @@
-import { authAdmin } from '$lib/server/authorizationMiddleware'
+import { isAdmin } from '$lib/server/auth'
 import { error, type RequestHandler } from '@sveltejs/kit'
 import db from '$lib/server/db'
 
 export const DELETE = (async ({ request, locals }) => {
-	const [authorized, committees] = authAdmin(locals)
+	const authorized = isAdmin(locals.user)
 	if (!authorized)
-		return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '), {
+		return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: admin', {
 			status: 403,
 		})
 
@@ -98,9 +98,11 @@ export const DELETE = (async ({ request, locals }) => {
 }) satisfies RequestHandler
 
 export const POST = (async ({ request, locals }) => {
-	const [authorized, committees] = authAdmin(locals)
+	const authorized = isAdmin(locals.user)
 	if (!authorized)
-		throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
+		return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: admin', {
+			status: 403,
+		})
 
 	const body = await request.json()
 
@@ -141,9 +143,11 @@ export const POST = (async ({ request, locals }) => {
 }) satisfies RequestHandler
 
 export const PUT = (async ({ request, locals }) => {
-	const [authorized, committees] = authAdmin(locals)
+	const authorized = isAdmin(locals.user)
 	if (!authorized)
-		throw error(403, 'Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: ' + committees.join(', '))
+		return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: admin', {
+			status: 403,
+		})
 
 	const body = await request.json()
 

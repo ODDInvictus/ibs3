@@ -11,7 +11,7 @@ export const load = async ({ locals }) => {
 		},
 	})
 
-	if (!personData) throw error(404, 'Geen financiële persoon gevonden voor user #' + locals.user.id)
+	if (!personData) error(404, 'Geen financiële persoon gevonden voor user #' + locals.user.id)
 
 	return {
 		person: JSON.parse(JSON.stringify(personData.person)) as typeof personData.person,

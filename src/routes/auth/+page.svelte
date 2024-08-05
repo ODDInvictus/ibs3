@@ -6,8 +6,28 @@
 	import OAuth from '~icons/tabler/brand-oauth.svg'
 	import Register from '~icons/tabler/bookmark-edit.svg'
 	import { env } from '$env/dynamic/public'
+	import { page } from '$app/stores'
+	import type { PageData } from './$types'
+
+	export let data: PageData
 
 	let selection = 'login'
+
+	// Grab the error query param
+	const error = $page.url.searchParams.get('error')
+
+	function getErr() {
+		switch (error) {
+			case 'OAuthAccountNotLinked':
+				return 'Je account is niet gelinkt aan een Authentik account, stuur even een appje naar Senaat.'
+			default:
+				return 'Er is iets fout gegaan, probeer het later nog eens. (' + error + ')'
+		}
+	}
+
+	function login() {
+		signIn('authentik')
+	}
 </script>
 
 <main>
@@ -18,7 +38,6 @@
 				<LogoBig />
 				<div class="spacer" />
 				<div class="buttons">
-
 					<button on:click={() => (selection = 'login')}>
 						<i><Login /></i>
 						Login
@@ -38,14 +57,18 @@
 			<div class="ibs-card">
 				{#if selection === 'login'}
 					<h1>Login</h1>
-					<p>Welkom bij Invictus Bier Systeem! </p>
-					<button on:click={() => signIn('authentik')}>
+					{#if error}
+						<p>{getErr()}</p>
+					{:else}
+						<p>Welkom bij Invictus Bier Systeem!</p>
+					{/if}
+					<button on:click={() => login()}>
 						<i>
 							<OAuth />
 						</i>
 						Login met Authentik
 					</button>
-					<button on:click={() => window.location.href = "https://www.youtube.com/watch?v=ENXvZ9YRjbo"}>
+					<button on:click={() => (window.location.href = 'https://www.youtube.com/watch?v=ENXvZ9YRjbo')}>
 						<i>
 							<Login />
 						</i>
@@ -63,9 +86,9 @@
 		<footer>
 			<p>O.D.D. Invictus</p>
 			<p>
-				v{env.PUBLIC_VERSION} -
-				<a href={env.PUBLIC_GITHUB_LINK + '/tree/' + env.PUBLIC_GIT_REV}>
-					({env.PUBLIC_GIT_REV_SHORT})
+				v{data.version} -
+				<a href={data.githubLink + '/tree/' + data.gitCommit}>
+					({data.gitCommit})
 				</a>
 			</p>
 		</footer>

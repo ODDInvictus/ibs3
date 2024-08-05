@@ -4,6 +4,8 @@ Invictus Bier Systeem is _het_ websysteem voor O.D.D. Invictus.
 
 ## Ontwikkelen
 
+IBS3 gebruikt node 22.4.0
+
 Om te beginnen met ontwikkelen moet je eerst de repository clonen met
 
 ```console
@@ -35,12 +37,12 @@ IBS3 gebruikt 3 databases, MariaDB, MongoDB en Redis.
 Om MariaDB lokaal te draaien moet je even een kopie van de productie database maken, en dan kan je aan de slag.
 Er is ook een gehoste development database, vraag Niels hierna.
 
-
 ### Redis en mongo
 
 Redis en mongo zijn niet verplicht, je kan ze uitschakelen met de volgende environment variables:
+
 ```
-DISABLE_MONGO=true
+PUBLIC_DISABLE_MONGO=true
 DISABLE_REDIS=true
 ```
 
@@ -55,9 +57,6 @@ Zelfde geldt voor Mongo
 ```console
 docker run -d -p 27017:27017 --name mongo mongo
 ```
-
-
-
 
 ## Tasks
 
@@ -90,10 +89,8 @@ Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab
 | DISCORD_NOTIFICATION_WEBHOOK | Webhook URL voor discord kanaal waar errors in gepost worden                          | https://discord.com/api/webhooks/server/key           |
 | BACKEND_PORT                 | Poort waarop de backend draait                                                        | 3001                                                  |
 | UPLOAD_FOLDER                | Map op de schijf waar uploads opgeslagen worden                                       | ./static/upload                                       |
-| PUBLIC_UPLOAD_URL            | URL waar de uploads gevonden kunnen worden                                            | /upload/                                              |
 | BACKEND_URL                  | URL waar de backend op te vinden is                                                   | http://localhost:3000                                 |
 | UPLOAD_FOLDER                | Pad waar foto's naar geupload worden                                                  | ./upload                                              |
-| PUBLIC_UPLOAD_URL            | Oude url naar de static server                                                        | http://localhost:8000                                 |
 | STATIC_FOLDER                | Waar static files gevonden kunnen worden                                              | ./static                                              |
 | IMAGE_CACHE_TIME             | Hoelang een image in de cache blijft                                                  | 86400                                                 |
 | QUOTE_API_URL                | Url naar de quote api                                                                 | ...                                                   |
@@ -102,4 +99,4 @@ Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab
 | SPOTIFY_CLIENT_SECRET        | Client secret voor spotify                                                            | ...                                                   |
 | PUBLIC_SPOITFY_REDIRECT_URI  | Redirect uri voor spotify, alles van spotify is alleen nodig voor de playlist feature | http://localhost:5173/playlist/callback               |
 | DISABLE_REDIS                | Schakel redis uit, jobs en cache werkt niet meer                                      | true                                                  |
-| DISABLE_MONGO                | Schakel mongodb uit, bestanden uploaden en fotos werken niet meer                     | true                                                  |
+| PUBLIC_DISABLE_MONGO         | Schakel mongodb uit, bestanden uploaden en fotos werken niet meer                     | true                                                  |

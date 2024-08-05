@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types'
 import db from '$lib/server/db'
 import { z } from 'zod'
-import { isFinancie } from '$lib/server/authorization'
+import { isFinancie } from '$lib/server/auth'
 import { createTransaction } from '$lib/ongeveer/db'
 
 export const load = (async () => {

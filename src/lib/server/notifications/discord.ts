@@ -17,6 +17,11 @@ export const notifyDiscordError = async (webhookUrl: string, obj: Record<string,
 	const err = obj.error as Error
 	const event = obj.event as RequestEvent<Partial<Record<string, string>>, string | null>
 
+	if (event.url.href?.includes('_app/immutable')) {
+		// Skip cache misses
+		return
+	}
+
 	const embed = {
 		title: err.name ?? 'Error',
 		color: 0xff0000,

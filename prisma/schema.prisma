@@ -51,21 +51,21 @@ model User {
   id       Int     @id @default(autoincrement())
   isActive Boolean @default(true)
 
-  firstName        String
-  lastName         String
-  ldapId           String    @unique
-  email            String    @unique
-  personalEmail    String?
-  nickname         String?   @unique
-  profilePicture   Photo?    @relation("profilePicture", fields: [profilePictureId], references: [id], onDelete: SetNull)
-  profilePictureId Int?
-  birthDate        DateTime? @db.Date
-  phone            String?
-  firstDrink       DateTime? @db.Date
-  becameFeut       DateTime? @db.Date
-  becameMember     DateTime? @db.Date
-  lastLoggedin     DateTime  @default(now())
-  preferredTheme   String    @default("light")
+  firstName      String
+  lastName       String
+  ldapId         String    @unique
+  email          String    @unique
+  personalEmail  String?
+  nickname       String?   @unique
+  profilePicture String?
+  birthDate      DateTime? @db.Date
+  phone          String?
+  firstDrink     DateTime? @db.Date
+  becameFeut     DateTime? @db.Date
+  becameMember   DateTime? @db.Date
+  lastLoggedin   DateTime  @default(now())
+  preferredTheme String    @default("light")
+  accessDisabled Boolean   @default(false)
 
   StrafbakGiven     Strafbak[]        @relation("strafbakGiver")
   StrafbakReceived  Strafbak[]        @relation("strafbakReceiver")
@@ -83,8 +83,8 @@ model User {
   ClickSession            ClickSession[]
   Preference              Preference[]
   TrackReaction           TrackReaction[]
-  Photo                   Photo[]
-  PhotoCreator            PhotoCreator[]
+  PhotosUploaded          Photo[]                   @relation("photoUploader")
+  PhotosCreated           Photo[]                   @relation("photoCreator")
   PhotosWithTags          PhotosWithTags[]
   PhotoRating             PhotoRating[]
   PhotoTaggedIn           PhotoPersonTag[]          @relation("taggedInPhoto")
@@ -92,6 +92,10 @@ model User {
   CommentsMade            Comment[]
   Journal                 Journal[]
   Streeplijst             Streeplijst[]
+  LeaderboardEntries      LeaderboardEntry[]
+  File                    File[]
+  AccessToken             AccessToken[]
+  Activity                Activity[]
 }
 
 model Account {
@@ -99,10 +103,10 @@ model Account {
   userId            Int
   type              String
   provider          String
-  providerAccountId String
+  providerAccountId String  @unique
   refresh_token     String?
   access_token      String? @db.LongText
-  expires_in        Int?
+  expires_at        Int?
   token_type        String?
   scope             String?
   id_token          String? @db.LongText
@@ -112,12 +116,28 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model UnlinkedAccount {
+  id                String   @id @default(cuid())
+  providerAccountId String   @unique
+  createdAt         DateTime @default(now())
+}
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       Int
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AccessToken {
+  token  String @id @default(cuid())
+  name   String
+  type   String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+
+  lastUsed DateTime @default(now())
 }
 
 model Committee {
@@ -178,9 +198,11 @@ model Maluspunt {
 
 model Activity {
   // Administratieve gegevens
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  createdById Int?
 
   name        String
   description String            @db.LongText
@@ -197,8 +219,7 @@ model Activity {
   // Wie zijn er aanwezig?
   attending   Attending[]
 
-  // Plaatje
-  photo  Photo?  @relation("activityImage")
+  photo  String?
   // Foto's genomen van deze activiteit
   photos Photo[] @relation("activityPhotos")
 
@@ -241,8 +262,7 @@ model Attending {
   activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
   activityId Int
 
-  status AttendingStatus @default(NO_RESPONSE) 
-  isAttending Boolean @default(false)
+  status AttendingStatus @default(NO_RESPONSE)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -540,7 +560,7 @@ model Journal {
   Treasurer   User? @relation(fields: [treasurerId], references: [id], onDelete: SetNull)
   treasurerId Int?
 
-  Attachments         JournalAttachments[]
+  Attachments         File[]
   DeclarationData     DeclarationData?
   TransactionMatchRow TransactionMatchRow[]
   Streeplijst         Streeplijst?          @relation(fields: [streeplijstId], references: [id])
@@ -595,16 +615,6 @@ model JournalRow {
   journalId Int
 }
 
-model JournalAttachments {
-  id       Int    @id @default(autoincrement())
-  MIMEtype String
-  filename String @unique
-  size     Int // Bytes
-
-  Journal   Journal? @relation(fields: [journalId], references: [id], onDelete: Cascade)
-  journalId Int?
-}
-
 //
 // LINK SHORTNER
 //
@@ -633,7 +643,7 @@ model LinkClick {
   updatedAt DateTime @updatedAt
 
   // De link die is aangeklikt
-  link   Link @relation(fields: [linkId], references: [id])
+  link   Link @relation(fields: [linkId], references: [id], onDelete: Cascade)
   linkId Int
 
   // De persoon die de link heeft aangeklikt
@@ -750,41 +760,24 @@ model Photo {
   visible Boolean @default(true)
 
   // Photo
-  filename  String @unique
-  extension String
-
-  // Heeft de backend deze foto al verwerkt?
-  processed Boolean @default(false)
+  file   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId String
 
   // Description
   description String?
 
   tags PhotosWithTags[]
 
-  uploader     User?            @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  uploader     User?            @relation("photoUploader", fields: [uploaderId], references: [id], onDelete: SetNull)
   uploaderId   Int?
-  creator      PhotoCreator?    @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  creator      User?            @relation("photoCreator", fields: [creatorId], references: [id], onDelete: SetNull)
   creatorId    Int?
   ratings      PhotoRating[]
   peopleTagged PhotoPersonTag[]
   comments     Comment[]
 
-  activityImage   Activity? @relation("activityImage", fields: [activityImageId], references: [id])
-  activityImageId Int?      @unique
   activityPhotos  Activity? @relation("activityPhotos", fields: [activityPhotoId], references: [id], onDelete: SetNull)
   activityPhotoId Int?
-
-  profilePicture User[] @relation("profilePicture")
-}
-
-model PhotoCreator {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int?
-  name      String   @unique
-
-  Photo Photo[]
 }
 
 model PhotoTag {
@@ -852,4 +845,91 @@ model Comment {
   photoId    Int?
   activity   Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
   activityId Int?
+}
+
+//
+// Leaderboards
+//
+enum LeaderboardTypes {
+  SCORE
+  COUNT
+  TIME
+  ADTMEISTER
+}
+
+enum LeaderboardSort {
+  ASC
+  DESC
+}
+
+model Leaderboard {
+  id        String   @id @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pinned Boolean @default(false)
+
+  name        String           @unique
+  description String
+  type        LeaderboardTypes
+  sortBy      LeaderboardSort
+
+  opensAt  DateTime?
+  closesAt DateTime?
+
+  // Entries
+  LeaderboardEntries LeaderboardEntry[]
+}
+
+model LeaderboardEntry {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  leaderboard   Leaderboard @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
+  leaderboardId String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int
+
+  // The value of this entry
+  value Int
+}
+
+//
+// Files
+//
+
+model File {
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  filename String @unique
+
+  // soft delete
+  deletedAt DateTime?
+  deleted   Boolean   @default(false)
+
+  uploader   User?    @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
+  uploaderId Int?
+  Photo      Photo[]
+  Journal    Journal? @relation(fields: [journalId], references: [id])
+  journalId  Int?
+}
+
+//
+// Jobs
+// 
+
+model Job {
+  name      String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  data String
+  type String
+
+  finished    Boolean   @default(false)
+  completedAt DateTime?
+  result      String?
 }

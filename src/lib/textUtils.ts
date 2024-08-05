@@ -24,6 +24,8 @@ export function activitySlug(activityName: string) {
 
 	// This adds a space to the end, remove it
 	md = md.replace(/ $/g, '')
+	// remove all : and . characters
+	md = md.replace(/[:.]/g, '')
 
 	return md.toLowerCase().replace(/ /g, '-')
 }

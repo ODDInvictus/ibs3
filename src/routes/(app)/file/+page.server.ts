@@ -1,17 +1,20 @@
 import type { Actions } from './$types'
-import { uploadFile } from '$lib/server/mongo'
 import { fail, redirect } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms/server'
 import { z } from 'zod'
+import { uploadGenericFile, uploadPhoto } from '$lib/server/files'
+import { isAdmin } from '$lib/server/auth'
 
-const schmea = z.object({})
+const schema = z.object({
+	isPhoto: z.boolean().default(false),
+})
 
 export const load = async ({ locals }) => {
-	if (!locals.roles['ibs-admins']) {
-		throw redirect(301, '/')
+	if (!isAdmin(locals.user)) {
+		redirect(300, '/')
 	}
 
-	const form = await superValidate(schmea)
+	const form = await superValidate(schema)
 
 	return { form }
 }
@@ -21,18 +24,36 @@ export const load = async ({ locals }) => {
  */
 
 export const actions = {
-	default: async event => {
-		const formData = await event.request.formData()
-		const form = await superValidate(formData, schmea)
+	default: async ({ request, locals }) => {
+		const formData = await request.formData()
+		const form = await superValidate(formData, schema)
 		if (!form.valid) {
-			fail(400, { form })
+			return fail(400, { form })
 		}
 
 		// Other fields are accessible in form.data
 
 		const file = formData.get('file') as File
-		const name = await uploadFile(file)
+		const isPhoto = form.data.isPhoto
 
+		if (!file || file.size === 0) {
+			return fail(400, { form: { ...form, errors: { file: 'No file uploaded' } } })
+		}
+
+		let name = ''
+
+		try {
+			if (isPhoto) {
+				console.log('[FilePage] Uploading photo')
+				name = await uploadPhoto(file, locals.user, false)
+			} else {
+				console.log('[FilePage] Uploading generic file')
+				name = await uploadGenericFile(file, locals.user)
+			}
+		} catch (e) {
+			console.error('[FilePage] Error uploading file:', e)
+			return fail(500, { message: (e as Error).message })
+		}
 		return { form, name }
 	},
 } satisfies Actions

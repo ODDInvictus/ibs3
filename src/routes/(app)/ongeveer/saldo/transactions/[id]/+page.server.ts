@@ -6,7 +6,7 @@ import Decimal from 'decimal.js'
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id)
-	if (Number.isNaN(id)) throw error(404, 'Transactie niet gevonden')
+	if (Number.isNaN(id)) return error(404, 'Transactie niet gevonden')
 
 	const transaction = await db.saldoTransaction.findUnique({
 		where: { id },
@@ -22,7 +22,7 @@ export const load = (async ({ params }) => {
 		},
 	})
 
-	if (!transaction) throw error(404)
+	if (!transaction) return error(404)
 
 	const invictusId = await getInvictusId()
 	const shouldMatch = transaction.fromId === invictusId || transaction.toId === invictusId

@@ -15,7 +15,7 @@ export const POST: RequestHandler = async event => {
 		userId = user?.id
 	}
 	if (!userId)
-		throw error(400, {
+		error(400, {
 			message: 'User ID not found',
 		})
 
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async event => {
 		endTime?: number
 	} = await request.json()
 	if (Number.isNaN(startTime) || Number.isNaN(amount))
-		throw error(400, {
+		error(400, {
 			message: 'No startTime or sessionClicks',
 		})
 
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async event => {
 	}
 
 	const startTimeDate = new Date(startTime)
-	if (!isValidDate(startTimeDate)) throw error(400)
+	if (!isValidDate(startTimeDate)) error(400)
 
 	// @ts-ignore
 	let endTimeDate = new Date(endTime)
