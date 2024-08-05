@@ -2,7 +2,7 @@
 	export let products: { id: number; name: string }[] = []
 </script>
 
-<table class="small">
+<table class="ongeveer-table">
 	<thead>
 		<th>ID</th>
 		<th>Naam</th>

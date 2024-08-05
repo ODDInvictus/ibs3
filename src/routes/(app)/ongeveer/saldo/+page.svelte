@@ -15,17 +15,19 @@
 	<a href="/ongeveer/saldo/transactions">Transacties overzicht</a>
 </div>
 
-<table class="small">
+<table class="striped ongeveer-table">
 	<thead>
 		<tr>
 			<th>Naam</th>
 			<th>Saldo</th>
 		</tr>
 	</thead>
-	{#each data.persons as person}
-		<tr class={personId === person.personId ? 'highlight' : null}>
-			<td>{person.person.name}</td>
-			<td class="euro">{formatPrice(person.person.balance)}</td>
-		</tr>
-	{/each}
+	<tbody>
+		{#each data.persons as person}
+			<tr class={personId === person.personId ? 'highlight' : null}>
+				<td>{person.person.name}</td>
+				<td class="euro">{formatPrice(person.person.balance)}</td>
+			</tr>
+		{/each}
+	</tbody>
 </table>
