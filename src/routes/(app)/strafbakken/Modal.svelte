@@ -47,8 +47,7 @@
 						setTimeout(() => {
 							closeModal()
 						}, 1000)
-					}}
-				>
+					}}>
 					<p>Reden:</p>
 					<input type="number" name="receiver" hidden value={uid} />
 					<textarea name="reason" bind:value={reason} />
@@ -79,8 +78,6 @@
 		flex-direction: column;
 		z-index: 100;
 
-		color: black;
-
 		pointer-events: none;
 	}
 
@@ -88,7 +85,6 @@
 		min-width: 240px;
 		border-radius: 6px;
 		padding: $spacing;
-		background: white;
 		display: flex;
 		flex-direction: column;
 		pointer-events: auto;
@@ -97,6 +93,8 @@
 			text-align: center;
 			font-size: 1.5rem;
 		}
+
+		background-color: var(--color-bg);
 	}
 
 	/* Naut's styles */
