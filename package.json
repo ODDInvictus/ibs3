@@ -95,7 +95,7 @@
 		"csv-parser": "^3.0.0",
 		"decimal.js": "^10.4.3",
 		"dotenv": "^16.3.1",
-		"express": "^4.19.2",
+		"express": "^4.21.0",
 		"filereader": "^0.10.3",
 		"gridfs-promise": "^6.3.10",
 		"ics": "^3.7.6",
