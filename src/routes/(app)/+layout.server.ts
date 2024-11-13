@@ -2,8 +2,7 @@ import type { Committee } from '@prisma/client'
 import type { LayoutServerLoad } from './$types'
 import { LDAP_IDS } from '$lib/constants'
 import { loadFlash } from 'sveltekit-flash-message/server'
-import { Setting, settings } from '$lib/server/settings'
-import db from '$lib/server/db'
+import { Setting, settings } from '$lib/server/settings/settings'
 
 export const load = loadFlash(async ({ locals }) => {
 	const topRole = getTopRole(locals.committees)

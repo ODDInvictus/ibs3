@@ -1,8 +1,8 @@
-import { Setting, settings } from '$lib/server/settings'
 import type { File as IBSFile, User } from '@prisma/client'
 import { _getFileStream, _uploadFile } from './mongo'
 import db from '$lib/server/db'
 import { compressImage } from './sharp'
+import { Setting, settings } from '../settings/settings'
 
 function log(...message: any): void {
 	console.log('[FileHandler]', ...message)

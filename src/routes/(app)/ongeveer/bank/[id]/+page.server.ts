@@ -65,6 +65,17 @@ export const load = (async ({ params }) => {
 
 	const journals = await getUnmatchedJournals()
 
+	// Add the matched journals to the list of journals
+	for (const row of bankTransaction.Transaction.TransactionMatchRow) {
+		if (journals.some(j => j.id === row.journalId)) continue
+		if (!row.Journal) continue
+		journals.push({
+			id: row.Journal.id,
+			ref: row.Journal.ref,
+			type: row.Journal.type,
+		})
+	}
+
 	return {
 		form,
 		financialPersons,
@@ -169,19 +180,28 @@ export const actions = {
 			})
 		}
 
-		// Match journals
-		await Promise.all(
-			form.data.rows.map(row => {
+		await Promise.all([
+			// Match journals
+			...form.data.rows.map(row => {
 				if (!row.journal) return Promise.resolve(null)
 				return db.transactionMatchRow.create({
 					data: {
 						transactionId: bankTransaction.transactionId,
 						journalId: row.journal,
 						amount: row.amount,
+						description: row.description,
 					},
 				})
 			}),
-		)
+			// Update banktransaction data
+			db.bankTransaction.update({
+				where: { id: form.data.id },
+				data: {
+					relationId: form.data.relation,
+					ref: form.data.ref,
+				},
+			}),
+		])
 
 		const flashMessage = warning
 			? ({

@@ -1,11 +1,14 @@
 import type { PageServerLoad, Actions } from './$types'
 import db from '$lib/server/db'
-import type { ProductType } from '@prisma/client'
+import { ProductType } from '@prisma/client'
 import { fail } from '@sveltejs/kit'
 import { authorization } from '$lib/ongeveer/utils'
 import { superValidate } from 'sveltekit-superforms/server'
-import { productSchema } from './productSchema'
+import { getProductSchema } from './productSchema'
 import { redirect } from 'sveltekit-flash-message/server'
+
+const productTypes = Object.values(ProductType) as [ProductType, ...ProductType[]]
+const productSchema = getProductSchema(productTypes)
 
 export const load = (async ({ url }) => {
 	const id = Number(url.searchParams.get('id'))
@@ -25,8 +28,6 @@ export const load = (async ({ url }) => {
 
 	const categories = await db.productCategory.findMany()
 	const form = await superValidate(data, productSchema)
-
-	const productTypes: ProductType[] = ['FOOD', 'ALCOHOL', 'OTHER']
 
 	return {
 		categories,

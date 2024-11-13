@@ -44,7 +44,7 @@
 				<p class="ibs-card--row">... en nog {data.unmatchedBankTransactions.length - 5} meer</p>
 			{/if}
 			<p class="ibs-card--content">
-				<a href="/ongeveer/saldo/transactions">Overzicht</a>
+				<a href="/ongeveer/bank">Overzicht</a>
 			</p>
 		</div>
 

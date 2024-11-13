@@ -27,6 +27,7 @@ export const load = (async ({ params }) => {
 					Transaction: true,
 				},
 			},
+			DeclarationData: true,
 		},
 	})
 	if (!purchase) return error(404, 'Aankoop niet gevonden')

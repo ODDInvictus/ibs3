@@ -32,14 +32,14 @@
 		<h3>Gegevens</h3>
 		<p>Bank transactie ID: {data.bankTransaction.id}</p>
 		<p>Transactie ID: {data.bankTransaction.Transaction.id}</p>
-		<p>Referentie: {data.bankTransaction.ref}</p>
+		<p>Referentie: {data.bankTransaction.ref ?? '-'}</p>
 		{#if data.bankTransaction.Relation}
 			<p>Relatie: {data.bankTransaction.relationId} - {data.bankTransaction.Relation.name}</p>
 		{/if}
 	</div>
 
 	<div>
-		<h3>Bannkgegevens</h3>
+		<h3>Bankgegevens</h3>
 		<p>Amount: <b>{data.bankTransaction.amount}</b></p>
 		<p>Started date: {formatDateTimeHumanReadable(new Date(data.bankTransaction.startedDate))}</p>
 		<p>
@@ -71,8 +71,7 @@
 				{#if row.SaldoTransaction}
 					<p>
 						<a href="/ongeveer/saldo/transactions/{row.SaldoTransaction.id}"
-							>{row.SaldoTransaction.id} - {row.SaldoTransaction.description}</a
-						>
+							>{row.SaldoTransaction.id} - {row.SaldoTransaction.description}</a>
 					</p>
 				{/if}
 			{/each}
@@ -127,8 +126,7 @@
 											journal: undefined,
 											saldo: false,
 										},
-									])}
-							>
+									])}>
 								<Plus />
 							</button>
 						{/if}
@@ -138,8 +136,7 @@
 								const filtered = [...$form.rows]
 								filtered.splice(i, 1)
 								$form.rows = filtered
-							}}><Trashcan /></button
-						>
+							}}><Trashcan /></button>
 					</td>
 				</tr>
 			{/each}
@@ -159,8 +156,7 @@
 						saldo: false,
 					},
 				]
-			}}
-		>
+			}}>
 			<Plus />
 		</button>
 	{/if}

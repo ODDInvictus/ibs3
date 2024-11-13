@@ -27,6 +27,7 @@
 				<td>
 					<button
 						class="btn-a"
+						data-testid="add-ledger-btn"
 						on:click={() => {
 							openModal(Create)
 						}}

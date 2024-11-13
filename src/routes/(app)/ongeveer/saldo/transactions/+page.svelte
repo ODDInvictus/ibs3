@@ -3,6 +3,9 @@
 	import Title from '$lib/components/title.svelte'
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
 	import type { PageData } from './$types'
+	import Check from '~icons/tabler/check'
+	import Dot from '~icons/tabler/point-filled'
+	import Cross from '~icons/tabler/x'
 
 	export let data: PageData
 </script>
@@ -24,7 +27,7 @@
 			</div>
 		{/if}
 
-		<table class="striped small">
+		<table class="striped">
 			<thead>
 				<tr>
 					<th>ID</th>
@@ -33,9 +36,10 @@
 					<th>Prijs</th>
 					<th>Van</th>
 					<th>Naar</th>
+					<th>Status</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody data-testid="transactions">
 				{#each data.transactions as transaction}
 					{@const { price, description, from, to, Transaction, id } = transaction}
 					<tr>
@@ -45,6 +49,15 @@
 						<td>€ {Number(price).toFixed(2)}</td>
 						<td><a href="/ongeveer/relations/{from.id}">{from.name}</a></td>
 						<td><a href="/ongeveer/relations/{to.id}">{to.name}</a></td>
+						<td>
+							{#if transaction.status == 'MATCHED'}
+								<Check color="#0F0" />
+							{:else if transaction.status == 'PARTIAL'}
+								<Dot color="#F80" />
+							{:else}
+								<Cross color="#F00" />
+							{/if}
+						</td>
 					</tr>
 				{/each}
 			</tbody>

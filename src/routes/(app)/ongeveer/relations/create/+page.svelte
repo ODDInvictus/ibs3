@@ -39,5 +39,5 @@
 
 	<input type="hidden" name="id" bind:value={$idProxy} />
 
-	<Submit {formProps}>{$form.id ? 'Opslaan' : 'Aanmaken'}</Submit>
+	<Submit {formProps} data-testId="submit">{$form.id ? 'Opslaan' : 'Aanmaken'}</Submit>
 </form>

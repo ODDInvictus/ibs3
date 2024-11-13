@@ -19,7 +19,7 @@
 		<th>Naam</th>
 		<th>Omschrijving</th>
 	</thead>
-	<tbody>
+	<tbody data-testid="relations">
 		{#each data.relations as relation}
 			<tr>
 				<td><a href="/ongeveer/relations/{relation.id}">{relation.id}</a></td>

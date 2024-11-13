@@ -98,13 +98,11 @@ export const DELETE = (async ({ request, locals }) => {
 }) satisfies RequestHandler
 
 export const POST = (async ({ request, locals }) => {
-
 	const authorized = isAdmin(locals.user)
 	if (!authorized)
 		return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: admin', {
 			status: 403,
 		})
-
 
 	const body = await request.json()
 
@@ -145,13 +143,11 @@ export const POST = (async ({ request, locals }) => {
 }) satisfies RequestHandler
 
 export const PUT = (async ({ request, locals }) => {
-
 	const authorized = isAdmin(locals.user)
 	if (!authorized)
 		return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: admin', {
 			status: 403,
 		})
-
 
 	const body = await request.json()
 

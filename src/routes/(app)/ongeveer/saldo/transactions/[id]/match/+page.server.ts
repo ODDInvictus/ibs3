@@ -41,12 +41,19 @@ export const load = (async ({ params }) => {
 	}
 	const form = await superValidate(data, matchSaldoTransaction)
 
+	const totalMatched = transaction.Transaction.TransactionMatchRow.reduce((acc, row) => acc.add(row.amount), new Decimal(0))
+		.add(transaction.TransactionMatchRow?.amount ?? 0)
+		.toNumber()
+	const toMatch = transaction.price.sub(totalMatched).toNumber()
+
 	const journals = await getUnmatchedJournals()
 
 	return {
 		transaction: JSON.parse(JSON.stringify(transaction)) as typeof transaction,
 		journals,
 		form,
+		totalMatched,
+		toMatch,
 	}
 }) satisfies PageServerLoad
 

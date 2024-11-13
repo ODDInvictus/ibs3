@@ -1,7 +1,7 @@
 import SpotifyWebApi from 'spotify-web-api-node'
 import { env as privateEnv } from '$env/dynamic/private'
 import { env } from '$env/dynamic/public'
-import { Setting, settings } from './settings'
+import { Setting, settings } from './settings/settings'
 
 const { PUBLIC_SPOTIFY_CLIENT_ID, PUBLIC_SPOTIFY_REDIRECT_URI } = env
 

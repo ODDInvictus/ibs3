@@ -3,7 +3,6 @@ import { error, type RequestHandler } from '@sveltejs/kit'
 import db from '$lib/server/db'
 
 export const PUT = (async ({ request, locals }) => {
-
 	const authorized = isAdmin(locals.user)
 	if (!authorized)
 		return new Response('Helaas heb jij geen toegang tot deze actie. Je mist een van de volgende rollen: admin', {

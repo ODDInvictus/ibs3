@@ -21,7 +21,7 @@
 
 <div class="input-group">
 	<Label {name} {constraints}><slot /></Label>
-	<select {name} bind:value={$value} class:has-error={$errors}>
+	<select {name} bind:value={$value} class:has-error={$errors} data-testid="{name}-input">
 		{#if !$constraints?.required}
 			<option value={undefined} selected>-</option>
 		{/if}
