@@ -22,7 +22,7 @@
 			<tr>
 				<td>{activity.id}</td>
 				<td>{activity.name}</td>
-				<td>{activity.createdAt.toLocaleDateString('nl')}</td>
+				<td>{activity.startTime.toLocaleDateString('nl')}</td>
 				<td>{activity.organisedBy.name}</td>
 				<td>
 					<a href="/activiteit/{activity.id}">Bekijk</a>

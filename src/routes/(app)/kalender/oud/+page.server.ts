@@ -17,7 +17,7 @@ export const load = (async ({ locals }) => {
 		select: {
 			id: true,
 			name: true,
-			createdAt: true,
+			startTime: true,
 			organisedBy: {
 				select: {
 					name: true,
