@@ -5,15 +5,7 @@
 
 	export let data: sbUserPageData
 
-	const formatName = (names: { nickname: string | null; firstName: string }) => {
-		let unformattedName = names.nickname || names.firstName
-		return unformattedName[0].toUpperCase() + unformattedName.slice(1).toLowerCase()
-	}
-
-	$: name = formatName({
-		nickname: data.strafbakken.nickname,
-		firstName: data.strafbakken.firstName,
-	})
+	let name = data.user.nickname ?? data.user.firstName
 </script>
 
 <main>
@@ -32,7 +24,7 @@
 						<td>
 							{#if strafbak.giver}
 								<a href={`/strafbakken/${strafbak.giver.firstName}`}>
-									{formatName(strafbak.giver)}
+									{strafbak.giver.nickname ?? strafbak.giver.firstName}
 								</a>
 							{:else}
 								IBS
