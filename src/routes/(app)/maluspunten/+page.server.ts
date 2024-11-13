@@ -7,7 +7,15 @@ export const load = (async ({ locals }) => {
 	const ok = isMember(locals.user)
 
 	if (!ok) {
-		return error(403)
+		await db.strafbak.create({
+			data: {
+				receiverId: locals.user.id,
+				reason: 'Feutneus denkt dat hij de maluspunten kan bekijken 🤨',
+				location: 'Maluspunten',
+			},
+		})
+
+		return error(444)
 	}
 
 	return {
