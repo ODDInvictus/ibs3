@@ -265,6 +265,18 @@ $steps: 20;
 	&--item:nth-child(7) {
 		grid-row-start: -7;
 	}
+
+	&--item:nth-child(8) {
+		grid-row-start: -8;
+	}
+
+	&--item:nth-child(9) {
+		grid-row-start: -9;
+	}
+
+	&--item:nth-child(10) {
+		grid-row-start: -10;
+	}
 }
 
 @media (max-width: 600px) {
