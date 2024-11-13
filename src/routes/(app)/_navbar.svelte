@@ -14,6 +14,7 @@
 	import AccessibleOff from '~icons/tabler/accessible-off'
 	import Photo from '~icons/tabler/photo'
 	import Music from '~icons/tabler/music'
+	import Streaming from '~icons/tabler/device-tv-old'
 	import Menu from '~icons/tabler/menu-2'
 	import X from '~icons/tabler/x'
 	import Equal from '~icons/tabler/equal'
@@ -110,6 +111,10 @@
 		<a class="layout--navbar--item" href="/playlist">
 			<i><Music /></i>
 			<span>Playlist</span>
+		</a>
+		<a class="layout--navbar--item" href="/streaming">
+			<i><Streaming /></i>
+			<span>Streaming</span>
 		</a>
 
 		<button class="layout--navbar--item btn-a" on:click={openMenu}>
