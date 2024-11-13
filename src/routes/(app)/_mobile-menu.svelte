@@ -5,6 +5,7 @@
 	import Users from '~icons/tabler/users'
 	import PigMoney from '~icons/tabler/pig-money'
 	import ShieldCheck from '~icons/tabler/shield-check'
+	import Streaming from '~icons/tabler/device-tv-old'
 	import Settings from '~icons/tabler/settings'
 	import AccessibleOff from '~icons/tabler/accessible-off'
 	import ListNumbers from '~icons/tabler/list-numbers'
@@ -45,6 +46,11 @@
 		<a class="layout--mobimenu--item" href="/ranglijst">
 			<i><ListNumbers /></i>
 			<span>Ranglijsten</span>
+		</a>
+
+		<a class="layout--mobimenu--item" href="/streaming">
+			<i><Streaming /></i>
+			<span>Streaming</span>
 		</a>
 
 		{#if $page.data.settings.maluspuntenEnabled}
