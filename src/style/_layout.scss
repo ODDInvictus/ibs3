@@ -154,7 +154,8 @@ $steps: 20;
 	flex-direction: column;
 	text-align: start;
 
-	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: auto;
 
 	z-index: 10;
 	grid-area: nav;
