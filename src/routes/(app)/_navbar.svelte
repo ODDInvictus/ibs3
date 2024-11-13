@@ -112,10 +112,6 @@
 			<i><Music /></i>
 			<span>Playlist</span>
 		</a>
-		<a class="layout--navbar--item" href="/streaming">
-			<i><Streaming /></i>
-			<span>Streaming</span>
-		</a>
 
 		<button class="layout--navbar--item btn-a" on:click={openMenu}>
 			{#if open}
@@ -125,6 +121,10 @@
 			{/if}
 			<span>Menu</span>
 		</button>
+		<a class="layout--navbar--item" href="/streaming">
+			<i><Streaming /></i>
+			<span>Streaming</span>
+		</a>
 
 		<a class="layout--navbar--item" href="/ranglijst">
 			<i><ListNumbers /></i>
