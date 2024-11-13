@@ -2,3 +2,4 @@ node_modules
 .svelte-kit
 .vscode
 static/upload
+backend/node_modules
