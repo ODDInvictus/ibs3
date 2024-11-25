@@ -1,11 +1,11 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte'
 	import { markdown } from '$lib/utils'
-	import type { sbUserPageData } from '../types'
+	import type { PageData } from './$types'
 
-	export let data: sbUserPageData
+	export let data: PageData
 
-	let name = data.user.nickname ?? data.user.firstName
+	let name = data.strafbakken.nickname ?? data.strafbakken.firstName
 </script>
 
 <main>
