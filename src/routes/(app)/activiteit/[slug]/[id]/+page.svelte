@@ -313,7 +313,6 @@
 			<p class="ibs-card--row">
 				<i><Edit /></i>
 				<a href="/activiteit/nieuw?edit=true&id={activity.id}">Activiteit bewerken</a>
-				<a href="/activiteit/"></a>
 			</p>
 
 			<p class="ibs-card--row">
