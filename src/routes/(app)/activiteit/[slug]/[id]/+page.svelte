@@ -8,6 +8,7 @@
 	import UsersGroup from '~icons/tabler/users-group'
 	import ExternalLink from '~icons/tabler/external-link'
 	import AccessibleOff from '~icons/tabler/accessible-off'
+	import Share from '~icons/tabler/copy'
 	import UserCard from './_user-card.svelte'
 	import { generateICal, getPictureUrl, stripMarkdown } from '$lib/utils'
 	import { toast } from '$lib/notification'
@@ -39,6 +40,25 @@
 	$: if (changed > 0) {
 		console.log('huts')
 		attending = sortAttending()
+	}
+
+	async function copyToClipboard() {
+		try {
+			const url = window.location.href
+			await navigator.clipboard.writeText(url)
+			toast({
+				title: 'Link gekopieerd!',
+				message: 'De URL is succesvol naar je klembord gekopieerd.',
+				type: 'success',
+			})
+		} catch (error) {
+			toast({
+				title: 'Fout',
+				message: 'De URL kon niet worden gekopieerd.',
+				type: 'danger',
+			})
+			console.error('Kopieerfout:', error)
+		}
 	}
 
 	function sortAttending() {
@@ -293,6 +313,12 @@
 			<p class="ibs-card--row">
 				<i><Edit /></i>
 				<a href="/activiteit/nieuw?edit=true&id={activity.id}">Activiteit bewerken</a>
+				<a href="/activiteit/"></a>
+			</p>
+
+			<p class="ibs-card--row">
+				<i><Share /></i>
+				<button class="btn-a" on:click={copyToClipboard}>Activiteit delen</button>
 			</p>
 
 			<p class="ibs-card--row">
