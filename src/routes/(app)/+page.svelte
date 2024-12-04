@@ -7,7 +7,7 @@
 	import { toast } from '$lib/notification'
 	import { getPictureUrl, markdown } from '$lib/utils'
 	import type { PageData } from './$types'
-
+		let currentDate = new Date();
 	export let data: PageData
 
 	/* Cookie clicker */
@@ -233,7 +233,7 @@
 			<div class="ibs-card--content">
 				<p>Gefeliciteerd {data.nextBirthday.firstName}!</p>
 				<p>
-					Hij is {toAge(birthday) + 1} jaar geworden
+					Hij is {toAge(birthday)} jaar geworden
 				</p>
 			</div>
 		{/if}
