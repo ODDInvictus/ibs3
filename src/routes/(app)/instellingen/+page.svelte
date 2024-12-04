@@ -236,7 +236,15 @@
 		},
 	]} />
 
+<hr />
+
 <h2>Logout</h2>
-<div class="user" on:click={logout}>
-	<button>klik om uit te loggen</button>
+<div class="uitloggen" on:click={logout}>
+	<button>Uitloggen</button>
 </div>
+
+<style>
+	.uitloggen {
+		padding-top: 1rem;
+	}
+</style>
