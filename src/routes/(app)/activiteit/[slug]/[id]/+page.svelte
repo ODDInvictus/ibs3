@@ -3,7 +3,6 @@
 	import MapPin from '~icons/tabler/map-pin'
 	import Clock from '~icons/tabler/clock'
 	import Calendar from '~icons/tabler/calendar'
-	import CalendarPlus from '~icons/tabler/calendar-plus'
 	import Edit from '~icons/tabler/edit'
 	import UsersGroup from '~icons/tabler/users-group'
 	import ExternalLink from '~icons/tabler/external-link'
@@ -176,59 +175,6 @@
 			})
 	}
 
-	function generateIcal() {
-		const startTime = new Date(activity.startTime)
-		const endTime = new Date(activity.endTime)
-		const ical = generateICal({
-			title: activity.name,
-			eventId: activity.id.toString(),
-			description: activity.description,
-			location: activity.location?.name,
-			startTime,
-			endTime,
-			url: window.location.href,
-		})
-
-		// now let's save the file
-		const downloadLink = document.createElement('a')
-		downloadLink.href = ical
-		downloadLink.download = `ibs-activiteit-${activity.id}.ical`
-		document.body.appendChild(downloadLink)
-		downloadLink.click()
-		document.body.removeChild(downloadLink)
-	}
-
-	function generateGCal() {
-		const activityUrl = $page.data.domain + '/activiteit/' + activity.id
-		let details = activity.description
-		details += `<br/><br/>Ben jij ook bij? <a href="${activityUrl}">Klik dan hier!</a>`
-		if (activity.url) details += `<br /><br/> Meer informatie <a href="${activity.url}">hier</a>`
-
-		const start = new Date(activity.startTime).toISOString().replace(/-|:|\.\d\d\d/g, '')
-		const end = new Date(activity.endTime).toISOString().replace(/-|:|\.\d\d\d/g, '')
-
-		const dates = `${start}/${end}`
-
-		const uri = new URL('https://calendar.google.com/calendar/render')
-		const search = new URLSearchParams({
-			text: nameWithoutMarkdown,
-			action: 'TEMPLATE',
-			ctz: 'Europe/Amsterdam',
-			details: stripMarkdown(details),
-			location: activity.location?.name ?? 'Locatie nog onbekend',
-			sprop: `name:{{Invictus Bier Systeem}},website:${activityUrl}`,
-			add: attending
-				.filter(a => a.status === 'ATTENDING')
-				.map((a: any) => a.email)
-				.join(','),
-			dates,
-		})
-
-		uri.search = search.toString()
-
-		window.open(uri.toString())
-	}
-
 	function cardAction(ldapId: string, status: AttendingStatus) {
 		console.log(ldapId, status)
 
@@ -318,14 +264,6 @@
 			<p class="ibs-card--row">
 				<i><Share /></i>
 				<button class="btn-a" on:click={copyToClipboard}>Activiteit delen</button>
-			</p>
-
-			<p class="ibs-card--row">
-				<i><CalendarPlus /></i>
-				Opslaan als
-				<button class="btn-a" on:click={generateIcal}>ical</button>
-				of in
-				<button class="btn-a" on:click={generateGCal}>google agenda</button>
 			</p>
 
 			<p class="ibs-card--content">
