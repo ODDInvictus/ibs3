@@ -8,8 +8,19 @@
 	import { toast } from '$lib/notification'
 	import type { PageData } from './$types'
 	import { alert } from '$lib/alert'
+	import { signOut } from '@auth/sveltekit/client'
 
 	export let data: PageData
+
+	function logout() {
+		confirm({
+			title: 'Uitloggen?',
+			message: 'Weet je zeker dat je wil uitloggen?',
+			cb: success => {
+				if (success) signOut()
+			},
+		})
+	}
 
 	function edit(id: string, action: string) {
 		const obj = data.preferences.find(p => p.id === Number(id))
@@ -224,3 +235,8 @@
 			title: 'Token verwijderen',
 		},
 	]} />
+
+<h2>Logout</h2>
+<div class="user" on:click={logout}>
+	<button>klik om uit te loggen</button>
+</div>
