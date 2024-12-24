@@ -34,8 +34,8 @@ const handleAuthorization = (async ({ event, resolve }) => {
 		event.locals.theme = user?.preferredTheme ?? 'light'
 	}
 
-	// If shortner, then ignore auth.
-	if (url.startsWith('/s/') || url.startsWith('/cal')) {
+	// Resolve all routes in /(public) normally
+	if (event.route.id?.includes('(public)')) {
 		// Resolve normally
 		return await resolve(event)
 	} else if (!url.startsWith('/auth')) {
@@ -51,10 +51,7 @@ const handleAuthorization = (async ({ event, resolve }) => {
 	}
 
 	// If the request is still here, just proceed as normally
-	const result = await resolve(event, {
-		transformPageChunk: ({ html }) => html,
-	})
-	return result
+	return await resolve(event)
 }) satisfies Handle
 
 export { handleAuthorization }
