@@ -38,11 +38,11 @@ const handleAuthorization = (async ({ event, resolve }) => {
 	if (event.route.id?.includes('(public)')) {
 		// Resolve normally
 		return await resolve(event)
-	} else if (!url.startsWith('/auth')) {
+	} else if (!url.startsWith('/home') || !url.startsWith('/auth')) {
 		// If the path is something other than /auth, check if the user is logged in
 
 		if (!user) {
-			return redirect(303, '/auth')
+			return redirect(303, '/home')
 		}
 
 		if (user.accessDisabled) {

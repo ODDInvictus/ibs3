@@ -32,11 +32,8 @@ const {
 	},
 	callbacks: {
 		async redirect({ url, baseUrl }) {
-			if (url.startsWith('/auth')) {
-				throw redirect(303, '/')
-			}
-
-			return baseUrl
+			// Redirect to / after signin
+			return '/'
 		},
 	},
 })
