@@ -96,6 +96,8 @@ model User {
   File                    File[]
   AccessToken             AccessToken[]
   Activity                Activity[]
+
+  FrontPageItem FrontPageItem[]
 }
 
 model Account {
@@ -915,6 +917,8 @@ model File {
   Photo      Photo[]
   Journal    Journal? @relation(fields: [journalId], references: [id])
   journalId  Int?
+
+  FrontPageImage FrontPageItem[]
 }
 
 //
@@ -932,4 +936,32 @@ model Job {
   finished    Boolean   @default(false)
   completedAt DateTime?
   result      String?
+}
+
+// 
+// Dit moet natuurlijk in de database
+// 
+model FrontPageItem {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // HTML ID waar deze foto komt
+  key String
+  // Titel (staat bij een foto)
+  // bijv. Lichting 1
+  title String
+  // Bijbehordende beschrijving
+  description String
+  visible Boolean @default(false)
+
+  // verwijst dit item naar een andere pagina?
+  link String?
+
+  changedBy User? @relation(fields: [userId], references: [id], onDelete: NoAction)
+  userId Int?
+
+  // Photo
+  file   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId String
 }

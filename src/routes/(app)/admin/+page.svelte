@@ -9,6 +9,7 @@
 	import TablerFiles from '~icons/tabler/files'
 	import TablerAdjustmentsCog from '~icons/tabler/adjustments-cog'
 	import TablerListNumbers from '~icons/tabler/list-numbers'
+	import TablerHome from '~icons/tabler/home'
 	import TablerBeer from '~icons/tabler/beer'
 	import TablerBackhoe from '~icons/tabler/backhoe'
 	import { toast } from '$lib/notification'
@@ -50,6 +51,16 @@
 						<TablerUsersGroup />
 					</span>
 					Beheer commissies
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="/admin/home">
+					<span class="icon">
+						<TablerHome />
+					</span>
+					Verander publieke homepage
 				</a>
 			</td>
 		</tr>
