@@ -8,7 +8,7 @@
 	export let data: PageData
 
 	let currentElem = 0
-	const elements = ['main', 'group', 'lichtingen', 'contact']
+	const elements = ['main', 'temp', 'group', 'lichtingen', 'contact']
 
 	function scroll() {
 		const scrollButton = document.querySelector('.scroll')
@@ -38,7 +38,14 @@
 			signIn('authentik')
 		}
 	}
+
+	function getPhoto(photo) {}
 </script>
+
+<!-- heerlijke hack -->
+<!-- de laatste css regel die geladen wordt is een display:none, die haalt dit weg -->
+<!-- Voorkomt een content flash -->
+<div id="overlay" style="position:absolute;top:0px;left:0px;background-color:#551b8a;width:100vw;height:100vh;z-index:9999;"></div>
 
 <main>
 	<section class="center first" id="main">
@@ -63,6 +70,13 @@
 	</section>
 
 	<div class="rest">
+		{#if data.temp}
+			<section id="temp">
+				<img src="no-activity.jpeg" alt="invictus logo" />
+				Temp
+			</section>
+		{/if}
+
 		<section id="group">
 			<img src="no-activity.jpeg" alt="invictus logo" />
 			Groep
@@ -124,7 +138,6 @@
 			display: flex;
 			flex-direction: column;
 
-			// Animate these
 			h1,
 			h3 {
 				overflow: hidden;
@@ -256,5 +269,9 @@
 		100% {
 			transform: translate(0);
 		}
+	}
+
+	#overlay {
+		display: none;
 	}
 </style>

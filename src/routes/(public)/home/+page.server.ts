@@ -1,13 +1,23 @@
+import db from '$lib/server/db'
 import type { PageServerLoad } from './$types'
 
 export const load = (async ({ locals }) => {
-	if (locals.user) {
-		return {
-			name: locals.user.firstName,
-		}
-	}
+	const name = locals.user?.firstName ?? null
+
+	const photos = await db.frontPageItem.findMany({
+		where: {
+			visible: true,
+		},
+	})
+
+	const temp = photos.find(p => p.key === 'temp')
+	const group = photos.find(p => p.key === 'group')
+	const lichtingen = photos.find(p => p.key.includes('lichting'))
 
 	return {
-		name: null,
+		name,
+		group,
+		lichtingen,
+		temp,
 	}
 }) satisfies PageServerLoad
