@@ -239,23 +239,6 @@ export const actions = {
 				if (image.size > 0) {
 					const filename = await uploadPhoto(image, event.locals.user, false)
 
-					// const buf = Buffer.from(await image.arrayBuffer())
-
-					// const photo = await uploadPhoto(
-					// 	{
-					// 		creator,
-					// 		uploader: event.locals.user,
-					// 		runProcessingJob: false,
-					// 		additionalName: 'Activiteit',
-					// 		invisible: true,
-					// 		upload: {
-					// 			buf,
-					// 			filename: image.name,
-					// 		},
-					// 	},
-					// 	tx,
-					// )
-
 					await tx.activity.update({
 						where: {
 							id: activity.id,
