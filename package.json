@@ -16,6 +16,7 @@
 		"log": "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit",
 		"mailhog": "docker run --rm -it -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog",
 		"data-migration:attending": "ts-node-esm ./prisma/migrations/20231228173512_attending/data-migration.ts",
+		"data-migration:leaderboard": "tsx ./prisma/migrations/20250105124955_leaderboard_notifications/data-migration.ts",
 		"prepare": "husky install",
 		"test": "npm run test:e2e",
 		"test:e2e": "npm run docker-down:test && npm run docker-up:test",

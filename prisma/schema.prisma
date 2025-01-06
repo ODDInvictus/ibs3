@@ -92,10 +92,15 @@ model User {
   CommentsMade            Comment[]
   Journal                 Journal[]
   Streeplijst             Streeplijst[]
-  LeaderboardEntries      LeaderboardEntry[]
   File                    File[]
   AccessToken             AccessToken[]
   Activity                Activity[]
+
+  LeaderboardChallengerUser LeaderboardChallengerUser[]
+
+  NotificationReceiver NotificationReceiver[]
+
+  LeaderboardEntry LeaderboardEntry[]
 }
 
 model Account {
@@ -886,13 +891,35 @@ model LeaderboardEntry {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  leaderboard   Leaderboard @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
+  leaderboard   Leaderboard           @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
   leaderboardId String
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
+  challenger    LeaderboardChallenger? @relation(fields: [challengerId], references: [id], onDelete: Cascade)
+  challengerId  String?
 
   // The value of this entry
   value Int
+}
+
+// Iemand die geen User is maar wel louter wil vouwen
+model LeaderboardChallenger {
+  id String @id @default(cuid())
+
+  firstName String
+  lastName  String
+
+  LeaderboardChallengerUser LeaderboardChallengerUser?
+  LeaderboardEntry          LeaderboardEntry[]
+}
+
+model LeaderboardChallengerUser {
+  challenger   LeaderboardChallenger @relation(fields: [challengerId], references: [id])
+  challengerId String                @unique
+  user         User                  @relation(fields: [userId], references: [id])
+  userId       Int                   @unique
+
+  @@id([challengerId, userId])
 }
 
 //
@@ -932,4 +959,88 @@ model Job {
   finished    Boolean   @default(false)
   completedAt DateTime?
   result      String?
+}
+
+
+//
+// Notifications
+//
+
+enum NotificationType {
+  // Notificatie zonder type, liever een type toevoegen dan deze gebruiken
+  NotificationGeneric
+
+  // Nieuwe activiteit aangemaakt
+  ActivityNew
+  // Activiteit van datum verandert waar jij je op hebt ingeschreven
+  ActivityChangedDate
+  // Vul nou die datumprikker in luie hond
+  ActivityFillInReminder
+  
+  // Getagd in een beschrijving van een activiteit
+  TagActivityDescription
+
+  // Getagd in een foto
+  TagPhoto
+
+  // Getagd in een comment onder een foto of activiteit
+  TagCommentPhoto
+  TagCommentActivity
+
+  // Je hebt een strafbak gekregen
+  StrafbakCreate
+  // De strafbakken zijn verdubbeld
+  StrafbakDouble
+  // Wie heeft het meest gebakken deze week? Gaat naar alle deelnemers van die week
+  StrafbakkenMaster
+
+  // Wanneer je verslagen wordt op een leaderboard (bijv. je stond op plek 3, maar nu op 4)
+  // Niet versturen als je niet van plek verwisseld, en ophopen
+  LeaderboardGotBeaten
+  // Nieuw leaderboard geopend
+  LeaderboardNew
+
+
+  // Declaratie goedgekeurd
+  OngeveerDeclarationApproved
+  // Declaratie afgekeurd
+  OngeveerDeclarationDisapproved
+
+  // Admin notifications
+  // Geen persoonlijke email gevonden bij proberen versturen
+  AdminNoPersonalEmail
+  // Setting niet gevonden
+  AdminSettingNotFound
+  // Notificatie gefaald
+  AdminNotificationDeliveryFailed
+  // Notificatie constructie gefaald
+  AdminNotificationContructionFailed
+  // Overige error, niet beschreven in een type
+  AdminError
+
+  // Shitposten, leuk. (om te debuggen in productie natuurlijk, als een echte professional)
+  AdminShitpost
+
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+
+  title String
+  body String
+  type NotificationType
+
+  sent Boolean
+
+  receiver   NotificationReceiver? @relation(fields: [receiverId], references: [id], onDelete: SetNull)
+  receiverId Int?
+}
+
+model NotificationReceiver {
+  id Int @id @default(autoincrement())
+
+  receiver   User? @relation(fields: [receiverId], references: [id], onDelete: SetNull)
+  receiverId Int?
+
+  Notification Notification[]
 }
