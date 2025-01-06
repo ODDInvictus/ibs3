@@ -2,6 +2,7 @@ import type { Actions, PageServerLoad } from './$types'
 import db from '$lib/server/db'
 import { fail } from '@sveltejs/kit'
 import { env } from '$env/dynamic/private'
+import { Setting, settings } from '$lib/server/settings'
 
 // Load een overview van alle strafbakken
 export const load = (async () => {
@@ -55,27 +56,37 @@ export const actions = {
 
 		const giverId = locals.user.id
 		const data = await request.formData()
-		const reason = data.get('reason')?.toString() || undefined
+		let reason = data.get('reason')?.toString() || undefined
 		const receiverId = Number(data.get('receiver'))
-		const ip = event.getClientAddress()
-		let location = undefined
-		if (ip.startsWith(env.COLOSSEUM_IP)) location = 'Colosseum'
-		else if (ip.startsWith(env.CAMPUS_IP)) location = 'Campus'
-		else {
-			const res = await fetch(`http://www.geoplugin.net/json.gp?ip=${ip}`)
-			const { geoplugin_city } = await res.json()
-			if (geoplugin_city) location = geoplugin_city
-		}
 
 		try {
+			let other: number = -1
+			if (receiverId === 10 || receiverId === 15) {
+				const buddies = settings.getBool(Setting.STRAFBAKKEN_DRINKING_BUDDIES, false)
+
+				if (buddies) {
+					other = receiverId === 10 ? 15 : 10
+					reason = 'IBS ziet het verschil niet, dus geeft deze strafbak maar aan allebei: ' + reason
+				}
+			}
+
 			await db.strafbak.create({
 				data: {
 					giverId,
 					receiverId,
 					reason,
-					location,
 				},
 			})
+
+			if (other !== -1) {
+				await db.strafbak.create({
+					data: {
+						giverId,
+						receiverId: other,
+						reason,
+					},
+				})
+			}
 		} catch {
 			// Oftewel, de receiverId bestaat niet
 			return fail(400)
