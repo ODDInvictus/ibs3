@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte'
 	import type { PageData } from './$types'
+	import { markdown } from '$lib/utils'
 
 	export let data: PageData
 </script>
@@ -21,7 +22,7 @@
 		{#each data.activities as activity}
 			<tr>
 				<td>{activity.id}</td>
-				<td>{activity.name}</td>
+				<td>{@html markdown(activity.name)}</td>
 				<td>{activity.startTime.toLocaleDateString('nl')}</td>
 				<td>{activity.organisedBy.name}</td>
 				<td>
