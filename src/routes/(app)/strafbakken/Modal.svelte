@@ -122,7 +122,7 @@
 			font-size: 0.875rem;
 			text-align: center;
 			padding: 0.625rem 1.25rem;
-			background: linear-gradient(90deg, rgba(144, 97, 249, 1) 0%, rgba(126, 58, 242, 1) 50%, rgba(108, 43, 217, 1) 100%);
+			background: var(--color-primary);
 			border-radius: 0.5rem;
 			transition: all 1s linear;
 
@@ -135,7 +135,7 @@
 			}
 
 			&:hover {
-				background: linear-gradient(180deg, rgba(144, 97, 249, 1) 0%, rgba(126, 58, 242, 1) 50%, rgba(108, 43, 217, 1) 100%);
+				background: var(--color-secondary);
 			}
 		}
 
