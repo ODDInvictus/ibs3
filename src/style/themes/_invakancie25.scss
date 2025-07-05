@@ -1,0 +1,47 @@
+.ibs-theme--invakancie25 {
+	$red: #d80202;
+	$red-dark: #a12727;
+
+	--color-main: #{$red};
+
+	--color-primary: #{$red};
+	--color-secondary: #{$red-dark};
+
+	--color-scrollbar: #{$red};
+
+	--color-table-stripe: #{$red};
+
+	--color-stripe: var(--color-main);
+
+	table.striped {
+		tr:nth-child(even):not(.highlight) {
+			background-color: #{$red};
+			color: white;
+		}
+	}
+
+	input {
+		accent-color: white;
+	}
+
+	.layout--navbar {
+		.logo {
+			svg {
+				path,
+				rect {
+					fill: var(--color-main);
+				}
+			}
+		}
+	}
+
+	.ibs-card--buttons {
+		color: $red;
+	}
+
+	// .layout--container {
+	// 	background-image: url('/vlaggen.svg');
+	// 	background-repeat: repeat-x;
+	// 	background-size: 200px;
+	// }
+}
