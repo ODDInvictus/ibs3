@@ -100,6 +100,12 @@
 			<i><Calendar /></i>
 			<span>Kalender</span>
 		</a>
+
+		<a class="layout--navbar--item" href="/ranglijst">
+			<i><ListNumbers /></i>
+			<span>Ranglijsten</span>
+		</a>
+
 		<a class="layout--navbar--item" href="/strafbakken">
 			<i><Beer /></i>
 			<span>Strafbakken</span>
@@ -107,10 +113,6 @@
 		<a class="layout--navbar--item" href="/fotos">
 			<i><Photo /></i>
 			<span>Foto's</span>
-		</a>
-		<a class="layout--navbar--item" href="/playlist">
-			<i><Music /></i>
-			<span>Playlist</span>
 		</a>
 
 		<button class="layout--navbar--item btn-a" on:click={openMenu}>
@@ -121,14 +123,15 @@
 			{/if}
 			<span>Menu</span>
 		</button>
+
+		<a class="layout--navbar--item" href="/playlist">
+			<i><Music /></i>
+			<span>Playlist</span>
+		</a>
+
 		<a class="layout--navbar--item" href="/streaming">
 			<i><Streaming /></i>
 			<span>Streaming</span>
-		</a>
-
-		<a class="layout--navbar--item" href="/ranglijst">
-			<i><ListNumbers /></i>
-			<span>Ranglijsten</span>
 		</a>
 
 		{#if $page.data?.settings.maluspuntenEnabled}

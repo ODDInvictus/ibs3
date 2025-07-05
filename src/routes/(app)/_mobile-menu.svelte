@@ -8,13 +8,13 @@
 	import Streaming from '~icons/tabler/device-tv-old'
 	import Settings from '~icons/tabler/settings'
 	import AccessibleOff from '~icons/tabler/accessible-off'
-	import ListNumbers from '~icons/tabler/list-numbers'
 	import Equal from '~icons/tabler/equal'
 	import ArrowBarRight from '~icons/tabler/arrow-bar-right'
 	import Book from '~icons/tabler/book'
 	import People from '~icons/tabler/users'
 	import ShoppingCart from '~icons/tabler/shopping-cart'
 	import QuestionMark from '~icons/tabler/question-mark'
+	import Music from '~icons/tabler/music'
 
 	export let version: string
 	$: inOngeveer = $page.url.pathname.startsWith('/ongeveer')
@@ -43,9 +43,9 @@
 			<span>Hulp</span>
 		</a>
 	{:else}
-		<a class="layout--mobimenu--item" href="/ranglijst">
-			<i><ListNumbers /></i>
-			<span>Ranglijsten</span>
+		<a class="layout--mobimenu--item" href="/playlist">
+			<i><Music /></i>
+			<span>Playlist</span>
 		</a>
 
 		<a class="layout--mobimenu--item" href="/streaming">
