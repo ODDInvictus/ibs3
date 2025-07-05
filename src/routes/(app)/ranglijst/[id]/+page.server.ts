@@ -36,7 +36,7 @@ export const load = (async ({ params, locals }) => {
 			select: {
 				firstName: true,
 				id: true,
-				LeaderboardEntries: {
+				LeaderboardEntry: {
 					where: {
 						leaderboardId: scoreboard.id,
 					},
@@ -46,12 +46,12 @@ export const load = (async ({ params, locals }) => {
 
 		const q = query
 			.map(user => {
-				if (user.LeaderboardEntries.length === 0) {
+				if (user.LeaderboardEntry.length === 0) {
 					return undefined
 				}
 
 				let score = 0
-				for (const entry of user.LeaderboardEntries) {
+				for (const entry of user.LeaderboardEntry) {
 					score += entry.value
 				}
 
