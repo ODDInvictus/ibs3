@@ -3,6 +3,7 @@ import db from '$lib/server/db'
 import { fail } from '@sveltejs/kit'
 import { env } from '$env/dynamic/private'
 import { Setting, settings } from '$lib/server/settings'
+import { giveStrafbak } from '$lib/server/strafbakken'
 
 // Load een overview van alle strafbakken
 export const load = (async () => {
@@ -60,33 +61,7 @@ export const actions = {
 		const receiverId = Number(data.get('receiver'))
 
 		try {
-			let other: number = -1
-			if (receiverId === 10 || receiverId === 15) {
-				const buddies = settings.getBool(Setting.STRAFBAKKEN_DRINKING_BUDDIES, false)
-
-				if (buddies) {
-					other = receiverId === 10 ? 15 : 10
-					reason = 'IBS ziet het verschil niet, dus geeft deze strafbak maar aan allebei: ' + reason
-				}
-			}
-
-			await db.strafbak.create({
-				data: {
-					giverId,
-					receiverId,
-					reason,
-				},
-			})
-
-			if (other !== -1) {
-				await db.strafbak.create({
-					data: {
-						giverId,
-						receiverId: other,
-						reason,
-					},
-				})
-			}
+			await giveStrafbak(giverId, receiverId, reason ?? 'Geen reden opgegeven')
 		} catch {
 			// Oftewel, de receiverId bestaat niet
 			return fail(400)

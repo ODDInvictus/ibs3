@@ -1,4 +1,5 @@
 import db from '$lib/server/db'
+import { deleteStrafbak } from '$lib/server/strafbakken/index.js'
 import type { LeaderboardTypes } from '@prisma/client'
 import { error, fail, redirect } from '@sveltejs/kit'
 
@@ -111,6 +112,11 @@ export const actions = {
 				value: toSave,
 			},
 		})
+
+		if (leaderboard.type == 'ADTMEISTER') {
+			// #483 - verwijder strafbak als je een nieuwe tijd neerzet op de adtmeister
+			await deleteStrafbak(parseInt(userId))
+		}
 
 		redirect(303, `/ranglijst/${leaderboardId}`)
 	},
