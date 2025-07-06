@@ -1,0 +1,15 @@
+.ibs-theme--dev {
+	--color-stripe: red;
+
+	.layout--navbar {
+		.logo {
+			svg {
+				height: 81.65px;
+				path,
+				rect {
+					fill: red;
+				}
+			}
+		}
+	}
+}

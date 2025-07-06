@@ -30,7 +30,9 @@
 	import ListNumbers from '~icons/tabler/list-numbers'
 	import OngeveerLogo from './_ongeveer-logo.svelte'
 	import IbsLogo from './_ibs-logo.svelte'
+	import IbsLogoDev from './_ibs-logo-dev.svelte'
 	import type { PageData } from './$types'
+	import { dev } from '$app/environment'
 
 	export let openMenu: () => void
 	export let open: boolean
@@ -41,7 +43,9 @@
 
 <nav class="layout--navbar">
 	<a href={inOngeveer ? '/ongeveer' : '/'} class="logo">
-		{#if inOngeveer}
+		{#if dev}
+			<IbsLogoDev />
+		{:else if inOngeveer}
 			<OngeveerLogo />
 		{:else}
 			<IbsLogo />
