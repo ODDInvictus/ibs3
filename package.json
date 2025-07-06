@@ -1,6 +1,6 @@
 {
 	"name": "ibs3",
-	"version": "3.0.0",
+	"version": "3.3.5",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev --host 0.0.0.0",
@@ -17,7 +17,7 @@
 		"mailhog": "docker run --rm -it -p 1025:1025 -p 8025:8025 --name mailhog mailhog/mailhog",
 		"data-migration:attending": "ts-node-esm ./prisma/migrations/20231228173512_attending/data-migration.ts",
 		"data-migration:leaderboard": "tsx ./prisma/migrations/20250105124955_leaderboard_notifications/data-migration.ts",
-		"prepare": "husky install",
+		"prepare": "husky install && svelte-kit sync",
 		"test": "npm run test:e2e",
 		"test:e2e": "npm run docker-down:test && npm run docker-up:test",
 		"docker-up:test": "docker compose -f docker-compose.test.yml up --force-recreate --build --abort-on-container-exit --exit-code-from ibs3",
@@ -45,7 +45,7 @@
 		"@playwright/test": "^1.43.0",
 		"@sveltejs/adapter-auto": "^3.2.0",
 		"@sveltejs/adapter-node": "^5.0.1",
-		"@sveltejs/kit": "^2.8.3",
+		"@sveltejs/kit": "^2.22.2",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/express": "^4.17.17",
 		"@types/markdown-it": "^12.2.3",
@@ -57,6 +57,7 @@
 		"@typescript-eslint/eslint-plugin": "^6.2.0",
 		"@typescript-eslint/parser": "^6.2.0",
 		"@vite-pwa/sveltekit": "^0.4.0",
+		"bullmq": "^5.56.1",
 		"classnames": "^2.3.2",
 		"concurrently": "^7.6.0",
 		"dotenv": "^16.4.5",
@@ -89,7 +90,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@auth/sveltekit": "^1.0.0",
+		"@auth/sveltekit": "^1.10.0",
 		"@prisma/client": "^5.16.1",
 		"@total-typescript/ts-reset": "^0.5.1",
 		"autoprefixer": "^10.4.14",
