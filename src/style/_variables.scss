@@ -78,6 +78,12 @@
 
 	--tooltip-width: 300px;
 
+	/*
+		Rest
+	*/
+	--border-radius-button: 20px;
+	--border-radius: 10px;
+
 	@media (max-width: 600px) {
 		--topbar-height: 70px;
 		--topbar-logo-height: 40px;
@@ -87,10 +93,4 @@
 
 		--tooltip-width: 65%;
 	}
-
-	/*
-		Rest
-	*/
-	--border-radius-button: 20px;
-	--border-radius: 10px;
 }

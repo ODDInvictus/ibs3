@@ -993,6 +993,8 @@ enum NotificationType {
   StrafbakDouble
   // Wie heeft het meest gebakken deze week? Gaat naar alle deelnemers van die week
   StrafbakkenMaster
+  // Iemand heeft 0 strafbakken - wordt exclusief naar chris gestuurd
+  StrafbakkenChris
 
   // Wanneer je verslagen wordt op een leaderboard (bijv. je stond op plek 3, maar nu op 4)
   // Niet versturen als je niet van plek verwisseld, en ophopen

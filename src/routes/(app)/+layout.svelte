@@ -9,7 +9,7 @@
 	import Alert from '$lib/components/alert.svelte'
 	import ImagePreview from '$lib/components/image-popup.svelte'
 	import { afterNavigate } from '$app/navigation'
-	import { Modals, closeModal } from 'svelte-modals'
+	// import { Modals, closeModal } from 'svelte-modals'
 	import MobileMenu from './_mobile-menu.svelte'
 	import { getFlash } from 'sveltekit-flash-message'
 	import { page } from '$app/stores'
@@ -23,11 +23,7 @@
 	flash.subscribe($flash => {
 		if (!$flash) return
 
-		toast({
-			type: $flash.type,
-			title: $flash.title,
-			message: $flash.message,
-		})
+		toast({ type: $flash.type, title: $flash.title, message: $flash.message })
 
 		flash.set(undefined)
 	})
@@ -54,10 +50,10 @@
 		</div>
 	{/if}
 
-	<Modals>
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- <Modals>
+		svelte-ignore a11y-click-events-have-key-events
 		<div slot="backdrop" class="backdrop" role="button" tabindex="0" on:click={closeModal} />
-	</Modals>
+	</Modals> -->
 
 	<div class="layout--stripe" data-open={open} />
 

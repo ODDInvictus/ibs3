@@ -1,5 +1,6 @@
 import db from '$lib/server/db'
 import { Setting, settings } from '$lib/server/settings'
+import { sendNotification } from '$lib/server/notifications'
 
 /**
  * Geeft iemand een strafbak
@@ -45,6 +46,7 @@ export async function giveStrafbak(giverId: number, receiverId: number, reason: 
  * "Verwijdert" een strafbak
  *
  * Respecteert Setting.STRAFBAKKEN_DRINKING_BUDDIES
+ * Stuurt chris een email zodra iemand 0 strafbakken heeft
  */
 export async function deleteStrafbak(uid: number) {
 	// try to delete for the drinking buddy
@@ -80,4 +82,19 @@ export async function deleteStrafbak(uid: number) {
 			dateDeleted: new Date(),
 		},
 	})
+
+	const chrisEmail = settings.getBool(Setting.STRAFBAKKEN_CHRIS_EMAIL)
+
+	if (chrisEmail) {
+		const count = await db.strafbak.count({
+			where: {
+				id: uid,
+				dateDeleted: null,
+			},
+		})
+
+		if (count === 0) {
+			await sendNotification()
+		}
+	}
 }

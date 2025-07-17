@@ -63,13 +63,6 @@
 		--status-x: -2px;
 		--status-y: 3px;
 
-		@media (max-width: 600px) {
-			--img-size: 35px;
-			--status-size: 10px;
-			--status-x: -3px;
-			--status-y: 7px;
-		}
-
 		display: grid;
 		grid-template-columns: 50px 1fr;
 
@@ -78,6 +71,13 @@
 		border-radius: 10px;
 		background-color: $bg-color;
 		box-shadow: 0 0 5px $bg-color;
+
+		@media (max-width: 600px) {
+			--img-size: 35px;
+			--status-size: 10px;
+			--status-x: -3px;
+			--status-y: 7px;
+		}
 
 		.user-card-picture {
 			position: relative;

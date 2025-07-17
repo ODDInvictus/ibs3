@@ -1,5 +1,5 @@
 import type { User } from '@prisma/client'
-import { LDAP_IDS } from '$lib/constants'
+import { LDAP_IDS, Roles } from '$lib/constants'
 import db from '$lib/server/db'
 
 let committeeMembers: any[]
@@ -12,9 +12,17 @@ export async function initAuthHelpers() {
 	})
 }
 
+export const RequireRole = (role = Roles.Senaat) => {
+	return function actualDectorator(targetMethod: any, ctx: any) {
+		return function (this: any, ...args: any[]) {
+			if (!hasRole()) const result = targetMethod.call(this, ...args)
+		}
+	}
+}
+
 export function hasRole(user: User, role: string) {
 	const committees = committeeMembers.filter(cm => cm.userId === user.id)
-	console.log(user.ldapId, role, committees)
+	// console.log(user.ldapId, role, committees)
 
 	if (committees.length === 0) return false
 

@@ -1,3 +1,4 @@
+import { building } from '$app/environment'
 import { LDAP_IDS } from '$lib/constants'
 import { applyTransaction } from '$lib/ongeveer/db'
 import { PrismaClient, type User } from '@prisma/client'
@@ -41,6 +42,11 @@ const prisma = new PrismaClient().$extends({
 		},
 	},
 })
+
+if (!building) {
+	// voorkom prisma connection in build
+	prisma.$connect()
+}
 
 async function getCommitteeMembers(ldapId: string): Promise<User[]> {
 	const cm = await prisma.committeeMember.findMany({

@@ -96,12 +96,12 @@
 		height: $card-height;
 		width: 100%;
 
+		border-radius: $border-radius;
+		box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+
 		@media screen and (max-width: 600px) {
 			height: $card-height-sm;
 		}
-
-		border-radius: $border-radius;
-		box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 
 		.image {
 			position: relative;
@@ -115,14 +115,14 @@
 			img {
 				height: $card-height;
 
-				@media screen and (max-width: 600px) {
-					height: $card-height-sm;
-				}
-
 				width: 100%;
 				object-fit: cover;
 				border-top-left-radius: $border-radius;
 				border-bottom-left-radius: $border-radius;
+
+				@media screen and (max-width: 600px) {
+					height: $card-height-sm;
+				}
 			}
 
 			.date-tag {

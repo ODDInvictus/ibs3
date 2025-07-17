@@ -16,7 +16,7 @@ const API_VERSION = '1.0.1'
 	EXPRESS
 */
 
-dotenv.config()
+const p = dotenv.config()
 
 const app = express()
 const port = process.env.BACKEND_PORT || 3000

@@ -1,0 +1,16 @@
+extends ../content.pug
+
+block content
+  p.
+    #{firstName} heeft net z'n laatste strafbak gevouwen!
+
+  <!--[if true]>
+    div(style='margin-bottom: 16px;')
+      a(href=url + '/strafbakken' style='color:#551b8a;')
+        | Doe er wat aan zou ik zeggen. 
+  <![endif]-->
+  <!--[if !true]><!-->
+    div
+      a(href=url + '/strafbakken' style='color:#551b8a; display:inline;')
+        | Doe er wat aan zou ik zeggen. 
+  <![endif]-->

@@ -2,14 +2,20 @@ import { User } from '@prisma/client'
 import Email from 'email-templates'
 import { Transporter, createTransport } from 'nodemailer'
 import SMTPTransport from 'nodemailer/lib/smtp-transport'
+import dotenv from 'dotenv'
 
-const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD } = process.env
+const p = dotenv.config().parsed!
 
 const { NODE_ENV } = process.env
 
-if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASSWORD) {
+if (!p.SMTP_HOST || !p.SMTP_PORT || !p.SMTP_USER || !p.SMTP_PASSWORD) {
 	console.error('Missing required environment variables for emailer')
 }
+
+const SMTP_HOST = p.SMTP_HOST
+const SMTP_PORT = p.SMTP_PORT
+const SMTP_USER = p.SMTP_USER
+const SMTP_PASSWORD = p.SMTP_PASSWORD
 
 const dev = NODE_ENV === 'development'
 
@@ -19,23 +25,34 @@ function log(...args: any[]) {
 
 let emailTransport: Transporter<SMTPTransport.SentMessageInfo>
 
-if (dev) {
+if (!SMTP_HOST) {
+	log('Connecting to localhost:1025')
 	emailTransport = createTransport({
+		host: 'localhost',
 		port: 1025,
+		secure: false, // upgrade later with STARTTLS
 	})
 } else {
-	emailTransport = createTransport({
+	log(`Connecting to ${SMTP_HOST}:${SMTP_PORT}`)
+	let obj = {
 		host: SMTP_HOST,
 		port: parseInt(SMTP_PORT || '465'),
-		secure: false,
-		tls: {
-			ciphers: 'SSLv3',
-		},
 		auth: {
 			user: SMTP_USER,
 			pass: SMTP_PASSWORD,
 		},
-	})
+	}
+
+	if (process.env.SMTP_TLS != 'no') {
+		obj = Object.assign(obj, {
+			secure: false,
+			tls: {
+				ciphers: 'SSLv3',
+			},
+		})
+	}
+
+	emailTransport = createTransport(obj)
 }
 
 const emailTemplateFrontend = new Email({
@@ -44,7 +61,7 @@ const emailTemplateFrontend = new Email({
 		replyTo: process.env.EMAIL_REPLY_TO,
 	},
 	send: true,
-	preview: dev,
+	preview: false,
 	transport: emailTransport,
 })
 
@@ -54,7 +71,7 @@ const emailTemplateBackend = new Email({
 		replyTo: process.env.ADMIN_EMAIL,
 	},
 	send: true,
-	preview: dev,
+	// preview: dev,
 	transport: emailTransport,
 })
 
@@ -102,11 +119,14 @@ export async function sendEmailNotificationFrontend(template: string, receiver: 
 		logo,
 	})
 
+	console.log(`${receiver.firstName} ${receiver.lastName} <${receiver.personalEmail}>`)
+
 	await emailTemplateFrontend
 		.send({
 			template: template,
 			message: {
-				to: `${receiver.firstName} ${receiver.lastName} <${receiver.email}>`,
+				// #501, receiver.email should be used, but is not working rn.
+				to: `${receiver.firstName} ${receiver.lastName} <${receiver.personalEmail}>`,
 			},
 			locals: l,
 		})
@@ -146,16 +166,20 @@ export async function sendCustomEmail(mail: CustomEmail) {
 			to: mail.to,
 		},
 		send: true,
-		preview: dev,
+		preview: false,
 		transport: emailTransport,
 	})
 
-	template
-		.send({
-			template: 'api',
-			locals: l,
-		})
+	const sent = template.send({
+		template: 'api',
+		locals: l,
+	})
+
+	await sent
 		.then(() => {
 			log(`Custom email sent from ${mail.from} to ${mail.to}`)
+		})
+		.catch(err => {
+			log(`Email failed` + err)
 		})
 }

@@ -1,9 +1,9 @@
 import { sveltekit } from '@sveltejs/kit/vite'
-import type { UserConfig } from 'vite'
+import { defineConfig } from 'vite'
 import Icons from 'unplugin-icons/vite'
 import { SvelteKitPWA } from '@vite-pwa/sveltekit'
 
-const config: UserConfig = {
+export default defineConfig({
 	plugins: [
 		sveltekit(),
 		Icons({
@@ -58,6 +58,14 @@ const config: UserConfig = {
 			},
 		}),
 	],
-}
-
-export default config
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: 'modern-compiler',
+			},
+			sass: {
+				api: 'modern-compiler',
+			},
+		},
+	},
+})

@@ -1,7 +1,7 @@
 import { Setting, settings } from '$lib/server/settings/settings'
 import type { LayoutServerLoad } from './$types'
 
-export const load = (async event => {
+export const load: LayoutServerLoad = event => {
 	const currentRoute = event.route
 	const user = event.locals.user
 	const committees = event.locals.committees
@@ -16,4 +16,4 @@ export const load = (async event => {
 		version,
 		theme: event.locals.theme,
 	}
-}) satisfies LayoutServerLoad
+}
