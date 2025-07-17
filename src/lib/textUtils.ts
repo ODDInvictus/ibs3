@@ -20,12 +20,15 @@ export function mergeClassNames(...classNames: string[]): string {
 }
 
 export function activitySlug(activityName: string) {
-	let md = stripMarkdown(activityName)
+	let str = stripMarkdown(activityName)
 
-	// This adds a space to the end, remove it
-	md = md.replace(/ $/g, '')
-	// remove all : and . characters
-	md = md.replace(/[:.]/g, '')
+	//https://dev.to/bybydev/how-to-slugify-a-string-in-javascript-4o9n
+	str = str.replace(/^\s+|\s+$/g, '') // trim leading/trailing white space
+	str = str.toLowerCase() // convert string to lowercase
+	str = str
+		.replace(/[^a-z0-9 -]/g, '') // remove any non-alphanumeric characters
+		.replace(/\s+/g, '-') // replace spaces with hyphens
+		.replace(/-+/g, '-') // remove consecutive hyphens
 
-	return md.toLowerCase().replace(/ /g, '-')
+	return str
 }
