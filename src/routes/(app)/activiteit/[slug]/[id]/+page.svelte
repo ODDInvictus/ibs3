@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { page } from '$app/stores'
 	import MapPin from '~icons/tabler/map-pin'
 	import Clock from '~icons/tabler/clock'
 	import Calendar from '~icons/tabler/calendar'
 	import Edit from '~icons/tabler/edit'
 	import UsersGroup from '~icons/tabler/users-group'
+	import UserShield from '~icons/tabler/user-shield'
 	import ExternalLink from '~icons/tabler/external-link'
 	import AccessibleOff from '~icons/tabler/accessible-off'
 	import Share from '~icons/tabler/copy'
 	import UserCard from './_user-card.svelte'
-	import { generateICal, getPictureUrl, stripMarkdown } from '$lib/utils'
+	import { getPictureUrl, stripMarkdown } from '$lib/utils'
 	import { toast } from '$lib/notification'
 	import { markdown } from '$lib/utils'
 	import Title from '$lib/components/title.svelte'
@@ -20,15 +20,11 @@
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
 	import type { AttendingStatus } from '@prisma/client'
 	import { promptCheckbox } from '$lib/promptCheckbox'
+	import { LDAP_IDS } from '$lib/constants'
 
 	export let data: PageData
 
-	const STATUS_ORDER: Record<string, number> = {
-		ATTENDING: 1,
-		UNSURE: 2,
-		NOT_ATTENDING: 3,
-		NO_RESPONSE: 4,
-	}
+	const STATUS_ORDER: Record<string, number> = { ATTENDING: 1, UNSURE: 2, NOT_ATTENDING: 3, NO_RESPONSE: 4 }
 
 	const activity = data.activity
 	let attending = sortAttending()
@@ -45,17 +41,9 @@
 		try {
 			const url = window.location.href
 			await navigator.clipboard.writeText(url)
-			toast({
-				title: 'Link gekopieerd!',
-				message: 'De URL is succesvol naar je klembord gekopieerd.',
-				type: 'success',
-			})
+			toast({ title: 'Link gekopieerd!', message: 'De URL is succesvol naar je klembord gekopieerd.', type: 'success' })
 		} catch (error) {
-			toast({
-				title: 'Fout',
-				message: 'De URL kon niet worden gekopieerd.',
-				type: 'danger',
-			})
+			toast({ title: 'Fout', message: 'De URL kon niet worden gekopieerd.', type: 'danger' })
 			console.error('Kopieerfout:', error)
 		}
 	}
@@ -75,28 +63,13 @@
 		// If the activity is longer than 12 hours, show the end date
 		if (end.getTime() - date.getTime() > 12 * 60 * 60 * 1000) {
 			return (
-				date.toLocaleDateString('nl-NL', {
-					weekday: 'long',
-					day: 'numeric',
-					month: 'long',
-					year: 'numeric',
-				}) +
+				date.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) +
 				' - ' +
-				end.toLocaleDateString('nl-NL', {
-					weekday: 'long',
-					day: 'numeric',
-					month: 'long',
-					year: 'numeric',
-				})
+				end.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 			)
 		}
 
-		return date.toLocaleDateString('nl-NL', {
-			weekday: 'long',
-			day: 'numeric',
-			month: 'long',
-			year: 'numeric',
-		})
+		return date.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 	}
 
 	async function setAttending(status: string, ldapId: string) {
@@ -114,14 +87,8 @@
 		// Send a request to the server to update the attending status
 		await fetch('', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				status,
-				ldapId,
-				activityId: activity.id,
-			}),
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ status, ldapId, activityId: activity.id }),
 		})
 			.then(async res => {
 				let title, message
@@ -129,11 +96,7 @@
 
 				if (!res.ok) {
 					const body = await res.json()
-					toast({
-						title: 'Oeps',
-						message: body.message,
-						type: 'danger',
-					})
+					toast({ title: 'Oeps', message: body.message, type: 'danger' })
 					return
 				}
 
@@ -149,11 +112,7 @@
 					message = 'Vul je het later nog in?'
 				}
 
-				toast({
-					title,
-					message,
-					type,
-				})
+				toast({ title, message, type })
 
 				// Update the attending status
 				if (!a) {
@@ -166,11 +125,7 @@
 				sortAttending()
 			})
 			.catch(err => {
-				toast({
-					title: 'Oei!',
-					message: 'Er ging iets mis bij het opslaan van je aanwezigheid',
-					type: 'danger',
-				})
+				toast({ title: 'Oei!', message: 'Er ging iets mis bij het opslaan van je aanwezigheid', type: 'danger' })
 				console.error(err)
 			})
 	}
@@ -206,9 +161,7 @@
 				<img
 					on:click={() => {
 						if (activity.photo) {
-							imagePreview({
-								image: getPictureUrl(activity.photo, 'normal'),
-							})
+							imagePreview({ image: getPictureUrl(activity.photo, 'normal') })
 						}
 					}}
 					alt={nameWithoutMarkdown}
@@ -241,6 +194,13 @@
 				<i><Clock /></i>
 				{formatTime(activity.startTime)} - {formatTime(activity.endTime)}
 			</p>
+
+			{#if data.roles[LDAP_IDS.ADMINS] || data.roles[LDAP_IDS.SENAAT]}
+				<p class="ibs-card--row">
+					<i><UserShield /></i>
+					Aangemaakt door: {activity.createdBy?.ldapId}
+				</p>
+			{/if}
 
 			{#if activity.url}
 				<p class="ibs-card--row">
@@ -306,11 +266,7 @@
 								data.activity.comments = [...data.activity.comments, result.data.comment]
 							}
 
-							toast({
-								title,
-								message: result.data.message,
-								type,
-							})
+							toast({ title, message: result.data.message, type })
 							update()
 						}
 					}}>

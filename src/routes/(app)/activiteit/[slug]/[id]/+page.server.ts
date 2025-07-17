@@ -15,6 +15,11 @@ export const load = (async event => {
 			id: parseInt(params.id),
 		},
 		include: {
+			createdBy: {
+				select: {
+					ldapId: true,
+				},
+			},
 			attending: {
 				include: {
 					user: true,
