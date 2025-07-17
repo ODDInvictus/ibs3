@@ -187,6 +187,15 @@
 <br />
 <input type="radio" id="dies" name="theme" value="dies" on:click={() => setTheme('dies')} checked={data.currentTheme === 'dies'} />
 <label for="dies">Dies thema</label>
+<br />
+<input
+	type="radio"
+	id="invakancie25"
+	name="theme"
+	value="invakancie25"
+	on:click={() => setTheme('invakancie25')}
+	checked={data.currentTheme === 'invakancie25'} />
+<label for="dies">InVakanCie 2025 thema</label>
 
 <hr />
 
