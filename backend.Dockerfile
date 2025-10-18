@@ -1,16 +1,17 @@
-FROM node:22.4.0 as build
+FROM node:24.10.0-alpine
 
 WORKDIR /app
 
-COPY backend ./backend
-COPY package.json ./
-COPY package-lock.json ./
+COPY backend/* ./
 COPY prisma ./prisma/
-COPY tsconfig.json ./
 COPY emails ./emails/
 
+RUN apk add openssl
 RUN npm install
 RUN npx prisma generate
-RUN npm install -g typescript ts-node
+RUN npm install -g typescript
+RUN npm install node-cron
 
-CMD ["ts-node", "backend/index.ts"]
+RUN tsc
+
+CMD ["node", "./dist/index.js"]

@@ -4,7 +4,7 @@ Invictus Bier Systeem is _het_ websysteem voor O.D.D. Invictus.
 
 ## Ontwikkelen
 
-IBS3 gebruikt node 22.4.0
+IBS3 gebruikt node 24.10.0
 
 Om te beginnen met ontwikkelen moet je eerst de repository clonen met
 
