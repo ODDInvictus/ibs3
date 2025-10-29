@@ -110,7 +110,7 @@
 		"markdown-it-sub": "^1.0.0",
 		"markdown-it-sup": "^1.0.0",
 		"mongodb": "^6.5.0",
-		"next-auth": "^4.24.5",
+		"next-auth": "^4.24.12",
 		"node-cache": "^5.1.2",
 		"sanitize-html": "^2.13.0",
 		"scss": "^0.2.4",
