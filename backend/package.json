@@ -25,7 +25,7 @@
 		"express": "^4.21.1",
 		"gridfs-promise": "^6.3.10",
 		"node-cron": "^3.0.2",
-		"nodemailer": "^6.9.13",
+		"nodemailer": "^7.0.11",
 		"prisma": "^5.0.0",
 		"pug": "^3.0.3",
 		"redis": "^4.6.7",
