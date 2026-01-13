@@ -21,6 +21,9 @@ const config = {
 	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
 	// for more information about preprocessors
 	preprocess,
+	prerender: {
+		default: false,
+	},
 	kit: {
 		adapter: adapter({
 			envPrefix: '',

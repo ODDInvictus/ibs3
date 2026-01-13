@@ -14,6 +14,8 @@ fi
 
 echo Bouwen voor versie $1
 npm install
+npm install sharp
+npx prisma generate
 npm run build
 
 if [ $? -ne 0 ]; then
@@ -24,6 +26,8 @@ fi
 echo
 echo Docker container genereren
 sudo docker build -t ghcr.io/oddinvictus/ibs3:$1 .
+
+# TODO: backend ook pushen
 
 if [ -z ${2+x} ];
 then

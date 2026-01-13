@@ -1,15 +1,11 @@
 import { maluspuntForm } from './form'
 
-let form = maluspuntForm
-
-;(async () => {
-	await form.transform()
-})()
-
 export const load = async ({ locals }) => {
+	await maluspuntForm.transform()
+
 	return {
-		form: form.attributes,
+		form: maluspuntForm.attributes,
 	}
 }
 
-export const actions = form.actions
+export const actions = maluspuntForm.actions
