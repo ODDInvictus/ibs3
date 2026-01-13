@@ -7,7 +7,7 @@
 	import { toast } from '$lib/notification'
 	import { getPictureUrl, markdown } from '$lib/utils'
 	import type { PageData } from './$types'
-		let currentDate = new Date();
+	let currentDate = new Date()
 	export let data: PageData
 
 	/* Cookie clicker */
@@ -91,7 +91,7 @@
 				link = `/image/logo${resize ? '' : '@2'}.png?static=true`
 			}
 		} else {
-			link = `/image/no-activity.jpeg?static=true`
+			link = `/no-activity.jpeg`
 		}
 
 		return link
@@ -103,7 +103,7 @@
 		if (data.nextBirthday.profilePicture) {
 			link = getPictureUrl(data.nextBirthday.profilePicture, resize ? 'thumbnail' : 'normal')
 		} else {
-			link = `/image/no-birthday.jpeg?static=true`
+			link = `/no-birthday.jpeg`
 		}
 
 		return link
