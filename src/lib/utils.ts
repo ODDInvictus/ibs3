@@ -185,11 +185,11 @@ export function getCurrentDateFilename() {
 export function getPictureUrl(filename: string | null | undefined, quality: 'thumbnail' | 'normal' | 'original' = 'normal') {
 	if (env.PUBLIC_DISABLE_MONGO === 'true') {
 		console.log(`MongoDB disabled, replacing ${filename} with logo`)
-		return '/image/logo.png?static=true'
+		return '/logo.png'
 	}
 
 	if (!filename) {
-		return `/image/logo.png?static=true`
+		return `/logo.png`
 	}
 
 	let fn = filename

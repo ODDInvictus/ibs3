@@ -18,13 +18,9 @@
 		<div class="row {activity.isDies ? 'dies' : ''}">
 			<div class="image">
 				{#if !activity.photo}
-					<img src="/image/favicon-512.png?static=true" alt="⏳" />
+					<img src="/favicon-512.png" alt="⏳" />
 				{:else}
-					<img
-						src={getPictureUrl(activity.photo)}
-						onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;"
-						alt="⏳"
-						loading="lazy" />
+					<img src={getPictureUrl(activity.photo)} onerror="this.src='/favicon-512.png';this.onerror=null;" alt="⏳" loading="lazy" />
 				{/if}
 
 				<div class="date-tag">

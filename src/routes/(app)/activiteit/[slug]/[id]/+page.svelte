@@ -166,7 +166,7 @@
 					}}
 					alt={nameWithoutMarkdown}
 					src={getPictureUrl(activity.photo, 'normal')}
-					onerror="this.src='/image/favicon-512.png?static=true';this.onerror=null;" />
+					onerror="this.src='/favicon-512.png';this.onerror=null;" />
 			</div>
 
 			<h2 class="ibs-card--title">{@html markdown(activity.name)}</h2>

@@ -88,7 +88,7 @@
 			if (data.activity.photo) {
 				link = getPictureUrl(data.activity.photo, resize ? 'thumbnail' : 'normal')
 			} else {
-				link = `/image/logo${resize ? '' : '@2'}.png?static=true`
+				link = `/logo.png`
 			}
 		} else {
 			link = `/no-activity.jpeg`
