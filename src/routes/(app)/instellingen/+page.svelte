@@ -195,7 +195,7 @@
 	value="invakancie25"
 	on:click={() => setTheme('invakancie25')}
 	checked={data.currentTheme === 'invakancie25'} />
-<label for="dies">InVakanCie 2025 thema</label>
+<label for="invakancie25">InVakanCie 2025 thema</label>
 
 <hr />
 

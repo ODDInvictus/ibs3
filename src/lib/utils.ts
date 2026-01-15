@@ -52,6 +52,14 @@ export function randomSortDay<T>(array: T[]): T[] {
 	return shuffle(array, num)
 }
 
+export function selectRandomItemFromArray<T>(array: T[]): T {
+	if (array.length === 0) {
+		throw new Error('Cannot select a random item from an empty array')
+	}
+	const index = Math.floor(Math.random() * array.length)
+	return array[index]
+}
+
 function shuffle<T>(array: T[], num: number): T[] {
 	let currentIndex = array.length,
 		randomIndex

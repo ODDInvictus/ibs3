@@ -31,10 +31,10 @@ export async function newActivitiyNotification(activity: Activity) {
 		return
 	}
 
-	log('Sending discord notification')
-	await newActivityDiscord(activity, location)
 	log('Sending email notification')
 	await newActivityEmail(activity, location)
+	log('Sending discord notification')
+	await newActivityDiscord(activity, location)
 }
 
 async function newActivityDiscord(activity: Activity, location?: string) {
@@ -93,6 +93,14 @@ async function newActivityEmail(activity: Activity, location?: string, membersOn
 	})
 
 	for (const u of users) {
+		if (u.accessDisabled || !u.isActive) {
+			continue
+		}
+
+		if (!u.email) {
+			continue
+		}
+
 		log('Trying to send an email to user:', u.ldapId)
 
 		await sendEmailNotificationFrontend('new-activity', u, {

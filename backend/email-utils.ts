@@ -2,16 +2,24 @@ import { User } from '@prisma/client'
 import Email from 'email-templates'
 import { Transporter, createTransport } from 'nodemailer'
 import SMTPTransport from 'nodemailer/lib/smtp-transport'
+import dotenv from 'dotenv'
 
 const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD } = process.env
 
 const { NODE_ENV } = process.env
 
+const { parsed } = dotenv.config()
+
 if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASSWORD) {
 	console.error('Missing required environment variables for emailer')
 }
 
-const dev = NODE_ENV === 'development'
+let dev = NODE_ENV === 'development'
+if (parsed) {
+	if (parsed['NODE_ENV'] === 'development') {
+		dev = true
+	}
+}
 
 function log(...args: any[]) {
 	console.log('[EMAILER]', ...args)
@@ -44,7 +52,8 @@ const emailTemplateFrontend = new Email({
 		replyTo: process.env.EMAIL_REPLY_TO,
 	},
 	send: true,
-	preview: dev,
+	// preview: dev,
+	preview: false,
 	transport: emailTransport,
 })
 
@@ -95,6 +104,18 @@ export async function sendEmailNotificationFrontend(template: string, receiver: 
 		return
 	}
 
+	if (!receiver.email) {
+		return
+	}
+
+	if (receiver.accessDisabled) {
+		return
+	}
+
+	if (!receiver.isActive) {
+		return
+	}
+
 	const l = Object.assign(locals, {
 		url: process.env.IBS_URL,
 		name: receiver.firstName,
@@ -129,6 +150,8 @@ export async function sendCustomEmail(mail: CustomEmail) {
 	const logo = process.env.EMAIL_IBS_LOGO
 
 	if (!logo) throw new Error('Missing EMAIL_IBS_LOGO in env')
+
+	if (!mail.to) throw new Error('No receiver defined')
 
 	const l = {
 		name: mail.toName,

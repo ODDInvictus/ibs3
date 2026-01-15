@@ -184,8 +184,6 @@ function resizeImage(buf: Buffer, size: string): Promise<Buffer> {
 
 type PhotoSize = 'small' | 'medium' | 'large' | 'original'
 
-const uploadFolder = process.env.UPLOAD_FOLDER
-
 // // export async function getPhotoCreator(user: User, other: boolean, name?: string): Promise<PhotoCreator> {
 // // 	let c
 

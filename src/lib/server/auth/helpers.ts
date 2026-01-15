@@ -14,7 +14,6 @@ export async function initAuthHelpers() {
 
 export function hasRole(user: User, role: string) {
 	const committees = committeeMembers.filter(cm => cm.userId === user.id)
-	console.log(user.ldapId, role, committees)
 
 	if (committees.length === 0) return false
 

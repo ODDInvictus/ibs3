@@ -12,6 +12,7 @@
 	import TablerBeer from '~icons/tabler/beer'
 	import TablerBackhoe from '~icons/tabler/backhoe'
 	import { toast } from '$lib/notification'
+	import { dev } from '$app/environment'
 
 	async function bak() {
 		await fetch('/strafbakken', {
@@ -133,6 +134,21 @@
 				</a>
 			</td>
 		</tr>
+		{#if dev}
+			<tr>
+				<td>Development pagina's</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="/admin/email/test">
+						<span class="icon">
+							<TablerMail />
+						</span>
+						Test emails
+					</a>
+				</td>
+			</tr>
+		{/if}
 	</tbody>
 </table>
 

@@ -16,7 +16,13 @@ const API_VERSION = '1.0.1'
 	EXPRESS
 */
 
-dotenv.config()
+const parsed = dotenv.config({
+	path: './.env',
+})
+
+if (!parsed.parsed) {
+	console.error(parsed.error)
+}
 
 const app = express()
 const port = process.env.BACKEND_PORT || 3000
@@ -80,6 +86,44 @@ app.listen(port, async () => {
 
 		// Now send out the discord notification and emails
 		await newActivitiyNotification(activity)
+	})
+
+	await redis.subscribe('email-test', async (msg: string) => {
+		if (!msg) return
+
+		const body = JSON.parse(msg)
+
+		console.log('[REDIS] Received email-test job', body.data)
+
+		const data = body.data.split(',')
+
+		if (data.length !== 2) {
+			await failJob(body.name, 'no parameter given')
+			return
+		}
+
+		const template = data[0]
+		let param = data[1]
+
+		switch (template) {
+			case 'new-activity':
+				param = Number.parseInt(param)
+				const activity = await prisma.activity.findUnique({
+					where: {
+						id: param,
+					},
+				})
+
+				if (!activity) {
+					await failJob(body.name, 'activity not found')
+					return
+				}
+
+				await newActivitiyNotification(activity)
+			default:
+				await failJob(body.name, 'niet geimplementeerd')
+				return
+		}
 	})
 
 	await redis.subscribe('compress-image', async (msg: string) => {

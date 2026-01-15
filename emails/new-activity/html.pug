@@ -2,13 +2,10 @@ extends ../content.pug
 
 block content
   p.
-    Er staat een geweldige nieuwe activiteit op de planning bij Invictus 🎉
+    Iemand heeft een nieuwe activiteit aangemaakt in IBS genaamd: #{activity.name}.
+    Deze activiteit vind plaats op #{date} te #{location}
 
-  p 🎈 Wat? #{activity.name}
-  p 📅 Wanneer? #{date}
-  p 🏠 Waar? #{location}
-  p 💼 Wie? #{committee.name} 
-  p 📝 Omschrijving: #{activity.description}
+  p Omschrijving: #{activity.description}
 
   <!--[if true]>
     div(style='margin-bottom: 16px;')
