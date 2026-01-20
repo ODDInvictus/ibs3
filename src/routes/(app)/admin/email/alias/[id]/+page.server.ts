@@ -1,8 +1,11 @@
 import db from '$lib/server/db'
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
+import { Setting, settings } from '$lib/server/settings'
 
 export const load = (async ({ params }) => {
+	const EMAIL_DOMAIN = settings.getOrSkError(Setting.EMAIL_DOMAIN)
+
 	const alias = await db.emailAlias.findUnique({
 		where: {
 			id: Number(params.id),
@@ -55,7 +58,7 @@ export const load = (async ({ params }) => {
 	}
 
 	return {
-		domain: process.env.EMAIL_DOMAIN,
+		domain: EMAIL_DOMAIN,
 		alias,
 		type,
 		users,

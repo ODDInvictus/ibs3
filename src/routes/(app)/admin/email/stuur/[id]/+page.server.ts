@@ -1,8 +1,12 @@
 import db from '$lib/server/db'
+import { Setting, settings } from '$lib/server/settings/settings.js'
+import { env } from '$env/dynamic/private'
 
 export const load = async ({ locals, params }) => {
 	const user = locals.user
 	const committees = locals.committees
+
+	const EMAIL_DOMAIN = settings.getOrSkError(Setting.EMAIL_DOMAIN)
 
 	let aliases = [`${user.firstName} ${user.lastName} <${user.email}>`]
 
@@ -27,17 +31,15 @@ export const load = async ({ locals, params }) => {
 		},
 	})
 
-	aliases = aliases.concat(committeeAliases.map(alias => `${alias.committee.name} <${alias.alias.alias}@${process.env.EMAIL_DOMAIN}>`))
-	aliases = aliases.concat(
-		userAliases.map(alias => `${user.firstName} ${user.lastName} <${alias.alias.alias}@${process.env.EMAIL_DOMAIN}>`),
-	)
+	aliases = aliases.concat(committeeAliases.map(alias => `${alias.committee.name} <${alias.alias.alias}@${EMAIL_DOMAIN}>`))
+	aliases = aliases.concat(userAliases.map(alias => `${user.firstName} ${user.lastName} <${alias.alias.alias}@${EMAIL_DOMAIN}>`))
 
 	// get [id] from path
 	const id = params.id
 
 	return {
 		aliases,
-		to: `${id}@${process.env.EMAIL_DOMAIN}`,
+		to: `${id}@${EMAIL_DOMAIN}`,
 	}
 }
 
@@ -47,6 +49,8 @@ export const actions = {
 		const body = Object.fromEntries(data)
 		const toAlias = params.id
 		const senderAlias = (body.sender as string).split('<')[1].split('@')[0]
+
+		const EMAIL_DOMAIN = settings.getOrSkError(Setting.EMAIL_DOMAIN)
 
 		if (!body.subject || !body.message || !body.toName) {
 			return {
@@ -108,7 +112,7 @@ export const actions = {
 			}
 		}
 
-		return await fetch(`${process.env.BACKEND_URL}/email/send`, {
+		return await fetch(`${env.BACKEND_URL}/email/send`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -116,7 +120,7 @@ export const actions = {
 			body: JSON.stringify({
 				subject: body.subject,
 				from: body.sender,
-				to: `${body.toName} <${toAlias}@${process.env.EMAIL_DOMAIN}>`,
+				to: `${body.toName} <${toAlias}@${EMAIL_DOMAIN}>`,
 				toName: body.toName,
 				text: body.message,
 				fromName: (body.sender as string).split('<')[0].trim(),

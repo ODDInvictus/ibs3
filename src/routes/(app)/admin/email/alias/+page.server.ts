@@ -1,7 +1,11 @@
 import db from '$lib/server/db'
+import { Setting, settings } from '$lib/server/settings'
+import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 
 export const load = (async () => {
+	const EMAIL_DOMAIN = settings.getOrSkError(Setting.EMAIL_DOMAIN)
+
 	return {
 		committeeAliases: await db.emailAliasCommittee.findMany({
 			include: { committee: true, alias: true },
@@ -12,6 +16,6 @@ export const load = (async () => {
 			where: { isActive: true },
 			select: { firstName: true, lastName: true, email: true, ldapId: true, nickname: true },
 		}),
-		domain: process.env.EMAIL_DOMAIN,
+		domain: EMAIL_DOMAIN,
 	}
 }) satisfies PageServerLoad

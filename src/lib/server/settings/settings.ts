@@ -1,8 +1,10 @@
 import db from '$lib/server/db'
+import { error } from '@sveltejs/kit'
 
 type Settings = {
 	get: (name: Setting, defaultValue?: string) => string
 	getWithoutDefault: (name: Setting) => string | undefined
+	getOrSkError: (name: Setting) => string
 	getBool: (name: Setting, defaultValue?: boolean) => boolean
 	getNumber: (name: Setting, defaultValue?: number) => number
 	update: (settingId: number, value: string) => Promise<void>
@@ -26,6 +28,7 @@ export enum Setting {
 	DEFAULT_SALE_OTHER_LEDGER = 'DEFAULT_SALE_OTHER_LEDGER',
 	STRAFBAKKEN_VERDUBBELAAR_ENABLED = 'STRAFBAKKEN_VERDUBBELAAR_ENABLED',
 	STRAFBAKKEN_DRINKING_BUDDIES = 'STRAFBAKKEN_DRINKING_BUDDIES',
+	EMAIL_DOMAIN = 'EMAIL_DOMAIN',
 }
 
 export const settings = {
@@ -43,6 +46,19 @@ export const settings = {
 
 	getWithoutDefault: (name: Setting): string | undefined => {
 		return settings.keys[name]
+	},
+
+	/**
+	 * Get a setting by name
+	 * Throws an @sveltejs/kit::error 500 when not found
+	 */
+	getOrSkError: (name: Setting): string => {
+		const setting = settings.keys[name]
+		if (!setting) {
+			throw error(500, `Setting ${name} not found`)
+		}
+
+		return setting as string
 	},
 
 	getBool: (name: Setting, defaultValue: boolean): boolean => {
