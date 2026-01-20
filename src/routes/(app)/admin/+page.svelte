@@ -12,7 +12,6 @@
 	import TablerBeer from '~icons/tabler/beer'
 	import TablerBackhoe from '~icons/tabler/backhoe'
 	import { toast } from '$lib/notification'
-	import { dev } from '$app/environment'
 
 	async function bak() {
 		await fetch('/strafbakken', {
@@ -134,7 +133,7 @@
 				</a>
 			</td>
 		</tr>
-		{#if dev}
+		{#if import.meta.env.DEV}
 			<tr>
 				<td>Development pagina's</td>
 			</tr>

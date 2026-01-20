@@ -2,7 +2,6 @@ import { redirect, type Handle } from '@sveltejs/kit'
 import { getCommittees, getRoles, getUser, getUserTest } from '$lib/server/userCache'
 import { env } from '$env/dynamic/private'
 import { Setting, settings } from '../settings/settings'
-import { dev } from '$app/environment'
 
 const handleAuthorization = (async ({ event, resolve }) => {
 	const url = event.url.pathname
@@ -31,7 +30,7 @@ const handleAuthorization = (async ({ event, resolve }) => {
 
 	if (themeOverride) {
 		event.locals.theme = themeOverride
-	} else if (dev) {
+	} else if (import.meta.env.DEV) {
 		event.locals.theme = 'dev'
 	} else {
 		event.locals.theme = user?.preferredTheme ?? 'light'

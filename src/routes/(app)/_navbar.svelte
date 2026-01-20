@@ -31,8 +31,6 @@
 	import OngeveerLogo from './_ongeveer-logo.svelte'
 	import IbsLogo from './_ibs-logo.svelte'
 	import IbsLogoDev from './_ibs-logo-dev.svelte'
-	import type { PageData } from './$types'
-	import { dev } from '$app/environment'
 
 	export let openMenu: () => void
 	export let open: boolean
@@ -43,7 +41,7 @@
 
 <nav class="layout--navbar">
 	<a href={inOngeveer ? '/ongeveer' : '/'} class="logo">
-		{#if dev}
+		{#if import.meta.env.DEV}
 			<IbsLogoDev />
 		{:else if inOngeveer}
 			<OngeveerLogo />
