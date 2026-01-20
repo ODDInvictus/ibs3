@@ -26,8 +26,7 @@ fi
 echo
 echo Docker container genereren
 sudo docker build -t ghcr.io/oddinvictus/ibs3:$1 .
-echo "Backend bouwen"
-sudo docker build --file ./backend.Dockerfile -t ghcr.io/oddinvictus/ibs3:$1-backend .
+echo
 
 if [ -z ${2+x} ];
 then
@@ -35,6 +34,8 @@ then
   echo Nu kan je pushen met
   echo docker push ghcr.io/oddinvictus/ibs3:$1
 else
+  echo "Backend bouwen"
+  sudo docker build --file ./backend.Dockerfile -t ghcr.io/oddinvictus/ibs3:$1-backend .
   echo
   echo Pushen naar GitHub...
   sudo docker push ghcr.io/oddinvictus/ibs3:$1

@@ -16,12 +16,14 @@ const API_VERSION = '1.0.1'
 	EXPRESS
 */
 
-const parsed = dotenv.config({
-	path: './.env',
-})
+if (process.env.NODE_ENV === 'development') {
+	const parsed = dotenv.config({
+		path: './.env',
+	})
 
-if (!parsed.parsed) {
-	console.error(parsed.error)
+	if (!parsed.parsed) {
+		console.error(parsed.error)
+	}
 }
 
 const app = express()

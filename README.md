@@ -77,14 +77,11 @@ Om te helpen met het maken van een crontab kan je [crontab guru](https://crontab
 ## Environment Variables
 
 | Sleutel                      | Waarde                                                                                | Voorbeeld                                             |
-| ---------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| ---------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------- | --- |
 | DATABASE_URL                 | MySQL connection string                                                               | mysql://ibs3:password@mariadb:3306/ibs3?schema=public |
 | IBS_CLIENT_ID                | Client ID in Authentik                                                                | ibs                                                   |
 | IBS_CLIENT_SECRET            | Client Secret in Authentik                                                            | bjdsbjadshbjsbjsdbjabdhwvdksd                         |
-| IBS_ISSUER                   | Issuer url vanuit Authentik                                                           | https://auth.example.com/application/o/ibs/           |
-| AUTHENTIK_BASE_URL           | Base URL van Authentik                                                                | https://auth.example.com                              |
-| AUTHENTIK_GROUP_NAME         | Naam van de groep met alle IBS gebruikers                                             | ibs3_users                                            |
-| AUTHENTIK_TOKEN              | Access token van service account                                                      | aaasDJKASJDHSAJKHDLOIJASHDIABDSKJASJKDJKAS            |
+| IBS_ISSUER                   | Issuer url vanuit Authentik                                                           | https://auth.example.com/application/o/ibs/           |     |
 | ORIGIN                       | URL waar deze app gevonden kan worden                                                 | https://ibs.example.com                               |
 | DISCORD_NOTIFICATION_WEBHOOK | Webhook URL voor discord kanaal waar errors in gepost worden                          | https://discord.com/api/webhooks/server/key           |
 | BACKEND_PORT                 | Poort waarop de backend draait                                                        | 3001                                                  |
