@@ -26,8 +26,8 @@ fi
 echo
 echo Docker container genereren
 sudo docker build -t ghcr.io/oddinvictus/ibs3:$1 .
-
-# TODO: backend ook pushen
+echo "Backend bouwen"
+sudo docker build --file ./backend.Dockerfile -t ghcr.io/oddinvictus/ibs3:$1-backend .
 
 if [ -z ${2+x} ];
 then
@@ -38,4 +38,6 @@ else
   echo
   echo Pushen naar GitHub...
   sudo docker push ghcr.io/oddinvictus/ibs3:$1
+  sudo docker push ghcr.io/oddinvictus/ibs3:$1-backend
 fi
+
