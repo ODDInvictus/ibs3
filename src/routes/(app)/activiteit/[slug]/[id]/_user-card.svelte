@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ProfileIcon from '$lib/components/profile-icon.svelte'
-	import type { User, AttendingStatus } from '@prisma/client'
+	import type { User, AttendingStatus } from '$lib/server/prisma/client'
 
 	export let user: User
 	export let status: AttendingStatus

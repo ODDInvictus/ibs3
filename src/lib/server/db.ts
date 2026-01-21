@@ -1,8 +1,29 @@
 import { LDAP_IDS } from '$lib/constants'
 import { applyTransaction } from '$lib/ongeveer/db'
-import { PrismaClient, type User } from '@prisma/client'
+import { PrismaClient, type User } from '$lib/server/prisma/client'
+import { PrismaMariaDb } from '@prisma/adapter-mariadb'
+import { env } from '$env/dynamic/private'
 
-const prisma = new PrismaClient().$extends({
+const { DATABASE_HOST, DATABASE_PORT, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE } = env
+
+if (!DATABASE_HOST || !DATABASE_PORT || !DATABASE_USER || !DATABASE_PASSWORD || !DATABASE_DATABASE) {
+	console.error('Missing one of these requierd variables: DATABASE_ + [HOST, PORT, USER, PASSWORD, DATABASE]')
+	process.exit(1)
+}
+
+const adapter = new PrismaMariaDb(
+	{
+		host: env.DATABASE_HOST,
+		port: Number.parseInt(env.DATABASE_PORT!),
+		user: env.DATABASE_USER,
+		password: env.DATABASE_PASSWORD,
+		database: env.DATABASE_DATABASE,
+		connectionLimit: 5,
+	},
+	{ database: env.DATABASE_DATABASE! },
+)
+
+const prisma = new PrismaClient({ adapter }).$extends({
 	query: {
 		saldoTransaction: {
 			async create({ args, query }) {
@@ -66,3 +87,4 @@ export async function getMembers(): Promise<User[]> {
 }
 
 export default prisma
+export const db = prisma

@@ -1,4 +1,4 @@
-import type { NotificationType, User } from '@prisma/client'
+import type { NotificationType, User } from '$lib/server/prisma/client'
 
 export async function getUserPreference(key: string, user: User): Promise<boolean> {
 	return false

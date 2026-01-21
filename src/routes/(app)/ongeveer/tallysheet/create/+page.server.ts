@@ -5,7 +5,7 @@ import db from '$lib/server/db'
 import { redirect } from 'sveltekit-flash-message/server'
 import { fail, type Actions } from '@sveltejs/kit'
 import { authorization } from '$lib/ongeveer/utils'
-import type { ProductType } from '@prisma/client'
+import type { ProductType } from '$lib/server/prisma/client'
 import type { z } from 'zod'
 import { getLedgerIds } from '$lib/ongeveer/db'
 

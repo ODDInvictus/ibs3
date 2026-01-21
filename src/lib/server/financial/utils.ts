@@ -1,5 +1,5 @@
 import db from '$lib/server/db'
-import type { FinancialPerson } from '@prisma/client'
+import type { FinancialPerson } from '$lib/server/prisma/client'
 
 export const getFinancialPeoplePerCategory = async () => {
 	const fp = await db.financialPerson.findMany({

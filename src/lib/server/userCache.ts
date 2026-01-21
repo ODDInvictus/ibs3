@@ -1,7 +1,7 @@
 import NodeCache from 'node-cache'
 import prisma from '$lib/server/db'
 import type { Session } from 'next-auth'
-import type { Committee, User } from '@prisma/client'
+import type { Committee, User } from '$lib/server/prisma/client'
 import { UserRolesEmpty, Roles, type UserRoles } from '$lib/constants'
 import { env } from '$env/dynamic/private'
 

@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types'
 import db from '$lib/server/db'
-import { ProductType } from '@prisma/client'
+import { ProductType } from '$lib/server/prisma/client'
 import { fail } from '@sveltejs/kit'
 import { authorization } from '$lib/ongeveer/utils'
 import { superValidate } from 'sveltekit-superforms/server'

@@ -1,6 +1,6 @@
 import db from '$lib/server/db'
 import { deleteStrafbak } from '$lib/server/strafbakken/index.js'
-import type { LeaderboardTypes } from '@prisma/client'
+import type { LeaderboardTypes } from '$lib/server/prisma/client'
 import { error, fail, redirect } from '@sveltejs/kit'
 
 export const load = async ({ params }) => {

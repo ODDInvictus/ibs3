@@ -11,6 +11,7 @@ vite.config.ts.timestamp-*
 static/upload/
 !static/upload/activities/bier.jpg
 static/fotos/
+src/lib/server/prisma
 
 # Logs
 logs

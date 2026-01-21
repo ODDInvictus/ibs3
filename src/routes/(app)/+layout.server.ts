@@ -1,4 +1,4 @@
-import type { Committee } from '@prisma/client'
+import type { Committee } from '$lib/server/prisma/client'
 import type { LayoutServerLoad } from './$types'
 import { LDAP_IDS } from '$lib/constants'
 import { loadFlash } from 'sveltekit-flash-message/server'

@@ -1,7 +1,7 @@
 import db from '$lib/server/db'
 import { error, type Actions } from '@sveltejs/kit'
 import { isFinancie } from '$lib/server/auth'
-import type { BankTransactionProduct, BankTransactionType } from '@prisma/client'
+import type { BankTransactionProduct, BankTransactionType } from '$lib/server/prisma/client'
 
 const HEADERS = ['Type', 'Product', 'Started Date', 'Completed Date', 'Description', 'Amount', 'Fee'] as const
 

@@ -1,4 +1,4 @@
-import type { File as IBSFile, User } from '@prisma/client'
+import type { File as IBSFile, User } from '$lib/server/prisma/client'
 import { _getFileStream, _uploadFile } from './mongo'
 import db from '$lib/server/db'
 import { compressImage } from './sharp'

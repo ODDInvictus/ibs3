@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types'
 import db from '$lib/server/db'
-import type { Photo } from '@prisma/client'
+import type { Photo } from '$lib/server/prisma/client'
 
 type PhotoHighlight = {
 	firstName: string

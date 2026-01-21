@@ -1,5 +1,5 @@
 import type { PageData } from '../$types'
-import type { User } from '@prisma/client'
+import type { User } from '$lib/server/prisma/client'
 
 // /strafbakken
 export interface sbUser extends User {

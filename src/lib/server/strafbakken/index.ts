@@ -9,7 +9,7 @@ import { Setting, settings } from '$lib/server/settings'
  * @param giverId int
  * @param receiverId int
  * @reason reden hiervoor
- * @throws NotFoundError indien giver of receiver niet bestaat
+ * @throws PrismaClientKnownRequestError indien giver of receiver niet bestaat
  */
 export async function giveStrafbak(giverId: number, receiverId: number, reason: string) {
 	let other: number = -1

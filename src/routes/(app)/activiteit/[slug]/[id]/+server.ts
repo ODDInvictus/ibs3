@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types'
 import db from '$lib/server/db'
-import type { AttendingStatus } from '@prisma/client'
+import type { AttendingStatus } from '$lib/server/prisma/client'
 import { error } from '@sveltejs/kit'
 import { isSenaat } from '$lib/server/auth/helpers'
 

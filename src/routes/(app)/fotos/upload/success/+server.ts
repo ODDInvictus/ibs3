@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types'
 import db from '$lib/server/db'
-import type { User } from '@prisma/client'
+import type { User } from '$lib/server/prisma/client'
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const body = await request.json()

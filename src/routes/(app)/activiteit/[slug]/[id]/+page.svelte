@@ -18,7 +18,7 @@
 	import { enhance } from '$app/forms'
 	import ProfileIcon from '$lib/components/profile-icon.svelte'
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
-	import type { AttendingStatus } from '@prisma/client'
+	import type { AttendingStatus } from '$lib/server/prisma/client'
 	import { promptCheckbox } from '$lib/promptCheckbox'
 	import { LDAP_IDS } from '$lib/constants'
 

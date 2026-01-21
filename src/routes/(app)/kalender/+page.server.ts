@@ -1,6 +1,6 @@
 import { LDAP_IDS } from '$lib/constants.js'
 import db from '$lib/server/db'
-import type { Activity } from '@prisma/client'
+import type { Activity } from '$lib/server/prisma/client'
 import type { PageServerLoad } from './$types'
 
 type CalendarActivity = Activity & {

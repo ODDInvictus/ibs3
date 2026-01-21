@@ -1,8 +1,6 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte'
 	import Table from '$lib/components/table.svelte'
-	import type { Preference } from '@prisma/client'
-	import { page } from '$app/stores'
 	import { promptCheckbox } from '$lib/promptCheckbox'
 	import { confirm } from '$lib/confirm'
 	import { toast } from '$lib/notification'

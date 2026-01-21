@@ -49,8 +49,7 @@
 								uid: user.id,
 								changeCount,
 								index: i,
-							})}
-					>
+							})}>
 						<i><Plus /></i>
 					</button>
 					<button class="btn-a" on:click={user._count.StrafbakReceived ? () => trekBak(user.id, i) : null}>

@@ -1,4 +1,4 @@
-import type { NotificationType, User } from '@prisma/client'
+import type { NotificationType, User } from '$lib/server/prisma/client'
 import { _constructNotificationFromType } from './messages'
 import db from '$lib/server/db'
 import { getUserNotificationPreference } from '../preferences'

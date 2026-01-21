@@ -1,6 +1,6 @@
 import type { Roles } from '$lib/constants'
 import db from '$lib/server/db'
-import type { User } from '@prisma/client'
+import type { User } from '$lib/server/prisma/client'
 import { fail, type Actions } from '@sveltejs/kit'
 import { z } from 'zod'
 
@@ -32,16 +32,16 @@ export type Field<T extends FieldType> = {
 	value?: T extends TextField | 'time'
 		? string
 		: T extends SelectField
-		? OptionField<InputType>
-		: T extends CheckboxField
-		? boolean
-		: T extends 'number'
-		? number
-		: T extends 'date'
-		? Date
-		: T extends TableField
-		? any[]
-		: never
+			? OptionField<InputType>
+			: T extends CheckboxField
+				? boolean
+				: T extends 'number'
+					? number
+					: T extends 'date'
+						? Date
+						: T extends TableField
+							? any[]
+							: never
 	markdown?: boolean
 	optional?: boolean
 	maxValue?: number

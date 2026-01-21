@@ -3,8 +3,6 @@ import { env } from '$env/dynamic/private'
 import fs from 'fs/promises'
 import redis from '$lib/server/cache'
 import sharp from 'sharp'
-import db from '$lib/server/db'
-import type { Photo } from '@prisma/client'
 
 const UPLOAD_FOLDER = env.UPLOAD_FOLDER
 const STATIC_FOLDER = env.STATIC_FOLDER || './static'

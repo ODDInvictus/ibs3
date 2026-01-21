@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Ledger } from '@prisma/client'
+	import type { Ledger } from '$lib/server/prisma/client'
 	import Create from './Create.svelte'
 	import { openModal } from 'svelte-modals'
 	import Plus from '~icons/tabler/plus'

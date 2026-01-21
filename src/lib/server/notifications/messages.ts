@@ -1,4 +1,4 @@
-import { NotificationType, type User } from '@prisma/client'
+import { NotificationType, type User } from '$lib/server/prisma/client'
 
 type Notification = {
 	title: string
