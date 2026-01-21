@@ -1,0 +1,62 @@
+diff --git a/src/runtime/client/state.svelte.js b/src/runtime/client/state.svelte.js
+index 23afa73ef7b64edda7a1e2ac6b0c4bc9f7b25492..00bb5ca93a73f9f4e90841ff56014903c3574f4c 100644
+--- a/src/runtime/client/state.svelte.js
++++ b/src/runtime/client/state.svelte.js
+@@ -10,43 +10,20 @@ export let navigating;
+ /** @type {{ current: boolean }} */
+ export let updated;
+ 
+-// this is a bootleg way to tell if we're in old svelte or new svelte
+-const is_legacy = true
+-
+-if (is_legacy) {
+-	page = {
+-		data: {},
+-		form: null,
+-		error: null,
+-		params: {},
+-		route: { id: null },
+-		state: {},
+-		status: -1,
+-		url: new URL('https://example.com')
+-	};
+-	navigating = { current: null };
+-	updated = { current: false };
+-} else {
+-	page = new (class Page {
+-		data = $state.raw({});
+-		form = $state.raw(null);
+-		error = $state.raw(null);
+-		params = $state.raw({});
+-		route = $state.raw({ id: null });
+-		state = $state.raw({});
+-		status = $state.raw(-1);
+-		url = $state.raw(new URL('https://example.com'));
+-	})();
+-
+-	navigating = new (class Navigating {
+-		current = $state.raw(null);
+-	})();
+-
+-	updated = new (class Updated {
+-		current = $state.raw(false);
+-	})();
+-	updated_listener.v = () => (updated.current = true);
+-}
++// 20-1-2026: removed is_legacy check since it was not working
++
++page = {
++	data: {},
++	form: null,
++	error: null,
++	params: {},
++	route: { id: null },
++	state: {},
++	status: -1,
++	url: new URL('https://example.com')
++};
++navigating = { current: null };
++updated = { current: false };
+ 
+ /**
+  * @param {import('@sveltejs/kit').Page} new_page
