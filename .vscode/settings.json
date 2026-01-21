@@ -7,5 +7,9 @@
 		"a11y-no-noninteractive-element-interactions": "ignore"
 	},
 	"svelte.plugin.svelte.defaultScriptLanguage": "ts",
-	"svelte.enable-ts-plugin": true
+	"svelte.enable-ts-plugin": true,
+	"search.exclude": {
+		"**/node_modules": false
+	},
+	"search.useIgnoreFiles": true
 }

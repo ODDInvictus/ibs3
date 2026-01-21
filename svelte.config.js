@@ -1,6 +1,7 @@
-import adapter from '@sveltejs/adapter-node'
+// import adapter from '@sveltejs/adapter-node'
+import adapter from 'svelte-adapter-bun'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
-import sveltePreprocess from 'svelte-preprocess'
+import { sveltePreprocess } from 'svelte-preprocess'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -21,19 +22,12 @@ const config = {
 	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
 	// for more information about preprocessors
 	preprocess,
-	prerender: {
-		default: false,
-	},
 	kit: {
 		adapter: adapter({
 			envPrefix: '',
 			out: 'build',
-			precompress: false,
-			polyfill: true,
+			precompress: true,
 		}),
-		csrf: {
-			checkOrigin: false,
-		},
 	},
 	vitePlugin: {
 		onwarn: (warning, handler) => {
