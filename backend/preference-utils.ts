@@ -1,4 +1,4 @@
-import { Preference, User } from '@prisma/client'
+import { Preference, User } from './prisma/client'
 import { prisma } from './prisma'
 
 type PreferenceReturn = Preference & {

@@ -1,4 +1,4 @@
-import { User } from '@prisma/client'
+import { User } from './prisma/client'
 import Email from 'email-templates'
 import { Transporter, createTransport } from 'nodemailer'
 import SMTPTransport from 'nodemailer/lib/smtp-transport'

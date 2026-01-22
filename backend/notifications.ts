@@ -1,4 +1,4 @@
-import { Activity } from '@prisma/client'
+import { Activity } from './prisma/client'
 import { sendNotification } from './discord-utils'
 import { prisma } from './prisma'
 import { sendEmailNotificationFrontend } from './email-utils'

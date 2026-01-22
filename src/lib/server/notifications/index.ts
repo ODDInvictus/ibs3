@@ -1,79 +1,84 @@
-import type { NotificationType, User } from '$lib/server/prisma/client'
-import { _constructNotificationFromType } from './messages'
-import db from '$lib/server/db'
+import { NotificationType, type Activity, type User } from '$lib/server/prisma/client'
+import { db } from '$lib/server/db'
 import { getUserNotificationPreference } from '../preferences'
-import { LDAP_IDS } from '$lib/constants'
 
 /**
  * Send a notification to a user
  */
-export async function sendNotification(type: NotificationType, user: User) {
-	// First check if the user wants to receive these notifications
-	//    if not, return
-	// Then construct the message, fill in the username etc.
-	//    if fails, throw error and send a AdminNotificationContructionFailed
-	// Add it to the database, the backend will pick it up to send it
-	//    if this fails, the backend will send a AdminNotificationDeliveryFailed
-
+export async function sendNotification(title: string, body: string, user: User, type: NotificationType) {
 	try {
-		// TODO: preference aanmaken indien niet bestaat
 		const preference = await getUserNotificationPreference(type, user)
 
 		if (!preference) {
-			log(`skipping notification of type: ${type.toString()} for user: ${user.id} (${user.firstName} ${user.lastName})`)
+			debug(`skipping notification of type: ${type.toString()} for user: ${user.id} (${user.firstName} ${user.lastName})`)
 			return
 		}
 
-		const notification = _constructNotificationFromType(type, user)
-
-		const receiver = await db.notificationReceiver.findFirstOrThrow({
-			where: { receiverId: user.id },
-		})
-
 		await db.notification.create({
 			data: {
-				title: notification.title,
-				body: notification.body,
-				type: type,
+				title,
+				body,
+				type,
 				sent: false,
-				receiverId: receiver.id,
+				userId: user.id,
 			},
 		})
 	} catch (err) {
-		await _notificationFailed(err as Error)
+		await notificationFailed(err as Error)
 	}
 }
 
 /**
  * Send a notification to multiple users
  */
-export async function sendNotificationToUsers(type: NotificationType, users: User[]) {
-	for (const user of users) {
-		await sendNotification(type, user)
-	}
+export async function sendNotificationToUsers(title: string, body: string, type: NotificationType, users: User[]) {
+	users.forEach(async user => await sendNotification(title, body, user, type))
 }
 
-async function _notificationFailed(err: Error) {
+async function sendNotificationToAllUsers(title: string, body: string, type: NotificationType) {
+	const users = await db.user.findMany({
+		where: {
+			isActive: true,
+			accessDisabled: false,
+		},
+	})
+
+	await sendNotificationToUsers(title, body, type, users)
+}
+
+export async function notificationNewActivity(activity: Activity) {
+	await sendNotificationToAllUsers(`Nieuwe activiteit: ${activity.name}`, '' + activity.id, NotificationType.ActivityNew)
+}
+
+export async function notificationFailed(err: Error) {
 	error('notification failed: ' + err.message)
 
-	const admins = (
-		await db.committeeMember.findMany({
-			where: {
-				committee: {
-					ldapId: LDAP_IDS.ADMINS,
-				},
-			},
-			select: {
-				member: true,
-			},
-		})
-	).map(cm => cm.member)
+	// TODO: send in discord
 
-	throw new Error('not implemented: $lib/server/notifications/index.ts::_notificationFailed')
+	// const admins = (
+	// 	await db.committeeMember.findMany({
+	// 		where: {
+	// 			committee: {
+	// 				ldapId: LDAP_IDS.ADMINS,
+	// 			},
+	// 		},
+	// 		select: {
+	// 			member: true,
+	// 		},
+	// 	})
+	// ).map(cm => cm.member)
+
+	// throw new Error('not implemented: $lib/server/notifications/index.ts::_notificationFailed')
 }
 
 function log(str: string) {
 	console.log('[Notifications][' + new Date().toISOString() + ']\n' + str)
+}
+
+function debug(str: string) {
+	if (process.env.NODE_ENV === 'development') {
+		log(str)
+	}
 }
 
 function error(str: string) {

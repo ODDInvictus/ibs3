@@ -1,7 +1,7 @@
 import sharp from 'sharp'
 import { getFileData, uploadFile } from './mongo'
 import { prisma } from './prisma'
-import { File } from '@prisma/client'
+import { File } from './prisma/client'
 import { failJob } from './utils'
 
 type ImageProcessingJob = {

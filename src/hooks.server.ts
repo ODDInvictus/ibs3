@@ -7,10 +7,16 @@ import { client as Mongo } from '$lib/server/files'
 import { handleAuthentication, handleAuthorization } from '$lib/server/auth'
 import { initAuthHelpers } from '$lib/server/auth'
 import { initSettings } from '$lib/server/settings/settings'
+import { initAWS } from '$lib/server/notifications/email'
 
 const handleCors: Handle = async ({ event, resolve }) => {
 	const res = await resolve(event)
-	res.headers.append('Access-Control-Allow-Origin', '*')
+
+	if (env.ORIGIN) {
+		res.headers.append('Access-Control-Allow-Origin', env.ORIGIN)
+	} else {
+		res.headers.append('Access-Control-Allow-Origin', '*')
+	}
 	return res
 }
 
@@ -30,6 +36,7 @@ export const handleError = (async ({ error, event }) => {
 await (async () => {
 	await initSettings()
 	await initAuthHelpers()
+	await initAWS()
 
 	if (envPublic.PUBLIC_DISABLE_MONGO === 'true') {
 		console.log('MongoDB is not connected.')
@@ -37,4 +44,9 @@ await (async () => {
 		await Mongo.connect()
 		console.log('You successfully connected to MongoDB!')
 	}
+
+	// start the service worker
+	const worker = new Worker('./src/worker/worker.ts', {
+		smol: true,
+	})
 })()

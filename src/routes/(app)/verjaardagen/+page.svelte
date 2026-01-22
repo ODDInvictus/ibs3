@@ -14,16 +14,14 @@
 			<tr>
 				<th>Naam</th>
 				<th>Geboortedatum</th>
-				<th>Toekomstige leeftijd</th>
 				<th>Hoeveel dagen nog</th>
 			</tr>
 		</thead>
 		<tbody>
 			{#each data.birthdays as bd}
 				<tr class={bd.ldapId === data.user.ldapId ? 'highlight' : ''}>
-					<td>{bd.firstName} {bd.lastName} {bd.nickname ? `(${bd.nickname})` : ''}</td>
+					<td><a href="/leden/{bd.ldapId}">{bd.firstName} {bd.lastName} {bd.nickname ? `(${bd.nickname})` : ''}</a></td>
 					<td>{toBirthday(bd.birthDate)}</td>
-					<td>{toAge(bd.birthDate) + 1}</td>
 					<td>{daysLeftTill(bd.birthDate)}</td>
 				</tr>
 			{/each}
@@ -31,7 +29,13 @@
 	</table>
 </div>
 
-<style>
+<style lang="scss">
+	.highlight {
+		a {
+			color: white;
+		}
+	}
+
 	@media (max-width: 600px) {
 		.wrapper {
 			overflow-x: scroll !important;
