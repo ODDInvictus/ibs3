@@ -2,26 +2,22 @@ import type { NotificationType, User } from '$lib/server/prisma/client'
 import { db } from './db'
 
 export async function getUserPreference(key: string, user: User): Promise<boolean> {
-	let base = await db.basePreference.findFirst({
+	// create basePreference if not exists
+	let base = await db.basePreference.upsert({
 		where: {
 			key,
 		},
+		update: {},
+		create: {
+			key,
+			defaultValue: true,
+			description: key,
+		},
 	})
-
-	if (!base) {
-		console.log(`No base preference found with key ${key}, creating it...`)
-		base = await db.basePreference.create({
-			data: {
-				key,
-				defaultValue: true,
-				description: key,
-			},
-		})
-	}
 
 	let preference = await db.preference.findFirst({
 		where: {
-			baseId: base.id,
+			baseKey: key,
 			userId: user.id,
 		},
 	})
@@ -30,8 +26,8 @@ export async function getUserPreference(key: string, user: User): Promise<boolea
 		preference = await db.preference.create({
 			data: {
 				userId: user.id,
-				baseId: base.id,
-				value: true,
+				baseKey: key,
+				value: base.defaultValue,
 			},
 		})
 	}

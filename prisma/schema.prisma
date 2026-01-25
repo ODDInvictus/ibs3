@@ -28,11 +28,10 @@ model Settings {
 }
 
 model BasePreference {
-  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  key          String
+  key          String @unique @id
   defaultValue Boolean
   description  String
   Preference   Preference[]
@@ -47,8 +46,8 @@ model Preference {
   userId    Int
 
   // Settings
-  base   BasePreference @relation(fields: [baseId], references: [id])
-  baseId Int
+  base   BasePreference @relation(fields: [baseKey], references: [key])
+  baseKey String
   value  Boolean
 }
 
@@ -1000,6 +999,8 @@ enum NotificationType {
   StrafbakDouble
   // Wie heeft het meest gebakken deze week? Gaat naar alle deelnemers van die week
   StrafbakkenMaster
+  // Chris
+  StrafbakkenNoStrafbak
 
   // Wanneer je verslagen wordt op een leaderboard (bijv. je stond op plek 3, maar nu op 4)
   // Niet versturen als je niet van plek verwisseld, en ophopen
@@ -1034,7 +1035,7 @@ model Notification {
   id Int @id @default(autoincrement())
 
   title String
-  body String
+  body String @db.Text
   type NotificationType
 
   sent Boolean
