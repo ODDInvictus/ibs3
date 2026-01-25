@@ -7,6 +7,7 @@ import { render } from 'svelte-email'
 import NewActivity from '$lib/emails/NewActivity.svelte'
 import nodemailer from 'nodemailer'
 import { isFeut } from '../auth/helpers'
+import CustomText from '$lib/emails/CustomText.svelte'
 
 let ses: SESClient
 
@@ -28,6 +29,12 @@ export async function initAWS() {
 
 	ses = new SESClient({
 		region: env.AWS_REGION,
+	})
+}
+
+export async function sendCustomNotificationOverMail(notification: Notification, body: string) {
+	await sendNotificationOverMail(notification, CustomText, {
+		text: body,
 	})
 }
 
@@ -85,7 +92,7 @@ async function sendNotificationOverMail(notification: Notification, template: an
 		// if (false) {
 
 		const transport = nodemailer.createTransport({
-			host: '192.168.178.110',
+			host: 'localhost',
 			port: 1025,
 			secure: false,
 		})
@@ -127,18 +134,18 @@ async function sendNotificationOverMail(notification: Notification, template: an
 			const command = new SendEmailCommand(options)
 			const response = await ses.send(command)
 			console.log(`Email ${notification.id} sent. SESID ${response.MessageId}`)
-
-			await db.notification.update({
-				where: {
-					id: notification.id,
-				},
-				data: {
-					body: text,
-					sent: true,
-				},
-			})
 		} catch (err: any) {
 			await notificationFailed(err)
 		}
 	}
+
+	await db.notification.update({
+		where: {
+			id: notification.id,
+		},
+		data: {
+			body: text,
+			sent: true,
+		},
+	})
 }

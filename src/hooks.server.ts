@@ -8,6 +8,7 @@ import { handleAuthentication, handleAuthorization } from '$lib/server/auth'
 import { initAuthHelpers } from '$lib/server/auth'
 import { initSettings } from '$lib/server/settings/settings'
 import { initAWS } from '$lib/server/notifications/email'
+import { work } from './worker/worker'
 
 const handleCors: Handle = async ({ event, resolve }) => {
 	const res = await resolve(event)
@@ -46,7 +47,15 @@ await (async () => {
 	}
 
 	// start the service worker
-	const worker = new Worker('./src/worker/worker.ts', {
-		smol: true,
-	})
+	if (env.WORKER_ON_MAIN_THREAD) {
+		console.log('Starting worker on main thread')
+		setInterval(async () => await work(), 10 * 1000)
+	} else {
+		console.log('Starting service worker')
+		const worker = new Worker('./src/worker/worker.ts', {
+			smol: true,
+		}) as Bun.Worker
+
+		worker.postMessage('Hallo vanaf ibs3')
+	}
 })()

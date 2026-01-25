@@ -1,13 +1,17 @@
+diff --git a/node_modules/@sveltejs/kit/.bun-tag-d6038cd931773936 b/.bun-tag-d6038cd931773936
+new file mode 100644
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 diff --git a/src/runtime/client/state.svelte.js b/src/runtime/client/state.svelte.js
-index 23afa73ef7b64edda7a1e2ac6b0c4bc9f7b25492..00bb5ca93a73f9f4e90841ff56014903c3574f4c 100644
+index 5e1978869ca389f26793250a9740938089d422aa..00bb5ca93a73f9f4e90841ff56014903c3574f4c 100644
 --- a/src/runtime/client/state.svelte.js
 +++ b/src/runtime/client/state.svelte.js
-@@ -10,43 +10,20 @@ export let navigating;
+@@ -10,44 +10,20 @@ export let navigating;
  /** @type {{ current: boolean }} */
  export let updated;
  
 -// this is a bootleg way to tell if we're in old svelte or new svelte
--const is_legacy = true
+-const is_legacy =
+-	onMount.toString().includes('$$') || /function \w+\(\) \{\}/.test(onMount.toString());
 -
 -if (is_legacy) {
 -	page = {
