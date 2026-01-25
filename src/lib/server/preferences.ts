@@ -1,5 +1,5 @@
 import type { NotificationType, User } from '$lib/server/prisma/client'
-import { db } from './db'
+import { db } from '$lib/server/db'
 
 export async function getUserPreference(key: string, user: User): Promise<boolean> {
 	let base = await db.basePreference.findFirst({
