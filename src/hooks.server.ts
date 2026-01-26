@@ -24,9 +24,7 @@ const handleCors: Handle = async ({ event, resolve }) => {
 export const handle: Handle = sequence(handleCors, handleAuthentication, handleAuthorization)
 
 export const handleError = (async ({ error, event }) => {
-	// When an error occurs, we want to log it to our logger
-	// This is done by sending a request to the jobs server
-	console.error(error)
+	log(error)
 
 	if (env.DISCORD_NOTIFICATION_WEBHOOK) {
 		await notifyDiscordError(env.DISCORD_NOTIFICATION_WEBHOOK, { event, error })
@@ -40,22 +38,33 @@ await (async () => {
 	await initAWS()
 
 	if (envPublic.PUBLIC_DISABLE_MONGO === 'true') {
-		console.log('MongoDB is not connected.')
+		log('MongoDB is not connected.')
 	} else {
 		await Mongo.connect()
-		console.log('You successfully connected to MongoDB!')
+		log('You successfully connected to MongoDB!')
 	}
 
 	// start the service worker
 	if (env.WORKER_ON_MAIN_THREAD) {
-		console.log('Starting worker on main thread')
-		setInterval(async () => await work(), 10 * 1000)
+		log('Starting worker on main thread')
+		setInterval(async () => await work(), env.WORKER_INTERVAL ? Number.parseInt(env.WORKER_INTERVAL) : 10 * 1000)
 	} else {
-		console.log('Starting service worker')
-		const worker = new Worker('./src/worker/worker.ts', {
-			smol: true,
-		}) as Bun.Worker
+		const worker = new Worker('./src/worker/worker.ts') as Bun.Worker
 
-		worker.postMessage('Hallo vanaf ibs3')
+		worker.addEventListener('open', () => {
+			log('Hallo service worker!')
+			worker.postMessage('Hallo worker!')
+		})
+
+		worker.addEventListener('error', error => {
+			log('[IBS3] worker failed to init')
+			log(error)
+			process.exit(1)
+		})
 	}
 })()
+
+function log(...objects: any[]) {
+	const date = new Date(Date.now())
+	console.log(`[IBS3][${date.toLocaleDateString('nl')} ${date.toLocaleTimeString('nl')}]`, ...objects)
+}

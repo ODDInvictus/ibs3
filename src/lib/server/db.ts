@@ -2,9 +2,9 @@ import { LDAP_IDS } from '$lib/constants'
 import { applyTransaction } from '$lib/ongeveer/db'
 import { PrismaClient, type User } from '$lib/server/prisma/client'
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
-import { env } from '$env/dynamic/private'
+// import { env } from '$env/dynamic/private'
 
-const { DATABASE_HOST, DATABASE_PORT, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE } = env
+const { DATABASE_HOST, DATABASE_PORT, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE } = process.env
 
 if (!DATABASE_HOST || !DATABASE_PORT || !DATABASE_USER || !DATABASE_PASSWORD || !DATABASE_DATABASE) {
 	console.error('Missing one of these requierd variables: DATABASE_ + [HOST, PORT, USER, PASSWORD, DATABASE]')
@@ -13,14 +13,14 @@ if (!DATABASE_HOST || !DATABASE_PORT || !DATABASE_USER || !DATABASE_PASSWORD || 
 
 const adapter = new PrismaMariaDb(
 	{
-		host: env.DATABASE_HOST,
-		port: Number.parseInt(env.DATABASE_PORT!),
-		user: env.DATABASE_USER,
-		password: env.DATABASE_PASSWORD,
-		database: env.DATABASE_DATABASE,
+		host: DATABASE_HOST,
+		port: Number.parseInt(DATABASE_PORT!),
+		user: DATABASE_USER,
+		password: DATABASE_PASSWORD,
+		database: DATABASE_DATABASE,
 		connectionLimit: 5,
 	},
-	{ database: env.DATABASE_DATABASE! },
+	{ database: DATABASE_DATABASE! },
 )
 
 const prisma = new PrismaClient({ adapter }).$extends({
