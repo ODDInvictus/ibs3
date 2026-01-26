@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db'
 import { notificationFailed } from '$lib/server/notifications'
-import { sendCustomNotificationOverMail, sendNewActivityOverMail } from '$lib/server/notifications/email'
+import { sendNewActivityOverMail, sendStrafbakkenNoStrafbak } from '$lib/server/notifications/email'
 import { NotificationType } from '$lib/server/prisma/enums'
 
 declare var self: Worker
@@ -11,17 +11,17 @@ const HOUR = 60 * MINUTE
 const DAY = 24 * HOUR
 
 self.onmessage = (event: MessageEvent) => {
-	console.log('Hallo ibs3!')
-}
+	log('Hallo ibs3!')
 
-if (!Bun.isMainThread) {
+	const time = process.env.WORKER_INTERVAL ? Number.parseInt(process.env.WORKER_INTERVAL) : 10 * SECOND
+	log('Starting interval every ' + time)
 	setInterval(async () => {
 		await work()
-	}, 10 * SECOND)
+	}, time)
 }
 
 export async function work() {
-	console.log('working')
+	log('working')
 
 	const notifications = await db.notification.findMany({
 		where: {
@@ -43,39 +43,20 @@ export async function work() {
 
 		switch (notification.type) {
 			case NotificationType.ActivityNew:
-				const activity = await db.activity.findFirst({
-					where: {
-						id: Number.parseInt(notification.body),
-					},
-				})
-
-				if (!activity) {
-					await notificationFailed(new Error(`ActivityNew: activity ${notification.body} not found`))
-					continue
-				}
-
-				await sendNewActivityOverMail(notification, activity)
+				await sendNewActivityOverMail(notification)
 				continue
 			case NotificationType.StrafbakkenNoStrafbak:
-				const user = await db.user.findFirst({
-					where: {
-						id: Number.parseInt(notification.body),
-					},
-				})
-
-				if (!user) {
-					await notificationFailed(new Error(`StrafbakkenNoStrafbak: user ${notification.body} not found`))
-					continue
-				}
-
-				await sendCustomNotificationOverMail(notification, `${user.firstName} heeft geen strafbakken meer! Doe er wat aan.`)
+				await sendStrafbakkenNoStrafbak(notification)
 				continue
+			default:
+				await notificationFailed(new Error(`NotificationType::${notification.type.toString()} not implemented`), 'worker::work')
 		}
 	}
 }
 
 function log(...objects: any[]) {
-	console.log('[Worker]', ...objects)
+	const date = new Date(Date.now())
+	console.log(`[Worker][${date.toLocaleDateString('nl')} ${date.toLocaleTimeString('nl')}]`, ...objects)
 }
 
 export {}

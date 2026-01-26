@@ -1,6 +1,8 @@
 import { NotificationType, type Activity, type User } from '$lib/server/prisma/client'
 import { db } from '$lib/server/db'
 import { getUserNotificationPreference } from '../preferences'
+import { notifyDiscordErrorPlain } from './discord'
+import { env } from '$env/dynamic/private'
 
 /**
  * Send a notification to a user
@@ -24,7 +26,7 @@ export async function sendNotification(title: string, body: string, user: User, 
 			},
 		})
 	} catch (err) {
-		await notificationFailed(err as Error)
+		await notificationFailed(err as Error, '$lib/server/notifications::sendNotification')
 	}
 }
 
@@ -50,25 +52,10 @@ export async function notificationNewActivity(activity: Activity) {
 	await sendNotificationToAllUsers(`Nieuwe activiteit: ${activity.name}`, '' + activity.id, NotificationType.ActivityNew)
 }
 
-export async function notificationFailed(err: Error) {
-	error('notification failed: ' + err.message)
+export async function notificationFailed(err: Error, func: string) {
+	err.message = 'notificationFailed: ' + err.message
 
-	// TODO: send in discord
-
-	// const admins = (
-	// 	await db.committeeMember.findMany({
-	// 		where: {
-	// 			committee: {
-	// 				ldapId: LDAP_IDS.ADMINS,
-	// 			},
-	// 		},
-	// 		select: {
-	// 			member: true,
-	// 		},
-	// 	})
-	// ).map(cm => cm.member)
-
-	// throw new Error('not implemented: $lib/server/notifications/index.ts::_notificationFailed')
+	await notifyDiscordErrorPlain(err, func)
 }
 
 function log(str: string) {
