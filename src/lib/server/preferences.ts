@@ -3,17 +3,21 @@ import { db } from '$lib/server/db'
 
 export async function getUserPreference(key: string, user: User): Promise<boolean> {
 	// create basePreference if not exists
-	let base = await db.basePreference.upsert({
+	let base = await db.basePreference.findFirst({
 		where: {
 			key,
 		},
-		update: {},
-		create: {
-			key,
-			defaultValue: true,
-			description: key,
-		},
 	})
+
+	if (!base) {
+		base = await db.basePreference.create({
+			data: {
+				key,
+				defaultValue: true,
+				description: key,
+			},
+		})
+	}
 
 	let preference = await db.preference.findFirst({
 		where: {
