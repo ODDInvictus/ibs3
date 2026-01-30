@@ -192,7 +192,11 @@ export function getCurrentDateFilename() {
 
 export function getPictureUrl(filename: string | null | undefined, quality: 'thumbnail' | 'normal' | 'original' = 'normal') {
 	if (env.PUBLIC_DISABLE_MONGO === 'true') {
-		console.log(`MongoDB disabled, replacing ${filename} with logo`)
+		const date = new Date(Date.now())
+		console.log(
+			`[MongoDB][${date.toLocaleDateString('nl')} ${date.toLocaleTimeString('nl')}]`,
+			`MongoDB disabled, replacing ${filename} with logo`,
+		)
 		return '/logo.png'
 	}
 

@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db'
 import { notificationFailed } from '$lib/server/notifications'
 import { sendNewActivityOverMail, sendStrafbakkenNoStrafbak } from '$lib/server/notifications/email'
+import { getUserNotificationPreference } from '$lib/server/preferences'
 import { NotificationType } from '$lib/server/prisma/enums'
 
 declare var self: Worker
@@ -26,6 +27,7 @@ export async function work() {
 	const notifications = await db.notification.findMany({
 		where: {
 			sent: false,
+			failed: false,
 		},
 		include: {
 			user: true,
@@ -41,15 +43,26 @@ export async function work() {
 	for (const notification of notifications) {
 		log(`Sending ${notification.title} (${notification.type.toString()}) to ${notification.user.firstName}`)
 
-		switch (notification.type) {
-			case NotificationType.ActivityNew:
-				await sendNewActivityOverMail(notification)
-				continue
-			case NotificationType.StrafbakkenNoStrafbak:
-				await sendStrafbakkenNoStrafbak(notification)
-				continue
-			default:
-				await notificationFailed(new Error(`NotificationType::${notification.type.toString()} not implemented`), 'worker::work')
+		try {
+			const allowed = await getUserNotificationPreference(notification.type, notification.user)
+			if (!allowed) continue
+
+			switch (notification.type) {
+				case NotificationType.ActivityNew:
+					await sendNewActivityOverMail(notification)
+					continue
+				case NotificationType.StrafbakkenNoStrafbak:
+					await sendStrafbakkenNoStrafbak(notification)
+					continue
+				default:
+					await notificationFailed(
+						new Error(`NotificationType::${notification.type.toString()} not implemented`),
+						'worker::work',
+						notification,
+					)
+			}
+		} catch (err) {
+			await notificationFailed(err as Error, 'worker::work', notification)
 		}
 	}
 }

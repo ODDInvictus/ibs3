@@ -45,23 +45,23 @@ await (async () => {
 	}
 
 	// start the service worker
-	if (env.WORKER_ON_MAIN_THREAD) {
-		log('Starting worker on main thread')
-		setInterval(async () => await work(), env.WORKER_INTERVAL ? Number.parseInt(env.WORKER_INTERVAL) : 10 * 1000)
-	} else {
-		const worker = new Worker('./src/worker/worker.ts') as Bun.Worker
+	// if (env.WORKER_ON_MAIN_THREAD) {
+	// 	log('Starting worker on main thread')
+	// 	setInterval(async () => await work(), env.WORKER_INTERVAL ? Number.parseInt(env.WORKER_INTERVAL) : 10 * 1000)
+	// } else {
+	// 	const worker = new Worker('./src/worker/worker.ts') as Bun.Worker
 
-		worker.addEventListener('open', () => {
-			log('Hallo service worker!')
-			worker.postMessage('Hallo worker!')
-		})
+	// 	worker.addEventListener('open', () => {
+	// 		log('Hallo service worker!')
+	// 		worker.postMessage('Hallo worker!')
+	// 	})
 
-		worker.addEventListener('error', error => {
-			log('[IBS3] worker failed to init')
-			log(error)
-			process.exit(1)
-		})
-	}
+	// 	worker.addEventListener('error', error => {
+	// 		log('[IBS3] worker crashed')
+	// 		log(error.message)
+	// 		process.exit(1)
+	// 	})
+	// }
 })()
 
 function log(...objects: any[]) {
