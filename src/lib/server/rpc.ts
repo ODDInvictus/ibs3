@@ -1,8 +1,9 @@
 import type { RequestHandler } from '@sveltejs/kit'
 import { json } from '@sveltejs/kit'
 import * as z from 'zod'
+import type { User } from './prisma/client'
 
-export function RPCHandler(...methods: RPCMethod<any>[]): RequestHandler {
+export function RPCHandler(...methods: RPCMethod<any, any>[]): RequestHandler {
 	return async event => {
 		const body = await event.request.json()
 
@@ -16,7 +17,7 @@ export function RPCHandler(...methods: RPCMethod<any>[]): RequestHandler {
 					try {
 						const b = method.zod.parse(body.body)
 
-						const res = await method.handler(b)
+						const res = await method.handler(b, event.locals.user)
 
 						return json({ error: false, body: res })
 					} catch (err: any) {
@@ -26,7 +27,7 @@ export function RPCHandler(...methods: RPCMethod<any>[]): RequestHandler {
 						return json({ error: true, body: err.message })
 					}
 				} else {
-					const res = await method.handler(null)
+					const res = await method.handler(null, event.locals.user)
 					return json({ error: false, body: res })
 				}
 			}
@@ -36,13 +37,13 @@ export function RPCHandler(...methods: RPCMethod<any>[]): RequestHandler {
 	}
 }
 
-type RPCMethod<T> = {
+type RPCMethod<T, R> = {
 	name: string
 	zod: z.AnyZodObject | null
-	handler: (body: T) => Promise<T>
+	handler: (body: T, user: User) => Promise<R>
 }
 
-export function rpcMethod<T>(name: string, zod: z.AnyZodObject | null, handler: () => Promise<T>): RPCMethod<T> {
+export function rpcMethod<T, R>(name: string, zod: z.AnyZodObject | null, handler: (body: T, user: User) => Promise<R>): RPCMethod<T, R> {
 	return {
 		name,
 		zod,

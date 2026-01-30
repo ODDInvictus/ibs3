@@ -11,6 +11,7 @@
 	import TablerListNumbers from '~icons/tabler/list-numbers'
 	import TablerBeer from '~icons/tabler/beer'
 	import TablerBackhoe from '~icons/tabler/backhoe'
+	import TablerBell from '~icons/tabler/bell'
 	import { toast } from '$lib/notification'
 
 	async function bak() {
@@ -39,7 +40,7 @@
 					<span class="icon">
 						<TablerMail />
 					</span>
-					Beheer email
+					<s> Beheer email </s>
 				</a>
 			</td>
 		</tr>
@@ -144,6 +145,16 @@
 							<TablerMail />
 						</span>
 						Test emails
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="/admin/notificaties">
+						<span class="icon">
+							<TablerBell />
+						</span>
+						Test notificaties
 					</a>
 				</td>
 			</tr>
