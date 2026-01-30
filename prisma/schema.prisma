@@ -5,12 +5,14 @@ generator client {
   provider = "prisma-client"
   output = "../src/lib/server/prisma"
   engineType = "client"
+  compilerBuild = "fast"
 }
 
 generator backend {
   provider = "prisma-client"
   output = "../backend/prisma"
   engineType = "client"
+  compilerBuild = "fast"
 }
 
 datasource db {
@@ -42,11 +44,11 @@ model Preference {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
 
   // Settings
-  base   BasePreference @relation(fields: [baseKey], references: [key])
+  base   BasePreference @relation(fields: [baseKey], references: [key], onDelete: Cascade)
   baseKey String
   value  Boolean
 }
@@ -946,7 +948,7 @@ model File {
   uploader   User?    @relation(fields: [uploaderId], references: [id], onDelete: SetNull)
   uploaderId Int?
   Photo      Photo[]
-  Journal    Journal? @relation(fields: [journalId], references: [id])
+  Journal    Journal? @relation(fields: [journalId], references: [id], onDelete: SetNull)
   journalId  Int?
 }
 
@@ -983,46 +985,24 @@ enum NotificationType {
   // Vul nou die datumprikker in luie hond
   ActivityFillInReminder
   
-  // Getagd in een beschrijving van een activiteit
-  TagActivityDescription
-
-  // Getagd in een foto
-  TagPhoto
-
-  // Getagd in een comment onder een foto of activiteit
-  TagCommentPhoto
-  TagCommentActivity
-
   // Je hebt een strafbak gekregen
   StrafbakCreate
   // De strafbakken zijn verdubbeld
   StrafbakDouble
   // Wie heeft het meest gebakken deze week? Gaat naar alle deelnemers van die week
-  StrafbakkenMaster
+  StrafbakMaster
   // Chris
-  StrafbakkenNoStrafbak
+  StrafbakNoStrafbak
 
   // Wanneer je verslagen wordt op een leaderboard (bijv. je stond op plek 3, maar nu op 4)
   // Niet versturen als je niet van plek verwisseld, en ophopen
   LeaderboardGotBeaten
-  // Nieuw leaderboard geopend
-  LeaderboardNew
-
-
-  // Declaratie goedgekeurd
-  OngeveerDeclarationApproved
-  // Declaratie afgekeurd
-  OngeveerDeclarationDisapproved
 
   // Admin notifications
   // Geen persoonlijke email gevonden bij proberen versturen
   AdminNoPersonalEmail
   // Setting niet gevonden
   AdminSettingNotFound
-  // Notificatie gefaald
-  AdminNotificationDeliveryFailed
-  // Notificatie constructie gefaald
-  AdminNotificationContructionFailed
   // Overige error, niet beschreven in een type
   AdminError
 
@@ -1033,13 +1013,17 @@ enum NotificationType {
 
 model Notification {
   id Int @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   title String
-  body String @db.Text
+  body String? @db.Text
   type NotificationType
 
-  sent Boolean
+  failed Boolean @default(false)
+  sent Boolean @default(false)
 
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
+  discord Boolean @default(false)
+  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int?
 }
