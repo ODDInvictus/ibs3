@@ -7,6 +7,7 @@
 	export let subject: string = `IBS Notificatie`
 	export let isFeut: boolean = false
 	export let customGreeting: string = `Invictus Bier Systeem`
+	export let customFooter: string | undefined = undefined
 </script>
 
 <Html lang="nl" dir="ltr">
@@ -52,11 +53,15 @@
 					<hr style="margin:16px 0;width:100%;" />
 
 					<p style="margin-top:16px;">
-						Je ontvangt deze e-mail omdat
-						{#if isFeut}
-							je een feut bent.
+						{#if customFooter}
+							{customFooter}
 						{:else}
-							je lid bent van O.D.D. Invictus
+							Je ontvangt deze e-mail omdat
+							{#if isFeut}
+								je een feut bent.
+							{:else}
+								je lid bent van O.D.D. Invictus
+							{/if}
 						{/if}
 					</p>
 

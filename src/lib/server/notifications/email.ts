@@ -1,12 +1,9 @@
-import type { Notification } from '$lib/server/prisma/client'
-import { SESClient, SendEmailCommand, type SendEmailCommandInput } from '@aws-sdk/client-ses'
 import db from '$lib/server/db'
-import { notificationFailed } from '.'
-import { render } from 'svelte-email'
-import NewActivity from '$lib/emails/NewActivity.svelte'
 import nodemailer from 'nodemailer'
-import { isFeut } from '../auth/helpers'
-import CustomText from '$lib/emails/CustomText.svelte'
+import type { Notification, User } from '$lib/server/prisma/client'
+import { NotificationType } from '$lib/server/prisma/client'
+import { SESClient, SendEmailCommand, type SendEmailCommandInput } from '@aws-sdk/client-ses'
+import { makeNotification, notificationFailed } from '.'
 
 let ses: SESClient
 
@@ -31,94 +28,24 @@ export async function initAWS() {
 	})
 }
 
-export async function sendCustomNotificationOverMail(notification: Notification, body: string) {
-	await sendNotificationOverMail(notification, CustomText, {
-		text: body,
-	})
-}
-
-export async function sendNewActivityOverMail(notification: Notification) {
-	const activity = await db.activity.findFirst({
-		where: {
-			id: Number.parseInt(notification.body),
-		},
-	})
-
-	if (!activity) {
-		await notificationFailed(
-			new Error(`ActivityNew: activity ${notification.body} not found`),
-			'$lib/server/notifications/email::sendNewActivityOverMail',
-		)
-		return
-	}
-
-	const location = await db.activityLocation.findFirst({
-		where: {
-			id: activity.locationId!,
-		},
-	})
-
-	await sendNotificationOverMail(notification, NewActivity, {
-		activity,
-		location,
-	})
-}
-
-export async function sendStrafbakkenNoStrafbak(notification: Notification) {
-	const user = await db.user.findFirst({
-		where: {
-			id: Number.parseInt(notification.body),
-		},
-	})
-
-	if (!user) {
-		await notificationFailed(
-			new Error(`StrafbakkenNoStrafbak: user ${notification.body} not found`),
-			'$lib/server/notifications/email::sendStrafbakkenNoStrafbak',
-		)
-		return
-	}
-	await sendCustomNotificationOverMail(notification, `${user.firstName} heeft geen strafbakken meer! Doe er wat aan.`)
-}
-
-async function sendNotificationOverMail(notification: Notification, template: any, extraProps: Record<any, any>) {
+export async function sendNotificationOverMail(notification: Notification, html: string, text: string, user: User) {
 	if (!process.env.EMAIL_SENDER) {
 		logError('env EMAIL_SENDER unset')
-		return
+		return null
 	}
 
 	if (!process.env.EMAIL_REPLY_TO) {
 		logError('env EMAIL_REPLY_TO unset')
-		return
+		return null
 	}
 
-	const user = await db.user.findFirstOrThrow({
-		where: {
-			id: notification.userId,
-		},
-	})
-
-	if (!user || !user.personalEmail) {
-		return
+	if (!user.personalEmail) {
+		logError('user.personalEmail is unset')
+		makeNotification({ type: NotificationType.AdminNoPersonalEmail, props: { names: [user.ldapId] } }, 'discord')
+		return null
 	}
-
-	const props = {
-		template: template,
-		props: {
-			user,
-			subject: notification.title,
-			isFeut: isFeut(user),
-			...extraProps,
-		},
-	}
-
-	const emailHtml = render(props)
-
-	const text = render(Object.assign(props, { options: { plainText: true } }))
 
 	if (process.env.NODE_ENV === 'development') {
-		// if (false) {
-
 		const transport = nodemailer.createTransport({
 			host: 'localhost',
 			port: 1025,
@@ -130,7 +57,7 @@ async function sendNotificationOverMail(notification: Notification, template: an
 			replyTo: process.env.EMAIL_REPLY_TO,
 			to: `${user.firstName} ${user.lastName} <${user.personalEmail}>`,
 			subject: notification.title,
-			html: emailHtml,
+			html: html,
 			text: text,
 		})
 	} else {
@@ -148,7 +75,7 @@ async function sendNotificationOverMail(notification: Notification, template: an
 				Body: {
 					Html: {
 						Charset: 'UTF-8',
-						Data: emailHtml,
+						Data: html,
 					},
 					Text: {
 						Charset: 'UTF-8',
@@ -163,7 +90,7 @@ async function sendNotificationOverMail(notification: Notification, template: an
 			const response = await ses.send(command)
 			log(`Email ${notification.id} sent. SESID ${response.MessageId}`)
 		} catch (err: any) {
-			await notificationFailed(err, '$lib/server/notifications/email::sendNotificationOverMail')
+			await notificationFailed(err, '$lib/server/notifications/email::sendNotificationOverMail', notification)
 		}
 	}
 
@@ -172,7 +99,6 @@ async function sendNotificationOverMail(notification: Notification, template: an
 			id: notification.id,
 		},
 		data: {
-			body: text,
 			sent: true,
 		},
 	})
