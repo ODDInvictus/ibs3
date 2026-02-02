@@ -8,7 +8,7 @@
 
 <Title title="Kalender" />
 <div class="topbar">
-	<a href="/activiteit/nieuw">Activiteit aanmaken</a>
+	<a href="/activiteit/nieuw/v2">Activiteit aanmaken</a>
 	<a href="/kalender/oud">Oude activiteiten</a>
 	<a href="/kalender/link">Download .ics</a>
 </div>

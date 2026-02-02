@@ -20,7 +20,6 @@ const handleAuthorization = (async ({ event, resolve }) => {
 	const committees = await getCommittees(user)
 	const roles = await getRoles(user, committees)
 
-	// @ts-expect-error Dit wordt geset wanneer de gebruiker inlogd, dus dit is geen probleem
 	event.locals.user = user
 	// @ts-expect-error Dit wordt geset wanneer de gebruiker inlogd, dus dit is geen probleem
 	event.locals.committees = committees
