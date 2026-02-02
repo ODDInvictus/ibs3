@@ -29,7 +29,7 @@
 		{/each}
 		<tr>
 			<td><a href="/ongeveer/relations/create"><Plus /></a></td>
-			<td colspan="2" />
+			<td colspan="2"></td>
 		</tr>
 	</tbody>
 </table>

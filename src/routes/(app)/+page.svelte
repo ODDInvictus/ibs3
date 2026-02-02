@@ -161,7 +161,7 @@
 					{formatDateHumanReadable(data.activity.startTime)}
 				</time>
 			</div>
-			<div class="mt-4" />
+			<div class="mt-4"></div>
 			<div class="ibs-card--links">
 				<a href="/activiteit/{data.activity.id}">Meer informatie</a>
 				<button class="btn-a" on:click={bij}>Ik ben 🐝</button>
@@ -181,7 +181,7 @@
 		<blockquote class="ibs-card--content">
 			<p>{@html markdown(data.quote)}</p>
 		</blockquote>
-		<div class="mt-6" />
+		<div class="mt-6"></div>
 		<div class="ibs-card--links">
 			<a href="/citaten">Meer citaten</a>
 		</div>
@@ -194,7 +194,7 @@
 			<h1 data-testid="strafbakken">{data.strafbakken}</h1>
 			<p>strafbakken!</p>
 		</div>
-		<div class="mt-6" />
+		<div class="mt-6"></div>
 		<div class="ibs-card--links">
 			<a href="/strafbakken/{data.user.ldapId}">Waarom?</a>
 		</div>

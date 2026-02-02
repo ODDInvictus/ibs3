@@ -41,7 +41,7 @@
 		<div class="status">
 			{#key status}
 				{#if status !== 'UNSURE'}
-					<div class="status-circle {getStatus()}" />
+					<div class="status-circle {getStatus()}"></div>
 				{:else}
 					<div class="status-circle unsure">?</div>
 				{/if}

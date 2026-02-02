@@ -427,7 +427,7 @@
 												// @ts-ignore
 												editFields[photo.id].value = e.target?.value
 											}
-										}} />
+										}}></textarea>
 								</td>
 								<td>
 									<button class="btn-a" on:click={() => edit('description', photo.id)}>

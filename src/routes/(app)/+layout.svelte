@@ -18,19 +18,19 @@
 
 	export let data: PageData
 
-	const flash = getFlash(page)
+	// const flash = getFlash(page)
 
-	flash.subscribe($flash => {
-		if (!$flash) return
+	// flash.subscribe($flash => {
+	// 	if (!$flash) return
 
-		toast({
-			type: $flash.type,
-			title: $flash.title,
-			message: $flash.message,
-		})
+	// 	toast({
+	// 		type: $flash.type,
+	// 		title: $flash.title,
+	// 		message: $flash.message,
+	// 	})
 
-		flash.set(undefined)
-	})
+	// 	flash.set(undefined)
+	// })
 
 	afterNavigate(() => {
 		// Reset scroll position on layout--container-slot
@@ -47,7 +47,6 @@
 
 <main class="layout--main">
 	<Navbar {openMenu} {open} version={data.version} />
-
 	{#if open}
 		<div class="layout--mobimenu">
 			<MobileMenu version={data.version} />
@@ -55,11 +54,10 @@
 	{/if}
 
 	<Modals>
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<div slot="backdrop" class="backdrop" role="button" tabindex="0" on:click={closeModal} />
+		<div slot="backdrop" class="backdrop" role="button" tabindex="0" on:click={closeModal}></div>
 	</Modals>
 
-	<div class="layout--stripe" data-open={open} />
+	<div class="layout--stripe" data-open={open}></div>
 
 	<Topbar adminAlert={data.adminAlert} />
 

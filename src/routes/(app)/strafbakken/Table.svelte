@@ -62,8 +62,8 @@
 		{#if longestName !== null}
 			<row id="invisible">
 				<p class="cell">{longestName}</p>
-				<div class="cell" />
-				<div class="cell" />
+				<div class="cell"></div>
+				<div class="cell"></div>
 			</row>
 		{/if}
 	</tbody>

@@ -87,7 +87,7 @@
 	<Title title="Playlist" />
 	<p class="error">Error: {data.error}</p>
 {:else if data.track}
-	<audio bind:this={player} src={data.track.body.preview_url} loop />
+	<audio bind:this={player} src={data.track.body.preview_url} loop></audio>
 	<Title title={data.track.body.name} underTitle={data.track.body.artists[0].name} />
 	<main>
 		<div class="info">
@@ -117,8 +117,7 @@
 							on:click={() => {
 								isPaused = false
 								player.play()
-							}}
-						>
+							}}>
 							<Play color="#551b8a" height="2rem" width="2rem" />
 						</button>
 					{:else}
@@ -126,8 +125,7 @@
 							on:click={() => {
 								isPaused = true
 								player.pause()
-							}}
-						>
+							}}>
 							<Pause color="#551b8a" height="2rem" width="2rem" />
 						</button>
 					{/if}
@@ -240,7 +238,10 @@
 			progress[value]::-webkit-progress-value {
 				background-color: var(--color-primary);
 				border-radius: 1rem;
-				background-size: 35px 20px, 100% 100%, 100% 100%;
+				background-size:
+					35px 20px,
+					100% 100%,
+					100% 100%;
 			}
 		}
 	}

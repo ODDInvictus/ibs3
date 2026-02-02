@@ -38,7 +38,7 @@
 
 	<div class="form-control">
 		<label class="label" for="message">Bericht</label>
-		<textarea name="message" id="message" required />
+		<textarea name="message" id="message" required></textarea>
 	</div>
 
 	<div class="form-control">

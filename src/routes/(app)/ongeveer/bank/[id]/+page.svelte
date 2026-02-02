@@ -89,7 +89,7 @@
 			<th>Bedrag</th>
 			<th>Boekstuk</th>
 			<th>Voeg toe aan saldo</th>
-			<th />
+			<th></th>
 		</thead>
 		<tbody>
 			{#each $form.rows as _, i}
@@ -102,7 +102,7 @@
 					</td>
 					<td>
 						<select class:has-error={$errors.rows?.[i]?.journal} bind:value={$form.rows[i].journal}>
-							<option value="" selected />
+							<option value="" selected></option>
 							{#each data.journals ?? [] as journal}
 								<option value={journal.id}>
 									{journal.id}{journal.ref ? ` - ${journal.ref}` : ''} ({journal.type.toLowerCase()})

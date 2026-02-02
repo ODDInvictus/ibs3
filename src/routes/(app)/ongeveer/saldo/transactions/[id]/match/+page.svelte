@@ -66,7 +66,7 @@
 			<th>Omschrijving</th>
 			<th>Amount</th>
 			<th>Boekstuk</th>
-			<th />
+			<th></th>
 		</thead>
 		<tbody>
 			{#if data.transaction.TransactionMatchRow}
@@ -77,7 +77,7 @@
 					<td>
 						<a href="/ongeveer/transaction/{row.transactionId}">Transactie #{row.transactionId}</a>
 					</td>
-					<td />
+					<td></td>
 				</tr>
 			{/if}
 			{#each $form.rows as _, i}

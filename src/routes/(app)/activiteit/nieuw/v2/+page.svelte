@@ -44,7 +44,7 @@
 
 			<label for="description">
 				Beschrijving
-				<textarea name="description" placeholder="Beschrijving" bind:value={$form.description} {...$constraints.description} />
+				<textarea name="description" placeholder="Beschrijving" bind:value={$form.description} {...$constraints.description}></textarea>
 			</label>
 
 			<label for="date"> Datum </label>
@@ -56,12 +56,12 @@
 			<div class="filler"></div>
 			<label for="description">
 				Beschrijving
-				<textarea name="description" placeholder="Beschrijving" bind:value={$form.description} {...$constraints.description} />
+				<textarea name="description" placeholder="Beschrijving" bind:value={$form.description} {...$constraints.description}></textarea>
 			</label>
 
 			<label for="description">
 				Beschrijving
-				<textarea name="description" placeholder="Beschrijving" bind:value={$form.description} {...$constraints.description} />
+				<textarea name="description" placeholder="Beschrijving" bind:value={$form.description} {...$constraints.description}></textarea>
 			</label>
 		</div>
 

@@ -37,7 +37,7 @@
 </script>
 
 <div id="invoice">
-	<div class="topbar" />
+	<div class="topbar"></div>
 	<div class="top">
 		<div>
 			<p><b>{invoice.relation.name}</b></p>
@@ -109,7 +109,7 @@
 					</tr>
 				{/each}
 				<tr class="total">
-					<td /><td />
+					<td></td><td></td>
 					<td><i>Totaal</i></td>
 					<td>
 						{formatPrice(invoice.Rows.reduce((t, row) => t + row.amount * Number(row.price), 0))}

@@ -20,7 +20,7 @@
 
 {#if showMenu}
 	<div class="menu">
-		<div id="pointer" />
+		<div id="pointer"></div>
 
 		<button class="menu-item" on:click={() => toggleColor()}>{isDarkMode() ? 'Light mode' : 'Dark mode'}</button>
 		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/leden/ik">Profiel</a>

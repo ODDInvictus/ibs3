@@ -67,7 +67,7 @@
 	}
 </script>
 
-<audio src={previewSrc} bind:this={audioPlayer} />
+<audio src={previewSrc} bind:this={audioPlayer}></audio>
 <ul>
 	{#each tracks as track}
 		<li class={playlist.includes(track.id) ? 'highlight' : ''}>
@@ -78,8 +78,7 @@
 				}}
 				role="button"
 				tabindex="0"
-				class="like"
-			>
+				class="like">
 				{#if liked.includes(track.id)}
 					<HeartFilled color="#1db954" />
 				{:else}
@@ -102,13 +101,11 @@
 				}}
 				class={`${track.preview_url ? 'clickable' : ''}`}
 				on:mouseenter={() => (hovering = track.preview_url ?? '')}
-				on:mouseleave={() => (hovering = '')}
-			>
+				on:mouseleave={() => (hovering = '')}>
 				<img
 					src={getSmallestImage(track.album.images).url}
 					alt={'Album cover ' + track.name}
-					class={`${previewSrc === track.preview_url && !audioPlayer.paused ? 'highlight' : ''}`}
-				/>
+					class={`${previewSrc === track.preview_url && !audioPlayer.paused ? 'highlight' : ''}`} />
 				{#if track.preview_url}
 					{#if (hovering === track.preview_url && (previewSrc !== track.preview_url || audioPlayer.paused)) || (previewSrc === track.preview_url && audioPlayer.paused)}
 						<Play style="position: absolute; top: 16px; left: 16px; height: 26px; width: 26px;" />
@@ -140,7 +137,9 @@
 				$hightlight-color: var(--color-primary);
 
 				background-color: $hightlight-color;
-				box-shadow: $hightlight-color -20px 0px 0px 5px, $hightlight-color 20px 0px 0px 5px;
+				box-shadow:
+					$hightlight-color -20px 0px 0px 5px,
+					$hightlight-color 20px 0px 0px 5px;
 
 				a,
 				p,

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import '../app.scss'
 	import { pwaInfo } from 'virtual:pwa-info'
 
@@ -10,6 +10,6 @@
 	{@html webManifestLink}
 </svelte:head>
 
-<div class="body ibs-theme--{$page.data.theme}">
+<div class="body ibs-theme--{page.data.theme}">
 	<slot />
 </div>

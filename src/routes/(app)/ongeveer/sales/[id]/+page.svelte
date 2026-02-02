@@ -168,9 +168,9 @@
 				{/each}
 				<tr>
 					<td><i>Totaal</i></td>
-					<td />
+					<td></td>
 					<td><i>{formatPrice(data.total)}</i></td>
-					<td colspan="2" />
+					<td colspan="2"></td>
 				</tr>
 			</tbody>
 		</table>
@@ -201,7 +201,7 @@
 				{/each}
 				<tr>
 					<td><i>Totaal</i></td>
-					<td colspan="2" />
+					<td colspan="2"></td>
 					<td>{formatPrice(data.paid)}</td>
 				</tr>
 			</tbody>

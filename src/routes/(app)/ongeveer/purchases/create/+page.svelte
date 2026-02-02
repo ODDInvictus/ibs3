@@ -119,7 +119,7 @@
 			<th>Hoeveelheid</th>
 			<th>Prijs</th>
 			<th>Grootboek</th>
-			<th />
+			<th></th>
 		</thead>
 		<tbody>
 			{#each $form.rows as _, i}

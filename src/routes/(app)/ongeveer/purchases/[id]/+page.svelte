@@ -114,7 +114,7 @@
 			</tr>
 		{/each}
 		<tr>
-			<td colspan="3" />
+			<td colspan="3"></td>
 			<td><i>Totaal</i></td>
 			<td>{formatPrice(data.total)}</td>
 		</tr>
@@ -144,7 +144,7 @@
 			</tr>
 		{/each}
 		<tr>
-			<td colspan="2" />
+			<td colspan="2"></td>
 			<td><i>Totaal</i></td>
 			<td>{formatPrice(data.purchase.TransactionMatchRow.reduce((acc, { amount }) => acc + Number(amount), 0))}</td>
 		</tr>

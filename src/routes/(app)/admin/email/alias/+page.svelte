@@ -83,7 +83,7 @@
 		<tbody>
 			<tr>
 				<td class="bold"> Persoonlijke aliassen </td>
-				<td />
+				<td></td>
 				<td>
 					<div class="options">
 						<button class="btn-a" on:click={() => goto('/admin/email/alias/nieuw/persoonlijk')}>
@@ -127,7 +127,7 @@
 
 			<tr>
 				<td class="bold"> Losse aliassen </td>
-				<td />
+				<td></td>
 				<td>
 					<div class="options">
 						<button class="btn-a" on:click={() => goto('/admin/email/alias/nieuw/custom')}>
@@ -165,7 +165,7 @@
 
 			<tr>
 				<td class="bold"> Gebruikers </td>
-				<td />
+				<td></td>
 				<td>
 					<div class="options">
 						<button class="btn-a" on:click={userInfo}>
@@ -201,7 +201,7 @@
 
 			<tr>
 				<td class="bold"> Commissie aliassen </td>
-				<td />
+				<td></td>
 				<td>
 					<div class="options">
 						<button class="btn-a" on:click={() => goto('/admin/commissie')}>

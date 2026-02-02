@@ -1,9 +1,9 @@
 <script>
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 </script>
 
 <div class="ibs-error-page">
-	<h1><code>{$page?.error?.message}</code></h1>
+	<h1><code>{page?.error?.message}</code></h1>
 	<p>
 		Daar is toch echt wel iets flink mis gegaan. Ik zou je een strafbak hiervoor geven maar helaas kan dat nog niet automatisch.
 		Geluksvogel.

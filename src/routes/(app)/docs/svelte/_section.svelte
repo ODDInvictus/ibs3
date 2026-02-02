@@ -82,10 +82,10 @@
 					<th>Element</th>
 				</tr>
 			</thead>
-			<tbody class="items-{title}" />
+			<tbody class="items-{title}"></tbody>
 		</table>
 	{/if}
-	<td style="display: none;" />
+	<td style="display: none;"></td>
 </section>
 
 <style>

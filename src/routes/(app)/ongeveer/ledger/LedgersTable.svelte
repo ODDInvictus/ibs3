@@ -34,8 +34,8 @@
 						><Plus />
 					</button>
 				</td>
-				<td />
-				<td />
+				<td></td>
+				<td></td>
 			</tr>
 		{/if}
 	</tbody>

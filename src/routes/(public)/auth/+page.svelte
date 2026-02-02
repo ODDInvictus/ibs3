@@ -36,7 +36,7 @@
 			<header class="ibs-card">
 				<Logo />
 				<LogoBig />
-				<div class="spacer" />
+				<div class="spacer"></div>
 				<div class="buttons">
 					<button on:click={() => (selection = 'login')}>
 						<i><Login /></i>
@@ -52,7 +52,7 @@
 				</div>
 			</header>
 		</div>
-		<div class="stripe" />
+		<div class="stripe"></div>
 		<div class="login-card">
 			<div class="ibs-card">
 				{#if selection === 'login'}

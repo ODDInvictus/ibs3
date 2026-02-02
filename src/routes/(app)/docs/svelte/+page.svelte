@@ -34,8 +34,7 @@
 
 <Title
 	title="IBS UI toolkit"
-	underTitle="Gegenereerde documentatie voor onze UI components. Deze pagina zal niet zo best werken op mobiel"
-/>
+	underTitle="Gegenereerde documentatie voor onze UI components. Deze pagina zal niet zo best werken op mobiel" />
 
 <div class="table-of-contents">
 	<p>Spring gelijk naar:</p>
@@ -128,8 +127,7 @@
 			<tr>
 				<td
 					>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur rem sit harum veritatis illum provident molestiae, quia
-					earum inventore alias dicta corporis officiis consectetur ratione sapiente eos temporibus adipisci quis?</td
-				>
+					earum inventore alias dicta corporis officiis consectetur ratione sapiente eos temporibus adipisci quis?</td>
 				<td>38</td>
 			</tr>
 			<tr>
@@ -211,8 +209,7 @@
 				title: 'Verwijderen',
 			},
 		]}
-		columns={['Naam', 'Strafbakken', 'Acties']}
-	/>
+		columns={['Naam', 'Strafbakken', 'Acties']} />
 </Section>
 
 <Section title="Cards">
@@ -295,7 +292,7 @@
 	<input type="password" placeholder="password" />
 	<input type="email" placeholder="email" />
 
-	<textarea placeholder="textarea" />
+	<textarea placeholder="textarea"></textarea>
 
 	<input type="checkbox" />
 	<input type="checkbox" disabled />
@@ -349,8 +346,7 @@
 				title: 'Dit is een prompt',
 				message: 'Dit is een prompt message',
 				cb: async () => {},
-			})}
-	>
+			})}>
 		Klik hier voor prompt()
 	</button>
 
@@ -361,8 +357,7 @@
 				title: 'Dit is een confirm',
 				message: 'Dit is een confirm message',
 				cb: async () => {},
-			})}
-	>
+			})}>
 		Klik hier voor confirm()
 	</button>
 
@@ -374,8 +369,7 @@
 				message: 'Dit is een promptSelect message',
 				options: ['option 1', 'option 2', 'option 3'],
 				cb: async () => {},
-			})}
-	>
+			})}>
 		Klik hier voor promptSelect()
 	</button>
 
@@ -387,8 +381,7 @@
 				message: 'Dit is een promptCheckbox message',
 				value: true,
 				cb: async () => {},
-			})}
-	>
+			})}>
 		Klik hier voor promptCheckbox()
 	</button>
 </Section>

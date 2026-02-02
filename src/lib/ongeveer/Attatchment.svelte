@@ -43,7 +43,7 @@
 		{#if ['png', 'jpg', 'jpeg', 'gif', 'avif'].includes(fileExtention)}
 			<img {src} alt={filename} />
 		{:else if fileExtention === 'pdf'}
-			<iframe {src} title={filename} />
+			<iframe {src} title={filename}></iframe>
 		{:else}
 			<a href={src} download={filename} class="button download"> Download </a>
 		{/if}

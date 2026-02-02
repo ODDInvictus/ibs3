@@ -62,7 +62,7 @@
 			<th>Product</th>
 			<th>Hoeveelheid</th>
 			<th>Prijs p/s</th>
-			<th />
+			<th></th>
 		</thead>
 		<tbody>
 			{#each $form.rows as _, i}
@@ -75,16 +75,14 @@
 							bind:value={$form.rows[i].financialPersonId}
 							keywordsFunction={item => [item.name, item.FinancialPersonDataUser?.user?.nickname ?? ''].join(' ')}
 							inputClassName={errors?.financialPersonId ? 'has-error' : ''}
-							{...defaultAutoCompleteProps}
-						/>
+							{...defaultAutoCompleteProps} />
 					</td>
 					<td>
 						<AutoComplete
 							items={data.products}
 							bind:value={$form.rows[i].productId}
 							inputClassName={errors?.productId ? 'has-error' : ''}
-							{...defaultAutoCompleteProps}
-						/>
+							{...defaultAutoCompleteProps} />
 					</td>
 					<td>
 						<input type="number" bind:value={$form.rows[i].amount} class:has-error={errors?.amount} />
@@ -99,8 +97,7 @@
 								filtered.splice(i, 1)
 								$form.rows = filtered
 							}}><Trash /></i
-						></td
-					>
+						></td>
 				</tr>
 			{/each}
 		</tbody>

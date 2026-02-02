@@ -26,7 +26,7 @@
 		{#if longestName !== null}
 			<tr id="invisible">
 				<td class="cell">{longestName}</td>
-				<td class="cell" />
+				<td class="cell"></td>
 			</tr>
 		{/if}
 	</tbody>

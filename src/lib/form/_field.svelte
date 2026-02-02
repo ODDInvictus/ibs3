@@ -74,7 +74,7 @@
 			placeholder={field.placeholder}
 			value={field.value?.toString() || ''}
 			disabled={field.disabled}
-			data-testid="{field.name}-input" />
+			data-testid="{field.name}-input"></textarea>
 	{:else if field.type === 'table' && field.columns}
 		<table id={field.name}>
 			<thead>
@@ -84,8 +84,8 @@
 				{#each field.columns as column}
 					<th><Label field={column} /></th>
 				{/each}
-				<th />
-				<th />
+				<th></th>
+				<th></th>
 			</thead>
 			<tbody>
 				{#each rows as i}
@@ -132,16 +132,16 @@
 			data-testid="{field.name}-input" />
 	{/if}
 	{#if field.type !== 'table'}
-		<p id="{field.name}-error" class="form-error" />
+		<p id="{field.name}-error" class="form-error"></p>
 	{/if}
 {:else}
 	{#if field.type == 'table'}
-		<div class="spacer" />
+		<div class="spacer"></div>
 	{/if}
-	<div class="loader" />
+	<div class="loader"></div>
 	{#if field.type == 'table'}
-		<div class="spacer" />
-		<div class="loader table" />
+		<div class="spacer"></div>
+		<div class="loader table"></div>
 	{/if}
 {/if}
 

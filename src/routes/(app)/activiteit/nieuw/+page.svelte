@@ -66,13 +66,12 @@
 <form
 	method="POST"
 	enctype="multipart/form-data"
-	use:enhance={({ data }) => {
+	use:enhance={({}) => {
 		return async ({ result }) => {
 			await applyAction(result)
 			handleErrors()
 		}
-	}}
->
+	}}>
 	<label for="name">Naam <span>(markdown)</span></label>
 	<div class="md-input">
 		<input type="text" name="name" id="name" bind:value={name} />
@@ -83,7 +82,7 @@
 
 	<label for="description">Beschrijving <span>(markdown)</span></label>
 	<div class="md-input">
-		<textarea name="description" id="description" bind:value={description} />
+		<textarea name="description" id="description" bind:value={description}></textarea>
 		{#if descriptionMarkdown && description !== descriptionMarkdown.replaceAll('<br />', '')}
 			<Markdown class="md" text={descriptionMarkdown} />
 		{/if}

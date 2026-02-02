@@ -127,7 +127,7 @@
 	}
 </script>
 
-<audio src="" bind:this={audioPlayer} />
+<audio src="" bind:this={audioPlayer}></audio>
 {#if !mounted}
 	<div class="load">
 		<Loader />
@@ -164,8 +164,7 @@
 					on:click={async () => {
 						if (!current) return
 						await Promise.all([react(current, false), next()])
-					}}
-				>
+					}}>
 					<svelte:component this={Cross} width="70" height="70" />
 				</icon>
 
@@ -176,8 +175,7 @@
 						await next()
 						if (!current) return
 						skipped = [...skipped, current]
-					}}
-				>
+					}}>
 					<Arrow width="50" height="50" />
 				</icon>
 
@@ -189,8 +187,7 @@
 						if (!current) return
 
 						await Promise.all([react(current, true), next()])
-					}}
-				>
+					}}>
 					<Heart width="70" height="70" />
 				</icon>
 			</div>

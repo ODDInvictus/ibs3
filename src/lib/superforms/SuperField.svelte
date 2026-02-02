@@ -61,7 +61,7 @@
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
 			{...deleteRequired($constraints)}
-			{...$$restProps} />
+			{...$$restProps}></textarea>
 	{:else if type === 'date'}
 		<input
 			{name}

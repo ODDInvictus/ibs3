@@ -50,14 +50,14 @@
 					}}>
 					<p>Reden:</p>
 					<input type="number" name="receiver" hidden value={uid} />
-					<textarea name="reason" bind:value={reason} />
+					<textarea name="reason" bind:value={reason}></textarea>
 					{#if reasonMarkdown && reason !== reasonMarkdown.replaceAll('<br />', '')}
 						<Markdown class="md" text={reasonMarkdown} />
 					{/if}
 					<button type="submit" class={status.btn}> Verzenden </button>
 				</form>
 			</div>
-			<div class={'progress ' + status.bar} />
+			<div class={'progress ' + status.bar}></div>
 		</div>
 	</div>
 {/if}

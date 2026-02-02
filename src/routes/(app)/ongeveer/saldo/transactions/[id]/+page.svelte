@@ -88,7 +88,7 @@
 		{/if}
 
 		<tr>
-			<td />
+			<td></td>
 			<td><i>Totaal</i></td>
 			<td>
 				<i>
