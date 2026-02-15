@@ -2,6 +2,7 @@ import type { Actions, PageServerLoad } from './$types'
 import db, { getFeuten, getMembers } from '$lib/server/db'
 import { error, fail } from '@sveltejs/kit'
 import { isMember } from '$lib/server/auth'
+import { LDAP_IDS } from '$lib/constants'
 
 export const load = (async ({ locals }) => {
 	const ok = isMember(locals.user)
@@ -20,6 +21,15 @@ export const load = (async ({ locals }) => {
 
 	return {
 		maluspunten: await db.maluspunt.findMany({
+			where: {
+				receiver: {
+					CommitteeMember: {
+						none: {
+							committee: { ldapId: LDAP_IDS.MEMBERS },
+						},
+					},
+				},
+			},
 			include: {
 				giver: true,
 				receiver: true,
