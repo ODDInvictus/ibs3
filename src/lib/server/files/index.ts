@@ -1,4 +1,3 @@
-import { uploadGenericFile, uploadPhoto, getFile, getFileByFilename, deleteFile } from './fileHandler'
-import { client } from './mongo'
+import { uploadGenericFile, uploadPhoto, readFile, readFileByFilename, readPhotoByFilename, deleteFile } from './disk'
 
-export { uploadGenericFile, uploadPhoto, client, getFile, getFileByFilename, deleteFile }
+export { uploadGenericFile, uploadPhoto, readFile, readFileByFilename, readPhotoByFilename, deleteFile }
