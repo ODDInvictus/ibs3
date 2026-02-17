@@ -26,7 +26,7 @@
 			{:else if type === 'warning'}
 				<AlertTriangle /> <span>Waarschuwing</span>
 			{:else}
-				<HandStop /> <span>Pas op!</span>
+				<HandStop /> <span>Oei!</span>
 			{/if}
 		</i>
 	</div>
