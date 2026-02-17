@@ -3,12 +3,10 @@ import { env as envPublic } from '$env/dynamic/public'
 import { sequence } from '@sveltejs/kit/hooks'
 import type { Handle, HandleServerError } from '@sveltejs/kit'
 import { notifyDiscordError } from '$lib/server/notifications/discord'
-import { client as Mongo } from '$lib/server/files'
 import { handleAuthentication, handleAuthorization } from '$lib/server/auth'
 import { initAuthHelpers } from '$lib/server/auth'
 import { initSettings } from '$lib/server/settings/settings'
 import { initAWS } from '$lib/server/notifications/email'
-import { work } from './worker/worker'
 
 const handleCors: Handle = async ({ event, resolve }) => {
 	const res = await resolve(event)
@@ -37,31 +35,20 @@ await (async () => {
 	await initAuthHelpers()
 	await initAWS()
 
-	if (envPublic.PUBLIC_DISABLE_MONGO === 'true') {
-		log('MongoDB is not connected.')
-	} else {
-		await Mongo.connect()
-		log('You successfully connected to MongoDB!')
-	}
-
 	// start the service worker
-	// if (env.WORKER_ON_MAIN_THREAD) {
-	// 	log('Starting worker on main thread')
-	// 	setInterval(async () => await work(), env.WORKER_INTERVAL ? Number.parseInt(env.WORKER_INTERVAL) : 10 * 1000)
-	// } else {
-	// 	const worker = new Worker('./src/worker/worker.ts') as Bun.Worker
+	const worker = new Worker('./src/worker/worker.ts') as Bun.Worker
 
-	// 	worker.addEventListener('open', () => {
-	// 		log('Hallo service worker!')
-	// 		worker.postMessage('Hallo worker!')
-	// 	})
+	worker.addEventListener('open', () => {
+		log('Hallo service worker!')
+		worker.postMessage('Hallo worker!')
+	})
 
-	// 	worker.addEventListener('error', error => {
-	// 		log('[IBS3] worker crashed')
-	// 		log(error.message)
-	// 		process.exit(1)
-	// 	})
-	// }
+	worker.addEventListener('error', error => {
+		log('[IBS3] worker crashed')
+		log(error.message)
+		// TODO: iets hiermee doen
+		process.exit(1)
+	})
 })()
 
 function log(...objects: any[]) {

@@ -1,8 +1,7 @@
 import { db } from '$lib/server/db'
-import { notificationFailed } from '$lib/server/notifications'
-import { sendNewActivityOverMail, sendStrafbakkenNoStrafbak } from '$lib/server/notifications/email'
-import { getUserNotificationPreference } from '$lib/server/preferences'
-import { NotificationType } from '$lib/server/prisma/enums'
+import { Setting } from '$lib/server/settings'
+import { Client, Events, GatewayIntentBits, MessageType, type Snowflake } from 'discord.js'
+import { parseDiscordMessageIntoQuote } from './discord'
 
 declare var self: Worker
 
@@ -11,59 +10,129 @@ const MINUTE = 60 * SECOND
 const HOUR = 60 * MINUTE
 const DAY = 24 * HOUR
 
-self.onmessage = (event: MessageEvent) => {
+let client: Client
+
+self.onmessage = async (event: MessageEvent) => {
 	log('Hallo ibs3!')
 
-	const time = process.env.WORKER_INTERVAL ? Number.parseInt(process.env.WORKER_INTERVAL) : 10 * SECOND
-	log('Starting interval every ' + time)
-	setInterval(async () => {
-		await work()
-	}, time)
-}
+	const token = process.env.DISCORD_TOKEN
 
-export async function work() {
-	log('working')
-
-	const notifications = await db.notification.findMany({
-		where: {
-			sent: false,
-			failed: false,
-		},
-		include: {
-			user: true,
-		},
-	})
-
-	if (notifications.length === 0) {
+	if (!token) {
+		log('DISCORD_TOKEN unset, worker quitting')
 		return
 	}
 
-	log(`Found ${notifications.length} notifications to send.`)
+	const quoteChannel = await db.settings.findFirst({
+		where: {
+			name: Setting.DISCORD_QUOTE_CHANNEL,
+		},
+	})
 
-	for (const notification of notifications) {
-		log(`Sending ${notification.title} (${notification.type.toString()}) to ${notification.user.firstName}`)
+	if (!quoteChannel?.value || Number.parseInt(quoteChannel.value) === 0) {
+		log('Setting.DISCORD_QUOTE_CHANNEL unset, worker quitting')
+		return
+	}
 
-		try {
-			const allowed = await getUserNotificationPreference(notification.type, notification.user)
-			if (!allowed) continue
+	client = new Client({
+		intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+	})
 
-			switch (notification.type) {
-				case NotificationType.ActivityNew:
-					await sendNewActivityOverMail(notification)
-					continue
-				case NotificationType.StrafbakkenNoStrafbak:
-					await sendStrafbakkenNoStrafbak(notification)
-					continue
-				default:
-					await notificationFailed(
-						new Error(`NotificationType::${notification.type.toString()} not implemented`),
-						'worker::work',
-						notification,
-					)
+	client.on(Events.ClientReady, readyClient => {
+		log(`Discord app started as ${readyClient.user.tag}`)
+	})
+
+	client.on(Events.MessageCreate, async message => {
+		if (message.author.bot) return
+
+		if (message.channelId !== quoteChannel.value) return
+
+		if (message.cleanContent === '/scan') {
+			if (message.author.id !== '183539437097975808') {
+				message.react('🤡')
+				return
 			}
-		} catch (err) {
-			await notificationFailed(err as Error, 'worker::work', notification)
+
+			await scanChannel(client, quoteChannel.value)
+			message.react('✅')
+			return
 		}
+
+		if (message.type === MessageType.Default || message.type === MessageType.Reply) {
+			log(message.content)
+			log(message.content.includes('\n'))
+
+			try {
+				await db.discordMessage.create({
+					data: {
+						id: message.id,
+						sender: message.author.username,
+						text: message.content,
+						createdAt: message.createdAt,
+					},
+				})
+			} catch (err) {
+				return
+			}
+
+			await parseDiscordMessageIntoQuote(message)
+			// saved, so react
+			message.react('🗣️')
+		}
+	})
+
+	client.login(token)
+
+	// await scanChannel(client, quoteChannel.value)
+}
+
+async function scanChannel(client: Client, quoteChannel: Snowflake) {
+	const channel = await client.channels.fetch(quoteChannel)
+
+	if (!channel || !channel.isTextBased()) {
+		log(`Channel ${quoteChannel} not found`)
+		return
+	}
+
+	let lastId: Snowflake = ''
+
+	while (true) {
+		let options = { limit: 100 }
+		if (lastId) {
+			options = Object.assign(options, { before: lastId })
+		}
+
+		const msgs = await channel.messages.fetch(options)
+
+		if (msgs.size === 0) break
+
+		msgs.forEach(async message => {
+			if (message.type === MessageType.Default || message.type === MessageType.Reply) {
+				if (message.cleanContent === '/scan') return
+
+				try {
+					await db.discordMessage.create({
+						data: {
+							id: message.id,
+							sender: message.author.username,
+							text: message.content,
+							createdAt: message.createdAt,
+						},
+					})
+
+					await parseDiscordMessageIntoQuote(message)
+				} catch (err: any) {
+					// als bericht al bestaat, boeie
+				}
+			}
+		})
+
+		const last = msgs.last()
+		if (!last) break
+		lastId = last.id
+
+		console.log('last: ' + lastId)
+
+		await new Promise(resolve => setTimeout(resolve, 1000))
 	}
 }
 
