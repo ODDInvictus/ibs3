@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store'
-import { page } from '$app/stores'
+import { page } from '$app/state'
 
 type Breadcrumb = {
 	label: string
@@ -30,6 +30,13 @@ export function generateBreadcrumbs(path: string, pathname: string) {
 	crumbs = tokens.map((t, idx) => {
 		tokenPath += '/' + t
 
+		if (tokens.length - 1 === idx && page.data.breadcrumb) {
+			return {
+				label: page.data.breadcrumb,
+				href: tokenPath,
+			}
+		}
+
 		if (/\[.*?\]/g.test(t)) {
 			// crumb is a dynamic route
 
@@ -42,7 +49,7 @@ export function generateBreadcrumbs(path: string, pathname: string) {
 			// if that does not exist use the token itself.
 			firstDynamicDone = true
 			return {
-				label: get(page).data.title || normalTokens[idx],
+				label: page.data.title || normalTokens[idx],
 				href: tokenPath,
 			}
 		}
