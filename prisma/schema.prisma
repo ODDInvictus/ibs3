@@ -2,16 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output = "../src/lib/server/prisma"
-  engineType = "client"
-  compilerBuild = "fast"
-}
-
-generator backend {
-  provider = "prisma-client"
-  output = "../backend/prisma"
-  engineType = "client"
+  provider      = "prisma-client"
+  output        = "../src/lib/server/prisma"
+  engineType    = "client"
   compilerBuild = "fast"
 }
 
@@ -33,7 +26,7 @@ model BasePreference {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  key          String @unique @id
+  key          String       @id @unique
   defaultValue Boolean
   description  String
   Preference   Preference[]
@@ -48,9 +41,9 @@ model Preference {
   userId    Int
 
   // Settings
-  base   BasePreference @relation(fields: [baseKey], references: [key], onDelete: Cascade)
+  base    BasePreference @relation(fields: [baseKey], references: [key], onDelete: Cascade)
   baseKey String
-  value  Boolean
+  value   Boolean
 }
 
 // USER
@@ -59,21 +52,22 @@ model User {
   id       Int     @id @default(autoincrement())
   isActive Boolean @default(true)
 
-  firstName      String
-  lastName       String
-  ldapId         String    @unique
-  email          String    @unique
-  personalEmail  String?
-  nickname       String?   @unique
-  profilePicture String?
-  birthDate      DateTime? @db.Date
-  phone          String?
-  firstDrink     DateTime? @db.Date
-  becameFeut     DateTime? @db.Date
-  becameMember   DateTime? @db.Date
-  lastLoggedin   DateTime  @default(now())
-  preferredTheme String    @default("light")
-  accessDisabled Boolean   @default(false)
+  firstName       String
+  lastName        String
+  ldapId          String    @unique
+  email           String    @unique
+  personalEmail   String?
+  nickname        String?   @unique
+  profilePicture  String?
+  birthDate       DateTime? @db.Date
+  phone           String?
+  firstDrink      DateTime? @db.Date
+  becameFeut      DateTime? @db.Date
+  becameMember    DateTime? @db.Date
+  lastLoggedin    DateTime  @default(now())
+  preferredTheme  String    @default("light")
+  accessDisabled  Boolean   @default(false)
+  discordUsername String?
 
   StrafbakGiven     Strafbak[]        @relation("strafbakGiver")
   StrafbakReceived  Strafbak[]        @relation("strafbakReceiver")
@@ -103,6 +97,8 @@ model User {
   File                    File[]
   AccessToken             AccessToken[]
   Activity                Activity[]
+  Quoter                  Quote[]                   @relation("quotedSomeone")
+  Quoted                  Quote[]                   @relation("quoted")
 
   LeaderboardChallengerUser LeaderboardChallengerUser[]
 
@@ -232,9 +228,11 @@ model Activity {
   // Wie zijn er aanwezig?
   attending   Attending[]
 
-  photo  String?
+  activityPhoto   Photo?  @relation(fields: [activityPhotoId], references: [id])
+  activityPhotoId Int?
+  photo           String?
   // Foto's genomen van deze activiteit
-  photos Photo[] @relation("activityPhotos")
+  photos          Photo[] @relation("activityPhotos")
 
   // URL naar meer informatie
   url String? @db.Text
@@ -249,16 +247,18 @@ model Activity {
 
 model ActivityLocation {
   id          Int        @id @default(autoincrement())
-  name        String
-  adress      String
-  country     String
-  postalCode  String
-  city        String
-  description String
+  name        String     @unique
+  adress      String?
+  country     String?
+  postalCode  String?
+  city        String?
+  description String?
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   isActive    Boolean    @default(true)
   Activity    Activity[]
+
+  @@fulltext([name])
 }
 
 enum AttendingStatus {
@@ -269,7 +269,6 @@ enum AttendingStatus {
 }
 
 model Attending {
-  id         Int      @id @default(autoincrement())
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
   activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
@@ -280,6 +279,8 @@ model Attending {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   isActive  Boolean  @default(true)
+
+  @@id([userId, activityId])
 }
 
 // FINANCIALS
@@ -789,8 +790,9 @@ model Photo {
   peopleTagged PhotoPersonTag[]
   comments     Comment[]
 
-  activityPhotos  Activity? @relation("activityPhotos", fields: [activityPhotoId], references: [id], onDelete: SetNull)
+  activityPhotos  Activity?  @relation("activityPhotos", fields: [activityPhotoId], references: [id], onDelete: SetNull)
   activityPhotoId Int?
+  activities      Activity[]
 }
 
 model PhotoTag {
@@ -899,9 +901,9 @@ model LeaderboardEntry {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  leaderboard   Leaderboard           @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
+  leaderboard   Leaderboard            @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
   leaderboardId String
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
   challenger    LeaderboardChallenger? @relation(fields: [challengerId], references: [id], onDelete: Cascade)
   challengerId  String?
@@ -969,7 +971,6 @@ model Job {
   result      String?
 }
 
-
 //
 // Notifications
 //
@@ -984,7 +985,7 @@ enum NotificationType {
   ActivityChangedDate
   // Vul nou die datumprikker in luie hond
   ActivityFillInReminder
-  
+
   // Je hebt een strafbak gekregen
   StrafbakCreate
   // De strafbakken zijn verdubbeld
@@ -1008,22 +1009,48 @@ enum NotificationType {
 
   // Shitposten, leuk. (om te debuggen in productie natuurlijk, als een echte professional)
   AdminShitpost
-
 }
 
 model Notification {
-  id Int @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   title String
-  body String? @db.Text
-  type NotificationType
+  body  String?          @db.Text
+  type  NotificationType
 
   failed Boolean @default(false)
-  sent Boolean @default(false)
+  sent   Boolean @default(false)
 
   discord Boolean @default(false)
-  user   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int?
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int?
+}
+
+model DiscordMessage {
+  // discord msgid
+  id        String   @id
+  createdAt DateTime
+  updatedAt DateTime @updatedAt
+
+  sender String
+  text   String  @db.Text
+  quotes Quote[]
+}
+
+model Quote {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime
+  updatedAt DateTime @updatedAt
+
+  text String @db.Text
+
+  msg   DiscordMessage? @relation(fields: [msgId], references: [id], onDelete: Cascade)
+  msgId String?
+
+  quotee   User? @relation("quoted", fields: [quoteeId], references: [id], onDelete: Cascade)
+  quoteeId Int?
+  quoter   User? @relation("quotedSomeone", fields: [quoterId], references: [id], onDelete: Cascade)
+  quoterId Int?
 }
