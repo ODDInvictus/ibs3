@@ -34,6 +34,13 @@ export function markdown(text: string | null | undefined): string | null {
 	return xss(md.renderInline(text))
 }
 
+export function markdownMinimal(text: string): string | null {
+	const md = markdown(text)
+
+	if (md === text) return null
+	else return md
+}
+
 export function stripMarkdown(text: string | undefined) {
 	if (text === null || text === undefined) return null
 	md.render(text)
@@ -190,24 +197,16 @@ export function getCurrentDateFilename() {
 	return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`
 }
 
-export function getPictureUrl(filename: string | null | undefined, quality: 'thumbnail' | 'normal' | 'original' = 'normal') {
-	if (env.PUBLIC_DISABLE_MONGO === 'true') {
-		const date = new Date(Date.now())
-		console.log(
-			`[MongoDB][${date.toLocaleDateString('nl')} ${date.toLocaleTimeString('nl')}]`,
-			`MongoDB disabled, replacing ${filename} with logo`,
-		)
-		return '/logo.png'
-	}
+export type PhotoQuality = 'original' | 'normal' | 'thumbnail'
+export function getPhotoFilename(filename: string, quality: PhotoQuality): string {
+	if (quality === 'original') return filename
+	else return `${filename.replace('.jpg', '').replace('.jpeg', '').replace('.JPG', '').replace('.JPEG', '')}_${quality}.avif`
+}
 
+export function getPictureUrl(filename: string | null | undefined, quality: PhotoQuality = 'normal') {
 	if (!filename) {
 		return `/logo.png`
 	}
 
-	let fn = filename
-	if (quality !== 'original') {
-		fn = filename.replace(/\.[^/.]+$/, `-${quality}.jpg`)
-	}
-
-	return `/file/${fn}`
+	return `/file/${getPhotoFilename(filename, quality)}`
 }
