@@ -1,0 +1,14 @@
+diff --git a/src/index-server.js b/src/index-server.js
+index 9fb810fd9ebda9ba75579998ed684ecbded3ee51..11b372b3e2206e0d9227708f8edc8d2f2edb955a 100644
+--- a/src/index-server.js
++++ b/src/index-server.js
+@@ -6,7 +6,9 @@ import * as e from './internal/server/errors.js';
+ 
+ /** @param {() => void} fn */
+ export function onDestroy(fn) {
++	if (ssr_context) {
+ 	/** @type {Renderer} */ (/** @type {SSRContext} */ (ssr_context).r).on_destroy(fn);
++	}
+ }
+ 
+ export {

@@ -44,7 +44,6 @@
 		"@iconify/svelte": "^3.1.4",
 		"@playwright/test": "^1.43.0",
 		"@sveltejs/adapter-node": "5.5.0",
-		"@sveltejs/kit": "^2.50.1",
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
 		"@types/express": "^4.17.17",
 		"@types/markdown-it": "^12.2.3",
@@ -73,19 +72,16 @@
 		"prisma": "^7.4.0",
 		"sass": "^1.97.2",
 		"scss": "^0.2.4",
-		"svelte": "^5.49.1",
 		"svelte-adapter-bun": "^1.0.1",
 		"svelte-check": "^4.3.6",
 		"svelte-floating-ui": "^1.5.3",
 		"svelte-preprocess": "^6.0.3",
 		"sveltekit-flash-message": "^2.4.6",
-		"sveltekit-superforms": "^2.29.1",
 		"ts-node": "^10.9.1",
 		"tslib": "^2.4.1",
 		"tsx": "^4.7.2",
 		"typescript": "^5.9.3",
 		"unplugin-icons": "^0.16.1",
-		"vite": "^7.3.1",
 		"zod": "^4.3.6"
 	},
 	"type": "module",
@@ -94,6 +90,7 @@
 		"@aws-sdk/client-ses": "^3.972.0",
 		"@prisma/adapter-mariadb": "^7.2.0",
 		"@prisma/client": "^7.4.0",
+		"@sveltejs/kit": "^2.52.0",
 		"@total-typescript/ts-reset": "^0.5.1",
 		"autoprefixer": "^10.4.14",
 		"bufferutil": "^4.1.0",
@@ -104,6 +101,7 @@
 		"express": "^4.21.2",
 		"filereader": "^0.10.3",
 		"flatpickr": "^4.6.13",
+		"gridfs-promise": "^6.3.10",
 		"husky": "^8.0.3",
 		"ics": "^3.7.6",
 		"markdown-it": "^13.0.1",
@@ -114,6 +112,7 @@
 		"markdown-it-smartarrows": "^1.0.1",
 		"markdown-it-sub": "^1.0.0",
 		"markdown-it-sup": "^1.0.0",
+		"mongodb": "^7.1.0",
 		"next-auth": "^4.24.5",
 		"node-cache": "^5.1.2",
 		"sanitize-html": "^2.13.0",
@@ -121,8 +120,11 @@
 		"simple-svelte-autocomplete": "^2.5.2",
 		"spotify-web-api-node": "^5.0.2",
 		"stream-to-async-iterator": "^1.0.0",
+		"svelte": "^5.51.2",
 		"svelte-email": "^0.0.4",
 		"svelte-modals": "^2.0.1",
+		"sveltekit-superforms": "^2.29.1",
+		"vite": "^7.3.1",
 		"xss": "^1.0.14",
 		"zlib-sync": "^0.1.10"
 	},
@@ -137,7 +139,8 @@
 		"zlib-sync"
 	],
 	"patchedDependencies": {
-		"sveltekit-superforms@2.29.1": "patches/sveltekit-superforms@2.29.1.patch",
-		"sveltekit-flash-message@2.4.6": "patches/sveltekit-flash-message@2.4.6.patch"
+		"sveltekit-flash-message@2.4.6": "patches/sveltekit-flash-message@2.4.6.patch",
+		"svelte@5.51.2": "patches/svelte@5.51.2.patch",
+		"svelte-email@0.0.4": "patches/svelte-email@0.0.4.patch"
 	}
 }

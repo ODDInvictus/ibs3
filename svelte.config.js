@@ -28,6 +28,9 @@ const config = {
 			out: 'build',
 			precompress: true,
 		}),
+		experimental: {
+			remoteFunctions: true,
+		},
 	},
 	vitePlugin: {
 		onwarn: (warning, handler) => {
@@ -35,6 +38,11 @@ const config = {
 				return
 			}
 			handler(warning)
+		},
+	},
+	compilerOptions: {
+		experimental: {
+			async: true,
 		},
 	},
 }
