@@ -41,7 +41,7 @@ export async function sendNotificationOverMail(notification: Notification, html:
 
 	if (!user.personalEmail) {
 		logError('user.personalEmail is unset')
-		makeNotification({ type: NotificationType.AdminNoPersonalEmail, props: { names: [user.ldapId] } }, 'discord')
+		await makeNotification({ type: NotificationType.AdminNoPersonalEmail, props: { names: [user.ldapId] } }, 'discord')
 		return null
 	}
 

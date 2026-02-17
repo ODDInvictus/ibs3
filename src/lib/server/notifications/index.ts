@@ -1,13 +1,7 @@
-import { NotificationType, type Activity, type ActivityLocation, type Notification, type User } from '$lib/server/prisma/client'
+import { NotificationType, type ActivityLocation, type Notification, type User } from '$lib/server/prisma/client'
 import { db } from '$lib/server/db'
 import { getUserNotificationPreference } from '../preferences'
-import {
-	notifyDiscordErrorNotification,
-	notifyDiscordAdminNotification,
-	notifyDiscordPublicNotification,
-	notifyDiscordActivityNotification,
-} from './discord'
-import { env } from '$env/dynamic/private'
+import { notifyDiscordErrorNotification, notifyDiscordAdminNotification, notifyDiscordActivityNotification } from './discord'
 import { LDAP_IDS } from '$lib/constants'
 import { render } from 'svelte-email'
 import { sendNotificationOverMail } from './email'
@@ -16,6 +10,7 @@ import CustomText from '$lib/emails/CustomText.svelte'
 import NewActivity from '$lib/emails/NewActivity.svelte'
 import ActivityChangedDate from '$lib/emails/ActivityChangedDate.svelte'
 import ActivityFillInReminder from '$lib/emails/ActivityFillInReminder.svelte'
+import { stripMarkdown } from '$lib/utils'
 
 type Template = {
 	title: string
@@ -100,6 +95,29 @@ type NotificationPayload =
 	| { type: 'AdminSettingNotFound'; props: { setting: string } }
 	| { type: 'AdminError'; props: { error: Error } }
 	| { type: 'AdminShitpost'; props: { shitpost: string } }
+
+/**
+ * Create a notification aimed at everyone. Respects Preference
+ * @param NotificationPayload: NotificationType and properties associated with that type
+ */
+export async function makeNotificationForAllUsers(payload: NotificationPayload, membersOnly = false): Promise<void> {
+	const users = await db.user.findMany({
+		where: {
+			isActive: true,
+			CommitteeMember: membersOnly
+				? {
+						none: {
+							committee: { ldapId: LDAP_IDS.FEUTEN },
+						},
+					}
+				: undefined,
+		},
+	})
+
+	for (const u of users) {
+		await makeNotification(payload, u.id)
+	}
+}
 
 /**
  * Create a notification
@@ -369,14 +387,14 @@ export async function makeNotification({ type, props }: NotificationPayload, rec
 	// set subject
 	switch (type) {
 		case 'ActivityNew':
-			subject = `Nieuwe activiteit: ${extraProps.activity.name}`
+			subject = `Nieuwe activiteit: ${stripMarkdown(extraProps.activity.name)}`
 			break
 		case 'ActivityFillInReminder':
 			if (extraProps.activities.length > 0) subject = `Vul je aanwezigheid in!`
-			else subject = `Reminder voor invullen: ${extraProps.activities[0].name}`
+			else subject = `Reminder voor invullen: ${stripMarkdown(extraProps.activities[0].name)}`
 			break
 		case 'ActivityChangedDate':
-			subject = `Activiteit verplaatst: ${extraProps.activity.name}`
+			subject = `Activiteit verplaatst: ${stripMarkdown(extraProps.activity.name)}`
 			break
 		case 'StrafbakNoStrafbak':
 			subject = `Oei, iemand heeft geen strafbakken meer`
