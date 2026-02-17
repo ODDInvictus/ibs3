@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Title from '$lib/components/title.svelte'
-	let locations = $page.data.locations
+	let locations = page.data.locations
 </script>
 
 <Title title="Locaties" />

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import Form from '$lib/form/form.svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 </script>
 
 <div class="modal" role="dialog">
 	<div class="contents">
-		<Form {...$page.data.form} />
+		<Form {...page.data.form} />
 	</div>
 </div>
 

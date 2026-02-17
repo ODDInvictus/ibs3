@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db'
-import { makeNotification } from '$lib/server/notifications'
+import { makeNotification, makeNotificationForAllUsers } from '$lib/server/notifications'
 import { RPCHandler, rpcMethod } from '$lib/server/rpc'
 import * as z from 'zod'
 import type { RequestHandler } from './$types'
@@ -8,13 +8,14 @@ import { NotificationType } from '$lib/server/prisma/enums'
 type Body = {
 	selection: string
 	discord: boolean
+	everyone: boolean
 }
 
 export const POST: RequestHandler = RPCHandler(
-	rpcMethod<Body, void>('test', z.object({ selection: z.string(), discord: z.boolean() }), async (body, user) => {
+	rpcMethod<Body, void>('test', z.object({ selection: z.string(), discord: z.boolean(), everyone: z.boolean() }), async (body, user) => {
 		const nt = NotificationType[body.selection as keyof typeof NotificationType]
 
-		console.log(`Selected ${nt} ${body.discord}`)
+		console.log(`Selected ${nt} ${body.discord} ${body.everyone}`)
 
 		let props = undefined
 
@@ -61,6 +62,14 @@ export const POST: RequestHandler = RPCHandler(
 				break
 		}
 
-		await makeNotification({ type: nt, props } as any, body.discord ? 'discord' : user.id)
+		if (body.everyone) {
+			await makeNotificationForAllUsers({ type: nt, props } as any)
+
+			if (body.discord) {
+				await makeNotification({ type: nt, props } as any, 'discord')
+			}
+		} else {
+			await makeNotification({ type: nt, props } as any, body.discord ? 'discord' : user.id)
+		}
 	}),
 )

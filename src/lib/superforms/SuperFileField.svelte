@@ -1,12 +1,18 @@
 <script lang="ts">
-	export let name: string
-	export let files: FileList | undefined = undefined
-	export let value = ''
+	interface Props {
+		name: string
+		files?: FileList | undefined
+		value?: string
+		children?: import('svelte').Snippet
+		[key: string]: any
+	}
+
+	let { name, files = $bindable(undefined), value = $bindable(''), children, ...rest }: Props = $props()
 </script>
 
 <div class="input-group">
-	<label for={name}><slot /></label>
-	<input type="file" {name} {...$$restProps} bind:files bind:value />
+	<label for={name}>{@render children?.()}</label>
+	<input type="file" {name} {...rest} bind:files bind:value />
 </div>
 
 <style>

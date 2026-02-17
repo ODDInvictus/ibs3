@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Title from '$lib/components/title.svelte'
-	const members = $page.data.members
-	const feuten = $page.data.feuten
+	const members = page.data.members
+	const feuten = page.data.feuten
 </script>
 
 <Title title="Leden en ander gespuis" shortTitle="Leden" />

@@ -1,7 +1,11 @@
 <script lang="ts">
 	import logo from '$lib/assets/logowhite.png'
-	export let width: string = '100px'
-	export let height: string = '100px'
+	interface Props {
+		width?: string
+		height?: string
+	}
+
+	let { width = '100px', height = '100px' }: Props = $props()
 </script>
 
 <img src={logo} alt="logo" class="block sm:hidden" {height} {width} />

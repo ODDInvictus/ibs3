@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import { toast } from '$lib/notification'
 	import { prompt } from '$lib/prompt'
 	import { promptSelect } from '$lib/promptSelect'
 	import Edit from '~icons/tabler/edit'
 
-	const alias = $page.data.alias
+	const alias = page.data.alias
 
 	function edit() {
 		prompt({
@@ -35,7 +35,7 @@
 	}
 
 	function editUser() {
-		let users = $page.data.users.map((u: any) => {
+		let users = page.data.users.map((u: any) => {
 			return {
 				name: `${u.firstName} ${u.lastName} (${u.email})`,
 				id: u.id,
@@ -89,13 +89,13 @@
 	}
 </script>
 
-<h1>{alias.alias}@{$page.data.domain}</h1>
+<h1>{alias.alias}@{page.data.domain}</h1>
 
 <hr />
 
-<p><span>Alias type:</span> {$page.data.type}</p>
+<p><span>Alias type:</span> {page.data.type}</p>
 
-{#if $page.data.type == 'custom'}
+{#if page.data.type == 'custom'}
 	<div class="receiver">
 		<div>
 			<span>Wordt ontvangen door:</span>
@@ -103,12 +103,12 @@
 		</div>
 
 		<div class="button">
-			<button on:click={edit}>
+			<button onclick={edit}>
 				<Edit />
 			</button>
 		</div>
 	</div>
-{:else if $page.data.type == 'committee'}
+{:else if page.data.type == 'committee'}
 	{#each alias.EmailAliasCommittee[0].committee.CommitteeMember as member}
 		<p><span>Ontvanger: </span>{member.member.email}</p>
 	{/each}
@@ -118,7 +118,7 @@
 
 	<br />
 	<br />
-{:else if $page.data.type == 'user'}
+{:else if page.data.type == 'user'}
 	{@const u = alias.EmailAliasUser[0].user}
 	<div class="receiver">
 		<div>
@@ -131,7 +131,7 @@
 		</div>
 
 		<div class="button">
-			<button on:click={edit}>
+			<button onclick={edit}>
 				<Edit />
 			</button>
 		</div>

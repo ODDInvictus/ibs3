@@ -13,10 +13,12 @@
 	<div class="table-container">
 		<table class="striped">
 			<thead>
-				<th>Gever</th>
-				<th>Reden</th>
-				<th>Datum</th>
-				<th>Tijd</th>
+				<tr>
+					<th>Gever</th>
+					<th>Reden</th>
+					<th>Datum</th>
+					<th>Tijd</th>
+				</tr>
 			</thead>
 			<tbody>
 				{#each data.strafbakken.StrafbakReceived as strafbak}

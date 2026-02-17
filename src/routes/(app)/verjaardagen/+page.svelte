@@ -3,7 +3,11 @@
 	import { daysLeftTill, toAge, toBirthday } from '$lib/dateUtils'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Verjaardagen" />
@@ -25,6 +29,11 @@
 					<td>{daysLeftTill(bd.birthDate)}</td>
 				</tr>
 			{/each}
+			<tr>
+				<td>Gemiddelde leeftijd</td>
+				<td></td>
+				<td></td>
+			</tr>
 		</tbody>
 	</table>
 </div>

@@ -21,13 +21,15 @@
 <h2>Facturen</h2>
 <table>
 	<thead>
-		<th>Boekstuknummer</th>
-		<th>Type</th>
-		<th>Referentie</th>
-		<th>Bedrag</th>
-		<th>Relatie</th>
-		<th>Datum</th>
-		<th>Status</th>
+		<tr>
+			<th>Boekstuknummer</th>
+			<th>Type</th>
+			<th>Referentie</th>
+			<th>Bedrag</th>
+			<th>Relatie</th>
+			<th>Datum</th>
+			<th>Status</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each data.journals as { id, ref, total, relationId, date, paid, type, relation }}

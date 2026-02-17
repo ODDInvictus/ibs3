@@ -29,24 +29,26 @@
 	<li>
 		<b>Tabel:</b> Splits hier de factuur uit over meerdere posten. Bijvoorbeeld:
 		<table class="small striped">
-			<tr>
-				<th>Omschrijving</th>
-				<th>Hoeveelheid</th>
-				<th>Prijs</th>
-				<th>Grootboek</th>
-			</tr>
-			<tr>
-				<td>Huur bierbanksets</td>
-				<td>2</td>
-				<td>5</td>
-				<td>Cantus</td>
-			</tr>
-			<tr>
-				<td>Borg</td>
-				<td>1</td>
-				<td>50</td>
-				<td>Borg</td>
-			</tr>
+			<tbody>
+				<tr>
+					<th>Omschrijving</th>
+					<th>Hoeveelheid</th>
+					<th>Prijs</th>
+					<th>Grootboek</th>
+				</tr>
+				<tr>
+					<td>Huur bierbanksets</td>
+					<td>2</td>
+					<td>5</td>
+					<td>Cantus</td>
+				</tr>
+				<tr>
+					<td>Borg</td>
+					<td>1</td>
+					<td>50</td>
+					<td>Borg</td>
+				</tr>
+			</tbody>
 		</table>
 	</li>
 </ol>
@@ -88,8 +90,7 @@
 <h3>Een lid met saldo laten betalen</h3>
 <p>
 	Om een lid een factuur met saldo te laten betalen maak je een handmatige saldo transactie. Dit doe je bij <a
-		href="/ongeveer/saldo/transactions/create">Saldo {'>'} Transactie maken</a
-	>
+		href="/ongeveer/saldo/transactions/create">Saldo {'>'} Transactie maken</a>
 	Vul hier in:
 </p>
 <ol>
@@ -152,8 +153,7 @@
 	<code>bewerken</code>. Controleer de declaratie en split deze uit over meerdere posten indien nodig. Als je iets veranderd hebt klik dan
 	eerst op <code>opslaan</code>.<br />Klik vervolgens op
 	<code>Goedkeuren en transactie maken</code>. De transactie wordt gemaakt en automatich gematcht. Wanneer je de declaratie afwijzt
-	verdwijnt deze uit je inkopen overzicht en zal als afgewezen komen in het <a href="/financieel/declaraties">declaratieoverzicht</a> van de
-	indiener.
+	verdwijnt deze uit je inkopen overzicht en zal als afgewezen komen in het <a href="/financieel/declaraties">declaratieoverzicht</a> van de indiener.
 </p>
 
 <h2>Steeplijst verwerken</h2>

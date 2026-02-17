@@ -5,11 +5,15 @@
 	import AlertCirlce from '~icons/tabler/alert-circle'
 	import CircleCheck from '~icons/tabler/circle-check'
 
-	export let notification: {
-		type: string
-		title: string
-		message: string
+	interface Props {
+		notification: {
+			type: string
+			title: string
+			message: string
+		}
 	}
+
+	let { notification }: Props = $props()
 </script>
 
 <div role="alert" class="notification {notification.type}" transition:fade>

@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	import type { AnyZodObject } from 'zod'
 	type T = AnyZodObject
 </script>
@@ -11,16 +11,21 @@
 	import type { ZodValidation, FormPathLeaves } from 'sveltekit-superforms'
 	import { formFieldProxy, type SuperForm } from 'sveltekit-superforms/client'
 
-	export let formProps: SuperForm<ZodValidation<T>, unknown>
-	export let field: FormPathLeaves<z.infer<T>>
-	export let options: [string | number | undefined, string][] = []
+	interface Props {
+		formProps: SuperForm<ZodValidation<T>, unknown>
+		field: FormPathLeaves<z.infer<T>>
+		options?: [string | number | undefined, string][]
+		children?: import('svelte').Snippet
+	}
+
+	let { formProps, field, options = [], children }: Props = $props()
 
 	const { value, errors, constraints } = formFieldProxy(formProps, field)
 	const name = field.toString()
 </script>
 
 <div class="input-group">
-	<Label {name} {constraints}><slot /></Label>
+	<Label {name} {constraints}>{@render children?.()}</Label>
 	<select {name} bind:value={$value} class:has-error={$errors} data-testid="{name}-input">
 		{#if !$constraints?.required}
 			<option value={undefined} selected>-</option>

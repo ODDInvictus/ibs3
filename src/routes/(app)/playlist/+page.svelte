@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy'
+
 	import { onMount } from 'svelte'
 	import type { PageServerData } from './$types'
 	import Title from '$lib/components/title.svelte'
@@ -9,18 +11,22 @@
 	import { toast } from '$lib/notification'
 	import { env } from '$env/dynamic/public'
 
-	export let data: PageServerData
+	interface Props {
+		data: PageServerData
+	}
+
+	let { data }: Props = $props()
 
 	const { PUBLIC_MIN_LIKES } = env
 	const MIN_LIKES = Number.isNaN(Number(PUBLIC_MIN_LIKES)) ? 4 : Number(PUBLIC_MIN_LIKES)
 
-	let current: SpotifyApi.SingleTrackResponse | undefined = undefined
+	let current: SpotifyApi.SingleTrackResponse | undefined = $state(undefined)
 	let tracks: SpotifyApi.SingleTrackResponse[] = []
-	let skipped: SpotifyApi.SingleTrackResponse[] = []
-	let audioPlayer: HTMLAudioElement
-	let previewSrc = ''
+	let skipped: SpotifyApi.SingleTrackResponse[] = $state([])
+	let audioPlayer: HTMLAudioElement = $state()
+	let previewSrc = $state('')
 
-	let mounted = false
+	let mounted = $state(false)
 
 	onMount(async () => {
 		if (data.toReact.length == 0) return (mounted = true)
@@ -64,13 +70,15 @@
 		return smallestImage
 	}
 
-	$: if (audioPlayer && mounted) {
-		if (previewSrc == '') audioPlayer.pause()
-		else {
-			audioPlayer.src = previewSrc
-			audioPlayer.play()
+	run(() => {
+		if (audioPlayer && mounted) {
+			if (previewSrc == '') audioPlayer.pause()
+			else {
+				audioPlayer.src = previewSrc
+				audioPlayer.play()
+			}
 		}
-	}
+	})
 
 	const formatArtists = (artists: SpotifyApi.ArtistObjectSimplified[]) => {
 		return artists.map(artist => artist.name).join(', ')
@@ -157,21 +165,21 @@
 				<a href="/playlist/zoek">Nieuwe track</a>
 			</div>
 			<div class="actions">
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<icon
 					class="dislike"
-					on:click={async () => {
+					onclick={async () => {
 						if (!current) return
 						await Promise.all([react(current, false), next()])
 					}}>
-					<svelte:component this={Cross} width="70" height="70" />
+					<Cross width="70" height="70" />
 				</icon>
 
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<icon
-					on:click={async () => {
+					onclick={async () => {
 						await next()
 						if (!current) return
 						skipped = [...skipped, current]
@@ -179,11 +187,11 @@
 					<Arrow width="50" height="50" />
 				</icon>
 
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
 				<icon
 					class="like"
-					on:click={async () => {
+					onclick={async () => {
 						if (!current) return
 
 						await Promise.all([react(current, true), next()])
@@ -209,11 +217,11 @@
 	.card {
 		transition: transform 0.2s ease-in-out;
 
-		&:has(icon.like:active) {
+		&:has(:global(icon.like:active)) {
 			transform: rotate(5deg);
 		}
 
-		&:has(icon.dislike:active) {
+		&:has(:global(icon.dislike:active)) {
 			transform: rotate(-5deg);
 		}
 

@@ -5,7 +5,7 @@
 		if (noGeneration) return
 
 		const items = document.querySelectorAll(`.elements-${title} > *`) as NodeListOf<HTMLElement>
-		// const code = document.querySelector(`.code-${title} code`) as HTMLElement;
+		const code = document.querySelector(`.code-${title} code`) as HTMLElement
 		const table = document.querySelector(`.items-${title}`) as HTMLElement
 
 		items.forEach(item => {
@@ -44,6 +44,13 @@
 
 			table.appendChild(tr)
 		})
+
+		const section = document.getElementById(title)
+
+		const td = document.createElement('td')
+		td.style = 'display:none;'
+
+		section?.appendChild(td)
 	})
 
 	function removeClasses(element: Element) {
@@ -82,10 +89,10 @@
 					<th>Element</th>
 				</tr>
 			</thead>
-			<tbody class="items-{title}"></tbody>
+			<tbody class="items-{title}"> </tbody>
 		</table>
 	{/if}
-	<td style="display: none;"></td>
+	<!-- <td style="display: none;"></td> -->
 </section>
 
 <style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Edit from '~icons/tabler/edit'
 	import CircleX from '~icons/tabler/circle-x'
 	import InfoCircle from '~icons/tabler/info-circle'
@@ -10,7 +10,7 @@
 	import MailPlus from '~icons/tabler/mail-plus'
 	import Title from '$lib/components/title.svelte'
 
-	const domain = $page.data.domain
+	const domain = page.data.domain
 
 	function info() {
 		toast({
@@ -86,14 +86,14 @@
 				<td></td>
 				<td>
 					<div class="options">
-						<button class="btn-a" on:click={() => goto('/admin/email/alias/nieuw/persoonlijk')}>
+						<button class="btn-a" onclick={() => goto('/admin/email/alias/nieuw/persoonlijk')}>
 							<MailPlus />
 						</button>
 					</div>
 				</td>
 			</tr>
 
-			{#each $page.data.userAliases as alias}
+			{#each page.data.userAliases as alias}
 				<tr>
 					<td>
 						<a href="/leden/{alias.user.ldapId}">
@@ -111,13 +111,13 @@
 					</td>
 					<td>
 						<div class="options">
-							<button class="btn-a" on:click={() => editAlias(alias.alias.id)}>
+							<button class="btn-a" onclick={() => editAlias(alias.alias.id)}>
 								<Edit />
 							</button>
-							<button class="btn-a" on:click={() => deleteAlias(alias.alias.id)}>
+							<button class="btn-a" onclick={() => deleteAlias(alias.alias.id)}>
 								<CircleX />
 							</button>
-							<button class="btn-a" on:click={() => sendMail(alias.alias.alias)}>
+							<button class="btn-a" onclick={() => sendMail(alias.alias.alias)}>
 								<Send />
 							</button>
 						</div>
@@ -130,14 +130,14 @@
 				<td></td>
 				<td>
 					<div class="options">
-						<button class="btn-a" on:click={() => goto('/admin/email/alias/nieuw/custom')}>
+						<button class="btn-a" onclick={() => goto('/admin/email/alias/nieuw/custom')}>
 							<MailPlus />
 						</button>
 					</div>
 				</td>
 			</tr>
 
-			{#each $page.data.customAliases as alias}
+			{#each page.data.customAliases as alias}
 				<tr>
 					<td>
 						{alias.address}
@@ -149,13 +149,13 @@
 					</td>
 					<td>
 						<div class="options">
-							<button class="btn-a" on:click={() => editAlias(alias.emailAliasId)}>
+							<button class="btn-a" onclick={() => editAlias(alias.emailAliasId)}>
 								<Edit />
 							</button>
-							<button class="btn-a" on:click={() => deleteAlias(alias.emailAliasId)}>
+							<button class="btn-a" onclick={() => deleteAlias(alias.emailAliasId)}>
 								<CircleX />
 							</button>
-							<button class="btn-a" on:click={() => sendMail(alias.alias.alias)}>
+							<button class="btn-a" onclick={() => sendMail(alias.alias.alias)}>
 								<Send />
 							</button>
 						</div>
@@ -168,14 +168,14 @@
 				<td></td>
 				<td>
 					<div class="options">
-						<button class="btn-a" on:click={userInfo}>
+						<button class="btn-a" onclick={userInfo}>
 							<InfoCircle />
 						</button>
 					</div>
 				</td>
 			</tr>
 
-			{#each $page.data.users as alias}
+			{#each page.data.users as alias}
 				<tr>
 					<td>
 						<a href="/leden/{alias.ldapId}">
@@ -191,7 +191,7 @@
 					</td>
 					<td>
 						<div class="options">
-							<button class="btn-a" on:click={() => sendMail(alias.ldapId)}>
+							<button class="btn-a" onclick={() => sendMail(alias.ldapId)}>
 								<Send />
 							</button>
 						</div>
@@ -204,14 +204,14 @@
 				<td></td>
 				<td>
 					<div class="options">
-						<button class="btn-a" on:click={() => goto('/admin/commissie')}>
+						<button class="btn-a" onclick={() => goto('/admin/commissie')}>
 							<MailPlus />
 						</button>
 					</div>
 				</td>
 			</tr>
 
-			{#each $page.data.committeeAliases as alias}
+			{#each page.data.committeeAliases as alias}
 				<tr>
 					<td>
 						<a href="/leden/commissie/{alias.committee.ldapId}">
@@ -224,10 +224,10 @@
 						</a>
 					</td>
 					<td>
-						<button class="btn-a" on:click={info}>
+						<button class="btn-a" onclick={info}>
 							<InfoCircle />
 						</button>
-						<button class="btn-a" on:click={() => sendMail(alias.alias.alias)}>
+						<button class="btn-a" onclick={() => sendMail(alias.alias.alias)}>
 							<Send />
 						</button>
 					</td>

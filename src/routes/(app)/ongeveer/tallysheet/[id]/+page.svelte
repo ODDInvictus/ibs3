@@ -20,44 +20,48 @@
 
 <h2>Info</h2>
 <table>
-	<tr>
-		<td>ID</td>
-		<td>{data.tallySheet.id}</td>
-	</tr>
-	<tr>
-		<td>Invoer datum</td>
-		<td>{formatDateTimeHumanReadable(new Date(data.tallySheet.createdAt))}</td>
-	</tr>
-	<tr>
-		<td>Begin datum</td>
-		<td>{data.tallySheet.startDate ? formatDateHumanReadable(new Date(data.tallySheet.startDate)) : '-'}</td>
-	</tr>
-	<tr>
-		<td>Eind datum</td>
-		<td>{data.tallySheet.endDate ? formatDateHumanReadable(new Date(data.tallySheet.endDate)) : '-'}</td>
-	</tr>
-	<tr>
-		<td>Verwerkt</td>
-		<td>{data.isProcessed ? 'Ja' : 'Nee'}</td>
-	</tr>
-	<tr>
-		<td>Penningmeester</td>
-		<td>{data.tallySheet.treasurer?.firstName ?? '-'}</td>
-	</tr>
-	<tr>
-		<td>Notes</td>
-		<td>{data.tallySheet.notes ?? '-'}</td>
-	</tr>
+	<tbody>
+		<tr>
+			<td>ID</td>
+			<td>{data.tallySheet.id}</td>
+		</tr>
+		<tr>
+			<td>Invoer datum</td>
+			<td>{formatDateTimeHumanReadable(new Date(data.tallySheet.createdAt))}</td>
+		</tr>
+		<tr>
+			<td>Begin datum</td>
+			<td>{data.tallySheet.startDate ? formatDateHumanReadable(new Date(data.tallySheet.startDate)) : '-'}</td>
+		</tr>
+		<tr>
+			<td>Eind datum</td>
+			<td>{data.tallySheet.endDate ? formatDateHumanReadable(new Date(data.tallySheet.endDate)) : '-'}</td>
+		</tr>
+		<tr>
+			<td>Verwerkt</td>
+			<td>{data.isProcessed ? 'Ja' : 'Nee'}</td>
+		</tr>
+		<tr>
+			<td>Penningmeester</td>
+			<td>{data.tallySheet.treasurer?.firstName ?? '-'}</td>
+		</tr>
+		<tr>
+			<td>Notes</td>
+			<td>{data.tallySheet.notes ?? '-'}</td>
+		</tr>
+	</tbody>
 </table>
 
 <h2>Streeplijst</h2>
 <table>
 	<thead>
-		<th>Boekstuk</th>
-		<th>Persoon</th>
-		<th>Product</th>
-		<th>Hoeveelheid</th>
-		<th>Prijs p/s</th>
+		<tr>
+			<th>Boekstuk</th>
+			<th>Persoon</th>
+			<th>Product</th>
+			<th>Hoeveelheid</th>
+			<th>Prijs p/s</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each data.tallySheet.sales as sale}

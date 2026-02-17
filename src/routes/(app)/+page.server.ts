@@ -2,6 +2,7 @@ import db from '$lib/server/db'
 import type { PageServerLoad } from './$types'
 import { getNextBirthdayInLine } from '$lib/server/birthdays'
 import { LDAP_IDS } from '$lib/constants'
+import type { Quote } from '$lib/server/prisma/client'
 
 export const load = (async ({ locals }) => {
 	// Deze methode faalt niet, ook als je 0 sessies hebt - NR
@@ -48,38 +49,14 @@ export const load = (async ({ locals }) => {
 	}
 
 	const getQuote = async () => {
-		let obj
+		const daySeed = Math.floor(Date.now() / (1000 * 60 * 60 * 24))
 
-		// 1 in 2000 chance to get a quote from IBS
-		if (Math.floor(Math.random() * 2000) === 1234) {
-			obj = {
-				quote: '"Wie dit leest trekt een bak" - IBS (1 op 2000 kans)',
-			}
-		} else {
-			try {
-				obj = await fetch(process.env.QUOTE_API_URL!, {
-					headers: {
-						Authorization: `${process.env.QUOTE_API_TOKEN}`,
-					},
-				}).then(res => res.json())
-			} catch (err) {
-				obj = {
-					quote: '"De quote module is stukkie wukkie" - IBS',
-				}
-			}
-		}
-
-		let message = obj.quote
-
-		if (!message) {
-			console.error('[QUOTE] Quote API returned invalid response, using fallback quote', obj)
-			message = '"De quote module is stukkie wukkie" - IBS'
-		}
-
-		// Replace all "{string}" with "*{string}*"
-		message = message.replace(/"([^"]*)"/g, '*“$1”*')
-
-		return message
+		const q: Quote[] = await db.$queryRaw`
+			SELECT text FROM Quote
+			ORDER BY RAND(${daySeed})
+			LIMIT 1
+		`
+		return q[0]?.text ?? 'Geen quotes opgeslagen'
 	}
 
 	const getStrafbakken = () => {

@@ -7,18 +7,30 @@
 	import FieldComponent from './_field.svelte'
 	import Label from './_label.svelte'
 
-	export let title: string
-	export let shortTitle: string | undefined
-	export let description: string
-	export let fields: Field<FieldType>[]
-	export let submitStr = 'Verstuur'
-	export let formId = 'custom-form'
+	interface Props {
+		title: string
+		shortTitle: string | undefined
+		description: string
+		fields: Field<FieldType>[]
+		submitStr?: string
+		formId?: string
+		needsConfirmation: boolean
+		confirmText?: string
+	}
 
-	export let needsConfirmation: boolean
-	export let confirmText = 'Weet je zeker dat je deze actie wilt uitvoeren?'
+	let {
+		title,
+		shortTitle,
+		description,
+		fields,
+		submitStr = 'Verstuur',
+		formId = 'custom-form',
+		needsConfirmation,
+		confirmText = 'Weet je zeker dat je deze actie wilt uitvoeren?',
+	}: Props = $props()
 
-	let form: HTMLFormElement
-	let generalError = ''
+	let form: HTMLFormElement = $state()
+	let generalError = $state('')
 
 	function updateErrors(errors: { field?: string; message: string }[]) {
 		const fields = form.querySelectorAll('.form-control')

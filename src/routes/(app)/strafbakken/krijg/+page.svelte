@@ -3,7 +3,11 @@
 	import Title from '$lib/components/title.svelte'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	function anotherOne() {
 		const params = new URLSearchParams(window.location.search)
@@ -23,5 +27,5 @@
 <br />
 
 <div class="center">
-	<button on:click={anotherOne}>Wil je er nog 1?</button>
+	<button onclick={anotherOne}>Wil je er nog 1?</button>
 </div>

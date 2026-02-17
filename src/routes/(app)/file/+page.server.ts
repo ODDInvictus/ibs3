@@ -1,6 +1,7 @@
 import type { Actions } from './$types'
 import { fail, redirect } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms/server'
+import { zod4 } from 'sveltekit-superforms/adapters'
 import { z } from 'zod'
 import { uploadGenericFile, uploadPhoto } from '$lib/server/files'
 import { isAdmin } from '$lib/server/auth'
@@ -14,7 +15,7 @@ export const load = async ({ locals }) => {
 		redirect(300, '/')
 	}
 
-	const form = await superValidate(schema)
+	const form = await superValidate(zod4(schema))
 
 	return { form }
 }
@@ -26,7 +27,7 @@ export const load = async ({ locals }) => {
 export const actions = {
 	default: async ({ request, locals }) => {
 		const formData = await request.formData()
-		const form = await superValidate(formData, schema)
+		const form = await superValidate(formData, zod4(schema))
 		if (!form.valid) {
 			return fail(400, { form })
 		}
@@ -40,20 +41,20 @@ export const actions = {
 			return fail(400, { form: { ...form, errors: { file: 'No file uploaded' } } })
 		}
 
-		let name = ''
+		let f = undefined
 
 		try {
 			if (isPhoto) {
 				console.log('[FilePage] Uploading photo')
-				name = await uploadPhoto(file, locals.user, false)
+				f = await uploadPhoto(file, locals.user.id, false)
 			} else {
 				console.log('[FilePage] Uploading generic file')
-				name = await uploadGenericFile(file, locals.user)
+				f = await uploadGenericFile(file, locals.user.id)
 			}
 		} catch (e) {
 			console.error('[FilePage] Error uploading file:', e)
 			return fail(500, { message: (e as Error).message })
 		}
-		return { form, name }
+		return { form, name: f.id }
 	},
 } satisfies Actions

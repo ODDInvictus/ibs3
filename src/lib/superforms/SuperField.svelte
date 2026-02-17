@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	import type { AnyZodObject } from 'zod'
 	type T = AnyZodObject
 </script>
@@ -12,9 +12,15 @@
 	import { dateProxy, formFieldProxy, type SuperForm } from 'sveltekit-superforms/client'
 	import type { Writable } from 'svelte/store'
 
-	export let formProps: SuperForm<ZodValidation<T>, unknown>
-	export let field: FormPathLeaves<z.infer<T>>
-	export let type: 'text' | 'textarea' | 'date' | 'number' | 'checkbox' = 'text'
+	interface Props {
+		formProps: SuperForm<ZodValidation<T>, unknown>
+		field: FormPathLeaves<z.infer<T>>
+		type?: 'text' | 'textarea' | 'date' | 'number' | 'checkbox'
+		children?: import('svelte').Snippet
+		[key: string]: any
+	}
+
+	let { formProps, field, type = 'text', children, ...rest }: Props = $props()
 
 	const name = field.toString()
 
@@ -27,7 +33,7 @@
 				})
 			: undefined
 
-	$: boolValue = value as Writable<boolean>
+	let boolValue = $derived(value as Writable<boolean>)
 
 	function deleteRequired(constraints: typeof $constraints) {
 		if (constraints) constraints.required = false
@@ -53,7 +59,7 @@
 -->
 
 <div class="input-group">
-	<Label {name} {constraints}><slot /></Label>
+	<Label {name} {constraints}>{@render children?.()}</Label>
 	{#if type === 'textarea'}
 		<textarea
 			{name}
@@ -61,7 +67,7 @@
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
 			{...deleteRequired($constraints)}
-			{...$$restProps}></textarea>
+			{...rest}></textarea>
 	{:else if type === 'date'}
 		<input
 			{name}
@@ -70,7 +76,7 @@
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$proxyDate}
 			{...deleteRequired($constraints)}
-			{...$$restProps} />
+			{...rest} />
 	{:else if type === 'number'}
 		<input
 			{name}
@@ -79,7 +85,7 @@
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
 			{...deleteRequired($constraints)}
-			{...$$restProps} />
+			{...rest} />
 	{:else if type === 'text'}
 		<input
 			{name}
@@ -88,7 +94,7 @@
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:value={$value}
 			{...deleteRequired({ ...$constraints })}
-			{...$$restProps} />
+			{...rest} />
 	{:else if type === 'checkbox'}
 		<input
 			{name}
@@ -97,7 +103,7 @@
 			class:has-error={$errors?.length ?? 0 > 0}
 			bind:checked={$boolValue}
 			{...deleteRequired($constraints)}
-			{...$$restProps} />
+			{...rest} />
 	{/if}
 </div>
 <Error {errors} />

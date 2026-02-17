@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: `<th>` cannot be a child of `<thead>`. `<thead>` only allows these children: `<tr>`, `<style>`, `<script>`, `<template>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement -->
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms/client'
 	import type { PageData } from './$types'
@@ -85,11 +87,13 @@
 	<hr />
 	<table>
 		<thead>
-			<th>Omschrijving</th>
-			<th>Bedrag</th>
-			<th>Boekstuk</th>
-			<th>Voeg toe aan saldo</th>
-			<th></th>
+			<tr>
+				<th>Omschrijving</th>
+				<th>Bedrag</th>
+				<th>Boekstuk</th>
+				<th>Voeg toe aan saldo</th>
+				<th></th>
+			</tr>
 		</thead>
 		<tbody>
 			{#each $form.rows as _, i}

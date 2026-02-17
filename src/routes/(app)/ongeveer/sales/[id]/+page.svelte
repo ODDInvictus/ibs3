@@ -4,7 +4,7 @@
 	import Title from '$lib/components/title.svelte'
 	import Pencil from '~icons/tabler/Pencil'
 	import EditRef from './_editRef.svelte'
-	import { openModal } from 'svelte-modals'
+	import { openModal } from 'svelte-modals/legacy'
 	import { formatDateHumanReadable } from '$lib/dateUtils'
 	import { formatPrice } from '$lib/textUtils'
 	import DeleteButton from '$lib/ongeveer/DeleteButton.svelte'
@@ -16,119 +16,120 @@
 <Title title={data.invoice.ref || 'Factuur'} />
 
 <main>
+	2026-02-02, deze pagina heeft de migratie naar svelte5 niet overleefd. Mocht je hem willen zien fix dan de table - Niels
+	<!-- <h2>Info</h2>
 	<table class="info">
-		<h2>Info</h2>
-		<tr>
-			<th>Factuurnummer</th>
-			<td>{data.invoice.id}</td>
-		</tr>
-		<tr>
-			<th>Referentie:</th>
-			<td>
-				{data.invoice.ref ?? '...'}
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<!-- svelte-ignore a11y-no-static-element-interactions -->
-				<i
-					on:click={() =>
-						openModal(EditRef, {
-							form: data.form,
-						})}>
-					<Pencil color="#777" class="pointer" />
-				</i>
-			</td>
-		</tr>
-		<tr>
-			<th>Factuurdatum</th>
-			<td>{data.invoice.date ? formatDateHumanReadable(new Date(data.invoice.date)) : '-'}</td>
-		</tr>
-		<tr>
-			<th>Betalingstermijn</th>
-			<td>{data.invoice.termsOfPayment} dagen</td>
-		</tr>
-		<tr>
-			<th>Omschrijving</th>
-			<td>{data.invoice.description ?? '-'}</td>
-		</tr>
-		<tr>
-			<th>Relatie</th>
-			<td>
-				<a href="/ongeveer/relations/{data.invoice.relationId}">
-					{data.invoice.relationId} - {data.invoice.relation.name}
-				</a>
-			</td>
-		</tr>
-		<tr>
-			<th>Penningmeester</th>
-			<td>{data.invoice.Treasurer?.firstName}</td>
-		</tr>
-		<h2 class="mt-4">Status</h2>
-		<tr>
-			<th>Totaal</th>
-			<td>{formatPrice(data.total)}</td>
-		</tr>
-		<tr>
-			<th>Betaald</th>
-			<td>{formatPrice(data.paid)}</td>
-		</tr>
-		<tr>
-			<th>Resterend</th>
-			<td>{formatPrice(data.toPay)}</td>
-		</tr>
-		<tr>
-			<th>Status:</th>
-			<td>{data.invoice.date ? (data.toPay <= 0 ? 'Betaald' : 'Verstuurd') : 'Concept'}</td>
-		</tr>
-		<div class="ongeveer-nav mt-4">
-			{#if data.invoice.date}
-				<button
-					class:disabled={data.toPay === 0}
-					on:click={async () => {
-						if (data.toPay === 0) {
+		<tbody>
+			<tr>
+				<th>Factuurnummer</th>
+				<td>{data.invoice.id}</td>
+			</tr>
+			<tr>
+				<th>Referentie:</th>
+				<td>
+					{data.invoice.ref ?? '...'}
+					<i
+						on:click={() =>
+							openModal(EditRef, {
+								form: data.form,
+							})}>
+						<Pencil color="#777" class="pointer" />
+					</i>
+				</td>
+			</tr>
+			<tr>
+				<th>Factuurdatum</th>
+				<td>{data.invoice.date ? formatDateHumanReadable(new Date(data.invoice.date)) : '-'}</td>
+			</tr>
+			<tr>
+				<th>Betalingstermijn</th>
+				<td>{data.invoice.termsOfPayment} dagen</td>
+			</tr>
+			<tr>
+				<th>Omschrijving</th>
+				<td>{data.invoice.description ?? '-'}</td>
+			</tr>
+			<tr>
+				<th>Relatie</th>
+				<td>
+					<a href="/ongeveer/relations/{data.invoice.relationId}">
+						{data.invoice.relationId} - {data.invoice.relation.name}
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<th>Penningmeester</th>
+				<td>{data.invoice.Treasurer?.firstName}</td>
+			</tr>
+			<h2 class="mt-4">Status</h2>
+			<tr>
+				<th>Totaal</th>
+				<td>{formatPrice(data.total)}</td>
+			</tr>
+			<tr>
+				<th>Betaald</th>
+				<td>{formatPrice(data.paid)}</td>
+			</tr>
+			<tr>
+				<th>Resterend</th>
+				<td>{formatPrice(data.toPay)}</td>
+			</tr>
+			<tr>
+				<th>Status:</th>
+				<td>{data.invoice.date ? (data.toPay <= 0 ? 'Betaald' : 'Verstuurd') : 'Concept'}</td>
+			</tr>
+			<div class="ongeveer-nav mt-4">
+				{#if data.invoice.date}
+					<button
+						class:disabled={data.toPay === 0}
+						on:click={async () => {
+							if (data.toPay === 0) {
+								toast({
+									message: 'Deze factuur is al betaald',
+									type: 'danger',
+									title: 'Niet toegestaan',
+								})
+							} else {
+								const res = await fetch('', {
+									method: 'POST',
+									headers: {
+										'Content-Type': 'application/json',
+									},
+								})
+								if (res.ok) {
+									location.reload()
+								} else {
+									const msg = await res.text()
+									toast({
+										message: msg,
+										type: 'danger',
+										title: 'Fout bij betalen',
+									})
+								}
+							}
+						}}>
+						Betaal met saldo
+					</button>
+					<button
+						class="disabled"
+						on:click={() => {
 							toast({
-								message: 'Deze factuur is al betaald',
+								message: 'Je kan deze factuur niet meer bewerken',
 								type: 'danger',
 								title: 'Niet toegestaan',
 							})
-						} else {
-							const res = await fetch('', {
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json',
-								},
-							})
-							if (res.ok) {
-								location.reload()
-							} else {
-								const msg = await res.text()
-								toast({
-									message: msg,
-									type: 'danger',
-									title: 'Fout bij betalen',
-								})
-							}
-						}
-					}}>
-					Betaal met saldo
-				</button>
-				<button
-					class="disabled"
-					on:click={() => {
-						toast({
-							message: 'Je kan deze factuur niet meer bewerken',
-							type: 'danger',
-							title: 'Niet toegestaan',
-						})
-					}}>Bewerken</button>
-			{:else}
-				<a href="/ongeveer/sales/{data.invoice.id}/process">Verwerken</a>
-				<a href="/ongeveer/sales/create?id={data.invoice.id}">Bewerken</a>
-			{/if}
-			<DeleteButton
-				url="/ongeveer/sales/{data.invoice.id}"
-				redirect="/ongeveer/sales"
-				confirmMessage="Weet je zeker dat je deze factuur wilt verwijderen?"
-				disabled={data.paid > 0} />
-		</div>
+						}}>Bewerken</button>
+				{:else}
+					<a href="/ongeveer/sales/{data.invoice.id}/process">Verwerken</a>
+					<a href="/ongeveer/sales/create?id={data.invoice.id}">Bewerken</a>
+				{/if}
+				<DeleteButton
+					url="/ongeveer/sales/{data.invoice.id}"
+					redirect="/ongeveer/sales"
+					confirmMessage="Weet je zeker dat je deze factuur wilt verwijderen?"
+					disabled={data.paid > 0} />
+			</div>
+		</tbody>
 	</table>
 
 	{#if data.invoice.date}
@@ -206,7 +207,7 @@
 				</tr>
 			</tbody>
 		</table>
-	</div>
+	</div> -->
 </main>
 
 <style lang="scss">

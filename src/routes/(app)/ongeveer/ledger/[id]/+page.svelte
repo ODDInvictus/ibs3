@@ -17,22 +17,24 @@
 	<div class="left">
 		<h2>Info</h2>
 		<table>
-			<tr>
-				<th>ID</th>
-				<td>{data.ledger.id}</td>
-			</tr>
-			<tr>
-				<th>Omschrijving</th>
-				<td>{data.ledger.description}</td>
-			</tr>
-			<tr>
-				<th>Balans</th>
-				<td>{formatPrice(data.balance)}</td>
-			</tr>
-			<tr>
-				<th>Actief</th>
-				<td>{data.ledger.isActive ? 'Ja' : 'Nee'}</td>
-			</tr>
+			<tbody>
+				<tr>
+					<th>ID</th>
+					<td>{data.ledger.id}</td>
+				</tr>
+				<tr>
+					<th>Omschrijving</th>
+					<td>{data.ledger.description}</td>
+				</tr>
+				<tr>
+					<th>Balans</th>
+					<td>{formatPrice(data.balance)}</td>
+				</tr>
+				<tr>
+					<th>Actief</th>
+					<td>{data.ledger.isActive ? 'Ja' : 'Nee'}</td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 	<div class="right">
@@ -82,10 +84,12 @@
 <h2>Boekstukken</h2>
 <table>
 	<thead>
-		<th>Boekstuknummer</th>
-		<th>Omschrijving</th>
-		<th>Bedrag</th>
-		<th>Datum</th>
+		<tr>
+			<th>Boekstuknummer</th>
+			<th>Omschrijving</th>
+			<th>Bedrag</th>
+			<th>Datum</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#if data.ledger.JournalRows.length === 0}

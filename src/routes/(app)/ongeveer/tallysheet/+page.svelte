@@ -18,11 +18,13 @@
 
 <table>
 	<thead>
-		<th>ID</th>
-		<th>Invoer datum</th>
-		<th>Begin datum</th>
-		<th>Eind datum</th>
-		<th>Status</th>
+		<tr>
+			<th>ID</th>
+			<th>Invoer datum</th>
+			<th>Begin datum</th>
+			<th>Eind datum</th>
+			<th>Status</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each data.sheets as sheet}

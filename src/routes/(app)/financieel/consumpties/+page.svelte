@@ -12,11 +12,13 @@
 
 <table class="small striped">
 	<thead>
-		<th>Omschrijving</th>
-		<th>Prijs p/s</th>
-		<th>Aantal</th>
-		<th>Invoer datum</th>
-		<th>Steeplijst</th>
+		<tr>
+			<th>Omschrijving</th>
+			<th>Prijs p/s</th>
+			<th>Aantal</th>
+			<th>Invoer datum</th>
+			<th>Steeplijst</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each data.sales as sale}

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Title from '$lib/components/title.svelte'
 	import { toast } from '$lib/notification'
 
-	let user = -1
-	let alias = ''
+	let user = $state(-1)
+	let alias = $state('')
 
 	async function submit() {
 		await fetch('', {
@@ -39,24 +39,24 @@
 <Title title="Nieuwe persoonlijke alias" shortTitle="Persoonlijke alias" />
 
 <p>
-	Op deze pagina kan je een nieuwe persoonlijke alias maken. Deze alias mapt dan van een IBS gebruiker naar een @{$page.data.domain} email adres.
+	Op deze pagina kan je een nieuwe persoonlijke alias maken. Deze alias mapt dan van een IBS gebruiker naar een @{page.data.domain} email adres.
 </p>
 
 <form id="new-alias-form">
 	<label for="alias">Alias</label>
 	<div>
 		<input bind:value={alias} type="text" id="alias" name="alias" />
-		@{$page.data.domain}
+		@{page.data.domain}
 	</div>
 
 	<label for="user">Gebruiker</label>
 	<select name="user" bind:value={user}>
-		{#each $page.data.users as user}
+		{#each page.data.users as user}
 			<option value={user.id}>{user.firstName} {user.lastName} ({user.ldapId})</option>
 		{/each}
 	</select>
 
-	<button on:click={submit}>Verstuur</button>
+	<button onclick={submit}>Verstuur</button>
 </form>
 
 <style lang="scss">

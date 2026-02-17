@@ -7,7 +7,11 @@
 	import Cross from '~icons/tabler/x'
 	import Pagination from '$lib/components/Pagination.svelte'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Banktransacties" />

@@ -15,9 +15,11 @@
 
 <table>
 	<thead>
-		<th>Klantnummer</th>
-		<th>Naam</th>
-		<th>Omschrijving</th>
+		<tr>
+			<th>Klantnummer</th>
+			<th>Naam</th>
+			<th>Omschrijving</th>
+		</tr>
 	</thead>
 	<tbody data-testid="relations">
 		{#each data.relations as relation}

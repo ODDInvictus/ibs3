@@ -1,7 +1,11 @@
 <script lang="ts">
 	import Form from '$lib/form/form.svelte'
 
-	export let form: any
+	interface Props {
+		form: any
+	}
+
+	let { form }: Props = $props()
 </script>
 
 <div class="modal" role="dialog">

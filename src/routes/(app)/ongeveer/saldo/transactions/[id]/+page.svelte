@@ -19,51 +19,55 @@
 <h2>Info</h2>
 
 <table>
-	<tr>
-		<td>Saldo transactienummer</td>
-		<td>#{data.transaction.id}</td>
-	</tr>
-	<tr>
-		<td>Transactienummer</td>
-		<td>#{data.transaction.Transaction.id}</td>
-	</tr>
-	<tr>
-		<td>Van</td>
-		<td>
-			<a href="/ongeveer/relations/{data.transaction.fromId}">{data.transaction.from.name}</a>
-		</td>
-	</tr>
-	<tr>
-		<td>Naar</td>
-		<td>
-			<a href="/ongeveer/relations/{data.transaction.toId}">{data.transaction.to.name}</a>
-		</td>
-	</tr>
-	<tr>
-		<td>Bedrag</td>
-		<td>{formatPrice(data.transaction.price)}</td>
-	</tr>
-	<tr>
-		<td>Omschrijving</td>
-		<td>{data.transaction.description}</td>
-	</tr>
-	<tr>
-		<td>Datum</td>
-		<td>{formatDateTimeHumanReadable(new Date(data.transaction.Transaction.createdAt))}</td>
-	</tr>
-	<tr>
-		<td>Status</td>
-		<td>{data.status}</td>
-	</tr>
+	<tbody>
+		<tr>
+			<td>Saldo transactienummer</td>
+			<td>#{data.transaction.id}</td>
+		</tr>
+		<tr>
+			<td>Transactienummer</td>
+			<td>#{data.transaction.Transaction.id}</td>
+		</tr>
+		<tr>
+			<td>Van</td>
+			<td>
+				<a href="/ongeveer/relations/{data.transaction.fromId}">{data.transaction.from.name}</a>
+			</td>
+		</tr>
+		<tr>
+			<td>Naar</td>
+			<td>
+				<a href="/ongeveer/relations/{data.transaction.toId}">{data.transaction.to.name}</a>
+			</td>
+		</tr>
+		<tr>
+			<td>Bedrag</td>
+			<td>{formatPrice(data.transaction.price)}</td>
+		</tr>
+		<tr>
+			<td>Omschrijving</td>
+			<td>{data.transaction.description}</td>
+		</tr>
+		<tr>
+			<td>Datum</td>
+			<td>{formatDateTimeHumanReadable(new Date(data.transaction.Transaction.createdAt))}</td>
+		</tr>
+		<tr>
+			<td>Status</td>
+			<td>{data.status}</td>
+		</tr>
+	</tbody>
 </table>
 
 <h2>Gematchde boekstukken</h2>
 
 <table>
 	<thead>
-		<th>Boekstuknummer</th>
-		<th>Beschrijving</th>
-		<th>Bedrag</th>
+		<tr>
+			<th>Boekstuknummer</th>
+			<th>Beschrijving</th>
+			<th>Bedrag</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each data.transaction.Transaction.TransactionMatchRow as row}

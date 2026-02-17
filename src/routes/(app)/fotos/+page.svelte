@@ -6,7 +6,11 @@
 	import { getPictureUrl, markdown, stripMarkdown } from '$lib/utils'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	let activityCount = 0
 </script>
@@ -31,7 +35,7 @@
 
 		<div class="ibs-card--content">
 			{#if data.highlight}
-				<div on:click={() => imagePreview({ image: getPictureUrl(data.highlight.filename, 'normal') })}>
+				<div onclick={() => imagePreview({ image: getPictureUrl(data.highlight.filename, 'normal') })}>
 					<img src={getPictureUrl(data.highlight.filename, 'thumbnail')} alt={data.highlight.filename} />
 				</div>
 				<p>Gemaakt door {data.highlight.firstName}</p>

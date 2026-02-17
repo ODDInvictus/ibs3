@@ -8,15 +8,19 @@
 	import { toast } from '$lib/notification'
 	import { string } from 'zod'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
 
-	let creator: string = data.user.ldapId
+	let { data }: Props = $props()
 
-	let input: HTMLInputElement
-	let previewContainer: HTMLDivElement
-	let submit: HTMLButtonElement
+	let creator: string = $state(data.user.ldapId)
 
-	let images: FileList | null
+	let input: HTMLInputElement = $state()
+	let previewContainer: HTMLDivElement = $state()
+	let submit: HTMLButtonElement = $state()
+
+	let images: FileList | null = $state()
 
 	function onChange() {
 		images = input.files
@@ -85,8 +89,8 @@
 	}}>
 	<div class="buttons">
 		<label class="button btn-info" for="fotos">Selecteer fotos</label>
-		<input bind:this={input} on:change={onChange} accept="image/*" type="file" id="fotos" name="fotos" multiple required />
-		<button class="btn-danger" type="reset" on:click={removeImages}>Reset</button>
+		<input bind:this={input} onchange={onChange} accept="image/*" type="file" id="fotos" name="fotos" multiple required />
+		<button class="btn-danger" type="reset" onclick={removeImages}>Reset</button>
 		<button class="btn-primary" type="submit" bind:this={submit}>Upload</button>
 		{#if submit && submit.disabled}
 			<p>Bezig met uploaden, je wordt doorgestuurd zodra dit klaar is.</p>
@@ -112,11 +116,11 @@
 		<small>(Je kan op een foto klikken om hem op ware grootte te bekijken)</small>
 		{#each images as file}
 			{@const url = URL.createObjectURL(file)}
-			<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<div class="image-upload--preview">
-				<button type="button" on:click={() => removeImage(file.name)}>Verwijder</button>
-				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<img src={url} alt="plaatje" on:click={() => imagePreview({ image: url })} />
+				<button type="button" onclick={() => removeImage(file.name)}>Verwijder</button>
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<img src={url} alt="plaatje" onclick={() => imagePreview({ image: url })} />
 			</div>
 		{/each}
 	{/if}

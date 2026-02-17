@@ -4,6 +4,7 @@ import type { PageServerLoad } from './$types'
 import { categorySchema } from './categorySchema'
 import { superValidate } from 'sveltekit-superforms/server'
 import { redirect } from 'sveltekit-flash-message/server'
+import { zod4 } from 'sveltekit-superforms/adapters'
 
 export const load = (async ({ url }) => {
 	const id = Number(url.searchParams.get('id') ?? undefined)
@@ -19,14 +20,14 @@ export const load = (async ({ url }) => {
 		data = category
 	}
 
-	const form = await superValidate(data, categorySchema)
+	const form = await superValidate(data, zod4(categorySchema))
 
 	return { form, id }
 }) satisfies PageServerLoad
 
 export const actions = {
 	default: async event => {
-		const form = await superValidate(event.request, categorySchema)
+		const form = await superValidate(event.request, zod4(categorySchema))
 		if (!form.valid) return fail(400, { form })
 		try {
 			if (form.data.id) {

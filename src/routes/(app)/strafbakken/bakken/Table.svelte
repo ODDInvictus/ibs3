@@ -12,8 +12,10 @@
 
 <table class="not-full-width">
 	<thead>
-		<th>Naam</th>
-		<th>Bakken</th>
+		<tr>
+			<th>Naam</th>
+			<th>Bakken</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each data as user}

@@ -1,18 +1,23 @@
 <script lang="ts">
 	import { toast } from '$lib/notification'
 
-	export let url: string
-	export let redirect: string
-	export let confirmMessage: string | undefined = undefined
-	export let text = 'Verwijderen'
+	interface Props {
+		url: string
+		redirect: string
+		confirmMessage?: string | undefined
+		text?: string
+		[key: string]: any
+	}
+
+	let { url, redirect, confirmMessage = undefined, text = 'Verwijderen', ...rest }: Props = $props()
 </script>
 
 <!-- TODO add loading spinner, prevent spam clicking -->
 <button
 	class="btn-danger"
 	type="button"
-	{...$$restProps}
-	on:click={async () => {
+	{...rest}
+	onclick={async () => {
 		if (confirmMessage && !confirm(confirmMessage)) return
 		const res = await fetch(url, { method: 'DELETE' })
 		if (res.ok) {
@@ -26,5 +31,4 @@
 				time: message ? 10000 : undefined,
 			})
 		}
-	}}>{text}</button
->
+	}}>{text}</button>

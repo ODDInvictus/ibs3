@@ -65,11 +65,12 @@ export const actions = {
 			return f({ status: 400, message: 'Geen fotos gevonden' })
 		}
 
-		let ids: string[] = []
+		let ids: number[] = []
 
 		for (const foto of fotos) {
-			const id = await uploadPhoto(foto, c, true, true, c)
-			ids.push(id)
+			// const id = await uploadPhoto(foto, c, true, true, c)
+			const photo = await uploadPhoto(foto, locals.user.id, true, c.id)
+			ids.push(photo.id)
 		}
 
 		redirect(303, '/fotos/upload/success?ids=' + ids.join(','))

@@ -1,12 +1,16 @@
 <script lang="ts">
 	import Base from './Base.svelte'
-	import { env } from '$env/dynamic/private'
 
-	export let text: string
+	interface Props {
+		text: string
+		[key: string]: any
+	}
+
+	let { ...props }: Props = $props()
 </script>
 
-<Base {...$$props}>
+<Base {...props}>
 	<p>
-		{text}
+		{props.text}
 	</p>
 </Base>

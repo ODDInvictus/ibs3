@@ -5,9 +5,10 @@ import db from '$lib/server/db'
 import { redirect } from 'sveltekit-flash-message/server'
 import { fail } from '@sveltejs/kit'
 import { createTransaction } from '$lib/ongeveer/db'
+import { zod4 } from 'sveltekit-superforms/adapters'
 
 export const load = (async () => {
-	const form = await superValidate(createTransactionSchema)
+	const form = await superValidate(zod4(createTransactionSchema))
 	const users = await db.financialPerson.findMany({
 		where: {
 			isActive: true,
@@ -26,7 +27,7 @@ export const actions = {
 	default: async event => {
 		const { request, locals } = event
 
-		const form = await superValidate(request, createTransactionSchema)
+		const form = await superValidate(request, zod4(createTransactionSchema))
 		if (!form.valid) return fail(400, { form })
 
 		const fp = await db.financialPerson.findFirst({

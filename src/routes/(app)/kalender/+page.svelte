@@ -3,12 +3,16 @@
 	import { getPictureUrl, markdown } from '$lib/utils'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Kalender" />
 <div class="topbar">
-	<a href="/activiteit/nieuw/v2">Activiteit aanmaken</a>
+	<a href="/activiteit/nieuw">Activiteit aanmaken</a>
 	<a href="/kalender/oud">Oude activiteiten</a>
 	<a href="/kalender/link">Download .ics</a>
 </div>
@@ -17,11 +21,11 @@
 	{#each data.activities as activity}
 		<div class="row {activity.isDies ? 'dies' : ''}">
 			<div class="image">
-				{#if !activity.photo}
+				{#if !activity.activityPhotoId}
 					<img src="/favicon-512.png" alt="⏳" />
 				{:else}
 					<img
-						src={getPictureUrl(activity.photo)}
+						src={getPictureUrl(activity.activityPhoto?.file.filename, 'normal')}
 						onerror={() => {
 							this.src = '/favicon-512.png'
 							this.onerror = null

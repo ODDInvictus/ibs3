@@ -23,6 +23,7 @@
 
 	onMount(() => {
 		const sections = document.querySelectorAll('section')
+		console.log(sections)
 
 		sections.forEach(section => {
 			contents += `
@@ -35,6 +36,8 @@
 <Title
 	title="IBS UI toolkit"
 	underTitle="Gegenereerde documentatie voor onze UI components. Deze pagina zal niet zo best werken op mobiel" />
+
+<div>Deze pagina is stuk gegaan door svelte 5.</div>
 
 <div class="table-of-contents">
 	<p>Spring gelijk naar:</p>
@@ -332,16 +335,16 @@
 </Section>
 
 <Section title="Toasts" noGeneration>
-	<button class="btn-info" on:click={() => testToast('info')}> Klik voor info toast </button>
-	<button class="btn-danger" on:click={() => testToast('danger')}> Klik voor danger toast </button>
-	<button class="btn-warning" on:click={() => testToast('warning')}> Klik voor warning toast </button>
-	<button class="btn-success" on:click={() => testToast('success')}> Klik voor success toast </button>
+	<button class="btn-info" onclick={() => testToast('info')}> Klik voor info toast </button>
+	<button class="btn-danger" onclick={() => testToast('danger')}> Klik voor danger toast </button>
+	<button class="btn-warning" onclick={() => testToast('warning')}> Klik voor warning toast </button>
+	<button class="btn-success" onclick={() => testToast('success')}> Klik voor success toast </button>
 </Section>
 
 <Section title="Confirm, Prompt, Select, etc." noGeneration>
 	<button
 		class="btn-info"
-		on:click={() =>
+		onclick={() =>
 			prompt({
 				title: 'Dit is een prompt',
 				message: 'Dit is een prompt message',
@@ -352,7 +355,7 @@
 
 	<button
 		class="btn-info"
-		on:click={() =>
+		onclick={() =>
 			confirm({
 				title: 'Dit is een confirm',
 				message: 'Dit is een confirm message',
@@ -363,7 +366,7 @@
 
 	<button
 		class="btn-info"
-		on:click={() =>
+		onclick={() =>
 			promptSelect({
 				title: 'Dit is een promptSelect',
 				message: 'Dit is een promptSelect message',
@@ -375,7 +378,7 @@
 
 	<button
 		class="btn-info"
-		on:click={() =>
+		onclick={() =>
 			promptCheckbox({
 				title: 'Dit is een promptCheckbox',
 				message: 'Dit is een promptCheckbox message',

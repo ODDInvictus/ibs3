@@ -1,24 +1,26 @@
 <script lang="ts">
-	import { closeModal } from 'svelte-modals'
 	import { enhance } from '$app/forms'
 
-	export let submitted = false
-
-	export let isOpen: boolean
-	export let username: string
-	export let uid: number
-	export let changeCount: (index: number, n: number) => void
-	export let index: number
-
-	let status = {
+	let status = $state({
 		bar: '',
 		btn: '',
-	}
+	})
 
 	import { markdown } from '$lib/utils'
 	import Markdown from '$lib/components/Markdown.svelte'
-	let reason = ''
-	$: reasonMarkdown = markdown(reason)
+	interface Props {
+		submitted?: boolean
+		isOpen: boolean
+		username: string
+		uid: number
+		changeCount: (index: number, n: number) => void
+		index: number
+		close: () => void
+	}
+
+	let { submitted = $bindable(false), isOpen, username, uid, changeCount, index, close }: Props = $props()
+	let reason = $state('')
+	let reasonMarkdown = $derived(markdown(reason))
 </script>
 
 {#if isOpen}
@@ -38,14 +40,14 @@
 							}
 						}
 					}}
-					on:submit={e => {
+					onsubmit={e => {
 						if (submitted) return e.preventDefault()
 						submitted = true
 						status.btn = 'active'
 						status.bar = 'active'
 						changeCount(index, 1)
 						setTimeout(() => {
-							closeModal()
+							close()
 						}, 1000)
 					}}>
 					<p>Reden:</p>

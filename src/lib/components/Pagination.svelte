@@ -1,8 +1,12 @@
 <script lang="ts">
-	export let size: number
-	export let p: number
-	export let sizes = [10, 20, 30, 50, 100]
-	export let url: string
+	interface Props {
+		size: number
+		p: number
+		sizes?: any
+		url: string
+	}
+
+	let { size, p, sizes = [10, 20, 30, 50, 100], url }: Props = $props()
 </script>
 
 <div class="nav">

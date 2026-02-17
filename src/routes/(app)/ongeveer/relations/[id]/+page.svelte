@@ -49,42 +49,44 @@
 </div>
 
 <table class="info">
-	<tr>
-		<th>ID</th>
-		<td>{data.relation.id}</td>
-	</tr>
-	<tr>
-		<th>Actief</th>
-		<td>{data.relation.isActive}</td>
-	</tr>
-	<tr>
-		<th>Naam</th>
-		<td>{data.relation.name}</td>
-	</tr>
-	<tr>
-		<th>Omschrijving</th>
-		<td>{data.relation.FinancialPersonDataOther?.description ?? '-'}</td>
-	</tr>
-	<tr>
-		<th>IBAN</th>
-		<td>{data.relation.FinancialPersonDataOther?.iban ?? '-'}</td>
-	</tr>
-	<tr>
-		<th>Adres</th>
-		<td>{data.relation.FinancialPersonDataOther?.address ?? '-'}</td>
-	</tr>
-	<tr>
-		<th>Postcode</th>
-		<td>{data.relation.FinancialPersonDataOther?.postalCode ?? '-'}</td>
-	</tr>
-	<tr>
-		<th>Plaats</th>
-		<td>{data.relation.FinancialPersonDataOther?.city ?? '-'}</td>
-	</tr>
-	<tr>
-		<th>Email</th>
-		<td>{data.relation.FinancialPersonDataOther?.email ?? '-'}</td>
-	</tr>
+	<tbody>
+		<tr>
+			<th>ID</th>
+			<td>{data.relation.id}</td>
+		</tr>
+		<tr>
+			<th>Actief</th>
+			<td>{data.relation.isActive}</td>
+		</tr>
+		<tr>
+			<th>Naam</th>
+			<td>{data.relation.name}</td>
+		</tr>
+		<tr>
+			<th>Omschrijving</th>
+			<td>{data.relation.FinancialPersonDataOther?.description ?? '-'}</td>
+		</tr>
+		<tr>
+			<th>IBAN</th>
+			<td>{data.relation.FinancialPersonDataOther?.iban ?? '-'}</td>
+		</tr>
+		<tr>
+			<th>Adres</th>
+			<td>{data.relation.FinancialPersonDataOther?.address ?? '-'}</td>
+		</tr>
+		<tr>
+			<th>Postcode</th>
+			<td>{data.relation.FinancialPersonDataOther?.postalCode ?? '-'}</td>
+		</tr>
+		<tr>
+			<th>Plaats</th>
+			<td>{data.relation.FinancialPersonDataOther?.city ?? '-'}</td>
+		</tr>
+		<tr>
+			<th>Email</th>
+			<td>{data.relation.FinancialPersonDataOther?.email ?? '-'}</td>
+		</tr>
+	</tbody>
 </table>
 
 <style lang="scss">

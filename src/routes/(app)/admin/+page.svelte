@@ -86,7 +86,7 @@
 		</tr>
 		<tr>
 			<td>
-				<button class="btn-a" on:click={bak}>
+				<button class="btn-a" onclick={bak}>
 					<span class="icon">
 						<TablerBeer />
 					</span>

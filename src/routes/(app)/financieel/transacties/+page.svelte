@@ -5,7 +5,11 @@
 	import { toDateString } from '$lib/dateUtils'
 	import { formatMoney } from '$lib/utils'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Transacties" />

@@ -1,4 +1,4 @@
-import type { PageData } from '../$types'
+import type { PageData } from './$types'
 import type { User } from '$lib/server/prisma/client'
 
 // /strafbakken

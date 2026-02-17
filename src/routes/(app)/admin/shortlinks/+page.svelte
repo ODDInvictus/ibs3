@@ -3,7 +3,11 @@
 	import { toast } from '$lib/notification'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	async function action(id: number, action: 'edit' | 'delete') {
 		await fetch('', {
@@ -57,7 +61,7 @@
 				<td>{link.createdAt.toLocaleDateString('nl')}</td>
 				<td>{link.user.firstName}</td>
 				<td>
-					<button class="btn-a" on:click={() => action(link.id, 'delete')}>Verwijder</button>
+					<button class="btn-a" onclick={() => action(link.id, 'delete')}>Verwijder</button>
 					<a href="/admin/shortlinks/{link.shortLink}">Informatie</a>
 				</td>
 			</tr>

@@ -3,7 +3,11 @@
 	import Title from '$lib/components/title.svelte'
 	import LedgersTable from '../LedgersTable.svelte'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Inactieve grootboekrekeningen" />

@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { signOut } from '@auth/sveltekit/client'
 
-	export let showMenu: boolean = false
+	interface Props {
+		showMenu?: boolean
+	}
+
+	let { showMenu = false }: Props = $props()
 
 	function logOut() {
 		signOut()
@@ -22,14 +26,14 @@
 	<div class="menu">
 		<div id="pointer"></div>
 
-		<button class="menu-item" on:click={() => toggleColor()}>{isDarkMode() ? 'Light mode' : 'Dark mode'}</button>
+		<button class="menu-item" onclick={() => toggleColor()}>{isDarkMode() ? 'Light mode' : 'Dark mode'}</button>
 		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/leden/ik">Profiel</a>
 		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/financieel">Streeplijst</a>
 		<a class="menu-item {isDarkMode() ? 'text-white' : 'text-black'}" href="/instellingen">Instellingen</a>
 
 		<hr />
 
-		<button class="menu-item" on:click={() => logOut()}>Uitloggen</button>
+		<button class="menu-item" onclick={() => logOut()}>Uitloggen</button>
 	</div>
 {/if}
 

@@ -2,10 +2,13 @@
 	import ProfileIcon from '$lib/components/profile-icon.svelte'
 	import type { User, AttendingStatus } from '$lib/server/prisma/client'
 
-	export let user: User
-	export let status: AttendingStatus
+	interface Props {
+		user: User
+		status: AttendingStatus
+		cardAction: (ldapId: string, status: AttendingStatus) => void
+	}
 
-	export let cardAction: (ldapId: string, status: AttendingStatus) => void
+	let { user, status, cardAction }: Props = $props()
 
 	const getStatus = () => {
 		switch (status) {
@@ -50,7 +53,7 @@
 	</div>
 
 	<div class="user-card-name">
-		<button class="btn-a" on:click={() => cardAction(user.ldapId, status)}>{user.firstName + ' ' + user.lastName}</button>
+		<button class="btn-a" onclick={() => cardAction(user.ldapId, status)}>{user.firstName + ' ' + user.lastName}</button>
 	</div>
 </div>
 

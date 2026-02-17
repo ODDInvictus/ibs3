@@ -15,10 +15,10 @@
 
 	const MIN_LIKES = Number.isNaN(Number(env.PUBLIC_MIN_LIKES)) ? 4 : Number(env.PUBLIC_MIN_LIKES)
 
-	export let data
+	let { data } = $props()
 
-	let likes = data.reactions?.likes?.filter(r => r.liked)?.map(r => r.user) ?? []
-	let dislikes = data.reactions?.likes?.filter(r => !r.liked)?.map(r => r.user) ?? []
+	let likes = $state(data.reactions?.likes?.filter(r => r.liked)?.map(r => r.user) ?? [])
+	let dislikes = $state(data.reactions?.likes?.filter(r => !r.liked)?.map(r => r.user) ?? [])
 
 	const getSmallestImageAbove110px = (images: SpotifyApi.ImageObject[]) => {
 		return images.reduce((smallest, image) => {
@@ -79,8 +79,8 @@
 		})
 	}
 
-	let player: HTMLAudioElement
-	let isPaused = true
+	let player: HTMLAudioElement = $state()
+	let isPaused = $state(true)
 </script>
 
 {#if data.error}
@@ -114,7 +114,7 @@
 				{#if data.track.body.preview_url && player}
 					{#if isPaused}
 						<button
-							on:click={() => {
+							onclick={() => {
 								isPaused = false
 								player.play()
 							}}>
@@ -122,7 +122,7 @@
 						</button>
 					{:else}
 						<button
-							on:click={() => {
+							onclick={() => {
 								isPaused = true
 								player.pause()
 							}}>
@@ -135,7 +135,7 @@
 			</div>
 		</div>
 		<div class="links">
-			<button on:click={async () => await react(true)} class="link">
+			<button onclick={async () => await react(true)} class="link">
 				{#if likes.find(l => l.id === data.user.id)}
 					<LikeFilled color="white" />
 				{:else}
@@ -143,7 +143,7 @@
 				{/if}
 				<p>{likes.length}</p>
 			</button>
-			<button on:click={async () => await react(false)} class="link">
+			<button onclick={async () => await react(false)} class="link">
 				{#if dislikes.find(d => d.id === data.user.id)}
 					<DislikeFilled color="white" />
 				{:else}

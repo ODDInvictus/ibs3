@@ -12,32 +12,34 @@
 
 <div id="root">
 	<div id="left">
+		<h2>Info</h2>
 		<table>
-			<h2>Info</h2>
-			<tr>
-				<th>Declarant</th>
-				<td>{data.user.firstName}</td>
-			</tr>
-			<tr>
-				<th>Bedrag</th>
-				<td>{formatMoney(data.declaration.total)}</td>
-			</tr>
-			<tr>
-				<th>Reden</th>
-				<td>{data.declaration.description ?? ''}</td>
-			</tr>
-			<tr>
-				<th>Indien datum</th>
-				<td>{data.declaration.date ? formatDateHumanReadable(new Date(data.declaration.date)) : '?'}</td>
-			</tr>
-			<tr>
-				<th>Status</th>
-				<td>{data.declaration.status.toLowerCase()}</td>
-			</tr>
-			<tr>
-				<th>Betaal methode</th>
-				<td>{data.declaration.methodOfPayment}</td>
-			</tr>
+			<tbody>
+				<tr>
+					<th>Declarant</th>
+					<td>{data.user.firstName}</td>
+				</tr>
+				<tr>
+					<th>Bedrag</th>
+					<td>{formatMoney(data.declaration.total)}</td>
+				</tr>
+				<tr>
+					<th>Reden</th>
+					<td>{data.declaration.description ?? ''}</td>
+				</tr>
+				<tr>
+					<th>Indien datum</th>
+					<td>{data.declaration.date ? formatDateHumanReadable(new Date(data.declaration.date)) : '?'}</td>
+				</tr>
+				<tr>
+					<th>Status</th>
+					<td>{data.declaration.status.toLowerCase()}</td>
+				</tr>
+				<tr>
+					<th>Betaal methode</th>
+					<td>{data.declaration.methodOfPayment}</td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 

@@ -2,13 +2,18 @@
 	import { rpc } from '$lib/rpc'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
 
-	let selection: string = data.nts[0]
-	let discord: boolean = true
+	let { data }: Props = $props()
+
+	let selection: string = $state(data.nts[0])
+	let discord: boolean = $state(true)
+	let everyone: boolean = $state(false)
 
 	async function click() {
-		await rpc<{ selection: string; discord: boolean }, null>('test', { selection, discord })
+		await rpc<{ selection: string; discord: boolean; everyone: boolean }, null>('test', { selection, discord, everyone })
 	}
 </script>
 
@@ -29,7 +34,14 @@
 	</div>
 
 	<div>
-		<button on:click={click}> Stuur </button>
+		<label for="everyone">
+			Naar elke gebruiker sturen?
+			<input name="everyone" type="checkbox" bind:checked={everyone} />
+		</label>
+	</div>
+
+	<div>
+		<button onclick={click}> Stuur </button>
 	</div>
 </div>
 

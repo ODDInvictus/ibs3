@@ -8,41 +8,52 @@
 	import PromptCheckbox from '$lib/components/prompt-checkbox.svelte'
 	import Alert from '$lib/components/alert.svelte'
 	import ImagePreview from '$lib/components/image-popup.svelte'
-	import { afterNavigate } from '$app/navigation'
-	import { Modals, closeModal } from 'svelte-modals'
+	import { afterNavigate, onNavigate } from '$app/navigation'
+	import { Modals, closeModal } from 'svelte-modals/legacy'
 	import MobileMenu from './_mobile-menu.svelte'
 	import { getFlash } from 'sveltekit-flash-message'
-	import { page } from '$app/stores'
+	import { navigating, page } from '$app/state'
 	import { toast } from '$lib/notification'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+		children?: import('svelte').Snippet
+	}
 
-	// const flash = getFlash(page)
+	let { data, children }: Props = $props()
 
-	// flash.subscribe($flash => {
-	// 	if (!$flash) return
+	const flash = getFlash(page)
 
-	// 	toast({
-	// 		type: $flash.type,
-	// 		title: $flash.title,
-	// 		message: $flash.message,
-	// 	})
+	flash.subscribe($flash => {
+		if (!$flash) return
 
-	// 	flash.set(undefined)
-	// })
+		toast({
+			type: $flash.type,
+			title: $flash.title,
+			message: $flash.message,
+		})
 
-	afterNavigate(() => {
-		// Reset scroll position on layout--container-slot
-		const slot = document.querySelector('.layout--container')
-
-		if (slot) slot.scrollTop = 0
-
-		open = false
+		flash.set(undefined)
 	})
 
-	let open = false
-	const openMenu = () => (open = !open)
+	let url = $state(page.url)
+
+	$effect(() => {
+		if (url != page.url) {
+			url = page.url
+			const slot = document.querySelector('.layout--container')
+
+			if (slot) slot.scrollTop = 0
+
+			open = false
+		}
+	})
+
+	let open = $state(false)
+	const openMenu = () => {
+		open = !open
+	}
 </script>
 
 <main class="layout--main">
@@ -54,7 +65,9 @@
 	{/if}
 
 	<Modals>
-		<div slot="backdrop" class="backdrop" role="button" tabindex="0" on:click={closeModal}></div>
+		{#snippet backdrop()}
+			<div class="backdrop" role="button" tabindex="0" onclick={closeModal}></div>
+		{/snippet}
 	</Modals>
 
 	<div class="layout--stripe" data-open={open}></div>
@@ -64,7 +77,7 @@
 	{#if !open}
 		<div class="layout--container">
 			<div class="layout--container-slot">
-				<slot />
+				{@render children?.()}
 			</div>
 		</div>
 	{/if}

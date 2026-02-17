@@ -5,6 +5,7 @@ import type { PageServerLoad } from './$types'
 import { superValidate } from 'sveltekit-superforms/server'
 import { authorization } from '$lib/ongeveer/utils'
 import schema from './relationSchema'
+import { zod4 } from 'sveltekit-superforms/adapters'
 
 export const load = (async event => {
 	const { url } = event
@@ -53,7 +54,7 @@ export const load = (async event => {
 			}
 		: {}
 
-	const form = await superValidate(data, schema)
+	const form = await superValidate(data, zod4(schema))
 
 	return { form }
 }) satisfies PageServerLoad
@@ -61,7 +62,7 @@ export const load = (async event => {
 export const actions = {
 	default: async event => {
 		const { request, locals } = event
-		const form = await superValidate(request, schema)
+		const form = await superValidate(request, zod4(schema))
 
 		if (!authorization(locals.roles)) return error(403)
 		// If there is inavlid data, return the form with the errors

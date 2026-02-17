@@ -1,12 +1,19 @@
 <script lang="ts">
+	import Callout from '$lib/components/callout.svelte'
 	import Title from '$lib/components/title.svelte'
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Ongeveer" shortTitle="Home" />
+
+<Callout type="caution">Ongeveer wordt niet meer gebruikt! Deze pagina is alleen maar beschikbaar voor historische redenen</Callout>
 
 <main>
 	<div class="column">

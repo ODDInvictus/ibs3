@@ -36,14 +36,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		return error(403, 'Je hebt geen toestemming om deze actie uit te voeren')
 	}
 
-	await db.attending.updateMany({
+	const u = await db.user.findFirstOrThrow({
 		where: {
-			user: {
-				ldapId,
-			},
-			activityId,
+			ldapId,
 		},
-		data: {
+	})
+
+	await db.attending.upsert({
+		where: {
+			userId_activityId: {
+				userId: u.id,
+				activityId,
+			},
+		},
+		update: {
+			status,
+		},
+		create: {
+			activityId,
+			userId: u.id,
 			status,
 		},
 	})

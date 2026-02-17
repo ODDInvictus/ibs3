@@ -94,10 +94,12 @@
 
 		<table>
 			<thead>
-				<th>Omschrijving</th>
-				<th>Hoeveelheid</th>
-				<th>Stukprijs</th>
-				<th>Totaal</th>
+				<tr>
+					<th>Omschrijving</th>
+					<th>Hoeveelheid</th>
+					<th>Stukprijs</th>
+					<th>Totaal</th>
+				</tr>
 			</thead>
 			<tbody>
 				{#each invoice.Rows as row}

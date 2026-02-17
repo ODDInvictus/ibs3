@@ -2,9 +2,9 @@
 	import { enhance } from '$app/forms'
 	import { toast } from '$lib/notification'
 
-	let files: FileList | undefined
-	let keys: string[] = []
-	let transactions: string[][] = []
+	let files: FileList | undefined = $state()
+	let keys: string[] = $state([])
+	let transactions: string[][] = $state([])
 
 	const handleNewFile = async () => {
 		if (!files || files.length === 0) {
@@ -53,9 +53,8 @@
 			}
 		}
 	}}
-	enctype="multipart/form-data"
->
-	<input type="file" name="file" id="file" bind:files on:change={handleNewFile} accept=".csv" />
+	enctype="multipart/form-data">
+	<input type="file" name="file" id="file" bind:files onchange={handleNewFile} accept=".csv" />
 	<button type="submit">Upload</button>
 </form>
 

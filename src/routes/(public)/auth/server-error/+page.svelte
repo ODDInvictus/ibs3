@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 </script>
 
 <main>
@@ -7,7 +7,7 @@
 
 	<p>Iets is stuk gegaan bij de authenticatie.</p>
 	<p>Dit hoort natuurlijk niet, dus stuur Niels even een appje svp.</p>
-	<p>Error-code: {$page.url.searchParams.get('error')}</p>
+	<p>Error-code: {page.url.searchParams.get('error')}</p>
 </main>
 
 <style lang="scss">

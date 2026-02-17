@@ -38,39 +38,43 @@
 </div>
 
 <main>
+	<h2>Info</h2>
 	<table class="ongeveer-table">
-		<h2>Info</h2>
-		<tr>
-			<th>ID</th>
-			<td>{data.catergory.id}</td>
-		</tr>
-		<tr>
-			<th>Naam</th>
-			<td>{data.catergory.name}</td>
-		</tr>
-		<tr>
-			<th>Beschrijving</th>
-			<td>{data.catergory.description}</td>
-		</tr>
-		<tr>
-			<th>Actief</th>
-			<td>{data.catergory.isActive}</td>
-		</tr>
-		<tr>
-			<th>Created at</th>
-			<td>{formatDateTimeHumanReadable(data.catergory.createdAt)}</td>
-		</tr>
-		<tr>
-			<th>Updated at</th>
-			<td>{formatDateTimeHumanReadable(data.catergory.updatedAt)}</td>
-		</tr>
+		<tbody>
+			<tr>
+				<th>ID</th>
+				<td>{data.catergory.id}</td>
+			</tr>
+			<tr>
+				<th>Naam</th>
+				<td>{data.catergory.name}</td>
+			</tr>
+			<tr>
+				<th>Beschrijving</th>
+				<td>{data.catergory.description}</td>
+			</tr>
+			<tr>
+				<th>Actief</th>
+				<td>{data.catergory.isActive}</td>
+			</tr>
+			<tr>
+				<th>Created at</th>
+				<td>{formatDateTimeHumanReadable(data.catergory.createdAt)}</td>
+			</tr>
+			<tr>
+				<th>Updated at</th>
+				<td>{formatDateTimeHumanReadable(data.catergory.updatedAt)}</td>
+			</tr>
+		</tbody>
 	</table>
 
+	<h2>Producten</h2>
 	<table class="ongeveer-table">
-		<h2>Producten</h2>
 		<thead>
-			<th>ID</th>
-			<th>Naam</th>
+			<tr>
+				<th>ID</th>
+				<th>Naam</th>
+			</tr>
 		</thead>
 		<tbody>
 			{#each data.products as product}

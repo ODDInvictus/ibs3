@@ -78,14 +78,16 @@
 	{:else if field.type === 'table' && field.columns}
 		<table id={field.name}>
 			<thead>
-				{#if field.rowLabels}
-					<th>{field.rowLabelName ?? ''}</th>
-				{/if}
-				{#each field.columns as column}
-					<th><Label field={column} /></th>
-				{/each}
-				<th></th>
-				<th></th>
+				<tr>
+					{#if field.rowLabels}
+						<th>{field.rowLabelName ?? ''}</th>
+					{/if}
+					{#each field.columns as column}
+						<th><Label field={column} /></th>
+					{/each}
+					<th></th>
+					<th></th>
+				</tr>
 			</thead>
 			<tbody>
 				{#each rows as i}

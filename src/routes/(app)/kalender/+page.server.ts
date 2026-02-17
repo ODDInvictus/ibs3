@@ -30,6 +30,15 @@ export const load = (async ({ locals }) => {
 					name: true,
 				},
 			},
+			activityPhoto: {
+				include: {
+					file: {
+						select: {
+							filename: true,
+						},
+					},
+				},
+			},
 		},
 	})
 

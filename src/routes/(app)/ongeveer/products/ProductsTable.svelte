@@ -4,8 +4,10 @@
 
 <table class="ongeveer-table">
 	<thead>
-		<th>ID</th>
-		<th>Naam</th>
+		<tr>
+			<th>ID</th>
+			<th>Naam</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each products as product}

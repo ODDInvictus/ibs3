@@ -3,7 +3,11 @@
 	import { calcLeaderboardTime } from '$lib/leaderboards'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	function back() {
 		window.history.back()
@@ -13,7 +17,7 @@
 <Title title="Oude inzendingen" />
 
 <div class="topbar">
-	<button class="btn-a" on:click={back}> Terug </button>
+	<button class="btn-a" onclick={back}> Terug </button>
 </div>
 
 <table class="small striped equal-width">

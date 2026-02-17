@@ -5,7 +5,11 @@
 	import { toast } from '$lib/notification'
 	import { calcLeaderboardTime, getLeaderboardName } from '$lib/leaderboards'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	let currentDate = new Date()
 
@@ -38,7 +42,7 @@
 	<a class="link" href="/ranglijst/{data.scoreboard.id}/oud">Oude inzendingen</a>
 
 	{#if data.roles[LDAP_IDS.ADMINS]}
-		<button class="btn-a" on:click={pin}>Lijst {data.scoreboard.pinned ? 'losmaken' : 'vastzetten'}</button>
+		<button class="btn-a" onclick={pin}>Lijst {data.scoreboard.pinned ? 'losmaken' : 'vastzetten'}</button>
 		&nbsp;&nbsp;&nbsp;
 	{/if}
 

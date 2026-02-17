@@ -3,7 +3,11 @@
 	import Title from '$lib/components/title.svelte'
 	import CategoriesTable from './CategoriesTable.svelte'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Product categorieën" />

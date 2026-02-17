@@ -5,7 +5,11 @@
 	import { markdown, stripMarkdown } from '$lib/utils'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Foto's van activiteiten" underTitle="Selecteer het fotoalbum dat je wil bekijken" />

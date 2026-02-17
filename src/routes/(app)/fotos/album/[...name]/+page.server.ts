@@ -23,7 +23,11 @@ export const load = (async ({ params }) => {
 				select: {
 					photo: {
 						include: {
-							file: true,
+							file: {
+								select: {
+									filename: true,
+								},
+							},
 						},
 					},
 				},
@@ -49,7 +53,11 @@ export const load = (async ({ params }) => {
 				visible: true,
 			},
 			include: {
-				file: true,
+				file: {
+					select: {
+						filename: true,
+					},
+				},
 			},
 		})
 
@@ -79,6 +87,13 @@ export const load = (async ({ params }) => {
 			orderBy: {
 				createdAt: 'desc',
 			},
+			include: {
+				file: {
+					select: {
+						filename: true,
+					},
+				},
+			},
 		})
 
 		return {
@@ -103,7 +118,11 @@ export const load = (async ({ params }) => {
 					createdAt: 'desc',
 				},
 				include: {
-					file: true,
+					file: {
+						select: {
+							filename: true,
+						},
+					},
 				},
 			},
 		},

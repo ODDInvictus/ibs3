@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: `<h3>` cannot be a child of `<table>`. `<table>` only allows these children: `<caption>`, `<colgroup>`, `<tbody>`, `<thead>`, `<tfoot>`, `<style>`, `<script>`, `<template>`. The browser will 'repair' the HTML (by moving, removing, or inserting elements) which breaks Svelte's assumptions about the structure of your components.
+https://svelte.dev/e/node_invalid_placement -->
 <script lang="ts">
 	import type { PageData } from './$types'
 	import Title from '$lib/components/title.svelte'
@@ -43,30 +45,34 @@
 
 <Title title="Match saldo transactie" />
 
+<h3>Info</h3>
 <table class="info">
-	<h3>Info</h3>
-	<tr>
-		<th>Totaal bedrag</th>
-		<td>{formatPrice(data.transaction.price)}</td>
-	</tr>
-	<tr>
-		<th>Matched</th>
-		<td>{formatPrice(data.totalMatched)}</td>
-	</tr>
-	<tr>
-		<th>Resterend</th>
-		<td>{formatPrice(data.toMatch)}</td>
-	</tr>
+	<tbody>
+		<tr>
+			<th>Totaal bedrag</th>
+			<td>{formatPrice(data.transaction.price)}</td>
+		</tr>
+		<tr>
+			<th>Matched</th>
+			<td>{formatPrice(data.totalMatched)}</td>
+		</tr>
+		<tr>
+			<th>Resterend</th>
+			<td>{formatPrice(data.toMatch)}</td>
+		</tr>
+	</tbody>
 </table>
 
 <form method="post" class="superform" use:enhance>
 	<h3>Match</h3>
 	<table>
 		<thead>
-			<th>Omschrijving</th>
-			<th>Amount</th>
-			<th>Boekstuk</th>
-			<th></th>
+			<tr>
+				<th>Omschrijving</th>
+				<th>Amount</th>
+				<th>Boekstuk</th>
+				<th></th>
+			</tr>
 		</thead>
 		<tbody>
 			{#if data.transaction.TransactionMatchRow}

@@ -12,6 +12,8 @@ static/upload/
 !static/upload/activities/bier.jpg
 static/fotos/
 src/lib/server/prisma
+/fotos
+*.avif
 
 # Logs
 logs

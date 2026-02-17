@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy'
+
 	import Title from '$lib/components/title.svelte'
 	import { superForm } from 'sveltekit-superforms/client'
 	import { declatationSchema } from './declarationSchema'
@@ -9,7 +11,11 @@
 	import type { PageData } from './$types'
 	import { onError } from '$lib/superforms/error'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	const formProps = superForm(data.form, {
 		validators: declatationSchema,
@@ -19,12 +25,8 @@
 
 	const { enhance, form, message } = formProps
 
-	let files: FileList
-	let src: string | null = null
-
-	$: if (files) {
-		showImage()
-	}
+	let files: FileList = $state()
+	let src: string | null = $state(null)
 
 	function showImage() {
 		if (!files || files.length === 0) return
@@ -39,6 +41,11 @@
 
 		reader.readAsDataURL(file)
 	}
+	run(() => {
+		if (files) {
+			showImage()
+		}
+	})
 </script>
 
 <Title title="Declaratie indienen" shortTitle="Declaratie" />

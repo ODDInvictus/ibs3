@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Title from '$lib/components/title.svelte'
 	import { toast } from '$lib/notification'
 
-	let email = ''
-	let alias = ''
+	let email = $state('')
+	let alias = $state('')
 
 	async function submit() {
 		await fetch('', {
@@ -40,7 +40,7 @@
 
 <p>
 	Op deze pagina kan je een nieuwe custom alias maken, dit is om een <b>niet</b>
-	{$page.data.domain} email te linken aan een gmail account o.i.d
+	{page.data.domain} email te linken aan een gmail account o.i.d
 </p>
 <p>Denk bijvoorbeeld aan stin@</p>
 
@@ -48,13 +48,13 @@
 	<label for="alias">Alias</label>
 	<div>
 		<input bind:value={alias} type="text" id="alias" name="alias" />
-		@{$page.data.domain}
+		@{page.data.domain}
 	</div>
 
 	<label for="email">Email</label>
 	<input bind:value={email} type="text" id="email" name="email" />
 
-	<button on:click={submit}>Verstuur</button>
+	<button onclick={submit}>Verstuur</button>
 </form>
 
 <style lang="scss">

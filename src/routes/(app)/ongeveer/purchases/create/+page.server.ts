@@ -1,5 +1,6 @@
 import type { Actions, PageServerLoad } from './$types'
 import { superValidate } from 'sveltekit-superforms/server'
+import { zod4 } from 'sveltekit-superforms/adapters'
 import { authorization } from '$lib/ongeveer/utils'
 import db from '$lib/server/db'
 import { error, fail } from '@sveltejs/kit'
@@ -65,7 +66,7 @@ export const load = (async event => {
 				date: new Date(),
 			}
 
-	const form = await superValidate(data, schema)
+	const form = await superValidate(data, zod4(schema))
 
 	const relations = await getRelations()
 
@@ -104,7 +105,7 @@ export const actions: Actions = {
 		const { request, locals } = event
 
 		const formData = await request.formData()
-		const form = await superValidate(formData, schema)
+		const form = await superValidate(formData, zod4(schema))
 
 		if (!authorization(locals.roles)) return error(403)
 		if (!form.valid) return fail(400, { form })
