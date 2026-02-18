@@ -1,10 +1,11 @@
-FROM oven/bun:1.3.6 AS base
+FROM oven/bun:1.3.6-debian AS build
 WORKDIR /ibs3
 
-FROM base AS install
+FROM build AS install
 RUN mkdir -p /temp/dev
 COPY package.json bun.lock /temp/dev/
 COPY patches /temp/dev/patches
+RUN apt-get update && apt-get install -y python3 python3-pip build-essential
 RUN cd /temp/dev && bun install --frozen-lockfile
 
 RUN mkdir -p /temp/prod
@@ -17,15 +18,18 @@ RUN cd /temp/prod \
 
 # copy node_modules from temp directory
 # then copy all (non-ignored) project files into the image
-FROM base AS prerelease
+FROM build AS prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
+FROM oven/bun:1.3.6 AS prod
+
 # copy production dependencies and source code into final image
-FROM base AS release
+FROM prod AS release
 COPY --from=install /temp/prod/node_modules ./node_modules
 COPY --from=install /temp/prod/prisma ./prisma
 COPY --from=prerelease /ibs3/package.json .
+COPY src ./src
 COPY build ./build
 
 USER bun

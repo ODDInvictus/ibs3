@@ -2,7 +2,7 @@ import { LDAP_IDS } from '$lib/constants'
 import { applyTransaction } from '$lib/ongeveer/db'
 import { PrismaClient, type User } from '$lib/server/prisma/client'
 import { PrismaMariaDb } from '@prisma/adapter-mariadb'
-// import { env } from '$env/dynamic/private'
+import { env } from '$env/dynamic/private'
 
 const { DATABASE_HOST, DATABASE_PORT, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE } = process.env
 

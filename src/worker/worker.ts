@@ -1,7 +1,7 @@
-import { db } from '$lib/server/db'
-import { Setting } from '$lib/server/settings'
 import { Client, Events, GatewayIntentBits, MessageType, type Snowflake } from 'discord.js'
 import { parseDiscordMessageIntoQuote } from './discord'
+import { PrismaClient, type User } from '../lib/server/prisma/client'
+import { PrismaMariaDb } from '@prisma/adapter-mariadb'
 
 declare var self: Worker
 
@@ -11,6 +11,27 @@ const HOUR = 60 * MINUTE
 const DAY = 24 * HOUR
 
 let client: Client
+
+const { DATABASE_HOST, DATABASE_PORT, DATABASE_USER, DATABASE_PASSWORD, DATABASE_DATABASE } = process.env
+
+if (!DATABASE_HOST || !DATABASE_PORT || !DATABASE_USER || !DATABASE_PASSWORD || !DATABASE_DATABASE) {
+	console.error('Missing one of these requierd variables: DATABASE_ + [HOST, PORT, USER, PASSWORD, DATABASE]')
+	process.exit(1)
+}
+
+const adapter = new PrismaMariaDb(
+	{
+		host: DATABASE_HOST,
+		port: Number.parseInt(DATABASE_PORT!),
+		user: DATABASE_USER,
+		password: DATABASE_PASSWORD,
+		database: DATABASE_DATABASE,
+		connectionLimit: 5,
+	},
+	{ database: DATABASE_DATABASE! },
+)
+
+export const workerDB = new PrismaClient({ adapter })
 
 self.onmessage = async (event: MessageEvent) => {
 	log('Hallo ibs3!')
@@ -22,9 +43,9 @@ self.onmessage = async (event: MessageEvent) => {
 		return
 	}
 
-	const quoteChannel = await db.settings.findFirst({
+	const quoteChannel = await workerDB.settings.findFirst({
 		where: {
-			name: Setting.DISCORD_QUOTE_CHANNEL,
+			name: 'DISCORD_QUOTE_CHANNEL',
 		},
 	})
 
@@ -62,7 +83,7 @@ self.onmessage = async (event: MessageEvent) => {
 			log(message.content.includes('\n'))
 
 			try {
-				await db.discordMessage.create({
+				await workerDB.discordMessage.create({
 					data: {
 						id: message.id,
 						sender: message.author.username,
@@ -110,7 +131,7 @@ async function scanChannel(client: Client, quoteChannel: Snowflake) {
 				if (message.cleanContent === '/scan') return
 
 				try {
-					await db.discordMessage.create({
+					await workerDB.discordMessage.create({
 						data: {
 							id: message.id,
 							sender: message.author.username,

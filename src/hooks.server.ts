@@ -36,6 +36,7 @@ await (async () => {
 	await initAWS()
 
 	// start the service worker
+	// const worker = new WebWorker() as Bun.Worker
 	const worker = new Worker('./src/worker/worker.ts') as Bun.Worker
 
 	worker.addEventListener('open', () => {

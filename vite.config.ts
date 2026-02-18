@@ -10,6 +10,9 @@ export default defineConfig({
 	resolve: {
 		conditions: ['bun', 'node', 'worker', 'browser', 'development'],
 	},
+	worker: {
+		format: 'es',
+	},
 	plugins: [
 		sveltekit(),
 		Icons({
