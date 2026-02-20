@@ -15,10 +15,10 @@
 
 	const MIN_LIKES = Number.isNaN(Number(env.PUBLIC_MIN_LIKES)) ? 4 : Number(env.PUBLIC_MIN_LIKES)
 
-	export let data
+	let { data } = $props()
 
-	let likes = data.reactions?.likes?.filter(r => r.liked)?.map(r => r.user) ?? []
-	let dislikes = data.reactions?.likes?.filter(r => !r.liked)?.map(r => r.user) ?? []
+	let likes = $state(data.reactions?.likes?.filter(r => r.liked)?.map(r => r.user) ?? [])
+	let dislikes = $state(data.reactions?.likes?.filter(r => !r.liked)?.map(r => r.user) ?? [])
 
 	const getSmallestImageAbove110px = (images: SpotifyApi.ImageObject[]) => {
 		return images.reduce((smallest, image) => {
@@ -79,15 +79,15 @@
 		})
 	}
 
-	let player: HTMLAudioElement
-	let isPaused = true
+	let player: HTMLAudioElement = $state()
+	let isPaused = $state(true)
 </script>
 
 {#if data.error}
 	<Title title="Playlist" />
 	<p class="error">Error: {data.error}</p>
 {:else if data.track}
-	<audio bind:this={player} src={data.track.body.preview_url} loop />
+	<audio bind:this={player} src={data.track.body.preview_url} loop></audio>
 	<Title title={data.track.body.name} underTitle={data.track.body.artists[0].name} />
 	<main>
 		<div class="info">
@@ -114,20 +114,18 @@
 				{#if data.track.body.preview_url && player}
 					{#if isPaused}
 						<button
-							on:click={() => {
+							onclick={() => {
 								isPaused = false
 								player.play()
-							}}
-						>
+							}}>
 							<Play color="#551b8a" height="2rem" width="2rem" />
 						</button>
 					{:else}
 						<button
-							on:click={() => {
+							onclick={() => {
 								isPaused = true
 								player.pause()
-							}}
-						>
+							}}>
 							<Pause color="#551b8a" height="2rem" width="2rem" />
 						</button>
 					{/if}
@@ -137,7 +135,7 @@
 			</div>
 		</div>
 		<div class="links">
-			<button on:click={async () => await react(true)} class="link">
+			<button onclick={async () => await react(true)} class="link">
 				{#if likes.find(l => l.id === data.user.id)}
 					<LikeFilled color="white" />
 				{:else}
@@ -145,7 +143,7 @@
 				{/if}
 				<p>{likes.length}</p>
 			</button>
-			<button on:click={async () => await react(false)} class="link">
+			<button onclick={async () => await react(false)} class="link">
 				{#if dislikes.find(d => d.id === data.user.id)}
 					<DislikeFilled color="white" />
 				{:else}
@@ -240,7 +238,10 @@
 			progress[value]::-webkit-progress-value {
 				background-color: var(--color-primary);
 				border-radius: 1rem;
-				background-size: 35px 20px, 100% 100%, 100% 100%;
+				background-size:
+					35px 20px,
+					100% 100%,
+					100% 100%;
 			}
 		}
 	}

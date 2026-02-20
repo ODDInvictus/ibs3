@@ -9,6 +9,7 @@ import db from '$lib/server/db'
 import Decimal from 'decimal.js'
 import { getJournal } from '../../sales/[id]/getJournal'
 import { createTransaction, getInvictusId, getUnmatchedJournals } from '$lib/ongeveer/db'
+import { zod4 } from 'sveltekit-superforms/adapters'
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id)
@@ -47,7 +48,7 @@ export const load = (async ({ params }) => {
 		}),
 	}
 
-	const form = await superValidate(data, matchTransactionSchema)
+	const form = await superValidate(data, zod4(matchTransactionSchema))
 
 	const financialPersons = await db.financialPerson.findMany({
 		select: {
@@ -91,7 +92,7 @@ export const actions = {
 
 		/* Validations **/
 
-		const form = await superValidate(request, matchTransactionSchema)
+		const form = await superValidate(request, zod4(matchTransactionSchema))
 		if (!authorization(locals.roles)) return fail(403, { form })
 		if (!form.valid) return fail(400, { form })
 

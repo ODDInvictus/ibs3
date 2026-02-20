@@ -3,6 +3,8 @@ import { fail } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 import { invalidateUser } from '$lib/server/userCache'
 import { uploadPhoto } from '$lib/server/files'
+import { isFeut } from '$lib/server/auth/helpers'
+import { success } from 'zod'
 
 export const load = (async ({ params, locals }) => {
 	let id = params.id
@@ -45,6 +47,10 @@ export const load = (async ({ params, locals }) => {
 
 export const actions = {
 	default: async ({ request, params, locals }) => {
+		if (isFeut(locals.user)) {
+			return fail(400, { success: false, message: 'Lol alsof een feut dit zou mogen' })
+		}
+
 		let id = params.id
 
 		if (id === 'ik') {
@@ -61,14 +67,20 @@ export const actions = {
 			return fail(400, { success: false, message: 'Geen foto geupload' })
 		}
 
-		const filename = await uploadPhoto(file, locals.user, false)
+		const photo = await uploadPhoto(file, locals.user.id, false)
+
+		const filename = await db.file.findFirst({
+			where: {
+				id: photo.fileId,
+			},
+		})
 
 		await db.user.update({
 			where: {
 				ldapId: id,
 			},
 			data: {
-				profilePicture: filename,
+				profilePicture: filename?.filename,
 			},
 		})
 

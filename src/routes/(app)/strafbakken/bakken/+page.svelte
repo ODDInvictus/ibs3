@@ -3,13 +3,17 @@
 	import type { bakkenPageData } from '../types'
 	import Table from './Table.svelte'
 
-	export let data: bakkenPageData
+	interface Props {
+		data: bakkenPageData
+	}
+
+	let { data }: Props = $props()
 
 	const middleIndex = Math.ceil(data.strafbakken.length / 2)
-	let width: number
+	let width: number = $state()
 
 	// Get the longest name
-	let longestName = ''
+	let longestName = $state('')
 	data.strafbakken.forEach(user => {
 		let name = user.nickname ?? user.firstName
 		if (name.length > longestName.length) longestName = name
@@ -21,7 +25,7 @@
 		return `Getrokken strafbakken week ${week}`
 	}
 
-	$: msg = getTitle(data.week)
+	let msg = $derived(getTitle(data.week))
 </script>
 
 <svelte:window bind:innerWidth={width} />

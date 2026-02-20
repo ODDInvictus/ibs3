@@ -2,7 +2,7 @@
 	import Plus from '~icons/tabler/plus'
 	import Minus from '~icons/tabler/minus'
 	import Modal from './Modal.svelte'
-	import { openModal } from 'svelte-modals'
+	import { modals } from 'svelte-modals'
 	import type { sbUser } from './types'
 
 	export let data: sbUser[]
@@ -25,47 +25,52 @@
 	}
 </script>
 
-<table class="not-full-width">
+<table class="not-full-width small">
 	<thead>
-		<th>Naam</th>
-		<th>Bakken</th>
-		<th>Acties</th>
+		<tr>
+			<th>Naam</th>
+			<th>Bakken</th>
+			<th>Acties</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each data as user, i}
-			<row class="row">
-				<a href={`/strafbakken/${user.firstName.toLowerCase()}`} class="cell">
-					{user.nickname || user.firstName}
-				</a>
-				<a href={`/strafbakken/${user.firstName.toLowerCase()}`} class="cell">
-					<p>{user._count.StrafbakReceived}</p>
-				</a>
-				<div class="actions cell">
-					<button
-						class="btn-a"
-						on:click={() =>
-							openModal(Modal, {
-								username: user.nickname || user.firstName,
-								uid: user.id,
-								changeCount,
-								index: i,
-							})}
-					>
-						<i><Plus /></i>
-					</button>
-					<button class="btn-a" on:click={user._count.StrafbakReceived ? () => trekBak(user.id, i) : null}>
-						<i class={user._count.StrafbakReceived ? '' : 'none'}><Minus /></i>
-					</button>
-				</div>
-			</row>
+			<tr>
+				<td>
+					<a href={`/strafbakken/${user.firstName.toLowerCase()}`} class="cell">
+						{user.nickname || user.firstName}
+					</a>
+					<a href={`/strafbakken/${user.firstName.toLowerCase()}`} class="cell">
+						<p>{user._count.StrafbakReceived}</p>
+					</a>
+					<div class="actions cell">
+						<button
+							class="btn-a"
+							onclick={() =>
+								modals.open(Modal, {
+									username: user.nickname || user.firstName,
+									uid: user.id,
+									changeCount,
+									index: i,
+								})}>
+							<i><Plus /></i>
+						</button>
+						<button class="btn-a" onclick={user._count.StrafbakReceived ? () => trekBak(user.id, i) : null}>
+							<i class={user._count.StrafbakReceived ? '' : 'none'}><Minus /></i>
+						</button>
+					</div>
+				</td>
+			</tr>
 		{/each}
 		<!-- Add an invisible row with the longest name to make sure the 2 tables have the same width (kinda) -->
 		{#if longestName !== null}
-			<row id="invisible">
-				<p class="cell">{longestName}</p>
-				<div class="cell" />
-				<div class="cell" />
-			</row>
+			<tr id="invisible">
+				<td>
+					<p class="cell">{longestName}</p>
+					<div class="cell"></div>
+					<div class="cell"></div>
+				</td>
+			</tr>
 		{/if}
 	</tbody>
 </table>
@@ -77,9 +82,11 @@
 		display: flex;
 		justify-content: space-around;
 
-		th {
-			padding: $cell-padding;
-			text-align: left;
+		tr {
+			th {
+				padding: $cell-padding;
+				text-align: left;
+			}
 		}
 	}
 
@@ -91,11 +98,7 @@
 		display: grid;
 		grid-template-columns: 1fr;
 
-		row {
-			display: grid;
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-			transition: all 0.4s ease;
-
+		tr {
 			&:nth-child(odd) {
 				background-color: var(--color-primary);
 				color: white;
@@ -107,33 +110,49 @@
 
 			&:has(.cell:not(.actions):hover) {
 				background-color: var(--color-primary);
-				color: white;
-				text-decoration: underline;
-			}
+				transition: all 0.4s ease;
 
-			.cell {
-				padding: $cell-padding;
-				word-wrap: break-word;
-				position: relative;
-
-				p {
-					position: absolute;
-					top: 50%;
-					transform: translateY(-50%);
+				a,
+				i {
+					color: white !important;
 				}
+				text-decoration: underline !important;
 			}
 
-			&#invisible {
-				opacity: 0;
-				cursor: default;
-				height: 0px;
+			td {
+				display: grid;
+				grid-template-columns: repeat(3, minmax(0, 1fr));
 
 				.cell {
-					padding: 0 $cell-padding;
-					word-wrap: normal;
-					text-overflow: clip;
-					line-height: 0%;
+					padding: $cell-padding;
+					word-wrap: break-word;
+					position: relative;
+
+					p {
+						position: absolute;
+						top: 50%;
+						transform: translateY(-50%);
+					}
 				}
+			}
+		}
+
+		a {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		#invisible {
+			opacity: 0;
+			cursor: default;
+			height: 0px;
+
+			.cell {
+				padding: 0 $cell-padding;
+				word-wrap: normal;
+				text-overflow: clip;
+				line-height: 0%;
 			}
 		}
 

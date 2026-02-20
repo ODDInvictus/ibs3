@@ -11,7 +11,7 @@
 
 	<p>Doe je niks aan.</p>
 
-	<button onclick="history.back()">Ga terug</button>
+	<button onclick={() => back()}>Ga terug</button>
 </main>
 
 <style lang="scss">
@@ -29,6 +29,7 @@
 	}
 
 	h1 {
+		color: white;
 		font-size: 5rem;
 	}
 

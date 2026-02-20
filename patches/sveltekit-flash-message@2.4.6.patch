@@ -1,0 +1,31 @@
+diff --git a/dist/router.js b/dist/router.js
+index ebb60c38a13353b201af49d512e408317b7ec35c..9d7f87b25cb3beab710ecdce387d082d0818f35d 100644
+--- a/dist/router.js
++++ b/dist/router.js
+@@ -2,18 +2,21 @@
+ import { writable } from 'svelte/store';
+ import { FlashMessage } from './flashMessage.js';
+ import { mergeOptions } from './options.js';
+-import { onDestroy } from 'svelte';
++import { onMount } from 'svelte';
+ export class FlashRouter {
+     routes = new Map();
+     messageStore;
+     constructor() {
+         this.messageStore = writable();
+         this.routes.set('', new FlashMessage(this.messageStore));
+-        onDestroy(() => {
+-            for (const route of this.routes.values()) {
+-                clearTimeout(route.flashTimeout);
++        onMount(() => {
++
++            return () => {
++                for (const route of this.routes.values()) {
++                    clearTimeout(route.flashTimeout);
++                }
+             }
+-        });
++        })
+     }
+     get defaultRoute() {
+         return this.routes.get('');

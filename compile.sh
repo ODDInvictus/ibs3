@@ -13,10 +13,11 @@ then
 fi
 
 echo Bouwen voor versie $1
-npm install
-npm install sharp
-npx prisma generate
-npm run build
+export NODE_ENV=production
+export ENVIRONMENT=production
+bun --bun install
+bunx prisma generate
+bun --bun run build
 
 if [ $? -ne 0 ]; then
     echo 'Build gefaald, probeer opnieuw'
@@ -25,9 +26,8 @@ fi
 
 echo
 echo Docker container genereren
-sudo docker build -t ghcr.io/oddinvictus/ibs3:$1 .
-echo "Backend bouwen"
-sudo docker build --file ./backend.Dockerfile -t ghcr.io/oddinvictus/ibs3:$1-backend .
+sudo docker build --file Dockerfile.frontend -t ghcr.io/oddinvictus/ibs3:$1 .
+echo
 
 if [ -z ${2+x} ];
 then
@@ -35,6 +35,8 @@ then
   echo Nu kan je pushen met
   echo docker push ghcr.io/oddinvictus/ibs3:$1
 else
+  echo "Backend bouwen"
+  sudo docker build --file Dockerfile.backend -t ghcr.io/oddinvictus/ibs3:$1-backend .
   echo
   echo Pushen naar GitHub...
   sudo docker push ghcr.io/oddinvictus/ibs3:$1

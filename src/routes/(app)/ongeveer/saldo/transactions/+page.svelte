@@ -7,7 +7,11 @@
 	import Dot from '~icons/tabler/point-filled'
 	import Cross from '~icons/tabler/x'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <div id="root">

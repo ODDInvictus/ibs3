@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import { LDAP_IDS } from '$lib/constants'
 	import InformationCircle from '~icons/tabler/info-circle'
 	import Users from '~icons/tabler/users'
@@ -16,8 +16,12 @@
 	import QuestionMark from '~icons/tabler/question-mark'
 	import Music from '~icons/tabler/music'
 
-	export let version: string
-	$: inOngeveer = $page.url.pathname.startsWith('/ongeveer')
+	interface Props {
+		version: string
+	}
+
+	let { version }: Props = $props()
+	let inOngeveer = $derived(page.url.pathname.startsWith('/ongeveer'))
 </script>
 
 <div class="inner">
@@ -43,24 +47,24 @@
 			<span>Hulp</span>
 		</a>
 	{:else}
-		<a class="layout--mobimenu--item" href="/playlist">
+		<!-- <a class="layout--mobimenu--item" href="/playlist">
 			<i><Music /></i>
 			<span>Playlist</span>
-		</a>
+		</a> -->
 
 		<a class="layout--mobimenu--item" href="/streaming">
 			<i><Streaming /></i>
 			<span>Streaming</span>
 		</a>
 
-		{#if $page.data.settings.maluspuntenEnabled}
+		{#if page.data.settings.maluspuntenEnabled}
 			<a class="layout--mobimenu--item" href="/maluspunten">
 				<i><AccessibleOff /></i>
 				<span>Maluspunten</span>
 			</a>
 		{/if}
 
-		{#if $page.data.roles[LDAP_IDS.ADMINS] || $page.data.roles[LDAP_IDS.SENAAT]}
+		{#if page.data.roles[LDAP_IDS.ADMINS] || page.data.roles[LDAP_IDS.SENAAT]}
 			<a class="layout--mobimenu--item" href="/admin">
 				<i><ShieldCheck /></i>
 				<span>Admin</span>

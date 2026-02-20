@@ -1,6 +1,6 @@
 import prisma from '$lib/server/db'
 import db from '$lib/server/db'
-import type { JournalType } from '@prisma/client'
+import type { JournalType } from '$lib/server/prisma/client'
 import Decimal from 'decimal.js'
 
 /**
@@ -151,7 +151,7 @@ export async function createTransaction({
 			fromId: giver,
 			toId: receiver,
 			price: amount,
-			description: `${isManual ?? true ? 'Handmatige transactie: ' : ''}${description}`,
+			description: `${(isManual ?? true) ? 'Handmatige transactie: ' : ''}${description}`,
 			transactionId: transaction.id,
 		},
 		include: {

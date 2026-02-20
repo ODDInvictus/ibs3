@@ -32,11 +32,15 @@
 	import IbsLogo from './_ibs-logo.svelte'
 	import IbsLogoDev from './_ibs-logo-dev.svelte'
 
-	export let openMenu: () => void
-	export let open: boolean
-	export let version: string
+	interface Props {
+		openMenu: () => void
+		open: boolean
+		version: string
+	}
 
-	$: inOngeveer = $page.url.pathname.startsWith('/ongeveer')
+	let { openMenu, open, version }: Props = $props()
+
+	let inOngeveer = $derived($page.url.pathname.startsWith('/ongeveer'))
 </script>
 
 <nav class="layout--navbar">
@@ -69,7 +73,7 @@
 			<i><ArrowBarLeft /></i>
 			<span>Inkoop</span>
 		</a>
-		<button class="layout--navbar--item btn-a" on:click={openMenu}>
+		<button class="layout--navbar--item btn-a" onclick={openMenu}>
 			{#if open}
 				<i><X /></i>
 			{:else}
@@ -117,7 +121,7 @@
 			<span>Foto's</span>
 		</a>
 
-		<button class="layout--navbar--item btn-a" on:click={openMenu}>
+		<button class="layout--navbar--item btn-a" onclick={openMenu}>
 			{#if open}
 				<i><X /></i>
 			{:else}
@@ -126,10 +130,10 @@
 			<span>Menu</span>
 		</button>
 
-		<a class="layout--navbar--item" href="/playlist">
+		<!-- <a class="layout--navbar--item" href="/playlist">
 			<i><Music /></i>
 			<span>Playlist</span>
-		</a>
+		</a> -->
 
 		<a class="layout--navbar--item" href="/streaming">
 			<i><Streaming /></i>

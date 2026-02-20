@@ -1,6 +1,6 @@
 import { LDAP_IDS } from '$lib/constants.js'
 import db from '$lib/server/db'
-import type { Activity } from '@prisma/client'
+import type { Activity } from '$lib/server/prisma/client'
 import type { PageServerLoad } from './$types'
 
 type CalendarActivity = Activity & {
@@ -28,6 +28,15 @@ export const load = (async ({ locals }) => {
 			location: {
 				select: {
 					name: true,
+				},
+			},
+			activityPhoto: {
+				include: {
+					file: {
+						select: {
+							filename: true,
+						},
+					},
 				},
 			},
 		},

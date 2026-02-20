@@ -8,6 +8,7 @@ import Decimal from 'decimal.js'
 import { redirect } from 'sveltekit-flash-message/server'
 import { getInvictusId, getUnmatchedJournals } from '$lib/ongeveer/db'
 import type { Notification } from '$lib/notification'
+import { zod4 } from 'sveltekit-superforms/adapters'
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id)
@@ -39,7 +40,7 @@ export const load = (async ({ params }) => {
 			}
 		}),
 	}
-	const form = await superValidate(data, matchSaldoTransaction)
+	const form = await superValidate(data, zod4(matchSaldoTransaction))
 
 	const totalMatched = transaction.Transaction.TransactionMatchRow.reduce((acc, row) => acc.add(row.amount), new Decimal(0))
 		.add(transaction.TransactionMatchRow?.amount ?? 0)
@@ -63,7 +64,7 @@ export const actions = {
 		const id = Number(params.id)
 		if (Number.isNaN(id)) return error(400)
 
-		const form = await superValidate(request, matchSaldoTransaction)
+		const form = await superValidate(request, zod4(matchSaldoTransaction))
 
 		if (!authorization(locals.roles)) return fail(403, { form })
 		if (!form.valid) return fail(400, { form })

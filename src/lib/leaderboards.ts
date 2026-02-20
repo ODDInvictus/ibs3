@@ -1,4 +1,4 @@
-import type { LeaderboardTypes } from '@prisma/client'
+import type { LeaderboardTypes } from '$lib/server/prisma/client'
 
 export function calcLeaderboardTime(num: number, type?: LeaderboardTypes) {
 	if (num === -1) {

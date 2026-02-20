@@ -5,7 +5,11 @@
 	import { getPictureUrl } from '$lib/utils'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 {#if !data.type}
@@ -23,7 +27,7 @@
 					<img
 						src={getPictureUrl(photo.file.filename, 'thumbnail')}
 						alt={photo.description}
-						on:click={() => imagePreview({ image: getPictureUrl(photo.file.filename, 'normal') })} />
+						onclick={() => imagePreview({ image: getPictureUrl(photo.file.filename, 'normal') })} />
 					<figcaption>
 						<a href="/fotos/{photo.id}">{photo.description ?? 'Info'}</a>
 					</figcaption>

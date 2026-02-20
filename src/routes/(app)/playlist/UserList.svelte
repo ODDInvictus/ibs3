@@ -1,15 +1,19 @@
 <script lang="ts">
 	import ProfileIcon from '$lib/components/profile-icon.svelte'
 
-	export let users: {
-		firstName: string
-		lastName: string
-		profilePicture: string | null
-		nickname: string | null
-		id: number
-	}[]
-	export let mode: 'likes' | 'dislikes' | undefined = undefined
-	export let url: string = '/playlist/create'
+	interface Props {
+		users: {
+			firstName: string
+			lastName: string
+			profilePicture: string | null
+			nickname: string | null
+			id: number
+		}[]
+		mode?: 'likes' | 'dislikes' | undefined
+		url?: string
+	}
+
+	let { users, mode = undefined, url = '/playlist/create' }: Props = $props()
 </script>
 
 <div>

@@ -5,9 +5,13 @@
 	import { formatPrice } from '$lib/textUtils'
 	import Pagination from '$lib/components/Pagination.svelte'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
 
-	let innerWidth: number
+	let { data }: Props = $props()
+
+	let innerWidth: number = $state()
 </script>
 
 <svelte:window bind:innerWidth />

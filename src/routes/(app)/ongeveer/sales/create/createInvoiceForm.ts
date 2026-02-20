@@ -1,7 +1,7 @@
 import { Form, type Field } from '$lib/form/form-generator'
 import { Roles } from '$lib/constants'
 import db from '$lib/server/db'
-import type { JournalRow } from '@prisma/client'
+import type { JournalRow } from '$lib/server/prisma/client'
 
 type row = {
 	amount: number

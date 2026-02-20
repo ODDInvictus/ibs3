@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy'
+
 	import knoppers from '$lib/assets/knoppers.png'
-	import { onDestroy, onMount } from 'svelte'
+	import { onMount } from 'svelte'
 	import { browser } from '$app/environment'
 	import { daysLeftTill, formatDateHumanReadable, toAge, toBirthday } from '$lib/dateUtils'
 	import { imagePreview } from '$lib/imagePreviewStore'
@@ -8,28 +10,29 @@
 	import { getPictureUrl, markdown } from '$lib/utils'
 	import type { PageData } from './$types'
 	let currentDate = new Date()
-	export let data: PageData
+
+	let { data }: { data: PageData } = $props()
 
 	/* Cookie clicker */
 	const localStorageKey = 'ibs::clicks'
 	let isClicking = false
 
-	let totalClicks = data.clicks?._sum?.amount ?? 0
-	let sessionClicks = 0
+	let totalClicks = $state(data.clicks?._sum?.amount ?? 0)
+	let sessionClicks = $state(0)
 
-	$: satuationStyle = `filter: saturate(${Math.min(9, Math.max(1, sessionClicks / 100))})`
+	let satuationStyle = $derived(`filter: saturate(${Math.min(9, Math.max(1, sessionClicks / 100))})`)
 
 	let timeout: NodeJS.Timeout | undefined = undefined
 	let startTime: number
 
-	let record = data.topclicker?.amount
-	let recordHolder = data.topclicker?.firstName
-	$: {
+	let record = $state(data.topclicker?.amount)
+	let recordHolder = $state(data.topclicker?.firstName)
+	run(() => {
 		if (totalClicks > record) {
 			record = totalClicks
 			recordHolder = 'jou'
 		}
-	}
+	})
 
 	async function cookieClick() {
 		if (isClicking) {
@@ -63,12 +66,7 @@
 		sessionClicks = 0
 	}
 
-	onDestroy(() => {
-		if (!browser || !sessionClicks) return
-		localStorage.setItem(localStorageKey, JSON.stringify({ startTime, sessionClicks, endTime: Date.now() }))
-	})
-
-	onMount(async () => {
+	onMount(() => {
 		if (!browser) return
 
 		const data = localStorage.getItem(localStorageKey)
@@ -78,7 +76,14 @@
 		if (sessionClicks == 0) return
 		totalClicks += sessionClicks
 		localStorage.removeItem(localStorageKey)
-		await endSession(startTime, sessionClicks, endTime)
+		;(async () => {
+			await endSession(startTime, sessionClicks, endTime)
+		})()
+
+		return () => {
+			if (!browser || !sessionClicks) return
+			localStorage.setItem(localStorageKey, JSON.stringify({ startTime, sessionClicks, endTime: Date.now() }))
+		}
 	})
 
 	function activityImage(resize: boolean) {
@@ -146,7 +151,7 @@
 		<div class="ibs-card--image">
 			<img
 				alt={data.activity?.name ?? 'Geen activiteit gepland'}
-				on:click={() =>
+				onclick={() =>
 					imagePreview({
 						image: activityImage(false),
 					})}
@@ -161,10 +166,10 @@
 					{formatDateHumanReadable(data.activity.startTime)}
 				</time>
 			</div>
-			<div class="mt-4" />
+			<div class="mt-4"></div>
 			<div class="ibs-card--links">
 				<a href="/activiteit/{data.activity.id}">Meer informatie</a>
-				<button class="btn-a" on:click={bij}>Ik ben 🐝</button>
+				<button class="btn-a" onclick={bij}>Ik ben 🐝</button>
 			</div>
 		{:else}
 			<div class="ibs-card--content">
@@ -181,7 +186,7 @@
 		<blockquote class="ibs-card--content">
 			<p>{@html markdown(data.quote)}</p>
 		</blockquote>
-		<div class="mt-6" />
+		<div class="mt-6"></div>
 		<div class="ibs-card--links">
 			<a href="/citaten">Meer citaten</a>
 		</div>
@@ -194,7 +199,7 @@
 			<h1 data-testid="strafbakken">{data.strafbakken}</h1>
 			<p>strafbakken!</p>
 		</div>
-		<div class="mt-6" />
+		<div class="mt-6"></div>
 		<div class="ibs-card--links">
 			<a href="/strafbakken/{data.user.ldapId}">Waarom?</a>
 		</div>
@@ -203,7 +208,7 @@
 	<div class="ibs-card cookie-clicker">
 		<h2 class="ibs-card--title">Knoppers klikker</h2>
 		<div class="ibs-card--content">
-			<img style={satuationStyle} id="cookie" role="button" tabindex="0" src={knoppers} alt="knoppers" on:click={cookieClick} />
+			<img style={satuationStyle} id="cookie" role="button" tabindex="0" src={knoppers} alt="knoppers" onclick={cookieClick} />
 			<div id="cookieStats">
 				<p>Totaal clicks: {totalClicks}</p>
 				{#if record && recordHolder}
@@ -216,7 +221,7 @@
 
 	<div class="ibs-card birthdays">
 		<div class="ibs-card--image">
-			<img on:click={() => imagePreview({ image: birthdayImage(false) })} src={birthdayImage(true)} alt="⏳" />
+			<img onclick={() => imagePreview({ image: birthdayImage(false) })} src={birthdayImage(true)} alt="⏳" />
 		</div>
 		{#if daysLeftTill(data.nextBirthday.birthDate) > 0}
 			{@const birthday = data.nextBirthday.birthDate}

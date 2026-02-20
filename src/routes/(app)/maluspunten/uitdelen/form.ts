@@ -2,7 +2,7 @@ import { LDAP_IDS, Roles } from '$lib/constants'
 import { Form } from '$lib/form/form-generator'
 import type { Field } from '$lib/form/form-generator'
 import db from '$lib/server/db'
-import type { User } from '@prisma/client'
+import type { User } from '$lib/server/prisma/client'
 
 export const maluspuntForm = new Form<{
 	name: string

@@ -8,7 +8,11 @@
 	import SuperSelect from '$lib/superforms/SuperSelect.svelte'
 	import Submit from '$lib/superforms/Submit.svelte'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	const formProps = superForm(data.form, {
 		validators: createTransactionSchema,

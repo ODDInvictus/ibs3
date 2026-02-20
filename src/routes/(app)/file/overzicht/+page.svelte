@@ -2,7 +2,11 @@
 	import Title from '$lib/components/title.svelte'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Bestands overzicht" underTitle="Alle bestanden momenteel bekend bij IBS in GridFS" />

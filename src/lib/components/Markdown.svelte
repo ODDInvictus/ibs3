@@ -2,29 +2,32 @@
 	import { goto } from '$app/navigation'
 	import InfoCircle from '~icons/tabler/info-circle'
 
-	export let text: string
-	let className: string
-	export { className as class }
+	interface Props {
+		text: string
+		class: string
+	}
+
+	let { text, class: className }: Props = $props()
 </script>
 
-<main class={className}>
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<div class="heading" role="button" tabindex="0" on:click={() => goto('/docs/markdown')}>
+<div class={'markdown-element ' + className}>
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div class="heading" role="button" tabindex="-1" onclick={() => goto('/docs/markdown')}>
 		<p>markdown</p>
 		<div class="icon">
 			<InfoCircle />
 		</div>
 	</div>
 	<p>{@html text}</p>
-</main>
+</div>
 
 <style lang="scss">
 	$spacing: 0.5rem;
 	$headingFontSize: 0.75rem;
 
-	main {
+	.markdown-element {
 		background-color: #eee;
-		color: #666;
+		color: #242424;
 		padding: $spacing;
 		padding-top: calc(2 * $spacing + $headingFontSize);
 		border-radius: 6px;
@@ -36,7 +39,7 @@
 	.heading {
 		display: flex;
 		position: absolute;
-		color: #ccc;
+		color: #929292;
 		font-size: $headingFontSize;
 		top: $spacing;
 		left: $spacing;

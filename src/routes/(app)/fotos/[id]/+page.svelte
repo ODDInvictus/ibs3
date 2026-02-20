@@ -10,10 +10,14 @@
 	import type { PageData } from './$types'
 	import Star from '~icons/tabler/star'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
 
-	let rating = data.avgRating ?? 0
-	let starHovered = rating
+	let { data = $bindable() }: Props = $props()
+
+	let rating = $state(data.avgRating ?? 0)
+	let starHovered = $state(rating)
 
 	async function rate() {
 		let newRating = starHovered
@@ -151,14 +155,14 @@
 				</p>
 				<p class="mb-1">Tags:</p>
 				{#each data.photo.tags as tag}
-					<span on:click={() => removeTag(tag.photoTag.id)} class="ibs-chip removable">
+					<span onclick={() => removeTag(tag.photoTag.id)} class="ibs-chip removable">
 						{tag.photoTag.name}
 					</span>
 				{/each}
 				{#if data.photo.tags && data.photo.tags.length > 0}
 					<br />
 				{/if}
-				<button on:click={tag} class="btn-a">Toevoegen</button>
+				<button onclick={tag} class="btn-a">Toevoegen</button>
 			</div>
 
 			<div class="rating-container">
@@ -167,11 +171,11 @@
 				<div class="stars" data-hovered={starHovered}>
 					{#each Array.from(Array(5).keys()) as idx}
 						<i
-							on:focus={() => (starHovered = idx + 1)}
-							on:mouseover={() => (starHovered = idx + 1)}
-							on:focusout={() => (starHovered = rating)}
-							on:mouseleave={() => (starHovered = rating)}
-							on:click={rate}
+							onfocus={() => (starHovered = idx + 1)}
+							onmouseover={() => (starHovered = idx + 1)}
+							onfocusout={() => (starHovered = rating)}
+							onmouseleave={() => (starHovered = rating)}
+							onclick={rate}
 							data-filled={starHovered >= idx + 1}><Star /></i>
 					{/each}
 				</div>
@@ -246,7 +250,7 @@
 
 		<div class="image-container">
 			<img
-				on:click={() =>
+				onclick={() =>
 					imagePreview({
 						image: data.photoUrl ?? '',
 					})}

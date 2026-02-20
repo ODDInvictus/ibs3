@@ -18,11 +18,13 @@
 
 <table>
 	<thead>
-		<th>Factuur</th>
-		<th>Relatie</th>
-		<th>Verstuurdatum</th>
-		<th>Totaal</th>
-		<th>Status</th>
+		<tr>
+			<th>Factuur</th>
+			<th>Relatie</th>
+			<th>Verstuurdatum</th>
+			<th>Totaal</th>
+			<th>Status</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#if data.invoices.length == 0}

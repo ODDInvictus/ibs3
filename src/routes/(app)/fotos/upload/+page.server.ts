@@ -2,7 +2,7 @@ import type { Actions, PageServerLoad } from './$types'
 import db from '$lib/server/db'
 import { fail, redirect } from '@sveltejs/kit'
 import { uploadPhoto } from '$lib/server/files'
-import type { User } from '@prisma/client'
+import type { User } from '$lib/server/prisma/client'
 
 export const load = (async () => {
 	const users = await db.user.findMany({
@@ -65,11 +65,12 @@ export const actions = {
 			return f({ status: 400, message: 'Geen fotos gevonden' })
 		}
 
-		let ids: string[] = []
+		let ids: number[] = []
 
 		for (const foto of fotos) {
-			const id = await uploadPhoto(foto, c, true, true, c)
-			ids.push(id)
+			// const id = await uploadPhoto(foto, c, true, true, c)
+			const photo = await uploadPhoto(foto, locals.user.id, true, c.id)
+			ids.push(photo.id)
 		}
 
 		redirect(303, '/fotos/upload/success?ids=' + ids.join(','))

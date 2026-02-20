@@ -1,3 +1,5 @@
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:click) and new syntaxes for event handling is not allowed. Use only the onclick syntax
+https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <script lang="ts">
 	import MapPin from '~icons/tabler/map-pin'
 	import Clock from '~icons/tabler/clock'
@@ -18,9 +20,10 @@
 	import { enhance } from '$app/forms'
 	import ProfileIcon from '$lib/components/profile-icon.svelte'
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
-	import type { AttendingStatus } from '@prisma/client'
+	import type { AttendingStatus } from '$lib/server/prisma/client'
 	import { promptCheckbox } from '$lib/promptCheckbox'
 	import { LDAP_IDS } from '$lib/constants'
+	import Callout from '$lib/components/callout.svelte'
 
 	export let data: PageData
 
@@ -155,18 +158,28 @@
 		<Title markdown title={activity.name} shortTitle={activity.name} />
 	</div>
 
+	{#if data.isInPast}
+		<div class="is-in-past">
+			<Callout type="note">Deze activiteit is al geweest of is nu bezig. Je kan je aanwezigheid niet meer aanpassen</Callout>
+		</div>
+	{/if}
+
 	<div class="cols">
 		<div class="ibs-card outline">
 			<div class="ibs-card--image">
 				<img
-					on:click={() => {
-						if (activity.photo) {
-							imagePreview({ image: getPictureUrl(activity.photo, 'normal') })
+					onclick={() => {
+						const fn = activity.activityPhoto?.file.filename
+						if (fn) {
+							imagePreview({ image: getPictureUrl(fn, 'normal') })
 						}
 					}}
 					alt={nameWithoutMarkdown}
-					src={getPictureUrl(activity.photo, 'normal')}
-					onerror="this.src='/favicon-512.png';this.onerror=null;" />
+					src={getPictureUrl(activity.activityPhoto?.file.filename, 'normal')}
+					onerror={() => {
+						this.src = '/favicon-512.png'
+						this.onerror = null
+					}} />
 			</div>
 
 			<h2 class="ibs-card--title">{@html markdown(activity.name)}</h2>
@@ -216,14 +229,16 @@
 				</p>
 			{/if}
 
-			<p class="ibs-card--row">
-				<i><Edit /></i>
-				<a href="/activiteit/nieuw?edit=true&id={activity.id}">Activiteit bewerken</a>
-			</p>
+			{#if !data.isInPast}
+				<p class="ibs-card--row">
+					<i><Edit /></i>
+					<a href="/activiteit/nieuw?edit=true&id={activity.id}">Activiteit bewerken</a>
+				</p>
+			{/if}
 
 			<p class="ibs-card--row">
 				<i><Share /></i>
-				<button class="btn-a" on:click={copyToClipboard}>Activiteit delen</button>
+				<button class="btn-a" onclick={copyToClipboard}>Activiteit delen</button>
 			</p>
 
 			<p class="ibs-card--content">
@@ -235,9 +250,9 @@
 			<h2 class="ibs-card--title">Wie komen er allemaal?</h2>
 
 			<div class="ibs-card--buttons top">
-				<button on:click={async () => await setAttending('ATTENDING', data.user.ldapId)}>Ik ben 🐝</button>
-				<button on:click={async () => await setAttending('UNSURE', data.user.ldapId)}>Ik weet het nog niet</button>
-				<button on:click={async () => await setAttending('NOT_ATTENDING', data.user.ldapId)}>Ik ben niet 🐝</button>
+				<button onclick={async () => await setAttending('ATTENDING', data.user.ldapId)}>Ik ben 🐝</button>
+				<button onclick={async () => await setAttending('UNSURE', data.user.ldapId)}>Ik weet het nog niet</button>
+				<button onclick={async () => await setAttending('NOT_ATTENDING', data.user.ldapId)}>Ik ben niet 🐝</button>
 			</div>
 
 			<div class="ibs-card--content users">
@@ -352,6 +367,10 @@
 				width: 90%;
 			}
 		}
+	}
+
+	.is-in-past {
+		margin-bottom: 1rem;
 	}
 
 	.comments {

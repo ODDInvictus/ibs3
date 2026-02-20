@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Title from '$lib/components/title.svelte'
 	import Check from '~icons/tabler/check'
 	import Cross from '~icons/tabler/letter-x'
-	let committees = $page.data.committees
-	let count = $page.data.count
+	let committees = page.data.committees
+	let count = page.data.count
 </script>
 
 <Title title="Commissies" />

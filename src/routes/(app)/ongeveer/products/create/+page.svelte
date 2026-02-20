@@ -21,7 +21,11 @@
 		}
 	}
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	const formProps = superForm(data.form, {
 		// Zod schema for client side validation

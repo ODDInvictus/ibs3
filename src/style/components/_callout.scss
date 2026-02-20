@@ -1,0 +1,52 @@
+.ibs-callout.note,
+.ibs-callout.important {
+	--callout-color: var(--color-primary);
+}
+
+.ibs-callout.caution {
+	--callout-color: var(--color-danger);
+}
+
+.ibs-callout.tip {
+	--callout-color: var(--color-info);
+}
+
+.ibs-callout.warning {
+	--callout-color: var(--color-warning);
+}
+
+.ibs-callout {
+	$color: var(--callout-color);
+
+	svg {
+		color: $color;
+	}
+
+	i {
+		span {
+			color: $color;
+		}
+	}
+
+	border-left: 5px solid var(--callout-color);
+
+	padding: 0.5rem 0rem 0.5rem 0.75rem;
+
+	.icon {
+		padding-bottom: 0.5rem;
+
+		div {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			margin-left: 0.2rem;
+		}
+
+		span {
+			font-style: normal;
+			margin-left: 0.1rem;
+			margin-top: 0.2rem;
+			margin-bottom: 0.2rem;
+		}
+	}
+}

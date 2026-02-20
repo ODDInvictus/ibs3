@@ -25,6 +25,11 @@ export const load = (async event => {
 					user: true,
 				},
 			},
+			activityPhoto: {
+				include: {
+					file: true,
+				},
+			},
 			organisedBy: true,
 			location: true,
 			comments: {
@@ -59,9 +64,12 @@ export const load = (async event => {
 
 	const attending = randomSortDay(activity.attending)
 
+	const isInPast = new Date() > activity.startTime
+
 	return {
 		activity,
 		attending,
+		isInPast,
 		title: activity.name,
 		domain: env.IBS_URL,
 		canEditAttending: isSenaat(locals.user),

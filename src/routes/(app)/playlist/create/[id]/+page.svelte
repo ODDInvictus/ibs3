@@ -3,7 +3,11 @@
 	import Tracklist from '../../Tracklist.svelte'
 	import Title from '$lib/components/title.svelte'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 {#if !data.playlistUser}

@@ -3,7 +3,11 @@
 	import type { PageData } from './$types'
 	import Pin from '~icons/tabler/pin'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Ranglijsten" shortTitle="Ranglijsten" />

@@ -3,9 +3,13 @@
 	import Title from '$lib/components/title.svelte'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
 
-	let dnf = false
+	let { data }: Props = $props()
+
+	let dnf = $state(false)
 
 	function onDNFChange(event) {
 		dnf = event.target.checked
@@ -26,7 +30,7 @@
 		<label for="value">Tijd</label>
 		<input disabled={dnf} type="time" name="value" />
 		<label for="dnf">DNF</label>
-		<input type="checkbox" name="dnf" on:change={onDNFChange} />
+		<input type="checkbox" name="dnf" onchange={onDNFChange} />
 	{:else if data.type === 'ADTMEISTER'}
 		<label for="value">Tijd (s:ms)</label>
 		<div class="adtmeister-input">
@@ -35,7 +39,7 @@
 		</div>
 
 		<label for="dnf">DNF</label>
-		<input type="checkbox" name="dnf" on:change={onDNFChange} />
+		<input type="checkbox" name="dnf" onchange={onDNFChange} />
 	{:else}
 		<label for="value">Waarde</label>
 		<input type="number" name="value" />

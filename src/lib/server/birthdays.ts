@@ -1,5 +1,5 @@
 import db from '$lib/server/db'
-import type { User } from '@prisma/client'
+import type { User } from '$lib/server/prisma/client'
 
 export async function getBirthdaysThisMonth(): Promise<User[]> {
 	return await db.$queryRaw`

@@ -3,7 +3,11 @@
 	import { getPictureUrl, markdown } from '$lib/utils'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Kalender" />
@@ -17,10 +21,17 @@
 	{#each data.activities as activity}
 		<div class="row {activity.isDies ? 'dies' : ''}">
 			<div class="image">
-				{#if !activity.photo}
+				{#if !activity.activityPhotoId}
 					<img src="/favicon-512.png" alt="⏳" />
 				{:else}
-					<img src={getPictureUrl(activity.photo)} onerror="this.src='/favicon-512.png';this.onerror=null;" alt="⏳" loading="lazy" />
+					<img
+						src={getPictureUrl(activity.activityPhoto?.file.filename, 'normal')}
+						onerror={() => {
+							this.src = '/favicon-512.png'
+							this.onerror = null
+						}}
+						alt="⏳"
+						loading="lazy" />
 				{/if}
 
 				<div class="date-tag">

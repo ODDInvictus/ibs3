@@ -3,7 +3,11 @@
 	import Invoice from '../_invoice.svelte'
 	import { onMount } from 'svelte'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	onMount(() => {
 		window.document.close()

@@ -2,10 +2,15 @@
 	import { page } from '$app/stores'
 	import { stripMarkdown, markdown as md } from '$lib/utils'
 
-	export let title: string | undefined = ''
-	export let shortTitle: string | undefined = ''
-	export let underTitle: string | undefined = ''
-	export let markdown = false
+	interface Props {
+		title?: string | undefined
+		shortTitle?: string | undefined
+		underTitle?: string | undefined
+		markdown?: boolean
+		children?: import('svelte').Snippet
+	}
+
+	let { title = '', shortTitle = '', underTitle = '', markdown = false, children }: Props = $props()
 
 	let ongeveer = $page.url.pathname.startsWith('/ongeveer')
 </script>
@@ -25,7 +30,7 @@
 {:else if title}
 	<h1>{title}</h1>
 {:else}
-	<slot />
+	{@render children?.()}
 {/if}
 
 {#if underTitle}

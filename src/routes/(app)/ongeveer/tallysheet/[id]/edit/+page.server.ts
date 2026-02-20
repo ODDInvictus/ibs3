@@ -7,6 +7,7 @@ import type { Actions } from './$types'
 import { authorization } from '$lib/ongeveer/utils'
 import { redirect } from 'sveltekit-flash-message/server'
 import { canDeleteTallySheet } from './canDeleteTallySheet'
+import { zod4 } from 'sveltekit-superforms/adapters'
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id)
@@ -22,7 +23,7 @@ export const load = (async ({ params }) => {
 		end: tallySheet.endDate ?? undefined,
 		notes: tallySheet.notes ?? undefined,
 	}
-	const form = await superValidate(data, editTallySheetSchema)
+	const form = await superValidate(data, zod4(editTallySheetSchema))
 
 	const canDelete = await canDeleteTallySheet(id)
 
@@ -38,7 +39,7 @@ export const actions = {
 
 		if (!authorization(locals.roles)) return fail(403)
 
-		const form = await superValidate(request, editTallySheetSchema)
+		const form = await superValidate(request, zod4(editTallySheetSchema))
 		if (!form.valid) return fail(400, { form })
 
 		const { data } = form

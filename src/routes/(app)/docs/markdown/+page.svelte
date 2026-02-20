@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Title from '$lib/components/title.svelte'
 	import Row from './Row.svelte'
 
@@ -11,8 +11,8 @@
 		'++ondersteept++',
 		'--> <==>',
 		'`code` [[ctrl]]',
-		$page.data.url,
-		`[strafbakken](${$page.data.url}/strafbakken)`,
+		page.data.url,
+		`[strafbakken](${page.data.url}/strafbakken)`,
 		':)  :clap:',
 		'20^e^ H~2~O',
 		'\\*geen markdown* *wel markdown*',
@@ -23,8 +23,10 @@
 
 <table class="equal-width small">
 	<thead>
-		<th>Markdown</th>
-		<th>Resultaat</th>
+		<tr>
+			<th>Markdown</th>
+			<th>Resultaat</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each examples as example}

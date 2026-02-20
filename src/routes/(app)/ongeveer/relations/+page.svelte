@@ -15,9 +15,11 @@
 
 <table>
 	<thead>
-		<th>Klantnummer</th>
-		<th>Naam</th>
-		<th>Omschrijving</th>
+		<tr>
+			<th>Klantnummer</th>
+			<th>Naam</th>
+			<th>Omschrijving</th>
+		</tr>
 	</thead>
 	<tbody data-testid="relations">
 		{#each data.relations as relation}
@@ -29,7 +31,7 @@
 		{/each}
 		<tr>
 			<td><a href="/ongeveer/relations/create"><Plus /></a></td>
-			<td colspan="2" />
+			<td colspan="2"></td>
 		</tr>
 	</tbody>
 </table>

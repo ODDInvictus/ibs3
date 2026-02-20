@@ -29,6 +29,7 @@ export enum Setting {
 	STRAFBAKKEN_VERDUBBELAAR_ENABLED = 'STRAFBAKKEN_VERDUBBELAAR_ENABLED',
 	STRAFBAKKEN_DRINKING_BUDDIES = 'STRAFBAKKEN_DRINKING_BUDDIES',
 	EMAIL_DOMAIN = 'EMAIL_DOMAIN',
+	DISCORD_QUOTE_CHANNEL = 'DISCORD_QUOTE_CHANNEL',
 }
 
 export const settings = {
@@ -83,7 +84,7 @@ export const settings = {
 	},
 
 	invalidate: async () => {
-		console.log('[SETTINGS] Invalidating settings')
+		log('Invalidating settings')
 
 		// @ts-expect-error Ik wil hem resetten ja
 		settings.keys = {}
@@ -108,10 +109,15 @@ export async function initSettings() {
 	// Check if all settings are present
 	Object.values(Setting).forEach(setting => {
 		if (settings.keys[setting] === undefined) {
-			console.warn(`[SETTINGS] Setting ${setting} is not present in the database`)
+			log(`Setting ${setting} is not present in the database`)
 			settings.unsetKeys.push(setting)
 		}
 	})
 
-	console.log('[SETTINGS] Settings initialized')
+	log('Settings initialized')
+}
+
+function log(...objects: any[]) {
+	const date = new Date(Date.now())
+	console.log(`[Settings][${date.toLocaleDateString('nl')} ${date.toLocaleTimeString('nl')}]`, ...objects)
 }

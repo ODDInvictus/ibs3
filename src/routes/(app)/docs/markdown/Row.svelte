@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { markdown } from '$lib/utils'
 
-	export let text: string
+	interface Props {
+		text: string
+	}
+
+	let { text }: Props = $props()
 </script>
 
 <tr>

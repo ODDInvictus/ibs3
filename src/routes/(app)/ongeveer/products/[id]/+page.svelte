@@ -37,53 +37,55 @@
 </div>
 
 <table class="ongeveer-table">
-	<tr>
-		<th>ID</th>
-		<td>{data.product.id}</td>
-	</tr>
-	<tr>
-		<th>Naam</th>
-		<td>{data.product.name}</td>
-	</tr>
-	<tr>
-		<th>Beschrijving</th>
-		<td>{data.product.description}</td>
-	</tr>
-	<tr>
-		<th>Prijs</th>
-		<td>{formatPrice(data.product.price)}</td>
-	</tr>
-	<tr>
-		<th>Categorie</th>
-		<td>
-			<a href="/ongeveer/products/category/{data.product.category.id}">
-				{data.product.category.id} - {data.product.category.name}
-			</a>
-		</td>
-	</tr>
-	<tr>
-		<th>Product Type</th>
-		<td>{data.product.productType}</td>
-	</tr>
-	<tr>
-		<th>Created at</th>
-		<td>{formatDateTimeHumanReadable(new Date(data.product.createdAt))}</td>
-	</tr>
-	<tr>
-		<th>Updated at</th>
-		<td>{formatDateTimeHumanReadable(new Date(data.product.updatedAt))}</td>
-	</tr>
-	<tr>
-		<th>isActive</th>
-		<td>{data.product.isActive}</td>
-	</tr>
-	{#if data.product.data && Object.keys(data.product.data).length > 0}
-		<h2>Other data</h2>
-		{#each Object.entries(data.product.data ?? {}) as [key, value]}
-			<tr>
-				<th>{key}</th>
-				<td>{value}</td>
-			</tr>
-		{/each}
-	{/if}
+	<tbody>
+		<tr>
+			<th>ID</th>
+			<td>{data.product.id}</td>
+		</tr>
+		<tr>
+			<th>Naam</th>
+			<td>{data.product.name}</td>
+		</tr>
+		<tr>
+			<th>Beschrijving</th>
+			<td>{data.product.description}</td>
+		</tr>
+		<tr>
+			<th>Prijs</th>
+			<td>{formatPrice(data.product.price)}</td>
+		</tr>
+		<tr>
+			<th>Categorie</th>
+			<td>
+				<a href="/ongeveer/products/category/{data.product.category.id}">
+					{data.product.category.id} - {data.product.category.name}
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<th>Product Type</th>
+			<td>{data.product.productType}</td>
+		</tr>
+		<tr>
+			<th>Created at</th>
+			<td>{formatDateTimeHumanReadable(new Date(data.product.createdAt))}</td>
+		</tr>
+		<tr>
+			<th>Updated at</th>
+			<td>{formatDateTimeHumanReadable(new Date(data.product.updatedAt))}</td>
+		</tr>
+		<tr>
+			<th>isActive</th>
+			<td>{data.product.isActive}</td>
+		</tr>
+		{#if data.product.data && Object.keys(data.product.data).length > 0}
+			<tr><td>Other data</td></tr>
+			{#each Object.entries(data.product.data ?? {}) as [key, value]}
+				<tr>
+					<th>{key}</th>
+					<td>{value}</td>
+				</tr>
+			{/each}
+		{/if}
+	</tbody>
 </table>

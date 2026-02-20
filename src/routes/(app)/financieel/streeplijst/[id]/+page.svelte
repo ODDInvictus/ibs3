@@ -13,34 +13,38 @@
 <h2>Info</h2>
 
 <table>
-	<tr>
-		<th>Begin datum</th>
-		{#if data.tallySheet.startDate}
-			<td>{formatDateHumanReadable(new Date(data.tallySheet.startDate))}</td>
-		{:else}
-			<td>-</td>
-		{/if}
-	</tr>
-	<tr>
-		<th>Eind datum</th>
-		{#if data.tallySheet.endDate}
-			<td>{formatDateHumanReadable(new Date(data.tallySheet.endDate))}</td>
-		{:else}
-			<td>-</td>
-		{/if}
-	</tr>
-	<tr>
-		<th>Invoer datum</th>
-		<td>{formatDateHumanReadable(new Date(data.tallySheet.createdAt))}</td>
-	</tr>
+	<tbody>
+		<tr>
+			<th>Begin datum</th>
+			{#if data.tallySheet.startDate}
+				<td>{formatDateHumanReadable(new Date(data.tallySheet.startDate))}</td>
+			{:else}
+				<td>-</td>
+			{/if}
+		</tr>
+		<tr>
+			<th>Eind datum</th>
+			{#if data.tallySheet.endDate}
+				<td>{formatDateHumanReadable(new Date(data.tallySheet.endDate))}</td>
+			{:else}
+				<td>-</td>
+			{/if}
+		</tr>
+		<tr>
+			<th>Invoer datum</th>
+			<td>{formatDateHumanReadable(new Date(data.tallySheet.createdAt))}</td>
+		</tr>
+	</tbody>
 </table>
 
 <h2>Steeplijst</h2>
 <table>
 	<thead>
-		<th>Product</th>
-		<th>Hoeveelheid</th>
-		<th>Prijs p/s</th>
+		<tr>
+			<th>Product</th>
+			<th>Hoeveelheid</th>
+			<th>Prijs p/s</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each data.tallySheet.sales as sale}

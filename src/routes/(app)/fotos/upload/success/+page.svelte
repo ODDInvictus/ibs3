@@ -16,14 +16,18 @@
 	import { getDutchMonth, toDateString } from '$lib/dateUtils'
 	import { goto } from '$app/navigation'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data = $bindable() }: Props = $props()
 
 	type Field = {
 		field: string
 		value: string
 	}
 
-	let editFields: Record<number, Field> = {}
+	let editFields: Record<number, Field> = $state({})
 
 	function edit(field: string, photo: number) {
 		if (editFields[photo] && editFields[photo].field === field) {
@@ -260,8 +264,8 @@
 		editFields[photo].value = ''
 	}
 
-	let linkAllPhotosToActivity = false
-	let selectedActivityAll = data.activities[0].id
+	let linkAllPhotosToActivity = $state(false)
+	let selectedActivityAll = $state(data.activities[0].id)
 
 	async function saveActivity() {
 		if (linkAllPhotosToActivity) {
@@ -319,7 +323,7 @@
 						>{`${stripMarkdown(activity.name)} (${getDutchMonth(activity.endTime)} ${activity.endTime.getFullYear()})`}</option>
 				{/each}
 			</select>
-			<button class="btn-a" on:click={saveActivity}>
+			<button class="btn-a" onclick={saveActivity}>
 				<i><SaveIcon /></i>
 			</button>
 			<small>
@@ -331,7 +335,7 @@
 </div>
 
 <div class="button-row">
-	<button on:click={back}>Klaar!</button>
+	<button onclick={back}>Klaar!</button>
 </div>
 
 <div class="image-container">
@@ -351,7 +355,7 @@
 								<td>
 									<select
 										value={photo.creator?.id}
-										on:change={e => {
+										onchange={e => {
 											if (e) {
 												// @ts-ignore
 												editFields[photo.id].value = e.target?.value
@@ -363,10 +367,10 @@
 									</select>
 								</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('name', photo.id)}>
+									<button class="btn-a" onclick={() => edit('name', photo.id)}>
 										<i><ArrowBackUp /></i>
 									</button>
-									<button class="btn-a" on:click={() => save('name', photo.id)}>
+									<button class="btn-a" onclick={() => save('name', photo.id)}>
 										<i><SaveIcon /></i>
 									</button>
 								</td>
@@ -375,7 +379,7 @@
 									{photo.creator?.firstName}
 								</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('name', photo.id)}>
+									<button class="btn-a" onclick={() => edit('name', photo.id)}>
 										<i><EditIcon /></i>
 									</button>
 								</td>
@@ -388,7 +392,7 @@
 									<input
 										type="date"
 										value={photo.date?.toISOString().substring(0, 10)}
-										on:change={e => {
+										onchange={e => {
 											if (e) {
 												// @ts-ignore
 												editFields[photo.id].value = e.target?.value
@@ -396,10 +400,10 @@
 										}} />
 								</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('date', photo.id)}>
+									<button class="btn-a" onclick={() => edit('date', photo.id)}>
 										<i><ArrowBackUp /></i>
 									</button>
-									<button class="btn-a" on:click={() => save('date', photo.id)}>
+									<button class="btn-a" onclick={() => save('date', photo.id)}>
 										<i><SaveIcon /></i>
 									</button>
 								</td>
@@ -410,7 +414,7 @@
 									</time>
 								</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('date', photo.id)}>
+									<button class="btn-a" onclick={() => edit('date', photo.id)}>
 										<i><EditIcon /></i>
 									</button>
 								</td>
@@ -422,18 +426,18 @@
 								<td>
 									<textarea
 										value={photo.description}
-										on:change={e => {
+										onchange={e => {
 											if (e) {
 												// @ts-ignore
 												editFields[photo.id].value = e.target?.value
 											}
-										}} />
+										}}></textarea>
 								</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('description', photo.id)}>
+									<button class="btn-a" onclick={() => edit('description', photo.id)}>
 										<i><ArrowBackUp /></i>
 									</button>
-									<button class="btn-a" on:click={() => save('description', photo.id)}>
+									<button class="btn-a" onclick={() => save('description', photo.id)}>
 										<i><SaveIcon /></i>
 									</button>
 								</td>
@@ -442,7 +446,7 @@
 									{photo.description ?? 'Geen beschrijving'}
 								</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('description', photo.id)}>
+									<button class="btn-a" onclick={() => edit('description', photo.id)}>
 										<i><EditIcon /></i>
 									</button>
 								</td>
@@ -455,7 +459,7 @@
 								<td>
 									<select
 										value={-1}
-										on:change={e => {
+										onchange={e => {
 											if (e) {
 												// @ts-expect-error Bestaat gewoon
 												if (e.target?.value == -2) {
@@ -480,10 +484,10 @@
 									</select>
 								</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('tags', photo.id)}>
+									<button class="btn-a" onclick={() => edit('tags', photo.id)}>
 										<i><ArrowBackUp /></i>
 									</button>
-									<button class="btn-a" on:click={() => addTag(photo.id)}>
+									<button class="btn-a" onclick={() => addTag(photo.id)}>
 										<i><CirclePlus /></i>
 									</button>
 								</td>
@@ -491,8 +495,8 @@
 								<td>
 									{#if photo.tags && photo.tags.length > 0}
 										{#each photo.tags as tag}
-											<!-- svelte-ignore a11y-click-events-have-key-events -->
-											<span role="button" tabindex="0" on:click={() => removeTag(photo.id, tag.photoTag.id)} class="ibs-chip removable"
+											<!-- svelte-ignore a11y_click_events_have_key_events -->
+											<span role="button" tabindex="0" onclick={() => removeTag(photo.id, tag.photoTag.id)} class="ibs-chip removable"
 												>{tag.photoTag.name}</span>
 										{/each}
 									{:else}
@@ -500,7 +504,7 @@
 									{/if}
 								</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('tags', photo.id)}>
+									<button class="btn-a" onclick={() => edit('tags', photo.id)}>
 										<i><TagIcon /></i>
 									</button>
 								</td>
@@ -512,7 +516,7 @@
 								<td>
 									<select
 										multiple
-										on:change={e => {
+										onchange={e => {
 											if (e) {
 												// @ts-expect-error Kijk heel grappig, maar SvelteKit ondersteund dus geen TS hiero, dus we doen het ermaar mee
 												const selectedElements = Array.from(e.target?.selectedOptions ?? [])
@@ -531,10 +535,10 @@
 									</select>
 								</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('people', photo.id)}>
+									<button class="btn-a" onclick={() => edit('people', photo.id)}>
 										<i><ArrowBackUp /></i>
 									</button>
-									<button class="btn-a" on:click={() => save('people', photo.id)}>
+									<button class="btn-a" onclick={() => save('people', photo.id)}>
 										<i><CirclePlus /></i>
 									</button>
 								</td>
@@ -543,7 +547,7 @@
 									{photo.peopleTagged.length === 0 ? 'Geen mensen getagd' : photo.peopleTagged.map(p => p.user.firstName).join(', ')}
 								</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('people', photo.id)}>
+									<button class="btn-a" onclick={() => edit('people', photo.id)}>
 										<i><UserPlus /></i>
 									</button>
 								</td>
@@ -555,7 +559,7 @@
 								<td>
 									<select
 										value={photo.activityPhotoId ?? -1}
-										on:change={e => {
+										onchange={e => {
 											if (e) {
 												// @ts-expect-error Bestaat gewoon
 												if (e.target?.value == -1) return
@@ -572,17 +576,17 @@
 									</select>
 								</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('activity', photo.id)}>
+									<button class="btn-a" onclick={() => edit('activity', photo.id)}>
 										<i><ArrowBackUp /></i>
 									</button>
-									<button class="btn-a" on:click={() => save('activity', photo.id)}>
+									<button class="btn-a" onclick={() => save('activity', photo.id)}>
 										<i><SaveIcon /></i>
 									</button>
 								</td>
 							{:else}
 								<td>{photo.activityPhotos?.name ?? 'Geen activiteit gelinkt'}</td>
 								<td>
-									<button class="btn-a" on:click={() => edit('activity', photo.id)}>
+									<button class="btn-a" onclick={() => edit('activity', photo.id)}>
 										<i><CalenderPlus /></i>
 									</button>
 								</td>
@@ -591,8 +595,10 @@
 				</table>
 			</div>
 			<div class="photo">
-				<div role="button" tabindex="0" on:click={() => imagePreview({ image: getPictureUrl(photo.file.filename, 'original') })}>
-					<img src={getPictureUrl(photo.file.filename, 'original')} alt="Foto van {photo.creator?.firstName}" />
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<div role="button" tabindex="0" onclick={() => imagePreview({ image: getPictureUrl(photo.file.filename, 'normal') })}>
+					<picture> </picture>
+					<img src={getPictureUrl(photo.file.filename, 'thumbnail')} alt="Foto van {photo.creator?.firstName}" />
 				</div>
 			</div>
 		</div>
@@ -602,7 +608,7 @@
 </div>
 
 <div class="button-row">
-	<button on:click={back}>Klaar!</button>
+	<button onclick={back}>Klaar!</button>
 </div>
 
 <style lang="scss">

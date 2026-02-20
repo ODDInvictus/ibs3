@@ -5,14 +5,20 @@
 
 	type T = $$Generic<AnyZodObject>
 
-	export let formProps: SuperForm<ZodValidation<T>, unknown>
+	interface Props {
+		formProps: SuperForm<ZodValidation<T>, unknown>
+		children?: import('svelte').Snippet
+		[key: string]: any
+	}
+
+	let { formProps, children, ...rest }: Props = $props()
 	const { delayed } = formProps
 </script>
 
-<button data-testid="submit-btn" {...$$restProps} type="submit">
+<button data-testid="submit-btn" {...rest} type="submit">
 	{#if $delayed}
 		<LoaderElipses />
 	{:else}
-		<slot />
+		{@render children?.()}
 	{/if}
 </button>

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { string } from 'zod'
-
 	export let name: string
 	export let id: string
 	export let accept: string = '*/*'

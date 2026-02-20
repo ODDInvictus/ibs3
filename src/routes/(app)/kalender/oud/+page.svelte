@@ -3,7 +3,11 @@
 	import type { PageData } from './$types'
 	import { markdown } from '$lib/utils'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Oude activiteiten" underTitle="Alle activiteiten die ooit geweest zijn" />

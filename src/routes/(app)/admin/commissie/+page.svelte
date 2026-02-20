@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import CircleX from '~icons/tabler/circle-x'
 	import CirclePlus from '~icons/tabler/circle-plus'
 	import FilePencil from '~icons/tabler/file-pencil'
@@ -25,7 +25,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each $page.data.committees as committee}
+		{#each page.data.committees as committee}
 			<tr>
 				<td class="name"><a href="/leden/commissie/{committee.ldapId}">{committee.name}</a></td>
 				<td class="ldapId">{committee.ldapId}</td>
@@ -35,8 +35,7 @@
 							<button
 								class="btn-a"
 								title="Lid verwijderen"
-								on:click={() => removeMember(member.id, member.member.firstName, committee.name)}
-							>
+								onclick={() => removeMember(member.id, member.member.firstName, committee.name)}>
 								<CircleX />
 							</button>
 							<p>
@@ -51,14 +50,14 @@
 				</td>
 				<td class="actions">
 					<div class="buttons">
-						<button class="btn-a" title="Naam wijzigen" on:click={() => renameCommittee(committee.id, committee.name)}>
+						<button class="btn-a" title="Naam wijzigen" onclick={() => renameCommittee(committee.id, committee.name)}>
 							<FilePencil />
 						</button>
-						<button class="btn-a" title="Lid toevoegen" on:click={() => addMember($page.data.users, committee.id, committee.name)}>
+						<button class="btn-a" title="Lid toevoegen" onclick={() => addMember(page.data.users, committee.id, committee.name)}>
 							<CirclePlus />
 						</button>
 
-						<button class="btn-a" title="Commissie verwijderen" on:click={() => deleteCommittee(committee.id)}>
+						<button class="btn-a" title="Commissie verwijderen" onclick={() => deleteCommittee(committee.id)}>
 							<CircleX />
 						</button>
 					</div>

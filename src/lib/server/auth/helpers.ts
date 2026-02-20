@@ -1,4 +1,4 @@
-import type { User } from '@prisma/client'
+import type { User } from '$lib/server/prisma/client'
 import { LDAP_IDS } from '$lib/constants'
 import db from '$lib/server/db'
 

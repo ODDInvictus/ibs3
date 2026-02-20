@@ -13,34 +13,36 @@
 	<div>
 		<h3>Gegevens</h3>
 		<table>
-			<tr>
-				<th>Referentie</th>
-				<td>{data.purchase.ref ?? '-'}</td>
-			</tr>
-			<tr>
-				<th>Omschrijving</th>
-				<td>{data.purchase.description ?? '-'}</td>
-			</tr>
-			<tr>
-				<th>Betalingstermijn</th>
-				<td>{data.purchase.termsOfPayment} dagen</td>
-			</tr>
-			<tr>
-				<th>Boekstuknummer</th>
-				<td>{data.purchase.id}</td>
-			</tr>
-			<tr>
-				<th>Datum</th>
-				<td>{data.purchase.date ? formatDateHumanReadable(new Date(data.purchase.date)) : '-'}</td>
-			</tr>
-			<tr>
-				<th>Bedrag</th>
-				<td>{formatPrice(data.total)}</td>
-			</tr>
-			<tr>
-				<th>Type</th>
-				<td>{data.purchase.type.toLocaleLowerCase()}</td>
-			</tr>
+			<tbody>
+				<tr>
+					<th>Referentie</th>
+					<td>{data.purchase.ref ?? '-'}</td>
+				</tr>
+				<tr>
+					<th>Omschrijving</th>
+					<td>{data.purchase.description ?? '-'}</td>
+				</tr>
+				<tr>
+					<th>Betalingstermijn</th>
+					<td>{data.purchase.termsOfPayment} dagen</td>
+				</tr>
+				<tr>
+					<th>Boekstuknummer</th>
+					<td>{data.purchase.id}</td>
+				</tr>
+				<tr>
+					<th>Datum</th>
+					<td>{data.purchase.date ? formatDateHumanReadable(new Date(data.purchase.date)) : '-'}</td>
+				</tr>
+				<tr>
+					<th>Bedrag</th>
+					<td>{formatPrice(data.total)}</td>
+				</tr>
+				<tr>
+					<th>Type</th>
+					<td>{data.purchase.type.toLocaleLowerCase()}</td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 
@@ -48,32 +50,34 @@
 		<div>
 			<h3>Declaratie</h3>
 			<table>
-				<tr>
-					<th>Gevraagde bedrag</th>
-					<td>{formatPrice(data.purchase.DeclarationData.askedAmount)}</td>
-				</tr>
-				<tr>
-					<th>Reden</th>
-					<td>{data.purchase.DeclarationData.reason}</td>
-				</tr>
-				<tr>
-					<th>Betaal methode</th>
-					<td>{data.purchase.DeclarationData.methodOfPayment}</td>
-				</tr>
-				<tr>
-					<th>Ontvangst methode</th>
-					<td>{data.purchase.DeclarationData.receiveMethod.toLowerCase()}</td>
-				</tr>
-				{#if data.purchase.DeclarationData.iban}
+				<tbody>
 					<tr>
-						<th>IBAN</th>
-						<td>{data.purchase.DeclarationData.iban}</td>
+						<th>Gevraagde bedrag</th>
+						<td>{formatPrice(data.purchase.DeclarationData.askedAmount)}</td>
 					</tr>
-				{/if}
-				<tr>
-					<th>Status</th>
-					<td>{data.purchase.DeclarationData.status.toLowerCase()}</td>
-				</tr>
+					<tr>
+						<th>Reden</th>
+						<td>{data.purchase.DeclarationData.reason}</td>
+					</tr>
+					<tr>
+						<th>Betaal methode</th>
+						<td>{data.purchase.DeclarationData.methodOfPayment}</td>
+					</tr>
+					<tr>
+						<th>Ontvangst methode</th>
+						<td>{data.purchase.DeclarationData.receiveMethod.toLowerCase()}</td>
+					</tr>
+					{#if data.purchase.DeclarationData.iban}
+						<tr>
+							<th>IBAN</th>
+							<td>{data.purchase.DeclarationData.iban}</td>
+						</tr>
+					{/if}
+					<tr>
+						<th>Status</th>
+						<td>{data.purchase.DeclarationData.status.toLowerCase()}</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>
 	{/if}
@@ -97,11 +101,13 @@
 <h2>Uitgesplitst</h2>
 <table class="striped">
 	<thead>
-		<th>Omschrijving</th>
-		<th>Grootboek</th>
-		<th>Hoeveelheid</th>
-		<th>Prijs</th>
-		<th>Totaal</th>
+		<tr>
+			<th>Omschrijving</th>
+			<th>Grootboek</th>
+			<th>Hoeveelheid</th>
+			<th>Prijs</th>
+			<th>Totaal</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each data.rows as row}
@@ -114,7 +120,7 @@
 			</tr>
 		{/each}
 		<tr>
-			<td colspan="3" />
+			<td colspan="3"></td>
 			<td><i>Totaal</i></td>
 			<td>{formatPrice(data.total)}</td>
 		</tr>
@@ -124,10 +130,12 @@
 <h2>Gematchte transacties</h2>
 <table class="striped">
 	<thead>
-		<th>Omschrijving</th>
-		<th>Transactie</th>
-		<th>Type</th>
-		<th>Bedrag</th>
+		<tr>
+			<th>Omschrijving</th>
+			<th>Transactie</th>
+			<th>Type</th>
+			<th>Bedrag</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#if data.purchase.TransactionMatchRow.length === 0}
@@ -144,7 +152,7 @@
 			</tr>
 		{/each}
 		<tr>
-			<td colspan="2" />
+			<td colspan="2"></td>
 			<td><i>Totaal</i></td>
 			<td>{formatPrice(data.purchase.TransactionMatchRow.reduce((acc, { amount }) => acc + Number(amount), 0))}</td>
 		</tr>

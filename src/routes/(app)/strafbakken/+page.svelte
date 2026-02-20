@@ -1,16 +1,20 @@
 <script lang="ts">
-	import { Modals, closeModal } from 'svelte-modals'
+	import { modals } from 'svelte-modals'
 	import Table from './Table.svelte'
 	import type { sbPageData } from './types'
 	import Title from '$lib/components/title.svelte'
 
-	export let data: sbPageData
+	interface Props {
+		data: sbPageData
+	}
+
+	let { data }: Props = $props()
 
 	const middleIndex = Math.ceil(data.strafbakken.length / 2)
-	let width: number
+	let width: number = $state()
 
 	// Get the longest name
-	let longestName = ''
+	let longestName = $state('')
 	data.strafbakken.forEach(user => {
 		let name = user.nickname ?? user.firstName
 		if (name.length > longestName.length) longestName = name

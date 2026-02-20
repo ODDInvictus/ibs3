@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Title from '$lib/components/title.svelte'
 	import Login from './Login.svelte'
 	import { onMount } from 'svelte'
@@ -8,7 +8,7 @@
 	import Loader from '$lib/components/Loader.svelte'
 	import Copy from '~icons/tabler/Copy.svelte'
 
-	const searchParams = $page.url.searchParams
+	const searchParams = page.url.searchParams
 	const tokens: {
 		access_token: string
 		refresh_token: string
@@ -16,7 +16,7 @@
 	} | null = searchParams.has('data') ? JSON.parse(searchParams.get('data')!) : null
 	const error = searchParams.get('error')
 
-	let mounted = false
+	let mounted = $state(false)
 
 	onMount(() => {
 		if (error)
@@ -58,10 +58,10 @@
 		{#if tokens}
 			<p>{tokens.refresh_token.slice(0, 4)}...{tokens.refresh_token.slice(-4)}</p>
 
-			<!-- svelte-ignore a11y-no-static-element-interactions -->
-			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<div
-				on:click={() => {
+				onclick={() => {
 					navigator.clipboard.writeText(tokens.refresh_token)
 					toast({
 						title: 'Copied',
@@ -82,7 +82,7 @@
 			</p>
 			<Login />
 		{/if}
-		<button on:click={async () => await syncPlaylist()}> Sync playlist </button>
+		<button onclick={async () => await syncPlaylist()}> Sync playlist </button>
 	{:else}
 		<Loader />
 	{/if}

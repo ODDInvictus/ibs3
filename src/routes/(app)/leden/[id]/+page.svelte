@@ -1,12 +1,10 @@
 <script lang="ts">
-	import { page } from '$app/stores'
-	import { env } from '$env/dynamic/public'
 	import InputFile from '$lib/components/input-file.svelte'
 	import Title from '$lib/components/title.svelte'
 	import { getPictureUrl } from '$lib/utils.js'
-	import type { PageData } from './$types.js'
+	import type { PageProps } from './$types.js'
 
-	export let data: PageData
+	const { data, form }: PageProps = $props()
 
 	const usedFields = [
 		'firstName',
@@ -27,6 +25,7 @@
 		'accessDisabled',
 		'preferredTheme',
 		'profilePicture',
+		'discordUsername',
 	]
 
 	const fields = Object.keys(data.member).filter(key => !usedFields.includes(key))
@@ -45,8 +44,6 @@
 		if (!date) return undefined
 		return new Date(date).toLocaleDateString('nl-NL')
 	}
-
-	export let form
 </script>
 
 <Title title="{data.member.firstName} {data.member.lastName}" />
@@ -99,6 +96,8 @@
 		<p>{data.member.phone}</p>
 		<p>Ldap ID</p>
 		<p>{data.member.ldapId}</p>
+		<p>Discord username</p>
+		<p>{data.member.discordUsername}</p>
 	</div>
 </div>
 
@@ -150,7 +149,7 @@
 	<hr />
 
 	<div>
-		{#each $page.data.committees as committee}
+		{#each data.committees as committee}
 			<p>{committee.name}</p>
 			<a href="/leden/commissie/{committee.ldapId}">{committee.ldapId}</a>
 		{/each}

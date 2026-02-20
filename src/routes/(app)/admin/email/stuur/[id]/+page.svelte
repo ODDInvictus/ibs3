@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Title from '$lib/components/title.svelte'
 	import { toast } from '$lib/notification'
 </script>
@@ -38,13 +38,13 @@
 
 	<div class="form-control">
 		<label class="label" for="message">Bericht</label>
-		<textarea name="message" id="message" required />
+		<textarea name="message" id="message" required></textarea>
 	</div>
 
 	<div class="form-control">
 		<label class="label" for="sender">Verstuur-adres</label>
 		<select name="sender" required>
-			{#each $page.data.aliases as alias}
+			{#each page.data.aliases as alias}
 				<option value={alias}>{alias}</option>
 			{/each}
 		</select>
@@ -57,7 +57,7 @@
 
 	<!-- <div class="form-control">
 		<p class="label">Aan</p>
-		<p>{$page.data.to}</p>
+		<p>{page.data.to}</p>
 	</div> -->
 
 	<button type="submit">Verstuur</button>

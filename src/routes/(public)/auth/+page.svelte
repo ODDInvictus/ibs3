@@ -9,9 +9,13 @@
 	import { page } from '$app/stores'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
 
-	let selection = 'login'
+	let { data }: Props = $props()
+
+	let selection = $state('login')
 
 	// Grab the error query param
 	const error = $page.url.searchParams.get('error')
@@ -36,14 +40,14 @@
 			<header class="ibs-card">
 				<Logo />
 				<LogoBig />
-				<div class="spacer" />
+				<div class="spacer"></div>
 				<div class="buttons">
-					<button on:click={() => (selection = 'login')}>
+					<button onclick={() => (selection = 'login')}>
 						<i><Login /></i>
 						Login
 					</button>
 
-					<button on:click={() => (selection = 'register')}>
+					<button onclick={() => (selection = 'register')}>
 						<i>
 							<Register />
 						</i>
@@ -52,7 +56,7 @@
 				</div>
 			</header>
 		</div>
-		<div class="stripe" />
+		<div class="stripe"></div>
 		<div class="login-card">
 			<div class="ibs-card">
 				{#if selection === 'login'}
@@ -62,13 +66,13 @@
 					{:else}
 						<p>Welkom bij Invictus Bier Systeem!</p>
 					{/if}
-					<button on:click={() => login()}>
+					<button onclick={() => login()}>
 						<i>
 							<OAuth />
 						</i>
 						Login met Authentik
 					</button>
-					<button on:click={() => (window.location.href = 'https://www.youtube.com/watch?v=ENXvZ9YRjbo')}>
+					<button onclick={() => (window.location.href = 'https://www.youtube.com/watch?v=ENXvZ9YRjbo')}>
 						<i>
 							<Login />
 						</i>

@@ -4,14 +4,18 @@
 	import type { PageServerData } from './$types'
 	import { toast } from '$lib/notification'
 
-	export let data: PageServerData
+	interface Props {
+		data: PageServerData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Form {...$page.data.form} />
 <button
 	class="btn-danger"
 	disabled={data.ledger._count.Transaction > 0}
-	on:click={async () => {
+	onclick={async () => {
 		const confirmed = confirm('Weet je zeker dat je dit grootboek wilt verwijderen?')
 		if (!confirmed) return
 
@@ -28,7 +32,6 @@
 				type: 'danger',
 			})
 		}
-	}}
->
+	}}>
 	Verwijderen
 </button>

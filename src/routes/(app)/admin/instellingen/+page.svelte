@@ -4,7 +4,11 @@
 	import type { PageData } from './$types'
 	import Save from '~icons/tabler/device-floppy'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	const save = (settingId: number) => {
 		const setting = data.ibsSettings.find(s => s.id === settingId)
@@ -46,7 +50,7 @@
 				<td>{setting.description}</td>
 				<td><input type="text" bind:value={setting.value} /></td>
 				<td class="actions">
-					<button class="btn-a" title="Opslaan" on:click={() => save(setting.id)}>
+					<button class="btn-a" title="Opslaan" onclick={() => save(setting.id)}>
 						<Save />
 					</button>
 				</td>

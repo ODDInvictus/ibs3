@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Title from '$lib/components/title.svelte'
 
-	const slug = $page.url.searchParams.get('slug')
+	const slug = page.url.searchParams.get('slug')
 
-	const origin = $page.url.origin
+	const origin = page.url.origin
 </script>
 
 <Title title="Shortlink aangemaakt" />

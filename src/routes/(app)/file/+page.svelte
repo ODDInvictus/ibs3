@@ -8,7 +8,11 @@
 	import { toast } from '$lib/notification'
 	import SuperField from '$lib/superforms/SuperField.svelte'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	const formProps = superForm(data.form, {
 		onError,

@@ -11,12 +11,13 @@
 <Title title="Knoppers klikker" />
 
 <table class="striped">
-	<col /><col /><col id="clicks" /><col />
 	<thead>
-		<th>Positie</th>
-		<th>Naam</th>
-		<th>Minuten</th>
-		<th>Clicks</th>
+		<tr>
+			<th>Positie</th>
+			<th>Naam</th>
+			<th>Minuten</th>
+			<th>Clicks</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each data.leaderboard as user, i}

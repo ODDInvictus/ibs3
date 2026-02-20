@@ -8,7 +8,11 @@
 	import Submit from '$lib/superforms/Submit.svelte'
 	import { toast } from '$lib/notification'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	const formProps = superForm(data.form, {
 		validators: editTallySheetSchema,
@@ -39,7 +43,7 @@
 			type="button"
 			class="btn-danger"
 			disabled={!data.canDelete}
-			on:click={async () => {
+			onclick={async () => {
 				// TODO: Zeg in confirm hoeveel boekstukken er zijn ofz
 				if (confirm('Weet je zeker dat je deze streeplijst wilt verwijderen?')) {
 					const res = await fetch('', { method: 'DELETE' })
@@ -53,8 +57,7 @@
 						})
 					}
 				}
-			}}>Verwijderen</button
-		>
+			}}>Verwijderen</button>
 	</div>
 </form>
 

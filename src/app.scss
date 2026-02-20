@@ -14,32 +14,13 @@
 @use './style/components/chip';
 @use './style/components/comment';
 @use './style/components/toast';
+@use './style/components/callout';
 
 @use './style/themes/dark';
 @use './style/themes/feut';
 @use './style/themes/dies';
 @use './style/themes/invakancie25';
 @use './style/themes/dev';
-
-@font-face {
-	font-family: SegoeUI;
-	src:
-		local('Segoe UI'),
-		url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/normal/latest.woff2) format('woff2'),
-		url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/normal/latest.woff) format('woff'),
-		url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/normal/latest.ttf) format('truetype');
-	font-weight: 400;
-}
-
-@font-face {
-	font-family: SegoeUI;
-	src:
-		local('Segoe UI Bold'),
-		url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/bold/latest.woff2) format('woff2'),
-		url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/bold/latest.woff) format('woff'),
-		url(//c.s-microsoft.com/static/fonts/segoe-ui/west-european/bold/latest.ttf) format('truetype');
-	font-weight: 600;
-}
 
 /* latin-ext */
 @font-face {
@@ -90,7 +71,6 @@ html {
 	margin: 0;
 	overflow: hidden;
 }
-
 html,
 body,
 .body {

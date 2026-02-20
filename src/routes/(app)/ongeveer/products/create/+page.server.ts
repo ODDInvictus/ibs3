@@ -1,11 +1,12 @@
 import type { PageServerLoad, Actions } from './$types'
 import db from '$lib/server/db'
-import { ProductType } from '@prisma/client'
+import { ProductType } from '$lib/server/prisma/client'
 import { fail } from '@sveltejs/kit'
 import { authorization } from '$lib/ongeveer/utils'
 import { superValidate } from 'sveltekit-superforms/server'
 import { getProductSchema } from './productSchema'
 import { redirect } from 'sveltekit-flash-message/server'
+import { zod4 } from 'sveltekit-superforms/adapters'
 
 const productTypes = Object.values(ProductType) as [ProductType, ...ProductType[]]
 const productSchema = getProductSchema(productTypes)
@@ -27,7 +28,7 @@ export const load = (async ({ url }) => {
 	}
 
 	const categories = await db.productCategory.findMany()
-	const form = await superValidate(data, productSchema)
+	const form = await superValidate(data, zod4(productSchema))
 
 	return {
 		categories,
@@ -40,7 +41,7 @@ export const actions = {
 	default: async event => {
 		const { locals, request } = event
 		if (!authorization(locals.roles)) return fail(403)
-		const form = await superValidate(request, productSchema)
+		const form = await superValidate(request, zod4(productSchema))
 		if (!form.valid) return fail(400, { form })
 		try {
 			if (form.data.id) {

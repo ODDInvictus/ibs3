@@ -7,11 +7,20 @@
 	import Coins from '~icons/tabler/coins'
 	import FileEuro from '~icons/tabler/file-euro'
 	import BasketPlus from '~icons/tabler/basket-plus'
+	import Callout from '$lib/components/callout.svelte'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 </script>
 
 <Title title="Financieel" />
+
+<Callout type="caution">
+	Ongeveer wordt niet meer gebruikt en is alleen nog beschikbaar voor historische redenen. Doe geen declaraties!
+</Callout>
 
 <h3>
 	Huidig saldo:

@@ -1,8 +1,6 @@
 <script lang="ts">
 	import Title from '$lib/components/title.svelte'
 	import Table from '$lib/components/table.svelte'
-	import type { Preference } from '@prisma/client'
-	import { page } from '$app/stores'
 	import { promptCheckbox } from '$lib/promptCheckbox'
 	import { confirm } from '$lib/confirm'
 	import { toast } from '$lib/notification'
@@ -10,7 +8,11 @@
 	import { alert } from '$lib/alert'
 	import { signOut } from '@auth/sveltekit/client'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	function logout() {
 		confirm({
@@ -176,16 +178,16 @@
 <small>Let op: Tijdelijke thema's kunnen niet gewijzigd worden!</small>
 <br />
 
-<input type="radio" id="light" name="theme" value="light" checked={data.currentTheme === 'light'} on:click={() => setTheme('light')} />
+<input type="radio" id="light" name="theme" value="light" checked={data.currentTheme === 'light'} onclick={() => setTheme('light')} />
 <label for="light">Lichte modus</label>
 <br />
-<input type="radio" id="dark" name="theme" value="dark" on:click={() => setTheme('dark')} checked={data.currentTheme === 'dark'} />
+<input type="radio" id="dark" name="theme" value="dark" onclick={() => setTheme('dark')} checked={data.currentTheme === 'dark'} />
 <label for="dark">Donkere modus</label>
 <br />
-<input type="radio" id="feut" name="theme" value="feut" on:click={() => setTheme('feut')} checked={data.currentTheme === 'feut'} />
+<input type="radio" id="feut" name="theme" value="feut" onclick={() => setTheme('feut')} checked={data.currentTheme === 'feut'} />
 <label for="feut">Feuten thema</label>
 <br />
-<input type="radio" id="dies" name="theme" value="dies" on:click={() => setTheme('dies')} checked={data.currentTheme === 'dies'} />
+<input type="radio" id="dies" name="theme" value="dies" onclick={() => setTheme('dies')} checked={data.currentTheme === 'dies'} />
 <label for="dies">Dies thema</label>
 <br />
 <input
@@ -193,7 +195,7 @@
 	id="invakancie25"
 	name="theme"
 	value="invakancie25"
-	on:click={() => setTheme('invakancie25')}
+	onclick={() => setTheme('invakancie25')}
 	checked={data.currentTheme === 'invakancie25'} />
 <label for="invakancie25">InVakanCie 2025 thema</label>
 
@@ -248,7 +250,7 @@
 <hr />
 
 <h2>Logout</h2>
-<div class="uitloggen" on:click={logout}>
+<div class="uitloggen" onclick={logout}>
 	<button>Uitloggen</button>
 </div>
 

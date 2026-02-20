@@ -1,26 +1,30 @@
 <script lang="ts">
 	import { getPictureUrl } from '$lib/utils'
 
-	export let previews: {
-		src?: string
-		filename: string
-	}[] = []
-	export let toDelete: string[] = []
-	export let noDelete = false
+	interface Props {
+		previews?: {
+			src?: string
+			filename: string
+		}[]
+		toDelete?: string[]
+		noDelete?: boolean
+	}
 
-	let selected = 0
+	let { previews = $bindable([]), toDelete = $bindable([]), noDelete = false }: Props = $props()
+
+	let selected = $state(0)
 </script>
 
 <div class="preview">
 	<div class="selector">
 		{#each previews as preview, i}
 			<button class="nav-item btn-secondary" class:selected={selected === i} type="button">
-				<span on:click={() => (selected = i)} class="select">
+				<span onclick={() => (selected = i)} class="select">
 					{preview.filename.length > 20 ? preview.filename.slice(0, 20) + '...' : preview.filename}
 				</span>
 				{#if !noDelete}
 					<span
-						on:click={() => {
+						onclick={() => {
 							toDelete = [...toDelete, previews[i].filename]
 							previews = previews.filter((_, j) => j !== i)
 							selected = 0
@@ -43,7 +47,7 @@
 		{#if ['png', 'jpg', 'jpeg', 'gif', 'avif'].includes(fileExtention)}
 			<img {src} alt={filename} />
 		{:else if fileExtention === 'pdf'}
-			<iframe {src} title={filename} />
+			<iframe {src} title={filename}></iframe>
 		{:else}
 			<a href={src} download={filename} class="button download"> Download </a>
 		{/if}

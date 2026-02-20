@@ -1,280 +1,211 @@
-import db from '$lib/server/db'
-import { error, fail, redirect } from '@sveltejs/kit'
-import { env } from '$env/dynamic/private'
-import { LDAP_IDS } from '$lib/constants.js'
+import { message, superValidate } from 'sveltekit-superforms/server'
+import { fail } from 'sveltekit-superforms'
+import { zod4 } from 'sveltekit-superforms/adapters'
+import type { Actions, PageServerLoad } from './$types'
 import { z } from 'zod'
-import { pad } from '$lib/utils.js'
-import type { PageServerLoad } from './$types.js'
-import { createRedisJob } from '$lib/server/cache.js'
-import { uploadPhoto } from '$lib/server/files'
+import { db } from '$lib/server/db'
+import { isFeut } from '$lib/server/auth/helpers'
+import { LDAP_IDS } from '$lib/constants'
+import { NotificationType, type Activity } from '$lib/server/prisma/client'
+import { deleteFile, uploadPhoto } from '$lib/server/files'
+import { activitySlug } from '$lib/textUtils'
+import { error, redirect } from '@sveltejs/kit'
+import { log } from 'console'
+import { makeNotification, makeNotificationForAllUsers } from '$lib/server/notifications'
+import { deletePhoto } from '$lib/server/files/disk'
 
-export const load = (async ({ url, locals }) => {
-	const locations = await db.activityLocation.findMany({
-		where: {
-			isActive: true,
-		},
+const activitySchema = z
+	.object({
+		name: z.string().min(3, { message: 'Naam moet mistens 3 karakters lang zijn.' }),
+		description: z.string().min(3, { message: 'Beschrijving moet mistens 3 karakters lang zijn.' }),
+		location: z.number().default(3),
+		committee: z.number().default(7),
+		image: z.file().mime(['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/avif']).optional(),
+
+		date: z.date(),
+		endDate: z.date(),
+
+		membersOnly: z.boolean().default(false),
+		noNotification: z.boolean().default(false),
+		resetAttending: z.boolean().default(false),
+	})
+	.refine(data => data.endDate >= data.date, {
+		message: 'Activiteit kan niet later beginnen dan eindigen!',
+		path: ['date'],
 	})
 
-	const edit = url.searchParams.get('edit')
+export const load = (async ({ locals, url }) => {
+	const edit = !!url.searchParams.get('edit')
+	const activity: Activity | undefined = undefined
 
-	const committees = await db.committee.findMany({
-		where: {
-			isActive: true,
-		},
-	})
+	let breadcrumb = 'Activiteit aanmaken'
+	let form = undefined
 
-	if (edit === 'true') {
-		// Load up all the values
+	if (edit) {
 		const id = url.searchParams.get('id')
 
-		if (id) {
-			const activity = await db.activity.findUnique({
-				where: {
-					id: parseInt(id),
-				},
-				include: {
-					location: true,
-					organisedBy: true,
-				},
-			})
-
-			if (activity) {
-				// Split the date and time
-				const startDate = activity.startTime.toISOString().split('T')[0]
-				const startTime = pad(activity.startTime.getHours()) + ':' + pad(activity.startTime.getMinutes())
-				const endDate = activity.endTime.toISOString().split('T')[0]
-				const endTime = pad(activity.endTime.getHours()) + ':' + pad(activity.endTime.getMinutes())
-
-				return {
-					edit: true,
-					activity,
-					times: {
-						startDate,
-						startTime,
-						endDate,
-						endTime,
-					},
-					committees: committees,
-					locations,
-				}
-			}
+		if (!id) {
+			throw error(400, 'Probeerde activiteit te bewerken zonder ?id= te setten')
 		}
+
+		const a = await db.activity.findFirst({ where: { id: Number.parseInt(id) } })
+
+		if (!a) {
+			throw error(500, `Activiteit ${id} bestaat niet`)
+		}
+
+		if (new Date() > a.startTime) {
+			throw error(500, `Deze activiteit kan niet meer worden bewerkt`)
+		}
+
+		breadcrumb = `${a.name} bewerken`
+
+		form = await superValidate(
+			{
+				name: a.name,
+				description: a.description,
+				location: a.locationId ?? 3,
+				committee: a.committeeId,
+				date: a.startTime,
+				endDate: a.endTime,
+				membersOnly: a.membersOnly,
+			},
+			zod4(activitySchema),
+			{
+				id: 'createActivityForm',
+			},
+		)
+	} else {
+		form = await superValidate(zod4(activitySchema), {
+			id: 'createActivityForm',
+		})
 	}
 
-	return {
-		locations,
-		committees,
-	}
+	const locations = await db.activityLocation.findMany({
+		select: {
+			id: true,
+			name: true,
+		},
+		orderBy: {
+			Activity: {
+				_count: 'desc',
+			},
+		},
+		where: {
+			isActive: true,
+		},
+	})
+	const committees = await db.committee.findMany({
+		where: { isActive: true },
+		select: { id: true, name: true },
+	})
+
+	const feut = isFeut(locals.user)
+
+	return { form, locations, committees, feut, edit, activity, breadcrumb }
 }) satisfies PageServerLoad
 
-const validateDate = (date: string) => {
-	const d = new Date(date)
-	return !isNaN(d.getTime())
-}
-
-const validateTime = (time: string) => {
-	const timeReg = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/
-	return time.match(timeReg)
-}
-
-const formSchema = z.object({
-	name: z
-		.string({
-			required_error: 'Naam is verplicht',
-			invalid_type_error: 'Naam moet een string zijn',
-		})
-		.min(3, { message: 'Naam moet minimaal 3 karakters lang zijn' }),
-	description: z
-		.string({ required_error: 'Beschrijving is verplicht' })
-		.min(3, { message: 'Beschrijving moet minimaal 3 karakters lang zijn' }),
-	startDate: z
-		.string({
-			required_error: 'Begin datum is verplicht',
-			invalid_type_error: 'Begin datum moet een datum zijn',
-		})
-		.refine(validateDate),
-	startTime: z
-		.string({
-			required_error: 'Begin tijd is verplicht',
-			invalid_type_error: 'Begin tijd moet een tijdstip zijn',
-		})
-		.refine(validateTime, { message: 'Begin tijd is niet valide' }),
-	endDate: z
-		.string({
-			required_error: 'Eind datum is verplicht',
-			invalid_type_error: 'Eind datum moet een datum zijn',
-		})
-		.refine(validateDate),
-	endTime: z
-		.string({
-			required_error: 'Eind tijd is verplicht',
-			invalid_type_error: 'Eind tijd moet een tijdstip zijn',
-		})
-		.refine(validateTime, { message: 'Eind tijd is niet valide' }),
-	location: z
-		.string({ invalid_type_error: 'LocatieID is onjuist' })
-		.refine(val => {
-			const num = parseInt(val)
-			return !isNaN(num)
-		})
-		.optional(),
-	organisedBy: z.string({ invalid_type_error: 'CommissieID is onjuist' }).refine(val => {
-		const num = parseInt(val)
-		return !isNaN(num) && num > 0
-	}),
-	url: z.string().url({ message: 'URL is niet valide' }).or(z.literal('')),
-	image: z.any(),
-	membersOnly: z.string().optional(),
-})
-
 export const actions = {
-	default: async event => {
-		const data = Object.fromEntries(await event.request.formData())
+	default: async ({ request, locals, url }) => {
+		const formData = await request.formData()
+		const form = await superValidate(formData, zod4(activitySchema))
 
-		const edit = event.url.searchParams.get('edit') === 'true'
-		const editId = event.url.searchParams.get('id')
+		if (!form.valid) return fail(400, { form })
 
-		const zodData = formSchema.safeParse(data)
+		let aid = 0
 
-		if (!zodData.success) {
-			// Loop through the errors array and create a custom errors array
-			const errors = zodData.error.errors.map(error => {
-				return {
-					field: error.path[0],
-					message: error.message,
-				}
+		if (url.searchParams.get('edit')) {
+			const id = url.searchParams.get('id')
+			if (!id) return fail(400, { form, message: '?id= mist' })
+			aid = Number.parseInt(id)
+			if (!aid) return fail(400, { form, message: '?id= is niet een getal' })
+
+			const oldActivity = await db.activity.findFirst({ where: { id: aid }, include: { activityPhoto: true } })
+			if (!oldActivity) return fail(400, { form, message: 'Activiteit met id ' + aid + ' bestaat niet' })
+
+			const oldDate = new Date(oldActivity.startTime.getTime())
+
+			log(`Editing activity ${aid} (${oldActivity.name})`)
+
+			const file = formData.get('image')
+			if (file instanceof File && file.size > 0) {
+				const photo = await uploadPhoto(file, locals.user.id, false)
+
+				await db.activity.update({
+					where: { id: aid },
+					data: { activityPhotoId: photo.id },
+				})
+
+				// Delete the old photo off disk
+				if (oldActivity.activityPhoto) await deletePhoto(oldActivity.activityPhoto)
+			}
+
+			await db.activity.update({
+				where: {
+					id: aid,
+				},
+				data: {
+					name: form.data.name,
+					description: form.data.description,
+					startTime: form.data.date,
+					endTime: form.data.endDate,
+					locationId: form.data.location ?? 3,
+					membersOnly: form.data.membersOnly,
+					committeeId: form.data.committee,
+				},
 			})
 
-			return fail(400, { error: true, errors })
-		}
+			if (form.data.resetAttending) {
+				await db.attending.updateMany({
+					where: {
+						activityId: aid,
+					},
+					data: {
+						status: 'NO_RESPONSE',
+					},
+				})
+			}
 
-		const { name, description, startDate, startTime, endDate, endTime, location, organisedBy, url, image, membersOnly } = zodData.data
+			if (!form.data.noNotification) {
+				if (oldDate.getTime() !== form.data.date.getTime()) {
+					const payload = { type: NotificationType.ActivityChangedDate, props: { id: aid, oldDate } }
+					if (!form.data.membersOnly) {
+						await makeNotification(payload, 'discord')
+					}
+					await makeNotificationForAllUsers(payload, form.data.membersOnly)
+				}
+			}
+		} else {
+			try {
+				const file = formData.get('image')
+				let photo = undefined
 
-		const start = new Date(`${startDate} ${startTime}`)
-		const end = new Date(`${endDate} ${endTime}`)
-
-		if (start > end) {
-			return fail(400, {
-				error: true,
-				errors: [{ field: 'endDate', message: 'Eind datum moet na de begin datum zijn' }],
-			})
-		}
-
-		let id = 0
-
-		try {
-			await db.$transaction(async tx => {
-				// first create the activity
-
-				let loc = null
-
-				if (location && parseInt(location) > 0) {
-					loc = parseInt(location)
+				if (file instanceof File && file.size > 0) {
+					photo = await uploadPhoto(file, locals.user.id, false)
 				}
 
-				let activity
-
-				if (edit && editId) {
-					// Update the activity
-					activity = await tx.activity.update({
-						where: {
-							id: parseInt(editId),
-						},
+				await db.$transaction(async tx => {
+					const activity = await tx.activity.create({
 						data: {
-							name,
-							description,
-							startTime: start,
-							endTime: end,
-							locationId: loc,
-							membersOnly: membersOnly ? membersOnly === 'on' : false,
-							committeeId: parseInt(organisedBy),
-							url: url ?? null,
-						},
-					})
-				} else {
-					activity = await tx.activity.create({
-						data: {
-							name,
-							description,
-							createdById: event.locals.user.id,
-							startTime: start,
-							endTime: end,
-							locationId: loc,
-							membersOnly: membersOnly === 'on',
-							committeeId: parseInt(organisedBy),
-							url: url ?? null,
-						},
-					})
-				}
-
-				id = activity.id
-				let shortLink = `activiteit-${id}-info`
-
-				if (url) {
-					await tx.link.upsert({
-						where: {
-							shortLink,
-						},
-						update: {
-							link: url,
-							userId: event.locals.user.id,
-						},
-						create: {
-							shortLink,
-							link: url,
-							userId: event.locals.user.id,
+							name: form.data.name,
+							description: form.data.description,
+							createdById: locals.user.id,
+							startTime: form.data.date,
+							endTime: form.data.endDate,
+							locationId: form.data.location ?? 3,
+							membersOnly: form.data.membersOnly,
+							committeeId: form.data.committee,
+							activityPhotoId: photo?.id,
 						},
 					})
 
-					await tx.activity.update({
-						where: {
-							id,
-						},
-						data: {
-							url: `${env.IBS_URL}/s/${shortLink}`,
-						},
-					})
-				}
+					aid = activity.id
 
-				if (image.size > 0) {
-					const filename = await uploadPhoto(image, event.locals.user, false)
-
-					// const buf = Buffer.from(await image.arrayBuffer())
-
-					// const photo = await uploadPhoto(
-					// 	{
-					// 		creator,
-					// 		uploader: event.locals.user,
-					// 		runProcessingJob: false,
-					// 		additionalName: 'Activiteit',
-					// 		invisible: true,
-					// 		upload: {
-					// 			buf,
-					// 			filename: image.name,
-					// 		},
-					// 	},
-					// 	tx,
-					// )
-
-					await tx.activity.update({
-						where: {
-							id: activity.id,
-						},
-						data: {
-							photo: filename,
-						},
-					})
-				}
-
-				// Create all attending objects
-
-				// To do that: get all members + feuten
-				// and if membersOnly is set, then exclude the feuten\
-				if (!edit) {
+					// attending
 					const users = await tx.user.findMany({
 						where: {
 							isActive: true,
-							CommitteeMember: membersOnly
+							CommitteeMember: form.data.membersOnly
 								? {
 										none: {
 											committee: { ldapId: LDAP_IDS.FEUTEN },
@@ -284,35 +215,26 @@ export const actions = {
 						},
 					})
 
-					const attending = users.map(user => {
-						return {
-							userId: user.id,
-							activityId: activity.id,
-						}
-					})
-
-					// Create all attending objects!
 					await tx.attending.createMany({
-						data: attending,
+						data: users.map(u => {
+							return { userId: u.id, activityId: activity.id }
+						}),
 					})
+				})
+
+				if (!form.data.noNotification) {
+					const payload = { type: NotificationType.ActivityNew, props: { id: aid } }
+					if (!form.data.membersOnly) {
+						await makeNotification(payload, 'discord')
+					}
+					await makeNotificationForAllUsers(payload, form.data.membersOnly)
 				}
-			})
-
-			if (!edit) {
-				// Now, we notify everyone
-				console.log('[Activity/new] Notifying everyone')
-				await createRedisJob('new-activity', '' + id)
+			} catch (err) {
+				log(err)
+				return message(form, (err as Error).toString(), { status: 500 })
 			}
-		} catch (e) {
-			console.error(e)
-			return fail(500, {
-				error: true,
-				message: 'Er ging iets mis bij het opslaan van de activiteit',
-			})
 		}
 
-		if (id !== 0) {
-			redirect(303, `/activiteit/${id}`)
-		}
+		redirect(303, `/activiteit/${activitySlug(form.data.name)}/${aid}`)
 	},
-}
+} satisfies Actions

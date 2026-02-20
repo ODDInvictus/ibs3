@@ -10,24 +10,29 @@
 	import type { PageServerData } from './$types'
 	import UserList from '../UserList.svelte'
 
-	export let data: PageServerData
+	interface Props {
+		data: PageServerData
+	}
+
+	let { data }: Props = $props()
 
 	const { PUBLIC_PLAYLIST_ID } = env
 
-	let mounted = false
+	let mounted = $state(false)
 
 	onMount(() => {
 		mounted = true
 	})
 
-	let search = ''
-	let tracks: Promise<SpotifyApi.TrackObjectFull[] | null>
-	$: tracks = (async () => {
-		if (!mounted || !search) return null
-		const res = await searchTracks(search)
-		if (res.ok) return res.json()
-		else throw new Error('Error tijdens het zoeken')
-	})()
+	let search = $state('')
+	let tracks: Promise<SpotifyApi.TrackObjectFull[] | null> = $derived(
+		(async () => {
+			if (!mounted || !search) return null
+			const res = await searchTracks(search)
+			if (res.ok) return res.json()
+			else throw new Error('Error tijdens het zoeken')
+		})(),
+	)
 
 	const searchTracks = async (search: string) => {
 		return await fetch(`/playlist/zoek?s=${encodeURIComponent(search)}`)

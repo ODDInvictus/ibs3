@@ -1,10 +1,10 @@
 <!-- https://loading.io/css/ -->
 
 <div class="lds-ring">
-	<div />
-	<div />
-	<div />
-	<div />
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
 </div>
 
 <style lang="scss">

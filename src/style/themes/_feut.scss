@@ -2,21 +2,72 @@
 	// Override the default color for text
 	color: var(--color-text);
 
+	/* Light */
+	@font-face {
+		font-family: 'Comic Neue';
+		font-style: normal;
+		font-weight: 300;
+		font-display: swap;
+		src: url('/fonts/ComicNeue-Light.ttf') format('truetype');
+	}
+
+	@font-face {
+		font-family: 'Comic Neue';
+		font-style: italic;
+		font-weight: 300;
+		font-display: swap;
+		src: url('/fonts/ComicNeue-LightItalic.ttf') format('truetype');
+	}
+
+	/* Regular */
+	@font-face {
+		font-family: 'Comic Neue';
+		font-style: normal;
+		font-weight: 400;
+		font-display: swap;
+		src: url('/fonts/ComicNeue-Regular.ttf') format('truetype');
+	}
+
+	@font-face {
+		font-family: 'Comic Neue';
+		font-style: italic;
+		font-weight: 400;
+		font-display: swap;
+		src: url('/fonts/ComicNeue-Italic.ttf') format('truetype');
+	}
+
+	/* Bold */
+	@font-face {
+		font-family: 'Comic Neue';
+		font-style: normal;
+		font-weight: 700;
+		font-display: swap;
+		src: url('/fonts/ComicNeue-Bold.ttf') format('truetype');
+	}
+
+	@font-face {
+		font-family: 'Comic Neue';
+		font-style: italic;
+		font-weight: 700;
+		font-display: swap;
+		src: url('/fonts/ComicNeue-BoldItalic.ttf') format('truetype');
+	}
+
 	/*
 		Font
 	*/
-	--font-family: 'Comic Sans MS', 'Comic Sans', cursive;
-	--font-family-text: 'Comic Sans MS', 'Comic Sans', cursive;
+	--font-family: 'Comic Neue', 'Comic Sans MS', cursive;
+	--font-family-text: 'Comic Neue', 'Comic Sans MS', cursive;
 	--icon-vertical-align: -0.25em;
 	--icon-size: 20px;
 
 	--stripe-height: 100vh;
 
-	--color-stripe: linear-gradient(60deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff);
+	--color-stripe: linear-gradient(65deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff);
 
 	--color-bg: rgba(0, 255, 0, 0.2);
 
-	--color-navbar: linear-gradient(95deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff);
+	--color-navbar: linear-gradient(166deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff);
 
 	--color-card: rgba(0, 0, 255, 0.2);
 
@@ -26,6 +77,19 @@
 	--color-danger: #8f00ff;
 	--color-info: #ffff00;
 	--color-success: #00ff00;
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-weight: 700;
+	}
+
+	dialog {
+		background: linear-gradient(-30deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff) !important;
+	}
 
 	.notification.info {
 		color: red;

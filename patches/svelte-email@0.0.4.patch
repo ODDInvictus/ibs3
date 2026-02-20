@@ -1,0 +1,18 @@
+diff --git a/render.js b/render.js
+index 664058c3545aea012e89af2282b1783421741a1e..dae722cdad6e99f994dc34e1e44de70640003ce8 100644
+--- a/render.js
++++ b/render.js
+@@ -1,9 +1,11 @@
++import { render as svelteRender } from 'svelte/server';
+ import { convert } from 'html-to-text';
+ import pretty from 'pretty';
+ export const render = ({ template, props, options }) => {
+-    const { html } = 
++    // const { html } = 
+     // @ts-ignore
+-    template.render(props);
++    // template.render(props);
++    const { html } = svelteRender(template, { props })
+     if (options?.plainText) {
+         return renderAsPlainText(html);
+     }

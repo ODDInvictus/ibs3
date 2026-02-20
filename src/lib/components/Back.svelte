@@ -1,1 +1,1 @@
-<button on:click={() => history.back()}>Terug</button>
+<button onclick={() => history.back()}>Terug</button>

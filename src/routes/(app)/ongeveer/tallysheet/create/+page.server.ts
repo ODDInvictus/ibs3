@@ -5,8 +5,9 @@ import db from '$lib/server/db'
 import { redirect } from 'sveltekit-flash-message/server'
 import { fail, type Actions } from '@sveltejs/kit'
 import { authorization } from '$lib/ongeveer/utils'
-import type { ProductType } from '@prisma/client'
+import type { ProductType } from '$lib/server/prisma/client'
 import type { z } from 'zod'
+import { zod4 } from 'sveltekit-superforms/adapters'
 import { getLedgerIds } from '$lib/ongeveer/db'
 
 export const load = (async () => {
@@ -15,7 +16,7 @@ export const load = (async () => {
 		rows: [{ financialPersonId: NaN, productId: NaN, amount: NaN }],
 	}
 
-	const form = await superValidate(data, tallySheetSchema)
+	const form = await superValidate(data, zod4(tallySheetSchema))
 
 	const products = await db.product.findMany({
 		where: { isActive: true },
@@ -71,7 +72,7 @@ export const actions = {
 	default: async event => {
 		const { locals, request } = event
 		if (!authorization(locals.roles)) return fail(403)
-		const form = await superValidate(request, tallySheetSchema)
+		const form = await superValidate(request, zod4(tallySheetSchema))
 		// TODO verwijder lege regels automagisch
 		if (!form.valid) return fail(400, { form })
 

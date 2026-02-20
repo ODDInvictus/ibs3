@@ -10,9 +10,13 @@
 		middleware: [offset(6), flip(), shift()],
 	})
 
-	let show = false
+	let show = $state(false)
 
-	export let field: Field<FieldType>
+	interface Props {
+		field: Field<FieldType>
+	}
+
+	let { field }: Props = $props()
 </script>
 
 {field.label}
@@ -20,7 +24,7 @@
 	<span class="optional"> (optioneel) </span>
 {/if}
 {#if field.description}
-	<i role="tooltip" class="description" on:mouseenter={() => (show = true)} on:mouseleave={() => (show = false)}>
+	<i role="tooltip" class="description" onmouseenter={() => (show = true)} onmouseleave={() => (show = false)}>
 		<span use:floatingRef>
 			<Help />
 		</span>

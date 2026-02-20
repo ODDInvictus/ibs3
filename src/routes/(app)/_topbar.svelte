@@ -16,7 +16,11 @@
 		})
 	}
 
-	export let adminAlert: { title: string; url: string } | undefined
+	interface Props {
+		adminAlert: { title: string; url: string } | undefined
+	}
+
+	let { adminAlert }: Props = $props()
 </script>
 
 <div class="layout--topbar">
@@ -37,7 +41,7 @@
 		{/if}
 	</div>
 
-	<div class="user" on:click={logout}>
+	<div class="user" onclick={logout}>
 		<div class="avatar">
 			<ProfileIcon filename={$page.data.user.profilePicture} name={`${$page.data.user.firstName} ${$page.data.user.lastName}`} />
 		</div>

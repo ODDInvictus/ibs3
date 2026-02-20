@@ -1,14 +1,20 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy'
+
 	import Pause from '~icons/tabler/playerPauseFilled'
 	import Play from '~icons/tabler/playerPlayFilled'
 	import Heart from '~icons/tabler/heart'
 	import HeartFilled from '~icons/tabler/heart-filled'
 	import { toast } from '$lib/notification'
 
-	export let search = ''
-	export let tracks: SpotifyApi.TrackObjectFull[]
-	export let liked: string[]
-	export let playlist: string[]
+	interface Props {
+		search?: string
+		tracks: SpotifyApi.TrackObjectFull[]
+		liked: string[]
+		playlist: string[]
+	}
+
+	let { search = '', tracks, liked = $bindable(), playlist }: Props = $props()
 
 	const getSmallestImage = (images: SpotifyApi.ImageObject[]) => {
 		return images.reduce((smallest, image) => {
@@ -21,19 +27,11 @@
 		return artists.map(artist => artist.name).join(', ')
 	}
 
-	let previewSrc = ''
-	let audioPlayer: HTMLAudioElement
+	let previewSrc = $state('')
+	let audioPlayer: HTMLAudioElement = $state()
 
-	$: {
-		if (audioPlayer) {
-			audioPlayer.src = previewSrc
-			audioPlayer.play()
-		}
-	}
+	let hovering = $state('')
 
-	let hovering = ''
-
-	$: onChange(search)
 	const onChange = (...args: any[]) => {
 		if (audioPlayer) audioPlayer.pause()
 		previewSrc = ''
@@ -65,32 +63,40 @@
 			})
 		}
 	}
+	run(() => {
+		if (audioPlayer) {
+			audioPlayer.src = previewSrc
+			audioPlayer.play()
+		}
+	})
+	run(() => {
+		onChange(search)
+	})
 </script>
 
-<audio src={previewSrc} bind:this={audioPlayer} />
+<audio src={previewSrc} bind:this={audioPlayer}></audio>
 <ul>
 	{#each tracks as track}
 		<li class={playlist.includes(track.id) ? 'highlight' : ''}>
-			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<div
-				on:click={async () => {
+				onclick={async () => {
 					await toggleLike(track)
 				}}
 				role="button"
 				tabindex="0"
-				class="like"
-			>
+				class="like">
 				{#if liked.includes(track.id)}
 					<HeartFilled color="#1db954" />
 				{:else}
 					<Heart />
 				{/if}
 			</div>
-			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<div
 				role="button"
 				tabindex="0"
-				on:click={() => {
+				onclick={() => {
 					hovering = 'een trigger zodat svelte het weer snapt'
 					hovering = track.preview_url ?? ''
 					if (track.preview_url === previewSrc) {
@@ -101,14 +107,12 @@
 					}
 				}}
 				class={`${track.preview_url ? 'clickable' : ''}`}
-				on:mouseenter={() => (hovering = track.preview_url ?? '')}
-				on:mouseleave={() => (hovering = '')}
-			>
+				onmouseenter={() => (hovering = track.preview_url ?? '')}
+				onmouseleave={() => (hovering = '')}>
 				<img
 					src={getSmallestImage(track.album.images).url}
 					alt={'Album cover ' + track.name}
-					class={`${previewSrc === track.preview_url && !audioPlayer.paused ? 'highlight' : ''}`}
-				/>
+					class={`${previewSrc === track.preview_url && !audioPlayer.paused ? 'highlight' : ''}`} />
 				{#if track.preview_url}
 					{#if (hovering === track.preview_url && (previewSrc !== track.preview_url || audioPlayer.paused)) || (previewSrc === track.preview_url && audioPlayer.paused)}
 						<Play style="position: absolute; top: 16px; left: 16px; height: 26px; width: 26px;" />
@@ -140,7 +144,9 @@
 				$hightlight-color: var(--color-primary);
 
 				background-color: $hightlight-color;
-				box-shadow: $hightlight-color -20px 0px 0px 5px, $hightlight-color 20px 0px 0px 5px;
+				box-shadow:
+					$hightlight-color -20px 0px 0px 5px,
+					$hightlight-color 20px 0px 0px 5px;
 
 				a,
 				p,

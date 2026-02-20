@@ -19,6 +19,6 @@
 	<h1>{$alertStore.title}</h1>
 	<p>{$alertStore.message}</p>
 	<div class="buttons">
-		<button class="btn-secondary" on:click={close}>Sluiten</button>
+		<button class="btn-secondary" onclick={close}>Sluiten</button>
 	</div>
 </dialog>

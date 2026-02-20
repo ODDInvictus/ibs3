@@ -6,13 +6,16 @@ import { redirect } from 'sveltekit-flash-message/server'
 import db from '$lib/server/db'
 import { getLedgerIds } from '$lib/ongeveer/db'
 import { uploadGenericFile } from '$lib/server/files'
+import { zod4 } from 'sveltekit-superforms/adapters'
 
 export const load = (async () => {
+	return error(400, 'Declaraties worden gedaan via WBW! Vragen? Stuur een appje naar senaat')
+
 	const data = {
 		methodOfPayment: 'Eigen rekening',
 		receiveMethod: 'SALDO',
 	} as const
-	const form = await superValidate(data, declatationSchema)
+	const form = await superValidate(data, zod4(declatationSchema))
 	return { form }
 }) satisfies PageServerLoad
 
@@ -21,7 +24,7 @@ export const actions = {
 		try {
 			const { request, locals } = event
 			const formData = await request.formData()
-			const form = await superValidate(formData, declatationSchema)
+			const form = await superValidate(formData, zod4(declatationSchema))
 
 			if (!form.valid) return fail(400, { form })
 			const receipt = formData.get('receipt') as File

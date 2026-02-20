@@ -8,15 +8,20 @@
 	import PromptCheckbox from '$lib/components/prompt-checkbox.svelte'
 	import Alert from '$lib/components/alert.svelte'
 	import ImagePreview from '$lib/components/image-popup.svelte'
-	import { afterNavigate } from '$app/navigation'
-	import { Modals, closeModal } from 'svelte-modals'
+	import { afterNavigate, onNavigate } from '$app/navigation'
+	import { Modals, closeModal } from 'svelte-modals/legacy'
 	import MobileMenu from './_mobile-menu.svelte'
 	import { getFlash } from 'sveltekit-flash-message'
-	import { page } from '$app/stores'
+	import { navigating, page } from '$app/state'
 	import { toast } from '$lib/notification'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+		children?: import('svelte').Snippet
+	}
+
+	let { data, children }: Props = $props()
 
 	const flash = getFlash(page)
 
@@ -32,22 +37,27 @@
 		flash.set(undefined)
 	})
 
-	afterNavigate(() => {
-		// Reset scroll position on layout--container-slot
-		const slot = document.querySelector('.layout--container')
+	let url = $state(page.url)
 
-		if (slot) slot.scrollTop = 0
+	$effect(() => {
+		if (url != page.url) {
+			url = page.url
+			const slot = document.querySelector('.layout--container')
 
-		open = false
+			if (slot) slot.scrollTop = 0
+
+			open = false
+		}
 	})
 
-	let open = false
-	const openMenu = () => (open = !open)
+	let open = $state(false)
+	const openMenu = () => {
+		open = !open
+	}
 </script>
 
 <main class="layout--main">
 	<Navbar {openMenu} {open} version={data.version} />
-
 	{#if open}
 		<div class="layout--mobimenu">
 			<MobileMenu version={data.version} />
@@ -55,18 +65,19 @@
 	{/if}
 
 	<Modals>
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<div slot="backdrop" class="backdrop" role="button" tabindex="0" on:click={closeModal} />
+		{#snippet backdrop()}
+			<div class="backdrop" role="button" tabindex="0" onclick={closeModal}></div>
+		{/snippet}
 	</Modals>
 
-	<div class="layout--stripe" data-open={open} />
+	<div class="layout--stripe" data-open={open}></div>
 
 	<Topbar adminAlert={data.adminAlert} />
 
 	{#if !open}
 		<div class="layout--container">
 			<div class="layout--container-slot">
-				<slot />
+				{@render children?.()}
 			</div>
 		</div>
 	{/if}

@@ -3,7 +3,11 @@
 	import { toast } from '$lib/notification'
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
 
 	function copy() {
 		navigator.clipboard.writeText(data.link)
@@ -24,7 +28,7 @@
 
 <br />
 
-<div class="link"><button class="btn-a" on:click={copy}>{data.link}</button></div>
+<div class="link"><button class="btn-a" onclick={copy}>{data.link}</button></div>
 
 <small>Klik op de link om hem te kopieren </small>
 

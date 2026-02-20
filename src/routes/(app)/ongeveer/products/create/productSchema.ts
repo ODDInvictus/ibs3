@@ -1,4 +1,4 @@
-import type { ProductType } from '@prisma/client'
+import type { ProductType } from '$lib/server/prisma/client'
 import { z } from 'zod'
 
 export function getProductSchema(ProductTypes: [ProductType, ...ProductType[]]) {

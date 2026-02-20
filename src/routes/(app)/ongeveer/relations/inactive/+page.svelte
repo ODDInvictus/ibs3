@@ -13,9 +13,11 @@
 
 <table>
 	<thead>
-		<th>ID</th>
-		<th>Naam</th>
-		<th>Omschrijving</th>
+		<tr>
+			<th>ID</th>
+			<th>Naam</th>
+			<th>Omschrijving</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#if data.relations.length === 0}

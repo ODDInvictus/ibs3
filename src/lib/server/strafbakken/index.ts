@@ -9,7 +9,7 @@ import { Setting, settings } from '$lib/server/settings'
  * @param giverId int
  * @param receiverId int
  * @reason reden hiervoor
- * @throws NotFoundError indien giver of receiver niet bestaat
+ * @throws PrismaClientKnownRequestError indien giver of receiver niet bestaat
  */
 export async function giveStrafbak(giverId: number, receiverId: number, reason: string) {
 	let other: number = -1
@@ -46,16 +46,12 @@ export async function giveStrafbak(giverId: number, receiverId: number, reason: 
  *
  * Respecteert Setting.STRAFBAKKEN_DRINKING_BUDDIES
  */
-export async function deleteStrafbak(uid: number) {
+export async function deleteStrafbak(uid: number, recurse?: boolean) {
 	// try to delete for the drinking buddy
 	const buddies = settings.getBool(Setting.STRAFBAKKEN_DRINKING_BUDDIES, true)
 
-	if (buddies && (uid === 10 || uid === 15)) {
-		try {
-			deleteStrafbak(uid === 10 ? 15 : 10)
-		} catch (err) {
-			// do not care
-		}
+	if (!recurse && buddies && (uid === 10 || uid === 15)) {
+		deleteStrafbak(uid === 10 ? 15 : 10, true)
 	}
 
 	const strafbak = await db.strafbak.findFirst({
@@ -69,7 +65,7 @@ export async function deleteStrafbak(uid: number) {
 	})
 
 	if (!strafbak) {
-		throw new Error(`User ${uid} heeft geen strafbakken`)
+		return
 	}
 
 	await db.strafbak.update({

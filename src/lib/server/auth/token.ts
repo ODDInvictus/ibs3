@@ -1,4 +1,4 @@
-import type { AccessToken, User } from '@prisma/client'
+import type { AccessToken, User } from '$lib/server/prisma/client'
 import db from '../db'
 
 export type TokenType = 'calendar'
