@@ -182,7 +182,7 @@
 <label for="light">Lichte modus</label>
 <br />
 <input type="radio" id="dark" name="theme" value="dark" onclick={() => setTheme('dark')} checked={data.currentTheme === 'dark'} />
-<label for="dark">Donkere modus</label>
+<label for="dark">Gustav modus</label>
 <br />
 <input type="radio" id="feut" name="theme" value="feut" onclick={() => setTheme('feut')} checked={data.currentTheme === 'feut'} />
 <label for="feut">Feuten thema</label>
