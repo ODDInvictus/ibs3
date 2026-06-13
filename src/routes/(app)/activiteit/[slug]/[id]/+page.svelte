@@ -191,6 +191,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 			</p>
 
 			<p class="ibs-card--row">
+				<i><UserShield /></i>
+				Aangemaakt door: {activity.createdBy?.firstName ?? activity.createdBy?.ldapId}
+			</p>
+
+			<p class="ibs-card--row">
 				<i><MapPin /></i>
 				{#if activity.location !== null}
 					<a href="/locatie/{activity.location.id}">{activity.location.name}</a>
@@ -207,13 +212,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 				<i><Clock /></i>
 				{formatTime(activity.startTime)} - {formatTime(activity.endTime)}
 			</p>
-
-			{#if data.roles[LDAP_IDS.ADMINS] || data.roles[LDAP_IDS.SENAAT]}
-				<p class="ibs-card--row">
-					<i><UserShield /></i>
-					Aangemaakt door: {activity.createdBy?.ldapId}
-				</p>
-			{/if}
 
 			{#if activity.url}
 				<p class="ibs-card--row">
