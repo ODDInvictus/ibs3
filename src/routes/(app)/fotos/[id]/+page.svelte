@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
+	import { LDAP_IDS } from '$lib/constants'
 	import ProfileIcon from '$lib/components/profile-icon.svelte'
 	import Title from '$lib/components/title.svelte'
 	import { formatDateHumanReadable, formatDateTimeHumanReadable } from '$lib/dateUtils'
@@ -46,6 +47,44 @@
 					})
 				}
 			})
+	}
+
+	async function profielPicture() {
+		await promptSelect({
+			title: 'Profielfoto',
+			message: 'Selecteer de gebruiker wiens profielfoto dit wordt',
+			options: data.users!.map(ldap => ({ key: ldap.ldapId, value: ldap.ldapId })),
+			cb: async val => {
+				if (!val) return
+
+				await fetch('', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						type: 'set-pp',
+						user: val,
+					}),
+				})
+					.then(res => res.json())
+					.then(res => {
+						if (res.success) {
+							toast({
+								title: 'Opslaan gelukt',
+								message: res.message,
+								type: 'success',
+							})
+						} else {
+							toast({
+								title: 'Opslaan mislukt',
+								message: res.message,
+								type: 'danger',
+							})
+						}
+					})
+			},
+		})
 	}
 
 	async function tag() {
@@ -188,6 +227,14 @@
 				</small>
 			</div>
 
+			{#if data.roles[LDAP_IDS.ADMINS] || data.roles[LDAP_IDS.SENAAT]}
+				<div class="admin-container">
+					<hr />
+					<h2>Admin acties</h2>
+					<button onclick={profielPicture}> Stel iemands profielfoto in </button>
+				</div>
+			{/if}
+
 			<div class="quality-container">
 				<hr />
 
@@ -298,6 +345,10 @@
 			max-width: 100%;
 			max-height: calc(100vh - var(--topbar-height) - 10rem);
 		}
+	}
+
+	.admin-container {
+		grid-column: span 2;
 	}
 
 	.rating-container {

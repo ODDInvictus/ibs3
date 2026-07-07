@@ -1,5 +1,6 @@
 import type { RequestHandler } from './$types'
 import db from '$lib/server/db'
+import { invalidateUser } from '$lib/server/userCache'
 
 export const POST: RequestHandler = async ({ request, params, locals }) => {
 	const body = await request.json()
@@ -14,6 +15,8 @@ export const POST: RequestHandler = async ({ request, params, locals }) => {
 			return await tag(body, pid, uid)
 		case 'remove-tag':
 			return await removeTag(body, pid)
+		case 'set-pp':
+			return await setPP(body, pid)
 		default:
 			return err(400, 'Request type onbekend')
 	}
@@ -138,4 +141,38 @@ async function removeTag(body: RemoveTagBodyType, pid: number) {
 	})
 
 	return success('Tag verwijderd', tag)
+}
+
+type SetPPBodyType = {
+	type: 'set-pp'
+	user: string
+}
+
+async function setPP(body: SetPPBodyType, pid: number) {
+	if (body.user == '') {
+		return err(400, 'user bestaat niet')
+	}
+
+	const photo = await db.photo.findFirst({
+		where: {
+			id: pid,
+		},
+	})
+
+	if (!photo) {
+		return err(400, 'foto bestaat niet????')
+	}
+
+	const user = await db.user.update({
+		where: {
+			ldapId: body.user,
+		},
+		data: {
+			profilePicture: photo.fileId,
+		},
+	})
+
+	invalidateUser(user.email)
+
+	return success('Foto successvol ingesteld')
 }

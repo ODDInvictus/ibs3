@@ -99,6 +99,8 @@ export const load = (async ({ params, locals, url }) => {
 			break
 	}
 
+	const users = await db.user.findMany({ where: { isActive: true }, select: { ldapId: true } })
+
 	// @ts-expect-error kan niet undefined zijn
 	photoUrl = getPictureUrl(photo.file.filename, qualityParam)
 
@@ -107,6 +109,7 @@ export const load = (async ({ params, locals, url }) => {
 		photoUrl,
 		avgRating,
 		tags,
+		users,
 	}
 }) satisfies PageServerLoad
 
