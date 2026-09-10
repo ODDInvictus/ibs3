@@ -46,20 +46,24 @@ export async function sendNotificationOverMail(notification: Notification, html:
 	}
 
 	if (process.env.NODE_ENV === 'development') {
-		const transport = nodemailer.createTransport({
-			host: 'localhost',
-			port: 1025,
-			secure: false,
-		})
+		try {
+			const transport = nodemailer.createTransport({
+				host: 'raditude',
+				port: 1025,
+				secure: false,
+			})
 
-		await transport.sendMail({
-			from: process.env.EMAIL_SENDER,
-			replyTo: process.env.EMAIL_REPLY_TO,
-			to: `${user.firstName} ${user.lastName} <${user.personalEmail}>`,
-			subject: notification.title,
-			html: html,
-			text: text,
-		})
+			await transport.sendMail({
+				from: process.env.EMAIL_SENDER,
+				replyTo: process.env.EMAIL_REPLY_TO,
+				to: `${user.firstName} ${user.lastName} <${user.personalEmail}>`,
+				subject: notification.title,
+				html: html,
+				text: text,
+			})
+		} catch (err: any) {
+			await notificationFailed(err, '$lib/server/notifications/email::sendNotificationOverMail', notification)
+		}
 	} else {
 		const options = {
 			Source: process.env.EMAIL_SENDER,
