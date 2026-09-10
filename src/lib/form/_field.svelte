@@ -33,16 +33,16 @@
 	}
 
 	// TODO fix table.rows
-	let mounted = false
-	$: if (field.type !== 'select' && field.type !== 'table') mounted = true
-	onMount(() => {
-		if (field.type === 'table') {
-			delete field.rows
-			// @ts-expect-error
-			rows = Array.from(Array(field.value?.length || 1).keys())
-		}
-		mounted = true
-	})
+	let mounted = true
+	// $: if (field.type !== 'select' && field.type !== 'table') mounted = true
+	// onMount(() => {
+	// 	if (field.type === 'table') {
+	// 		delete field.rows
+	// 		// @ts-expect-error
+	// 		rows = Array.from(Array(field.value?.length || 1).keys())
+	// 	}
+	// 	mounted = true
+	// })
 
 	const noType = (x: any) => x
 </script>
