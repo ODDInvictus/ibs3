@@ -4,37 +4,38 @@ import type { Notification, User } from '$lib/server/prisma/client'
 import { NotificationType } from '$lib/server/prisma/client'
 import { SESClient, SendEmailCommand, type SendEmailCommandInput } from '@aws-sdk/client-ses'
 import { makeNotification, notificationFailed } from '.'
+import { env } from '$env/dynamic/private'
 
 let ses: SESClient
 
 export async function initAWS() {
-	if (!process.env.AWS_REGION) {
+	if (!env.AWS_REGION) {
 		logError('env AWS_REGION unset')
 		return
 	}
 
-	if (!process.env.AWS_ACCESS_KEY_ID) {
+	if (!env.AWS_ACCESS_KEY_ID) {
 		logError('env AWS_ACCESS_KEY_ID unset')
 		return
 	}
 
-	if (!process.env.AWS_SECRET_ACCESS_KEY) {
+	if (!env.AWS_SECRET_ACCESS_KEY) {
 		logError('env AWS_SECRET_ACCESS_KEY unset')
 		return
 	}
 
 	ses = new SESClient({
-		region: process.env.AWS_REGION,
+		region: env.AWS_REGION,
 	})
 }
 
 export async function sendNotificationOverMail(notification: Notification, html: string, text: string, user: User) {
-	if (!process.env.EMAIL_SENDER) {
+	if (!env.EMAIL_SENDER) {
 		logError('env EMAIL_SENDER unset')
 		return null
 	}
 
-	if (!process.env.EMAIL_REPLY_TO) {
+	if (!env.EMAIL_REPLY_TO) {
 		logError('env EMAIL_REPLY_TO unset')
 		return null
 	}
@@ -45,28 +46,32 @@ export async function sendNotificationOverMail(notification: Notification, html:
 		return null
 	}
 
-	if (process.env.NODE_ENV === 'development') {
-		const transport = nodemailer.createTransport({
-			host: 'localhost',
-			port: 1025,
-			secure: false,
-		})
+	if (env.NODE_ENV === 'development') {
+		try {
+			const transport = nodemailer.createTransport({
+				host: 'raditude',
+				port: 1025,
+				secure: false,
+			})
 
-		await transport.sendMail({
-			from: process.env.EMAIL_SENDER,
-			replyTo: process.env.EMAIL_REPLY_TO,
-			to: `${user.firstName} ${user.lastName} <${user.personalEmail}>`,
-			subject: notification.title,
-			html: html,
-			text: text,
-		})
+			await transport.sendMail({
+				from: env.EMAIL_SENDER,
+				replyTo: env.EMAIL_REPLY_TO,
+				to: `${user.firstName} ${user.lastName} <${user.personalEmail}>`,
+				subject: notification.title,
+				html: html,
+				text: text,
+			})
+		} catch (err: any) {
+			await notificationFailed(err, '$lib/server/notifications/email::sendNotificationOverMail', notification)
+		}
 	} else {
 		const options = {
-			Source: process.env.EMAIL_SENDER,
+			Source: env.EMAIL_SENDER,
 			Destination: {
 				ToAddresses: [`${user.firstName} ${user.lastName} <${user.personalEmail}>`],
 			},
-			ReplyToAddresses: [process.env.EMAIL_REPLY_TO],
+			ReplyToAddresses: [env.EMAIL_REPLY_TO],
 			Message: {
 				Subject: {
 					Data: notification.title,

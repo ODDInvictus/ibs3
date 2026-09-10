@@ -27,7 +27,9 @@ const handleAuthorization = (async ({ event, resolve }) => {
 
 	const themeOverride = settings.getWithoutDefault(Setting.THEME_OVERRIDE)
 
-	if (themeOverride) {
+	if (roles.feuten) {
+		event.locals.theme = 'feut'
+	} else if (themeOverride) {
 		event.locals.theme = themeOverride
 	} else if (import.meta.env.DEV) {
 		event.locals.theme = 'dev'
