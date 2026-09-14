@@ -1,5 +1,4 @@
 import { env } from '$env/dynamic/private'
-import { env as envPublic } from '$env/dynamic/public'
 import { sequence } from '@sveltejs/kit/hooks'
 import type { Handle, HandleServerError } from '@sveltejs/kit'
 import { notifyDiscordError } from '$lib/server/notifications/discord'

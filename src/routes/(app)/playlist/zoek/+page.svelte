@@ -5,7 +5,6 @@
 	import Loader from '$lib/components/Loader.svelte'
 	import { toast } from '$lib/notification'
 	import Playlist from '~icons/tabler/playlist'
-	import { env } from '$env/dynamic/public'
 
 	import type { PageServerData } from './$types'
 	import UserList from '../UserList.svelte'

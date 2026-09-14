@@ -1,8 +1,6 @@
 import type { Actions, PageServerLoad } from './$types'
 import db from '$lib/server/db'
 import { fail } from '@sveltejs/kit'
-import { env } from '$env/dynamic/private'
-import { Setting, settings } from '$lib/server/settings'
 import { giveStrafbak } from '$lib/server/strafbakken'
 
 // Load een overview van alle strafbakken
