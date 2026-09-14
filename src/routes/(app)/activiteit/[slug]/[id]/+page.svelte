@@ -165,7 +165,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	{/if}
 
 	<div class="cols">
-		<div class="ibs-card outline">
+		<div class="ibs-card outline" id="info">
 			<div class="ibs-card--image">
 				<img
 					onclick={() => {
@@ -329,7 +329,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	.cols {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		grid-template-rows: repeat(1fr, 10);
+		grid-template-rows: auto;
 
 		gap: 1rem;
 
@@ -351,9 +351,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 		}
 	}
 
-	#right {
-		grid-row: span 2;
+	#info {
+		grid-row: 1;
+	}
 
+	#right {
+		grid-row: span 5;
 		align-items: center;
 
 		.users {
@@ -372,12 +375,16 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	}
 
 	.comments {
-		grid-row: span 3;
+		grid-row: 2 / -1;
 		@media (max-width: 600px) {
 			.ibs-comment--content--date {
 				display: none;
 			}
 		}
+	}
+
+	.ibs-card {
+		height: auto;
 	}
 
 	form {
