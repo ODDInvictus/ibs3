@@ -198,7 +198,16 @@
 	onclick={() => setTheme('invakancie25')}
 	checked={data.currentTheme === 'invakancie25'} />
 <label for="invakancie25">InVakanCie 2025 thema</label>
-
+<br />
+<input
+	type="radio"
+	id="lustrum1"
+	name="theme"
+	value="lustrum1"
+	onclick={() => setTheme('lustrum1')}
+	checked={data.currentTheme === 'lustrum1'} />
+<label for="lustrum1">Lustrum: Mythes en Legendes thema</label>
+<br />
 <hr />
 
 <h2>Email voorkeuren</h2>

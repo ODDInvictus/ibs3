@@ -76,7 +76,7 @@
 	{#if !open}
 		<div class="layout--container">
 			<div class="layout--container-slot">
-				<!-- {@render children?.()} -->
+				{@render children?.()}
 			</div>
 		</div>
 	{/if}
