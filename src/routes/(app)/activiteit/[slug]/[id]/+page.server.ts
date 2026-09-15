@@ -48,9 +48,9 @@ export const load = (async event => {
 		},
 	})
 
-	const isMember = locals.committees.find(c => c.ldapId === LDAP_IDS.MEMBERS) !== undefined
+	const isBeproeving = activity.name.toLowerCase().includes('beproeving')
 
-	if (activity.membersOnly && !isMember) {
+	if (activity.membersOnly && !locals.roles.leden && !isBeproeving) {
 		throw redirect(
 			'/kalender',
 			{
@@ -60,6 +60,12 @@ export const load = (async event => {
 			},
 			event,
 		)
+	}
+
+	if (activity.membersOnly && locals.roles.feuten && isBeproeving) {
+		activity.name = 'Leuke activiteit'
+		activity.description = 'Hier zal vast allemaal informatie staan, maar dat mag jij helaas niet zien'
+		activity.comments = []
 	}
 
 	const attending = randomSortDay(activity.attending)
@@ -89,6 +95,10 @@ export const actions = {
 
 		if (!aid || isNaN(Number(aid))) {
 			return f(404, 'Activiteit niet gevonden')
+		}
+
+		if (locals.roles.feuten) {
+			return f(503, 'Feuten mogen geen reactie plaatsen, stuur maar een appje')
 		}
 
 		const c = await db.comment.create({

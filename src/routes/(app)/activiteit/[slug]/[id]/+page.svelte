@@ -22,7 +22,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	import { formatDateTimeHumanReadable } from '$lib/dateUtils'
 	import type { AttendingStatus } from '$lib/server/prisma/client'
 	import { promptCheckbox } from '$lib/promptCheckbox'
-	import { LDAP_IDS } from '$lib/constants'
 	import Callout from '$lib/components/callout.svelte'
 
 	export let data: PageData

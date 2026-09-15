@@ -5,7 +5,6 @@
 	import Login from '~icons/tabler/login.svg'
 	import OAuth from '~icons/tabler/brand-oauth.svg'
 	import Register from '~icons/tabler/bookmark-edit.svg'
-	import { env } from '$env/dynamic/public'
 	import { page } from '$app/stores'
 	import type { PageData } from './$types'
 

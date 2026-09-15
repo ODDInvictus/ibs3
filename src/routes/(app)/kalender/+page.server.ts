@@ -9,8 +9,6 @@ type CalendarActivity = Activity & {
 
 export const load = (async ({ locals }) => {
 	const today = new Date()
-	// If the user is in the members committee, show all events
-	const isMember = locals.committees.find(c => c.ldapId === LDAP_IDS.MEMBERS) !== undefined
 
 	const activityQuery = await db.activity.findMany({
 		orderBy: [
@@ -22,7 +20,6 @@ export const load = (async ({ locals }) => {
 			endTime: {
 				gte: today,
 			},
-			membersOnly: !isMember ? false : undefined,
 		},
 		include: {
 			location: {
@@ -42,8 +39,31 @@ export const load = (async ({ locals }) => {
 		},
 	})
 
-	let activities = activityQuery.map(activity => {
-		const isDies = activity.name.toLowerCase().includes('dies')
+	// filter alle niet beproeving activiteiten weg voor feuten
+	let activities = activityQuery.filter(a => {
+		if (locals.roles.leden) {
+			return true
+		}
+
+		if (!a.membersOnly) {
+			return true
+		}
+
+		if (a.membersOnly && a.name.toLowerCase().includes('beproeving') && locals.roles.feuten) {
+			return true
+		}
+		return false
+	})
+
+	activities = activities.map(activity => {
+		let isDies = activity.name.toLowerCase().includes('dies')
+
+		if (activity.membersOnly && locals.roles.feuten) {
+			isDies = false
+			activity.name = 'Leuke activiteit'
+			activity.description = 'Feutjes zijn zeker welkom, maar jullie zien vanzelf wel wat er gaat gebeuren'
+		}
+
 		return {
 			...activity,
 			isDies,
