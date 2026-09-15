@@ -329,7 +329,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	.cols {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		grid-template-rows: auto;
+		grid-template-areas:
+			'info mensen'
+			'reacties mensen'
+			'rest mensen';
+		align-items: start;
 
 		gap: 1rem;
 
@@ -340,25 +344,28 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 			@media (max-width: 600px) {
 				margin: 0;
 				margin-bottom: $gap;
-				width: 90vw;
 			}
 		}
 
 		@media (max-width: 600px) {
 			grid-template-columns: 1fr;
+			grid-template-areas:
+				'info'
+				'mensen'
+				'reacties'
+				'rest';
 			margin: 0;
 			gap: $gap;
 		}
 	}
 
 	#info {
-		grid-row: 1;
+		grid-area: info;
 	}
 
 	#right {
-		grid-row: span 5;
+		grid-area: mensen;
 		align-items: center;
-
 		.users {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
@@ -375,7 +382,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	}
 
 	.comments {
-		grid-row: 2 / -1;
+		grid-area: reacties;
 		@media (max-width: 600px) {
 			.ibs-comment--content--date {
 				display: none;
