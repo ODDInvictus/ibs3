@@ -8,11 +8,10 @@
 	import PromptCheckbox from '$lib/components/prompt-checkbox.svelte'
 	import Alert from '$lib/components/alert.svelte'
 	import ImagePreview from '$lib/components/image-popup.svelte'
-	import { afterNavigate, onNavigate } from '$app/navigation'
 	import { Modals, closeModal } from 'svelte-modals/legacy'
 	import MobileMenu from './_mobile-menu.svelte'
 	import { getFlash } from 'sveltekit-flash-message'
-	import { navigating, page } from '$app/state'
+	import { page } from '$app/state'
 	import { toast } from '$lib/notification'
 	import type { PageData } from './$types'
 
@@ -77,7 +76,7 @@
 	{#if !open}
 		<div class="layout--container">
 			<div class="layout--container-slot">
-				{@render children?.()}
+				<!-- {@render children?.()} -->
 			</div>
 		</div>
 	{/if}

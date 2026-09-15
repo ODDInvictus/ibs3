@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import { LDAP_IDS } from '$lib/constants'
-
-	import { env } from '$env/dynamic/public'
-	// import Logo from '$lib/components/logo-v2-small.svelte';
 	import Calendar from '~icons/tabler/calendar-bolt'
 	import InformationCircle from '~icons/tabler/info-circle'
 	import Beer from '~icons/tabler/beer'
