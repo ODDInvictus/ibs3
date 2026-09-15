@@ -69,39 +69,34 @@ export const load = (async ({ locals }) => {
 		})
 	}
 
-	const getFirstActivity = () => {
+	const getFirstActivity = async () => {
 		const today = new Date()
 
-		const member = locals.committees.filter(c => c.ldapId === LDAP_IDS.MEMBERS)[0]
+		const activity = await db.activity.findFirst({
+			orderBy: [
+				{
+					endTime: 'asc',
+				},
+			],
+			where: {
+				endTime: {
+					gte: today,
+				},
+			},
+			include: {
+				activityPhoto: {
+					include: {
+						file: true,
+					},
+				},
+			},
+		})
 
-		if (member) {
-			return db.activity.findFirst({
-				orderBy: [
-					{
-						endTime: 'asc',
-					},
-				],
-				where: {
-					endTime: {
-						gte: today,
-					},
-				},
-			})
-		} else {
-			return db.activity.findFirst({
-				orderBy: [
-					{
-						endTime: 'asc',
-					},
-				],
-				where: {
-					endTime: {
-						gte: today,
-					},
-					membersOnly: false,
-				},
-			})
+		if (locals.roles.feuten) {
+			if (activity) activity.name = 'Leuke activiteit'
 		}
+
+		return activity
 	}
 
 	type PhotoHighlight = {

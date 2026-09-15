@@ -90,8 +90,8 @@
 		let link = ''
 
 		if (data.activity) {
-			if (data.activity.photo) {
-				link = getPictureUrl(data.activity.photo, resize ? 'thumbnail' : 'normal')
+			if (data.activity.activityPhoto) {
+				link = getPictureUrl(data.activity.activityPhoto.file.filename, resize ? 'thumbnail' : 'normal')
 			} else {
 				link = `/logo.png`
 			}
