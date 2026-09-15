@@ -300,7 +300,11 @@
 			{#if $delayed}
 				<div class="submit"><button disabled>Activiteit wordt opgeslagen...</button></div>
 			{:else}
-				<div class="submit"><button> Activiteit aanmaken </button></div>
+				<div class="submit">
+					<button>
+						{#if data.edit}Wijzigingen opslaan{:else}Activiteit aanmaken{/if}
+					</button>
+				</div>
 			{/if}
 		</div>
 	</form>
