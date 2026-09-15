@@ -13,7 +13,6 @@
 	import Settings from '~icons/tabler/settings'
 	import AccessibleOff from '~icons/tabler/accessible-off'
 	import Photo from '~icons/tabler/photo'
-	import Music from '~icons/tabler/music'
 	import Streaming from '~icons/tabler/device-tv-old'
 	import Menu from '~icons/tabler/menu-2'
 	import X from '~icons/tabler/x'
