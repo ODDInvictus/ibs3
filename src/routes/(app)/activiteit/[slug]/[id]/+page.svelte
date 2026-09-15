@@ -343,6 +343,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 			@media (max-width: 600px) {
 				margin: 0;
 				margin-bottom: $gap;
+				width: 90vw;
 			}
 		}
 
