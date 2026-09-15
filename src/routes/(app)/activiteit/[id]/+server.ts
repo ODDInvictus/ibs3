@@ -9,7 +9,7 @@ type RequestType = {
 }
 
 // rewrite the url to /activiteit/[slug]/id
-export const GET: RequestHandler = async ({ request, params }) => {
+export const GET: RequestHandler = async ({ params, locals }) => {
 	const id = params.id
 
 	// Get activity
@@ -25,7 +25,11 @@ export const GET: RequestHandler = async ({ request, params }) => {
 		})
 	}
 
-	const slug = activitySlug(activity.name)
+	let slug = activitySlug(activity.name)
+
+	if (locals.roles.feuten) {
+		slug = 'leuke-activiteit'
+	}
 
 	redirect(301, `/activiteit/${slug}/${id}`)
 }
