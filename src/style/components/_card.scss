@@ -23,6 +23,17 @@
 		}
 	}
 
+	& > .ibs-card--image-large {
+		img,
+		source {
+			aspect-ratio: 6/3;
+			@media (max-width: 600px) {
+				height: 200px;
+				padding-bottom: 1rem;
+			}
+		}
+	}
+
 	& > .ibs-card--title {
 		padding: 1rem 0 0rem 1rem;
 	}

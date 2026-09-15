@@ -192,16 +192,18 @@
 		</div>
 	</div>
 
-	<div class="ibs-card strafbakken">
-		<h2 class="ibs-card--title">Strafbakken</h2>
-		<div class="ibs-card--content">
-			<p>Jij hebt op dit moment</p>
-			<h1 data-testid="strafbakken">{data.strafbakken}</h1>
-			<p>strafbakken!</p>
+	<div class="ibs-card photo">
+		<div class="ibs-card--image ibs-card--image-large">
+			<img
+				onclick={() => imagePreview({ image: getPictureUrl(data.photo.filename, 'normal') })}
+				src={getPictureUrl(data.photo.filename, 'thumbnail')}
+				alt="⏳" />
 		</div>
-		<div class="mt-6"></div>
+		<!-- {#if data.photo.description} -->
+		<h2 class="ibs-card--title">{data.photo.description}</h2>
+		<!-- {/if} -->
 		<div class="ibs-card--links">
-			<a href="/strafbakken/{data.user.ldapId}">Waarom?</a>
+			<a href="/fotos">Nog meer fotos!</a>
 		</div>
 	</div>
 
@@ -244,6 +246,19 @@
 		{/if}
 		<div class="ibs-card--links">
 			<a href="/verjaardagen">Wie zijn er nog meer binnenkort jarig?</a>
+		</div>
+	</div>
+
+	<div class="ibs-card strafbakken">
+		<h2 class="ibs-card--title">Strafbakken</h2>
+		<div class="ibs-card--content">
+			<p>Jij hebt op dit moment</p>
+			<h1 data-testid="strafbakken">{data.strafbakken}</h1>
+			<p>strafbakken!</p>
+		</div>
+		<div class="mt-6"></div>
+		<div class="ibs-card--links">
+			<a href="/strafbakken/{data.user.ldapId}">Waarom?</a>
 		</div>
 	</div>
 </div>
@@ -312,7 +327,7 @@
 		}
 
 		.ibs-card.cookie-clicker {
-			grid-column: span 2;
+			// grid-column: span 2;
 
 			.ibs-card--content {
 				display: flex;

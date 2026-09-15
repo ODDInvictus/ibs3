@@ -2,7 +2,7 @@ import db from '$lib/server/db'
 import type { PageServerLoad } from './$types'
 import { getNextBirthdayInLine } from '$lib/server/birthdays'
 import { LDAP_IDS } from '$lib/constants'
-import type { Quote } from '$lib/server/prisma/client'
+import type { Photo, Quote } from '$lib/server/prisma/client'
 
 export const load = (async ({ locals }) => {
 	// Deze methode faalt niet, ook als je 0 sessies hebt - NR
@@ -104,6 +104,27 @@ export const load = (async ({ locals }) => {
 		}
 	}
 
+	type PhotoHighlight = {
+		firstName: string
+		filename: string
+		pid: number
+		description: string
+	}
+
+	const rand = Date.now()
+	const getHighlight = async () => {
+		const query: Photo[] = await db.$queryRaw`
+      SELECT Photo.id as pid, User.firstName, File.filename, description, visible FROM Photo
+      LEFT JOIN User ON User.id = Photo.creatorId
+			LEFT JOIN File on File.id = Photo.fileId
+      WHERE Photo.visible = 1
+      ORDER BY RAND(${rand})
+      LIMIT 1;
+    `
+
+		return query[0] as unknown as PhotoHighlight
+	}
+
 	return {
 		clicks: await getTotalClicks(),
 		topclicker: await getTopClicker(),
@@ -112,5 +133,6 @@ export const load = (async ({ locals }) => {
 		activity: await getFirstActivity(),
 		strafbakken: await getStrafbakken(),
 		nextBirthday: await getNextBirthdayInLine(),
+		photo: await getHighlight(),
 	}
 }) satisfies PageServerLoad
