@@ -39,6 +39,7 @@ export async function verifyTokenWithoutUser(token: string, type: TokenType): Pr
 
 	if (!accessToken) return { valid: false, user: null }
 	if (accessToken.type !== type) return { valid: false, user: null }
+	if (accessToken.user.accessDisabled) return { valid: false, user: null }
 
 	await setLastUsed(accessToken)
 
