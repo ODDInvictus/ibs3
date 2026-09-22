@@ -12,6 +12,7 @@
 	import TablerBeer from '~icons/tabler/beer'
 	import TablerBackhoe from '~icons/tabler/backhoe'
 	import TablerBell from '~icons/tabler/bell'
+	import TablerUserKey from '~icons/tabler/circle-key'
 	import { toast } from '$lib/notification'
 
 	async function bak() {
@@ -131,6 +132,16 @@
 						<TablerBackhoe />
 					</span>
 					Jobs
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="/admin/token">
+					<span class="icon">
+						<TablerUserKey />
+					</span>
+					Access tokens
 				</a>
 			</td>
 		</tr>
