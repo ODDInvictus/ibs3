@@ -2,7 +2,7 @@ import { verifyTokenWithoutUser } from '$lib/server/auth'
 import type { RequestHandler } from './$types'
 import * as ics from 'ics'
 import { isFeut } from '$lib/server/auth/helpers'
-import type { Activity } from '$lib/server/prisma/client'
+import type { Activity, CalendarEvent } from '$lib/server/prisma/client'
 import db from '$lib/server/db'
 import { env } from '$env/dynamic/private'
 import { activitySlug } from '$lib/textUtils'
@@ -22,14 +22,18 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 	}
 
 	// If the token is valid, respond with the personal calendar for that user
-	const activities = await getActivities(isFeut(user!))
+	const [activities, calendarEvents, bds] = await Promise.all([
+		getActivities(isFeut(user!)),
+		getCalendarEvents(user!.id),
+		buildBirthdayEvents(),
+	])
 
 	const events = buildEvents(activities)
-	const bds = await buildBirthdayEvents()
+	const calendar = buildCalendarEvents(calendarEvents)
 
 	return await new Promise((resolve, reject) => {
 		ics.createEvents(
-			[...events, ...bds],
+			[...events, ...calendar, ...bds],
 			{ productId: '//O.D.D. Invictus//Invictus Bier Systeem//NL', method: 'PUBLISH', calName: 'O.D.D. Invictus' },
 			(error, value) => {
 				if (error) {
@@ -80,6 +84,17 @@ const getActivities = async (feut: boolean): Promise<Activity[]> => {
 	return activities
 }
 
+const getCalendarEvents = async (userId: number): Promise<CalendarEvent[]> => {
+	return db.calendarEvent.findMany({
+		where: {
+			calendarEventUsers: {
+				some: { userId },
+			},
+		},
+		orderBy: { startTime: 'asc' },
+	})
+}
+
 const buildEvents = (activities: Activity[]): ics.EventAttributes[] => {
 	return activities.map(activity => {
 		const description = `${activity.description}\n\nMeer informatie: ${env.ORIGIN}/activiteit/${activitySlug(activity.name)}/${activity.id}`
@@ -110,6 +125,32 @@ const buildEvents = (activities: Activity[]): ics.EventAttributes[] => {
 			organizer: { name: 'O.D.D. Invictus', email: 'senaat@oddinvictus.nl' },
 		}
 	})
+}
+
+const buildCalendarEvents = (calendarEvents: CalendarEvent[]): ics.EventAttributes[] => {
+	return calendarEvents.map(event => ({
+		start: [
+			event.startTime.getFullYear(),
+			event.startTime.getMonth() + 1,
+			event.startTime.getDate(),
+			event.startTime.getHours(),
+			event.startTime.getMinutes(),
+		],
+		end: [
+			event.endTime.getFullYear(),
+			event.endTime.getMonth() + 1,
+			event.endTime.getDate(),
+			event.endTime.getHours(),
+			event.endTime.getMinutes(),
+		],
+		title: event.title,
+		description: event.description,
+		location: event.location ?? undefined,
+		uid: `calendar-event-${event.id}@oddinvictus.nl`,
+		status: 'CONFIRMED',
+		busyStatus: 'BUSY',
+		organizer: { name: 'O.D.D. Invictus', email: 'senaat@oddinvictus.nl' },
+	}))
 }
 
 const buildBirthdayEvents = async (): Promise<ics.EventAttributes[]> => {

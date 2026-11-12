@@ -39,8 +39,17 @@ export const load = (async ({ locals }) => {
 		},
 	})
 
+	const calendarEvents = await db.calendarEvent.findMany({
+		where: {
+			calendarEventUsers: {
+				some: { userId: locals.user.id },
+			},
+		},
+		orderBy: { startTime: 'asc' },
+	})
+
 	// filter alle niet beproeving activiteiten weg voor feuten
-	let activities = activityQuery.filter(a => {
+	const visibleActivities = activityQuery.filter(a => {
 		if (locals.roles.leden) {
 			return true
 		}
@@ -55,7 +64,7 @@ export const load = (async ({ locals }) => {
 		return false
 	})
 
-	activities = activities.map(activity => {
+	const activities = visibleActivities.map(activity => {
 		let isDies = activity.name.toLowerCase().includes('dies')
 
 		if (activity.membersOnly && locals.roles.feuten) {
@@ -72,5 +81,6 @@ export const load = (async ({ locals }) => {
 
 	return {
 		activities,
+		calendarEvents,
 	}
 }) satisfies PageServerLoad

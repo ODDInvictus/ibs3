@@ -8,55 +8,105 @@
 	}
 
 	let { data }: Props = $props()
+	const calendarItems = $derived(
+		[
+			...data.activities.map(activity => ({
+				type: 'activity' as const,
+				key: `activity-${activity.id}`,
+				startTime: activity.startTime,
+				activity,
+			})),
+			...data.calendarEvents.map(event => ({
+				type: 'calendarEvent' as const,
+				key: `calendar-event-${event.id}`,
+				startTime: event.startTime,
+				event,
+			})),
+		].sort((left, right) => left.startTime.getTime() - right.startTime.getTime()),
+	)
 </script>
 
 <Title title="Kalender" />
 <div class="topbar">
 	<a href="/activiteit/nieuw">Activiteit aanmaken</a>
+	<a href="/kalender/agenda">Agenda item aanmaken</a>
 	<a href="/kalender/oud">Oude activiteiten</a>
 	<a href="/kalender/link">Download .ics</a>
 </div>
 
 <div data-testid="activities" id="activities">
-	{#each data.activities as activity}
-		<div class="row {activity.isDies ? 'dies' : ''}">
-			<div class="image">
-				{#if !activity.activityPhotoId}
-					<img src="/favicon-512.png" alt="⏳" />
-				{:else}
-					<img
-						src={getPictureUrl(activity.activityPhoto?.file.filename, 'normal')}
-						onerror={() => {
-							this.src = '/favicon-512.png'
-							this.onerror = null
-						}}
-						alt="⏳"
-						loading="lazy" />
-				{/if}
-
-				<div class="date-tag">
-					<div class="day">
-						{new Date(activity.startTime).toLocaleDateString('nl-NL', { day: '2-digit' })}
-					</div>
-					<div class="month">
-						{new Date(activity.startTime).toLocaleDateString('nl-NL', { month: 'short' })}
+	{#each calendarItems as item (item.key)}
+		{#if item.type === 'activity'}
+			{@const activity = item.activity}
+			<div class="row {activity.isDies ? 'dies' : ''}">
+				<div class="image">
+					{#if !activity.activityPhotoId}
+						<img src="/favicon-512.png" alt="⏳" />
+					{:else}
+						<img
+							src={getPictureUrl(activity.activityPhoto?.file.filename, 'normal')}
+							onerror={() => {
+								this.src = '/favicon-512.png'
+								this.onerror = null
+							}}
+							alt="⏳"
+							loading="lazy" />
+					{/if}
+					<div class="date-tag">
+						<div class="day">
+							{new Date(activity.startTime).toLocaleDateString('nl-NL', { day: '2-digit' })}
+						</div>
+						<div class="month">
+							{new Date(activity.startTime).toLocaleDateString('nl-NL', { month: 'short' })}
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="info">
-				<h2 class="activity-title">{@html markdown(activity.name)}</h2>
-				<p class="activity-description">{@html markdown(activity.description)}</p>
-				<p class="activity-date">{new Date(activity.startTime).toLocaleDateString('nl-NL')}</p>
-				<p class="activity-time">
-					{new Date(activity.startTime).toLocaleTimeString('nl-NL', {
-						hour: '2-digit',
-						minute: '2-digit',
-					})} @ {activity.location?.name ?? 'Nog niet bepaald'}
-				</p>
-				<a href="/activiteit/{activity.id}">Meer informatie</a>
+				<div class="info">
+					<h2 class="activity-title">{@html markdown(activity.name)}</h2>
+					<p class="activity-description">{@html markdown(activity.description)}</p>
+					<p class="activity-date">{new Date(activity.startTime).toLocaleDateString('nl-NL')}</p>
+					<p class="activity-time">
+						{new Date(activity.startTime).toLocaleTimeString('nl-NL', {
+							hour: '2-digit',
+							minute: '2-digit',
+						})} @ {activity.location?.name ?? 'Nog niet bepaald'}
+					</p>
+					<a href="/activiteit/{activity.id}">Meer informatie</a>
+				</div>
 			</div>
-		</div>
+		{:else}
+			{@const event = item.event}
+			<div class="row">
+				<div class="image">
+					<img src="/favicon-512.png" alt="" />
+					<div class="date-tag">
+						<div class="day">
+							{new Date(event.startTime).toLocaleDateString('nl-NL', { day: '2-digit' })}
+						</div>
+						<div class="month">
+							{new Date(event.startTime).toLocaleDateString('nl-NL', { month: 'short' })}
+						</div>
+					</div>
+				</div>
+
+				<div class="info">
+					<h2 class="activity-title">
+						Agenda-item: {event.title}
+					</h2>
+					<p class="activity-description">{event.description}</p>
+					<p class="activity-date">{new Date(event.startTime).toLocaleDateString('nl-NL')}</p>
+					<p class="activity-time">
+						{new Date(event.startTime).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}
+						-
+						{new Date(event.endTime).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}
+						{#if event.location}
+							@ {event.location}{/if}
+					</p>
+					<a href="/kalender/agenda/{event.id}">Meer informatie</a>
+				</div>
+			</div>
+		{/if}
 		<hr />
 	{/each}
 </div>
