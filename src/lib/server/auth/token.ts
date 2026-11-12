@@ -1,7 +1,7 @@
 import type { AccessToken, User } from '$lib/server/prisma/client'
 import db from '../db'
 
-export type TokenType = 'calendar'
+export type TokenType = 'calendar' | 'api-photo-upload'
 
 export async function verifyToken(user: User, token: string, type: TokenType): Promise<boolean> {
 	const accessToken = await db.accessToken.findFirst({
@@ -39,7 +39,7 @@ export async function verifyTokenWithoutUser(token: string, type: TokenType): Pr
 
 	if (!accessToken) return { valid: false, user: null }
 	if (accessToken.type !== type) return { valid: false, user: null }
-	if (accessToken.user.accessDisabled) return { valid: false, user: null }
+	if (accessToken.user.accessDisabled && accessToken.user.id !== 0) return { valid: false, user: null }
 
 	await setLastUsed(accessToken)
 

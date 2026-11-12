@@ -125,8 +125,7 @@
 		"svelte-modals": "^2.0.1",
 		"sveltekit-superforms": "^2.29.1",
 		"vite": "^7.3.1",
-		"xss": "^1.0.14",
-		"zlib-sync": "^0.1.10"
+		"xss": "^1.0.14"
 	},
 	"trustedDependencies": [
 		"@parcel/watcher",
@@ -135,8 +134,7 @@
 		"esbuild",
 		"prisma",
 		"sharp",
-		"svelte-preprocess",
-		"zlib-sync"
+		"svelte-preprocess"
 	],
 	"patchedDependencies": {
 		"sveltekit-flash-message@2.4.6": "patches/sveltekit-flash-message@2.4.6.patch",
