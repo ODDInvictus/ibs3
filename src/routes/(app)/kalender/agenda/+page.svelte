@@ -79,7 +79,7 @@
 						{#if selectedCommittee.CommitteeMember.length}
 							<ul>
 								{#each selectedCommittee.CommitteeMember as { member } (member.id)}
-									<li>{member.nickname || `${member.firstName} ${member.lastName}`}</li>
+									<li>{`${member.firstName} ${member.lastName}`}</li>
 								{/each}
 							</ul>
 						{:else}
