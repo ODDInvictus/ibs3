@@ -18,24 +18,37 @@ export const maluspuntForm = new Form<{
 	requiredRoles: [Roles.Members],
 	logic: async data => {
         if (data.name == -1) {
-            // "Alle Feuten" was geselecteerd, dus andere DB checks hoeven nog niet.
-            // alleen nu alle feuten vinden
-            // en die allemaal een maluspunt geven met [reden] en [hoeveelheid]
-            // const alle_feuten = await db.user.findMany({
-            // 				where: {
-            // 					CommitteeMember: {
-            // 						some: {
-            // 							committee: {
-            // 								ldapId: LDAP_IDS.FEUTEN,
-            // 							},
-            // 						},
-            // 					},
-            // 				},
-            // 			})
+            // "Alle Feuten" was selected, just handle this and dont worry about
+            // other DB actions. Just find all feuten now and them all
+            // [amount] maluspunten for [reason].
+            const alle_feuten = await db.user.findMany({
+ 				where: {
+ 					CommitteeMember: {
+ 						some: {
+ 							committee: {
+ 								ldapId: LDAP_IDS.FEUTEN,
+ 							},
+ 						},
+ 					},
+ 				},
+ 			});
+            var feuten_names ="";
+            alle_feuten.forEach(async (feutje) => {
+                feuten_names += " "+feutje.firstName+" "+feutje.lastName+",";
+                await db.maluspunt.create({
+			        data: {
+				        amount: data.amount,
+				        reason: data.reason,
+				        receiverId: feutje.id,
+				        giverId: data.user.id,
+			        },
+		        })
+            });
             return {
-                success: false,
-                message: "Alle Feuten een maluspunt geven moet nog geimplimenteerd worden.",
-                status: 400,
+                success: true,
+                message: `Maluspunten zijn successvol gegeven aan ${feuten_names}`,
+                status: 201,
+                redirectTo: "/maluspunten",
             }
         }
 		const feut = await db.user.findUnique({
@@ -85,7 +98,9 @@ export const maluspuntForm = new Form<{
 						},
 					},
 				})
-                feuten.push({firstName: "Alle", lastName: "Feuten", id: -1}); 
+                if (feuten.length > 1) {
+                    feuten.push({firstName: "Alle", lastName: "Feuten", id: -1}); 
+                }
 				return feuten.map(f => ({
 					label: `${f.firstName} ${f.lastName}`,
 					value: f.id,
