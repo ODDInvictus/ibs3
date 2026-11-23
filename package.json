@@ -88,6 +88,7 @@
 	"dependencies": {
 		"@auth/sveltekit": "^1.10.0",
 		"@aws-sdk/client-ses": "^3.972.0",
+		"@immich/sdk": "^3.4.2",
 		"@prisma/adapter-mariadb": "^7.2.0",
 		"@prisma/client": "^7.4.0",
 		"@sveltejs/kit": "^2.52.0",

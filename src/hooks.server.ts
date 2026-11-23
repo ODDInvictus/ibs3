@@ -6,6 +6,7 @@ import { handleAuthentication, handleAuthorization } from '$lib/server/auth'
 import { initAuthHelpers } from '$lib/server/auth'
 import { initSettings } from '$lib/server/settings/settings'
 import { initAWS } from '$lib/server/notifications/email'
+import { initImmich } from '$lib/server/files/immich'
 
 const handleCors: Handle = async ({ event, resolve }) => {
 	const res = await resolve(event)
@@ -33,6 +34,7 @@ await (async () => {
 	await initSettings()
 	await initAuthHelpers()
 	await initAWS()
+	await initImmich()
 
 	// start the service worker
 	// const worker = new WebWorker() as Bun.Worker
