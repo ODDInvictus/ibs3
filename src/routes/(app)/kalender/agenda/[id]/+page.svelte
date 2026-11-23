@@ -36,7 +36,7 @@
 					{#if data.event.calendarEventUsers.length > 0}
 						<ul>
 							{#each data.event.calendarEventUsers as { user } (user.id)}
-								<li>{user.nickname || `${user.firstName} ${user.lastName}`}</li>
+								<li>{`${user.firstName} ${user.lastName}`}</li>
 							{/each}
 						</ul>
 					{:else}
