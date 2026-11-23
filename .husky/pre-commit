@@ -3,4 +3,4 @@
 
 echo "Running prettier on staged files..."
 
-npx pretty-quick --staged --verbose
+bunx pretty-quick --staged --verbose
