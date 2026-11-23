@@ -17,6 +17,27 @@ export const maluspuntForm = new Form<{
 	submitStr: 'Opslaan',
 	requiredRoles: [Roles.Members],
 	logic: async data => {
+        if (data.name == -1) {
+            // "Alle Feuten" was geselecteerd, dus andere DB checks hoeven nog niet.
+            // alleen nu alle feuten vinden
+            // en die allemaal een maluspunt geven met [reden] en [hoeveelheid]
+            // const alle_feuten = await db.user.findMany({
+            // 				where: {
+            // 					CommitteeMember: {
+            // 						some: {
+            // 							committee: {
+            // 								ldapId: LDAP_IDS.FEUTEN,
+            // 							},
+            // 						},
+            // 					},
+            // 				},
+            // 			})
+            return {
+                success: false,
+                message: "Alle Feuten een maluspunt geven moet nog geimplimenteerd worden.",
+                status: 400,
+            }
+        }
 		const feut = await db.user.findUnique({
 			where: {
 				id: Number(data.name),
@@ -64,7 +85,7 @@ export const maluspuntForm = new Form<{
 						},
 					},
 				})
-
+                feuten.push({firstName: "Alle", lastName: "Feuten", id: -1}); 
 				return feuten.map(f => ({
 					label: `${f.firstName} ${f.lastName}`,
 					value: f.id,
