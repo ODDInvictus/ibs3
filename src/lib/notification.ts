@@ -1,9 +1,11 @@
 import { writable } from 'svelte/store'
 
+export type NotificationType = 'success' | 'danger' | 'warning' | 'info'
+
 export type Notification = {
 	title: string
 	message: string
-	type: 'success' | 'danger' | 'warning' | 'info'
+	type: NotificationType
 	time?: number
 }
 
