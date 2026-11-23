@@ -5,16 +5,7 @@
 	import ProfileIcon from '$lib/components/profile-icon.svelte'
 	import { confirm } from '$lib/confirm'
 	import { signOut } from '@auth/sveltekit/client'
-
-	function logout() {
-		confirm({
-			title: 'Uitloggen?',
-			message: 'Weet je zeker dat je wil uitloggen?',
-			cb: success => {
-				if (success) signOut()
-			},
-		})
-	}
+	import { goto } from '$app/navigation'
 
 	interface Props {
 		adminAlert: { title: string; url: string } | undefined
@@ -41,7 +32,7 @@
 		{/if}
 	</div>
 
-	<div class="user" onclick={logout}>
+	<a class="user" href="/leden/{$page.data.user.ldapId}">
 		<div class="avatar">
 			<ProfileIcon filename={$page.data.user.profilePicture} name={`${$page.data.user.firstName} ${$page.data.user.lastName}`} />
 		</div>
@@ -52,7 +43,7 @@
 		<div class="role">
 			{$page.data.topRole}
 		</div>
-	</div>
+	</a>
 </div>
 
 <style lang="scss">
