@@ -17,6 +17,40 @@ export const maluspuntForm = new Form<{
 	submitStr: 'Opslaan',
 	requiredRoles: [Roles.Members],
 	logic: async data => {
+        if (data.name == -1) {
+            // "Alle Feuten" was selected, just handle this and dont worry about
+            // other DB actions. Just find all feuten now and them all
+            // [amount] maluspunten for [reason].
+            const alle_feuten = await db.user.findMany({
+ 				where: {
+ 					CommitteeMember: {
+ 						some: {
+ 							committee: {
+ 								ldapId: LDAP_IDS.FEUTEN,
+ 							},
+ 						},
+ 					},
+ 				},
+ 			});
+            var feuten_names ="";
+            alle_feuten.forEach(async (feutje) => {
+                feuten_names += " "+feutje.firstName+" "+feutje.lastName+",";
+                await db.maluspunt.create({
+			        data: {
+				        amount: data.amount,
+				        reason: data.reason,
+				        receiverId: feutje.id,
+				        giverId: data.user.id,
+			        },
+		        })
+            });
+            return {
+                success: true,
+                message: `Maluspunten zijn successvol gegeven aan ${feuten_names}`,
+                status: 201,
+                redirectTo: "/maluspunten",
+            }
+        }
 		const feut = await db.user.findUnique({
 			where: {
 				id: Number(data.name),
@@ -64,7 +98,9 @@ export const maluspuntForm = new Form<{
 						},
 					},
 				})
-
+                if (feuten.length > 1) {
+                    feuten.push({firstName: "Alle", lastName: "Feuten", id: -1}); 
+                }
 				return feuten.map(f => ({
 					label: `${f.firstName} ${f.lastName}`,
 					value: f.id,
