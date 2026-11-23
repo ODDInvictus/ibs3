@@ -7,7 +7,7 @@
 		data: PageData
 	}
 
-	let { data }: Props = $props()
+    let { data }: Props = $props()
 	const calendarItems = $derived(
 		[
 			...data.activities.map(activity => ({

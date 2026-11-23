@@ -41,6 +41,9 @@ export const load = (async ({ locals }) => {
 
 	const calendarEvents = await db.calendarEvent.findMany({
 		where: {
+            endTime: {
+                gte: today,
+            },
 			calendarEventUsers: {
 				some: { userId: locals.user.id },
 			},
