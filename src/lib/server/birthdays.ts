@@ -26,7 +26,7 @@ export async function getBirthdaysInOrder(): Promise<User[]> {
   `
 }
 
-export async function getNextBirthdayInLine(): Promise<User> {
+export async function getNextBirthdaysInLine(): Promise<User[]> {
 	const q = (await db.$queryRaw`
     SELECT *
     FROM User
@@ -38,7 +38,26 @@ export async function getNextBirthdayInLine(): Promise<User> {
             ELSE
                 CONCAT(YEAR(CURDATE()) + 1, '-', LPAD(MONTH(birthDate), 2, '0'), '-', LPAD(DAY(birthDate), 2, '0'))
         END ASC
-    LIMIT 1;
+    ;
   `) as User[]
-	return q[0]
+
+	const filtered = q.filter((u): u is User & { birthDate: Date } => u.birthDate != null)
+
+	if (filtered.length == 0) return []
+
+	const res = [filtered[0]]
+
+	const month = filtered[0].birthDate.getMonth()
+	const date = filtered[0].birthDate.getDate()
+
+	for (const u of filtered.splice(1)) {
+		console.log(u.birthDate, u.firstName, q[0].birthDate)
+		if (u.birthDate.getMonth() == month && u.birthDate.getDate() == date) {
+			res.push(u)
+		} else {
+			break
+		}
+	}
+
+	return res
 }

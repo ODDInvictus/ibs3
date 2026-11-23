@@ -12,14 +12,21 @@
 	text-align: start;
 
 	& > .ibs-card--image {
+		width: 100%;
+		aspect-ratio: 5/2;
+		display: flex;
+		border-top-left-radius: var(--border-radius);
+		border-top-right-radius: var(--border-radius);
+		overflow: hidden;
+
 		img,
 		source {
 			// ignore padding for the image
 			width: 100%;
 			object-fit: cover;
-			aspect-ratio: 5/2;
-			border-top-left-radius: var(--border-radius);
-			border-top-right-radius: var(--border-radius);
+			flex: 1 1 0;
+			min-width: 0;
+			height: 100%;
 		}
 	}
 
