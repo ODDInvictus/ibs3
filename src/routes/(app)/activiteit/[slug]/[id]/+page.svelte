@@ -13,6 +13,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	import UserCard from './_user-card.svelte'
 	import { getPictureUrl, stripMarkdown } from '$lib/utils'
 	import { toast } from '$lib/notification'
+	import type { NotificationType } from '$lib/notification'
 	import { markdown } from '$lib/utils'
 	import Title from '$lib/components/title.svelte'
 	import { imagePreview } from '$lib/imagePreviewStore'
@@ -24,20 +25,16 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	import { promptCheckbox } from '$lib/promptCheckbox'
 	import Callout from '$lib/components/callout.svelte'
 
-	export let data: PageData
+	let { data }: { data: PageData } = $props()
 
 	const STATUS_ORDER: Record<string, number> = { ATTENDING: 1, UNSURE: 2, NOT_ATTENDING: 3, NO_RESPONSE: 4 }
 
-	const activity = data.activity
-	let attending = sortAttending()
-	let changed = 0
+	let activity = $derived(data.activity)
+	let attending = $derived([...data.attending].sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]))
 
-	const nameWithoutMarkdown = stripMarkdown(activity.name)
+	let nameWithoutMarkdown = $derived(stripMarkdown(activity.name))
 
-	$: if (changed > 0) {
-		console.log('huts')
-		attending = sortAttending()
-	}
+	$effect(() => console.log(activity.createdBy))
 
 	async function copyToClipboard() {
 		try {
@@ -51,7 +48,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	}
 
 	function sortAttending() {
-		return data.attending.sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status])
+		attending = [...attending].sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status])
 	}
 
 	function formatTime(time: Date) {
@@ -122,8 +119,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 					return
 				}
 
-				a.status = status
-				changed++
+				attending = attending.map(attendee =>
+					attendee.user.ldapId === ldapId ? { ...attendee, status: status as AttendingStatus } : attendee,
+				)
+
 				sortAttending()
 			})
 			.catch(err => {
@@ -166,6 +165,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	<div class="cols">
 		<div class="ibs-card outline" id="info">
 			<div class="ibs-card--image">
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 				<img
 					onclick={() => {
 						const fn = activity.activityPhoto?.file.filename
@@ -175,9 +176,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 					}}
 					alt={nameWithoutMarkdown}
 					src={getPictureUrl(activity.activityPhoto?.file.filename, 'normal')}
-					onerror={() => {
-						this.src = '/favicon-512.png'
-						this.onerror = null
+					onerror={event => {
+						const image = event.currentTarget as HTMLImageElement
+						image.src = '/favicon-512.png'
+						image.onerror = null
 					}} />
 			</div>
 
@@ -191,7 +193,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
 			<p class="ibs-card--row">
 				<i><UserShield /></i>
-				Aangemaakt door: {activity.createdBy?.firstName ?? activity.createdBy?.ldapId}
+				Aangemaakt door: {activity.createdBy?.ldapId ?? '?'}
 			</p>
 
 			<p class="ibs-card--row">
@@ -268,17 +270,18 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 					use:enhance={() => {
 						return ({ result, update }) => {
 							let title = 'Reactie plaatsen mislukt'
-							let type = 'danger'
+							let type: NotificationType = 'danger'
 
-							if (result.status === 200) {
+							if (result.type === 'success') {
 								title = 'Succes'
 								type = 'success'
 
 								// @ts-expect-error Ja weet je, ik snap dat je dit niet leuk vind, maar je doet het er maar mee typescript
 								data.activity.comments = [...data.activity.comments, result.data.comment]
+
+								toast({ title, message: (result.data?.message as string | undefined) ?? '', type })
 							}
 
-							toast({ title, message: result.data.message, type })
 							update()
 						}
 					}}>
