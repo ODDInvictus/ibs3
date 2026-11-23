@@ -21,7 +21,7 @@ export const maluspuntForm = new Form<{
             // "Alle Feuten" was selected, just handle this and dont worry about
             // other DB actions. Just find all feuten now and them all
             // [amount] maluspunten for [reason].
-            const alle_feuten = await db.user.findMany({
+            const alleFeuten = await db.user.findMany({
  				where: {
  					CommitteeMember: {
  						some: {
@@ -32,9 +32,9 @@ export const maluspuntForm = new Form<{
  					},
  				},
  			});
-            var feuten_names ="";
-            alle_feuten.forEach(async (feutje) => {
-                feuten_names += " "+feutje.firstName+" "+feutje.lastName+",";
+            let feutenNames = "";
+            alleFeuten.forEach(async (feutje) => {
+                feutenNames += " "+feutje.firstName+" "+feutje.lastName+",";
                 await db.maluspunt.create({
 			        data: {
 				        amount: data.amount,
@@ -45,8 +45,9 @@ export const maluspuntForm = new Form<{
 		        })
             });
             return {
+
                 success: true,
-                message: `Maluspunten zijn successvol gegeven aan ${feuten_names}`,
+                message: `Maluspunten zijn successvol gegeven aan ${feutenNames}`,
                 status: 201,
                 redirectTo: "/maluspunten",
             }
