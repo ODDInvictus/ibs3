@@ -4,12 +4,12 @@
 	import knoppers from '$lib/assets/knoppers.png'
 	import { onMount } from 'svelte'
 	import { browser } from '$app/environment'
-	import { daysLeftTill, formatDateHumanReadable, toAge, toBirthday } from '$lib/dateUtils'
+	import { formatDateHumanReadable } from '$lib/dateUtils'
 	import { imagePreview } from '$lib/imagePreviewStore'
 	import { toast } from '$lib/notification'
 	import { getPictureUrl, markdown } from '$lib/utils'
 	import type { PageData } from './$types'
-	let currentDate = new Date()
+	import Birthday from './_birthday.svelte'
 
 	let { data }: { data: PageData } = $props()
 
@@ -97,18 +97,6 @@
 			}
 		} else {
 			link = `/no-activity.jpeg`
-		}
-
-		return link
-	}
-
-	function birthdayImage(resize: boolean) {
-		let link = ''
-
-		if (data.nextBirthday.profilePicture) {
-			link = getPictureUrl(data.nextBirthday.profilePicture, resize ? 'thumbnail' : 'normal')
-		} else {
-			link = `/no-birthday.jpeg`
 		}
 
 		return link
@@ -221,33 +209,7 @@
 		</div>
 	</div>
 
-	<div class="ibs-card birthdays">
-		<div class="ibs-card--image">
-			<img onclick={() => imagePreview({ image: birthdayImage(false) })} src={birthdayImage(true)} alt="⏳" />
-		</div>
-		{#if daysLeftTill(data.nextBirthday.birthDate) > 0}
-			{@const birthday = data.nextBirthday.birthDate}
-			<h2 class="ibs-card--title">Volgende jarige: {data.nextBirthday?.firstName}</h2>
-			<div class="ibs-card--content">
-				<p>
-					Hij is jarig op {toBirthday(birthday)} en wordt dan {toAge(birthday) + 1} jaar!
-				</p>
-				<p>Dat is over {daysLeftTill(birthday)} dagen.</p>
-			</div>
-		{:else}
-			{@const birthday = data.nextBirthday.birthDate}
-			<h2 class="ibs-card--title">🎉 {data.nextBirthday.firstName} is jarig! 🎉</h2>
-			<div class="ibs-card--content">
-				<p>Gefeliciteerd {data.nextBirthday.firstName}!</p>
-				<p>
-					Hij is {toAge(birthday)} jaar geworden
-				</p>
-			</div>
-		{/if}
-		<div class="ibs-card--links">
-			<a href="/verjaardagen">Wie zijn er nog meer binnenkort jarig?</a>
-		</div>
-	</div>
+	<Birthday nextBirthdays={data.nextBirthdays} />
 
 	<div class="ibs-card strafbakken">
 		<h2 class="ibs-card--title">Strafbakken</h2>
@@ -309,8 +271,7 @@
 			}
 		}
 
-		.ibs-card.activity,
-		.ibs-card.birthdays {
+		.ibs-card.activity {
 			.ibs-card--content {
 				padding: 0 1rem;
 				padding-bottom: 1rem;

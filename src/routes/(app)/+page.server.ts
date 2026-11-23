@@ -1,6 +1,6 @@
 import db from '$lib/server/db'
 import type { PageServerLoad } from './$types'
-import { getNextBirthdayInLine } from '$lib/server/birthdays'
+import { getNextBirthdaysInLine } from '$lib/server/birthdays'
 import { LDAP_IDS } from '$lib/constants'
 import type { Photo, Quote } from '$lib/server/prisma/client'
 
@@ -127,7 +127,7 @@ export const load = (async ({ locals }) => {
 		quote: await getQuote(),
 		activity: await getFirstActivity(),
 		strafbakken: await getStrafbakken(),
-		nextBirthday: await getNextBirthdayInLine(),
+		nextBirthdays: await getNextBirthdaysInLine(),
 		photo: await getHighlight(),
 	}
 }) satisfies PageServerLoad
