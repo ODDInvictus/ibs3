@@ -39,7 +39,7 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host ""
 Write-Host "Docker container genereren"
 
-docker build --file Dockerfile.frontend -t "ghcr.io/oddinvictus/ibs3:$version" .
+docker build --file Dockerfile -t "ghcr.io/oddinvictus/ibs3:$version" .
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Docker build gefaald, probeer opnieuw"

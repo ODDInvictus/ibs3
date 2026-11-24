@@ -4,3 +4,7 @@ static/upload
 backend/node_modules
 backend/test
 prisma/migrations
+fotos
+build
+whatsapp
+.git

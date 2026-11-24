@@ -26,7 +26,7 @@ fi
 
 echo
 echo Docker container genereren
-sudo docker build --file Dockerfile.frontend -t ghcr.io/oddinvictus/ibs3:$1 .
+sudo docker build --file Dockerfile -t ghcr.io/oddinvictus/ibs3:$1 .
 echo
 
 if [ -z ${2+x} ];
