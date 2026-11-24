@@ -67,6 +67,7 @@
 	}
 
 	.user {
+		color: var(--color-text-light);
 		display: grid;
 		grid-template-areas: 'name avatar' 'role avatar';
 	}
