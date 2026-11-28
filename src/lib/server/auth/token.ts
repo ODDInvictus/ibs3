@@ -1,7 +1,7 @@
 import type { AccessToken, User } from '$lib/server/prisma/client'
 import db from '../db'
 
-export type TokenType = 'calendar'
+export type TokenType = 'calendar' | 'adtmeister' | 'esp-activiteit'
 
 export async function verifyToken(user: User, token: string, type: TokenType): Promise<boolean> {
 	const accessToken = await db.accessToken.findFirst({
@@ -25,6 +25,26 @@ export async function verifyToken(user: User, token: string, type: TokenType): P
 type VerifyUser = {
 	valid: boolean
 	user: User | null
+}
+
+type VerifyAnonymousToken = {
+	valid: boolean
+	name: string
+}
+
+export async function verifyAnonymousToken(token: string, type: TokenType): Promise<VerifyAnonymousToken> {
+	const accessToken = await db.accessToken.findFirst({
+		where: {
+			token,
+			type,
+		},
+	})
+
+	if (!accessToken) return { valid: false, name: '' }
+
+	await setLastUsed(accessToken)
+
+	return { valid: true, name: accessToken.name }
 }
 
 export async function verifyTokenWithoutUser(token: string, type: TokenType): Promise<VerifyUser> {
